@@ -1,4 +1,6 @@
 language: android
+jvm:
+  - oraclejdk8
 
 notifications:
   email:
