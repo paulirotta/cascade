@@ -51,7 +51,11 @@ public class MainActivity extends Activity {
             async = new AsyncBuilder(this).build();
             typedText = new ReactiveValue<>(WORKER, "typedText", "Type here");
             chainedText = new ReactiveValue<>(WORKER, "chainedText");
+            countText = new ReactiveValue<>(WORKER, "countText");
+
             typedText.subscribe(chainedText);
+            typedText.subscribe(s -> "" + s.length())
+                    .subscribe(countText);
             typedText.fire();
         }
 
@@ -86,10 +90,6 @@ public class MainActivity extends Activity {
         ((ReactiveEditText) findViewById(R.id.editText)).setReactiveValue(typedText, true);
         ((ReactiveTextView) findViewById(R.id.textView)).setReactiveValue(chainedText, true);
         ((ReactiveTextView) findViewById(R.id.textCountView)).setReactiveValue(countText, true);
-
-        typedText.subscribe((String s) ->
-                "" + s.length())
-                .subscribe(((ReactiveTextView) findViewById(R.id.textCountView)).getReactiveValue());
 
         // Flush initial value now that the wiring is done
         typedText.fire();
