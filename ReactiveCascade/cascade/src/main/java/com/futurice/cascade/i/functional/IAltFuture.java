@@ -31,7 +31,7 @@ import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
 
 import java.util.List;
@@ -397,5 +397,5 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param action
      * @return
      */
-    IAltFuture<IN, OUT> onError(IOnErrorAction<IN> action);
+    IAltFuture<IN, OUT> onError(IOnErrorAction action);
 }

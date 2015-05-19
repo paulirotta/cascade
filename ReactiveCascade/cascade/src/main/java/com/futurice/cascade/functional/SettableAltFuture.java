@@ -38,7 +38,7 @@ import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.assertion.IAssertion;
 import com.futurice.cascade.i.assertion.IAssertionOne;
 import com.futurice.cascade.i.assertion.IAssertionTwo;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IAltFutureState;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
@@ -76,7 +76,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected final ImmutableValue<String> origin;
     protected final IThreadType threadType;
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions to start after this onFireAction completes
-    private volatile IOnErrorAction<IN> onError;
+    private volatile IOnErrorAction onError;
     private volatile IAltFuture<?, IN> previousAltFuture = null;
 
     public SettableAltFuture(@NonNull IThreadType threadType) {
@@ -96,7 +96,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    private IAltFuture<IN, OUT> setOnError(@NonNull IOnErrorAction<IN> action) {
+    private IAltFuture<IN, OUT> setOnError(@NonNull IOnErrorAction action) {
         assertNotForked();
 
         this.onError = action;
@@ -660,7 +660,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(IOnErrorAction<IN> action) {
+    public IAltFuture<IN, OUT> onError(IOnErrorAction action) {
         return setOnError(action);
     }
 

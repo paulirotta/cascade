@@ -37,6 +37,7 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IActionTwo;
 import com.futurice.cascade.i.action.IBaseAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.rest.RESTService;
 
 import java.lang.annotation.Annotation;
@@ -307,7 +308,7 @@ public final class Async {
      * @param currentCallOrigin Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message           a message to display in the error log
      * @param t                 the throwable which triggered this error
-     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link com.futurice.cascade.i.exception.IOnErrorAction}
+     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
     public static boolean ee(@NonNull Object tag, @NonNull ImmutableValue<String> currentCallOrigin, @NonNull String message, @NonNull Throwable t) {
         if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
@@ -329,7 +330,7 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the error log
      * @param t       the throwable which triggered this error
-     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link com.futurice.cascade.i.exception.IOnErrorAction}
+     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
     public static boolean ee(@NonNull Object tag, @NonNull String message, @NonNull Throwable t) {
         if (DEBUG && !SHOW_ERROR_STACK_TRACES) {

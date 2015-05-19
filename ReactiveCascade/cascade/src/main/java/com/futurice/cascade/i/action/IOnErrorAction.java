@@ -22,15 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.exception;
-
-import com.futurice.cascade.i.action.IBaseAction;
+package com.futurice.cascade.i.action;
 
 /**
  * A function to execute in the event of an {@link java.lang.Exception} or similar irregular termination
  * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
  */
-public interface IOnErrorAction<PHANTOM_IN> extends IBaseAction<Exception> {
+public interface IOnErrorAction extends IBaseAction<Exception> {
     /**
      * Perform some cleanup or notification onFireAction to bring this object into a rest state after
      * irregular termination.

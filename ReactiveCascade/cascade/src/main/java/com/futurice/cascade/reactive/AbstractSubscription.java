@@ -34,7 +34,7 @@ import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
 

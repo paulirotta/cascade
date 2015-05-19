@@ -35,7 +35,7 @@ import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IRunnableAltFuture;
 
@@ -97,7 +97,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override
-    public <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction<IN> onErrorAction) {
+    public <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction) {
         return () -> {
             try {
                 action.call();
@@ -127,7 +127,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> void execute(@NonNull final IAction<IN> action, @NonNull final IOnErrorAction<IN> onErrorAction) {
+    public <IN> void execute(@NonNull final IAction<IN> action, @NonNull final IOnErrorAction onErrorAction) {
         execute(wrapRunnableAsErrorProtection(action, onErrorAction));
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> void executeNext(IAction<IN> action, IOnErrorAction<IN> onErrorAction) {
+    public <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction) {
         vv(this, origin, "executeNext()");
         executeNext(wrapRunnableAsErrorProtection(action, onErrorAction));
     }

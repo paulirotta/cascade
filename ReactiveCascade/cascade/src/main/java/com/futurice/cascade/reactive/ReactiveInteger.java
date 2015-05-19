@@ -1,7 +1,7 @@
 package com.futurice.cascade.reactive;
 
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import static com.futurice.cascade.Async.*;
 
 /**

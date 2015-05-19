@@ -30,7 +30,7 @@ import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IAtomicValue;
 
 import java.util.concurrent.atomic.AtomicReference;

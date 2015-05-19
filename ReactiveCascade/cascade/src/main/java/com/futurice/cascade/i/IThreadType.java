@@ -30,7 +30,7 @@ import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IRunnableAltFuture;
 
@@ -71,7 +71,7 @@ public interface IThreadType extends INamed {
 
     /**
      * Execute a runnable. Generally this is an action that has already been error-catch wrapped using for example
-     * {@link #wrapRunnableAsErrorProtection(IAction)} or {@link #wrapRunnableAsErrorProtection(IAction, IOnErrorAction)}
+     * {@link #wrapRunnableAsErrorProtection(IAction)}
      *
      * @param runnable
      */
@@ -84,7 +84,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void execute(IAction<IN> action, IOnErrorAction<IN> onErrorAction);
+    <IN> void execute(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
      * If this ThreadType permits out-of-order execution, execute this onFireAction before any previously
@@ -130,7 +130,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void executeNext(IAction<IN> action, IOnErrorAction<IN> onErrorAction);
+    <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
      * Convert this action into a runnable
@@ -149,7 +149,7 @@ public interface IThreadType extends INamed {
      * @param <IN>
      * @return
      */
-    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction<IN> onErrorAction);
+    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
 
     /**
      * Complete the onFireAction asynchronously.

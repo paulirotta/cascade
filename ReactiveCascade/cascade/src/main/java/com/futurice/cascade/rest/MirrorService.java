@@ -26,7 +26,6 @@ package com.futurice.cascade.rest;
 import com.futurice.cascade.*;
 import com.futurice.cascade.i.*;
 import com.futurice.cascade.i.action.*;
-import com.futurice.cascade.i.exception.*;
 import com.futurice.cascade.i.functional.*;
 
 import java.io.*;
@@ -268,7 +267,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
 
         // If the comparator is null we will get the natural (alphabetical etc) order
         Collections.sort(index, comparator);
-        final IOnErrorAction<Object> onError = e -> {
+        final IOnErrorAction onError = e -> {
             Async.e(this, "initMirror downstreamMirrorService.replace problem", e);
             return true;
         };
