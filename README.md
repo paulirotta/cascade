@@ -1,5 +1,7 @@
 # cascade
-Reactive Cascade is an Android library for lambda-friendly reactive programming. All operations are concurrent unless there is an explicit dependency in the function or reactive chain.
+Reactive Cascade is an Android library for lambda-friendly concurrent reactive programming.
+
+The point: clean composable function chains between atomic variables, easy debug, fine grained concurrent by default -> keep all cores lit -> more responsive features and apps
 
 Website:
 http://futurice.github.io/cascade/
