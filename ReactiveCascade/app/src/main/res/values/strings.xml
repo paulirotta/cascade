@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LambdaTest</string>
+
+    <string name="hello_editor">Hello editor!</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="count">Count</string>
+    <string name="action_settings">Settings</string>
+</resources>
