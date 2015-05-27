@@ -34,3 +34,5 @@ android:
 before_script:
   # Create and start emulator
   - cd ReactiveCascade
+
+install: gradle build connectedCheck
