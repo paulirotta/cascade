@@ -630,8 +630,12 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(IOnErrorAction action) {
-        return setOnError(action);
+    public IAltFuture<OUT, OUT> onError(IOnErrorAction action) {
+        setOnError(action);
+
+        return new AltFuture<>(threadType, o -> {
+            return o;
+        });
     }
 
     private void assertErrorState() {
@@ -639,21 +643,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             throwIllegalStateException(this, origin, "Do not call doThenOnError() directly. It can only be called when we are already in an error state and this is done for you when the AltFuture enters an error state by running code which throws an Exception");
         }
     }
-
-//    private <UPCHAIN_IN> boolean callOnError(IAltFuture<UPCHAIN_IN, IN> previousAltFuture, Exception e, IOnErrorAction<IN> onError) throws Exception {
-//        IN IN = null;
-//
-//        if (DEBUG && previousAltFuture == null) {
-//            throwIllegalArgumentException(this, origin, "The previous AltFuture in the chain must be non-null to use an IOnErrorActionOne " + origin + ". Did you mean to use IOnErrorAction instead?");
-//        }
-//        if (previousAltFuture.isDone()) {
-//            IN = previousAltFuture.get();
-//        } else {
-//            vv(this, origin, "AltFuture error before final getValue determined on previous AltFuture in functional chain- will pass a getValue of null");
-//        }
-//
-//        return onError.call(e);
-//    }
 
     //----------------------------------- .subscribe() style actions ---------------------------------------------
     private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull IAltFuture<OUT, N> altFuture) {

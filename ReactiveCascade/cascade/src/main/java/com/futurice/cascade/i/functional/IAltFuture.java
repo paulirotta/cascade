@@ -397,5 +397,5 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param action
      * @return
      */
-    IAltFuture<IN, OUT> onError(IOnErrorAction action);
+    IAltFuture<OUT, OUT> onError(IOnErrorAction action);
 }

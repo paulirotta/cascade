@@ -246,19 +246,19 @@ public class ThreadTypeTest {
                         ar.set(s + "C: Foo");
                         return "It was set to " + ar.get();
                     })
-//                    .onError(e -> {
-//                        //This will never be called because the up-chain onError(e,l) has absorbed the value and cancelled this, so there is not value to pass
-//                        ar.set(ar + " -> C: 2nd onCatch");
-//                        secondCatch.fork();
-//                        return false;
-//                    })
+                    .onError(e -> {
+                        //This will never be called because the up-chain onError(e,l) has absorbed the value and cancelled this, so there is not value to pass
+                        ar.set(ar + " -> C: 2nd onCatch");
+                        secondCatch.fork();
+                        return false;
+                    })
                     .then(s -> {
                         ar.set(s + "C: Bar");
                     })
-//                    .onError(e -> {
-//                        thirdCatch.fork();
-//                        return false;
-//                    })
+                    .onError(e -> {
+                        thirdCatch.fork();
+                        return false;
+                    })
                     .fork();
             awaitDone(altFuture);
             awaitDone(altFuture2);
@@ -284,11 +284,12 @@ public class ThreadTypeTest {
                         ar.set("D: first call");
                         throw new Exception("Ba2");
                     });
-            altFuture.onError(e -> {
-                ar.set("D: 1st onCatch");
-                assertThat("D: ba2").isEqualToIgnoringCase(e.getMessage());
-                return true;
-            })
+            altFuture
+                    .onError(e -> {
+                        ar.set("D: 1st onCatch");
+                        assertThat("D: ba2").isEqualToIgnoringCase(e.getMessage());
+                        return true;
+                    })
                     .then(() -> ar.set("D: Foo"))
                     .onError(e -> {
                         //This will never be called because the up-chain onError(e,l) has absorbed the value and cancelled this, so there is not value to pass
