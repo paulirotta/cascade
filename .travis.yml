@@ -21,7 +21,7 @@ android:
     - android-22
 
     # Additional components
-    - extra-google-google_play_services
+#    - extra-google-google_play_services
 #    - extra-google-m2repository
 #    - extra-android-m2repository
 #    - addon-google_apis-google-19
@@ -31,4 +31,4 @@ android:
 #    - sys-img-armeabi-v7a-android-19
     - sys-img-x86-android-22
 
-install: gradle ReactiveCascade
+install: gradle build connectedCheck ReactiveCascade
