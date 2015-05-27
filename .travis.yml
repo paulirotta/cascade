@@ -1,7 +1,5 @@
 language: android
 
-install: ant deps
-
 notifications:
   email:
     -  moses@futurice-nonda.flowdock.com
@@ -32,3 +30,5 @@ android:
     # if you need to run emulator(s) during your tests
 #    - sys-img-armeabi-v7a-android-19
     - sys-img-x86-android-22
+
+script: ./gradlew connectedAndroidTest
