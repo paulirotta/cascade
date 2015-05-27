@@ -58,7 +58,7 @@ import static com.futurice.cascade.Async.*;
  * </p>
  */
 @NotCallOrigin
-public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAtomicValue<T> {
+public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue<T> {
     private final AtomicReference<T> valueAR = new AtomicReference<>();
 
     /**
@@ -127,7 +127,7 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
      * @param validator
      */
     public ReactiveValue(@NonNull IThreadType threadType, @NonNull String name, @NonNull IOnErrorAction onError, @NonNull IActionOneR<T, T> validator) {
-        super(threadType, name, onError, validator);
+        super(threadType, name, null, validator, onError);
     }
 
     /**
