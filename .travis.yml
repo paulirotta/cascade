@@ -31,4 +31,6 @@ android:
 #    - sys-img-armeabi-v7a-android-19
     - sys-img-x86-android-22
 
-install: gradle build connectedCheck ReactiveCascade
+before_script:
+  # Create and start emulator
+  - cd ReactiveCascade
