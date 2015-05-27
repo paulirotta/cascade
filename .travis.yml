@@ -32,7 +32,7 @@ android:
     - sys-img-x86-android-22
 
 before_script:
-  # Create and start emulator
+  # Move into the Gradle subdirectory
   - cd ReactiveCascade
 
 install: gradle build connectedCheck
