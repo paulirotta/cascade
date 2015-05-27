@@ -4,9 +4,10 @@ notifications:
   email:
     -  moses@futurice-nonda.flowdock.com
 
+jdk:
+  - oraclejdk8
+
 android:
-  jvm:
-    - oraclejdk8
   components:
     # Uncomment the lines below if you want to
     # use the latest revision of Android SDK Tools
