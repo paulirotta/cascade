@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
+import com.futurice.cascade.i.functional.IAltFuture;
+
 /**
  * Stop an ongoing activity early if it has not already completed.
  * Long running tasks such as {@link com.futurice.cascade.i.functional.IAltFuture} must

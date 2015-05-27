@@ -98,6 +98,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     private IAltFuture<IN, OUT> setOnError(@NonNull IOnErrorAction action) {
         assertNotForked();
+        Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .onError() which you think is upchain but is actually concurrent?", this.onError == null);
 
         this.onError = action;
 
@@ -106,7 +107,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(String reason) {
+    public boolean cancel(@NonNull String reason) {
         assertNotDone();
         if (stateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
             dd(this, origin, "Cancelled: reason=" + reason);
@@ -124,7 +125,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(String reason, Exception e) {
+    public boolean cancel(@NonNull String reason, @NonNull Exception e) {
         assertNotDone();
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
@@ -159,7 +160,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isCancelled(stateAR.get());
     }
 
-    protected final boolean isCancelled(Object objectThatMayBeAState) {
+    protected final boolean isCancelled(@NonNull Object objectThatMayBeAState) {
         return objectThatMayBeAState instanceof IAltFutureStateCancelled;
     }
 
@@ -175,7 +176,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isDone(stateAR.get());
     }
 
-    protected boolean isDone(final Object state) {
+    protected boolean isDone(@NonNull final Object state) {
         return state != ZEN && state != FORKED && !(state instanceof AltFutureStateSetButNotYetForked);
     }
 
@@ -186,7 +187,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isConsumed(stateAR.get());
     }
 
-    protected boolean isConsumed(final Object state) {
+    protected boolean isConsumed(@NonNull final Object state) {
         return state instanceof AltFutureStateError && ((AltFutureStateError) state).isConsumed();
     }
 
@@ -195,27 +196,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isForked(stateAR.get());
     }
 
-    protected boolean isForked(final Object state) {
+    protected boolean isForked(@NonNull final Object state) {
         return state != ZEN && !(state instanceof AltFutureStateSetButNotYetForked);
     }
-
-    /**
-     * Complete onError actions
-     *
-     * @param e
-     */
-//    protected final void notifyOnError(final Exception e) {
-//        try {
-//            if (onError == null) {
-//                ee(this, origin, "No onError is defined", e);
-//            } else {
-//                onError.call(e);
-//            }
-//            doThenActions(); //FIXME Redundant- are we calling this 2x?
-//        } catch (Exception e2) {
-//            ee(this, origin, "Problem executing " + origin + " onError(" + e + "), error is consumed and will not propagate down-chain", e2);
-//        }
-//    }
 
     /**
      * Submit this <code>AltFuture</code> to the {@link java.util.concurrent.ExecutorService} associated
@@ -285,7 +268,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<P, IN> altFuture) {
-        assertTrue("previousAltFuture must be null", previousAltFuture == null);
+        Async.assertTrue("previousAltFuture must be null", previousAltFuture == null);
         this.previousAltFuture = altFuture;
 
         return this;
@@ -311,28 +294,15 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     protected void assertNotDone() {
-        assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
+        Async.assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
     }
 
     protected void assertNotConsumed() {
-        assertTrue("assertNotConsumed failed: SettableFuture has already been consumed", !isConsumed());
+        Async.assertTrue("assertNotConsumed failed: SettableFuture has already been consumed", !isConsumed());
     }
 
     protected void assertDone() {
-        assertTrue("assertDone failed: SettableFuture is not finished or canceled/error state", isDone());
-    }
-
-    /**
-     * In debugOrigin builds only, check the condition specified. If that is not satisfied, abort the current
-     * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation reason provided.
-     *
-     * @param reason
-     * @param testResult
-     */
-    protected void assertTrue(String reason, boolean testResult) {
-        if (Async.DEBUG && !testResult) {
-            throwIllegalStateException(this, origin, addOriginToReason(reason, origin) + " state=" + this.stateAR);
-        }
+        Async.assertTrue("assertDone failed: SettableFuture is not finished or canceled/error state", isDone());
     }
 
     /**
@@ -363,7 +333,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
                                 ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
                                 return true;
                             })
-                            .then(() -> assertTrue(reason, assertion.call()))
+                            .then(() -> Async.assertTrue(reason, assertion.call()))
                             .onError(e -> {
                                 return cancel(
                                         "Problem performing runtime assertion",
@@ -396,7 +366,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
                                 ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
                                 return true;
                             })
-                            .then(() -> assertTrue(reason, assertion.call(IN)))
+                            .then(() -> Async.assertTrue(reason, assertion.call(IN)))
                             .onError((Exception e) -> {
                                 return cancel(
                                         "Problem performing runtime assertion",
@@ -424,7 +394,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
                                 ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
                                 return true;
                             })
-                            .then(() -> assertTrue(reason, assertion.call((IN) get())))
+                            .then(() -> Async.assertTrue(reason, assertion.call((IN) get())))
                             .onError(e -> {
                                 return cancel(
                                         "Problem performing runtime assertion",
@@ -452,7 +422,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
                 dd(this, origin, "Consuming up-chain error before assertTrue: " + e);
                 return true;
             })
-                    .then(() -> assertTrue(reason, assertion.call(b, (IN) get())))
+                    .then(() -> Async.assertTrue(reason, assertion.call(b, (IN) get())))
                     .onError(e -> {
                         String s = "Problem performing runtime assertion: " + reason + " value=" + b;
                         ee(this, origin, s, e);
@@ -591,7 +561,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     public boolean compareAndSet(Object expected, OUT value) {
-        assertTrue(this + ".compareAndSet() must expect STATE_NOT_SET or you are concurrently asserting an illegal value", expected == ZEN || expected == FORKED);
+        Async.assertTrue(this + ".compareAndSet() must expect STATE_NOT_SET or you are concurrently asserting an illegal value", expected == ZEN || expected == FORKED);
         return stateAR.compareAndSet(expected, value);
     }
 
