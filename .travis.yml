@@ -42,4 +42,4 @@ script:
     - ./gradlew clean
     - ./gradlew connectedAndroidTestLegacyProductionDebug
 
-# install: ./gradlew build connectedCheck
+install: ./gradlew build connectedCheck
