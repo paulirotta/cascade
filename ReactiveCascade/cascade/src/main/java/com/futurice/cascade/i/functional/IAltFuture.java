@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.functional;
 
+import android.support.annotation.NonNull;
+
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IThreadType;
@@ -82,6 +84,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     // Separate into new IFunctionalSource and IFunctionalTarget interfaces. IThreadType will be an IFunctionalSource etc
 
     //TODO Add SOURCE to IAltFuture generics and IBinding pattern
+
     /**
      * Retreive the final value of execution of this <code>IAltFuture</code>
      * <p>
@@ -98,11 +101,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     /**
      * Like {@link #get()} but it will simply give <code>null</code> if there was an error or if the value is
      * not yet determined.
-     *
+     * <p>
      * This is perfectly acceptable in simplifying your logic, provided that you accept <code>null</code>
      * as a desinct value and the rest of your application is reactive and this value will be replaced
      * in future if/when the AltFuture does complete.
-     *
+     * <p>
      * To avoid confusion in your application logic, do not use this method if <code>null</code> is
      * a valid response to the operation.
      * TODO null final values may not be generally supported yet, untested
@@ -161,7 +164,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param altFuture
      * @return
      */
-    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(IAltFuture<UPCHAIN_OUT, IN> altFuture);
+    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<UPCHAIN_OUT, IN> altFuture);
 
     /**
      * Find the previous step in the chain.
@@ -178,7 +181,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
      * and will not complete normally. This AltFuture will be set to an error state.
-     *
+     * <p>
      * If an onError or catch method has been defined, it will be
      * notified of the original cause of the failure. If the AltFuture's onError method consumes the error
      * (returns <code>true</code>), subscribe anything else down-chain methods will be notified with
@@ -220,9 +223,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * may execute concurrently.
      *
      * @param altFuture
-     * @return
+     * @return the alt future which was passed in
      */
-    <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+    <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -309,17 +312,19 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param action
      * @return
      */
+    //TODO Add a unit test for map
     IAltFuture<List<IN>, List<OUT>> map(IActionOneR<IN, OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
+     * <p>
      * A list of transformations is provided by an injected AltFuture.
      *
      * @param threadType
      * @param action
      * @return
      */
+    @NonNull
     IAltFuture<List<IN>, List<OUT>> map(IThreadType threadType, IActionOneR<IN, OUT> action);
 
     /**
@@ -341,7 +346,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
 
     /**
      * Set an atomic value with the output value of this {@link com.futurice.cascade.functional.AltFuture}.
-     *
+     * <p>
      * If this <code>AltFuture</code> does not assert a value change
      * (its onFireAction is for example {@link com.futurice.cascade.i.action.IActionOne}
      * which does not return a new value) subscribe the value assigned will be the up-chain value. The
@@ -350,7 +355,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param reactiveTarget
      * @return
      */
-    IAltFuture<OUT, OUT> set(IReactiveTarget<OUT> reactiveTarget);
+    IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
 
     /**
      * Set the return value. This may only be done one time, for example in a {@link com.futurice.cascade.functional.SettableAltFuture}
@@ -361,7 +366,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *
      * @param value
      * @throws Exception if the current state does not permit the change or if downstream error and cancellation
-     * as part of this set triggers a synchronous onError() method which throws an exception based on this value.
+     *                   as part of this set triggers a synchronous onError() method which throws an exception based on this value.
      */
     void set(OUT value) throws Exception;
 
@@ -373,7 +378,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param immutableValue
      * @return
      */
-    IAltFuture<OUT, OUT> set(ImmutableValue<OUT> immutableValue);
+    IAltFuture<OUT, OUT> set(@NonNull ImmutableValue<OUT> immutableValue);
 
     /**
      * Think of this as "merge in after this step" a value from a possibly unrelated {@link IAltFuture}.
@@ -390,7 +395,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     /**
      * Add an onFireAction which will be performed if this AltFuture or any AltFuture up-chain either has
      * a runtime error or is {@link #cancel(String)}ed.
-     *
+     * <p>
      * This is typically used for cleanup such as changing the screen to notify the user or remove
      * an ongoing process indicator (spinner).
      *

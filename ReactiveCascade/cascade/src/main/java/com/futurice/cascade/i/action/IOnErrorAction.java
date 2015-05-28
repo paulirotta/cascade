@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.action;
 
+import android.support.annotation.NonNull;
+
 /**
  * A function to execute in the event of an {@link java.lang.Exception} or similar irregular termination
  * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
@@ -38,5 +40,5 @@ public interface IOnErrorAction extends IBaseAction<Exception> {
      * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
      * @throws Exception
      */
-    boolean call(Exception e) throws Exception;
+    boolean call(@NonNull Exception e) throws Exception;
 }

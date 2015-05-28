@@ -79,12 +79,15 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     private volatile IOnErrorAction onError;
     private volatile IAltFuture<?, IN> previousAltFuture = null;
 
-    public SettableAltFuture(@NonNull IThreadType threadType) {
+    public SettableAltFuture(@NonNull final IThreadType threadType) {
         this.threadType = threadType;
         this.origin = Async.originAsync();
     }
 
-    public SettableAltFuture(@NonNull IThreadType threadType, @NonNull OUT value) throws Exception {
+    public SettableAltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final OUT value)
+            throws Exception {
         this(threadType);
 
         set(value);
@@ -96,7 +99,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    private IAltFuture<IN, OUT> setOnError(@NonNull IOnErrorAction action) {
+    @NonNull
+    private IAltFuture<IN, OUT> setOnError(@NonNull final IOnErrorAction action) {
         assertNotForked();
         Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .onError() which you think is upchain but is actually concurrent?", this.onError == null);
 
@@ -107,7 +111,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(@NonNull String reason) {
+    public boolean cancel(@NonNull final String reason) {
         assertNotDone();
         if (stateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
             dd(this, origin, "Cancelled: reason=" + reason);
@@ -125,7 +129,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(@NonNull String reason, @NonNull Exception e) {
+    public boolean cancel(@NonNull final String reason, @NonNull final Exception e) {
         assertNotDone();
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
@@ -160,7 +164,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isCancelled(stateAR.get());
     }
 
-    protected final boolean isCancelled(@NonNull Object objectThatMayBeAState) {
+    protected final boolean isCancelled(@NonNull final Object objectThatMayBeAState) {
         return objectThatMayBeAState instanceof IAltFutureStateCancelled;
     }
 
@@ -236,9 +240,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
+    @NonNull
     public IAltFuture<IN, OUT> fork() {
         final IAltFuture<?, IN> previousAltFuture = getPreviousAltFuture();
-        Object state;
+        final Object state;
 
         if (previousAltFuture != null && !previousAltFuture.isForked()) {
             previousAltFuture.fork();
@@ -267,7 +272,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<P, IN> altFuture) {
+    @NonNull
+    public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull final IAltFuture<P, IN> altFuture) {
         Async.assertTrue("previousAltFuture must be null", previousAltFuture == null);
         this.previousAltFuture = altFuture;
 
@@ -289,20 +295,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
+    @NonNull
     public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture() {
         return (IAltFuture<UPCHAIN_IN, IN>) this.previousAltFuture;
     }
 
     protected void assertNotDone() {
         Async.assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
-    }
-
-    protected void assertNotConsumed() {
-        Async.assertTrue("assertNotConsumed failed: SettableFuture has already been consumed", !isConsumed());
-    }
-
-    protected void assertDone() {
-        Async.assertTrue("assertDone failed: SettableFuture is not finished or canceled/error state", isDone());
     }
 
     /**
@@ -326,7 +325,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      * @throws AssertionError
      */
-    public IAltFuture<IN, OUT> assertTrue(String reason, IAssertion assertion) throws AssertionError {
+    //TODO Either add a unit test or eliminate in favor of manual (BETTER TO ELIMINATE THIS?)
+    //TODO Or add this to the interface
+    @NonNull
+    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull final IAssertion assertion) throws AssertionError {
         if (DEBUG) {
             then(this
                             .onError(e -> {
@@ -359,7 +361,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return - true if everything is as expected
      * @throws AssertionError
      */
-    public IAltFuture<IN, OUT> assertTrue(String reason, IN IN, IAssertionOne<IN> assertion) throws AssertionError {
+    @NonNull
+    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull IN IN, @NonNull IAssertionOne<IN> assertion) throws AssertionError {
         if (DEBUG) {
             then(this
                             .onError(e -> {
@@ -387,7 +390,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return - true if everything is as expected
      * @throws AssertionError
      */
-    public IAltFuture<IN, OUT> assertTrue(String reason, IAssertionOne<IN> assertion) throws AssertionError {
+    @NonNull
+    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull final IAssertionOne<IN> assertion) throws AssertionError {
         if (DEBUG) {
             then(this
                             .onError(e -> {
@@ -416,7 +420,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @param <B>       - a value which is fixed at the time the functional chain is created
      * @return - true if everything is as expected
      */
-    public <B> IAltFuture<OUT, OUT> assertTrue(String reason, B b, IAssertionTwo<B, IN> assertion) {
+    @NonNull
+    public <B> IAltFuture<OUT, OUT> assertTrue(@NonNull final String reason, @NonNull final B b, @NonNull final IAssertionTwo<B, IN> assertion) {
         if (DEBUG) {
             return split(onError(e -> {
                 dd(this, origin, "Consuming up-chain error before assertTrue: " + e);
@@ -455,6 +460,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
+    @NonNull
     public OUT get() {
         final Object state = stateAR.get();
 
@@ -469,6 +475,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
+    @NonNull
     public OUT safeGet() {
         final Object state = stateAR.get();
 
@@ -481,6 +488,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
+    @NonNull
     public final IThreadType getThreadType() {
         return this.threadType;
     }
@@ -513,7 +521,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public void set(OUT value) throws Exception {
+    public void set(@NonNull final OUT value) throws Exception {
         if (stateAR.compareAndSet(ZEN, new AltFutureStateSetButNotYetForked(value))) {
             // Previous state was ZEN, so accept it but do not enter isDone() and complete .subscribe() onFireAction until after .fork() is called
             if (DEBUG) {
@@ -545,6 +553,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         throwIllegalStateException(this, origin, "Attempted to set " + this + " to value=" + value + ", but the value can only be set once");
     }
 
+    //TODO Eliminate or use, and perhaps add to interface
     public final boolean isHeadOfChain() {
         return getPreviousAltFuture() == null;
     }
@@ -560,13 +569,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @param value
      * @return
      */
-    public boolean compareAndSet(Object expected, OUT value) {
+    public boolean compareAndSet(@NonNull final Object expected, @NonNull final OUT value) {
         Async.assertTrue(this + ".compareAndSet() must expect STATE_NOT_SET or you are concurrently asserting an illegal value", expected == ZEN || expected == FORKED);
         return stateAR.compareAndSet(expected, value);
     }
 
     @Override // IAltFuture
-    public void doThenOnCancelled(final CancellationException cancellationException) throws Exception {
+    public void doThenOnCancelled(@NonNull final CancellationException cancellationException) throws Exception {
         vv(this, origin, "Handling doThenOnCancelled " + origin + " for reason=" + cancellationException);
         this.stateAR.set(cancellationException);
         final IOnErrorAction oe = this.onError;
@@ -577,7 +586,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         cancelAllDownchainActions(cancellationException);
     }
 
-    private void cancelAllDownchainActions(final CancellationException cancellationException) throws Exception {
+    private void cancelAllDownchainActions(@NonNull final CancellationException cancellationException) throws Exception {
         forEachThen(altFuture -> {
             altFuture.doThenOnCancelled(cancellationException);
         });
@@ -589,7 +598,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @param action
      * @throws Exception
      */
-    private void forEachThen(final IActionOne<IAltFuture<OUT, ?>> action) throws Exception {
+    private void forEachThen(@NonNull final IActionOne<IAltFuture<OUT, ?>> action) throws Exception {
         final Iterator<IAltFuture<OUT, ?>> iterator = thenAltFutureList.iterator();
 
         while (iterator.hasNext()) {
@@ -608,7 +617,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     @NotCallOrigin
     @Override // IAltFuture
-    public void doThenOnError(final IAltFutureState state) throws Exception {
+    public void doThenOnError(@NonNull final IAltFutureState state) throws Exception {
         vv(this, origin, "Handling doThenOnError(): " + state);
         this.stateAR.set(state);
         final IOnErrorAction oe = onError;
@@ -630,7 +639,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> onError(IOnErrorAction action) {
+    @NonNull
+    public IAltFuture<OUT, OUT> onError(@NonNull final IOnErrorAction action) {
         setOnError(action);
 
         return new AltFuture<>(threadType, o -> {
@@ -645,7 +655,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     //----------------------------------- .subscribe() style actions ---------------------------------------------
-    private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull IAltFuture<OUT, N> altFuture) {
+    @NonNull
+    private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull final IAltFuture<OUT, N> altFuture) {
         altFuture.setPreviousAltFuture(this);
         this.thenAltFutureList.add(altFuture);
         if (isDone()) {
@@ -721,7 +732,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         assertNotDone();
 
         then(altFuture);
@@ -746,7 +758,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
             dd(this, origin, ".subscribe() to an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
@@ -763,7 +776,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> then(IActionOne<OUT> action) {
+    @NonNull
+    public IAltFuture<OUT, OUT> then(@NonNull final IActionOne<OUT> action) {
         return then(threadType, action);
     }
 
@@ -775,7 +789,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> then(IThreadType threadType, IActionOne<OUT> action) {
+    @NonNull
+    public IAltFuture<OUT, OUT> then(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOne<OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
@@ -786,7 +803,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(IActionR<OUT, DOWNCHAIN_OUT> action) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
@@ -798,7 +816,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(IThreadType threadType, IActionR<OUT, DOWNCHAIN_OUT> action) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
@@ -810,7 +831,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
@@ -823,7 +845,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(IThreadType threadType, IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
@@ -834,7 +859,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> then(IAction<OUT> action) {
+    @NonNull
+    public IAltFuture<OUT, OUT> then(@NonNull final IAction<OUT> action) {
         return then(threadType, action);
     }
 
@@ -846,7 +872,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> then(IThreadType threadType, IAction<OUT> action) {
+    @NonNull
+    public IAltFuture<OUT, OUT> then(
+            @NonNull final IThreadType threadType,
+            @NonNull final IAction<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
@@ -857,7 +886,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<List<IN>, List<OUT>> map(IActionOneR<IN, OUT> action) {
+    @NonNull
+    public IAltFuture<List<IN>, List<OUT>> map(@NonNull final IActionOneR<IN, OUT> action) {
         return map(threadType, action);
     }
 
@@ -869,7 +899,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<List<IN>, List<OUT>> map(IThreadType threadType, IActionOneR<IN, OUT> action) {
+    @NonNull
+    public IAltFuture<List<IN>, List<OUT>> map(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<IN, OUT> action) {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     //TODO Mapping is single-threaded even for long lists or complex transforms
@@ -884,12 +917,16 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public IAltFuture<List<IN>, List<IN>> filter(IActionOneR<IN, Boolean> action) {
+    @NonNull
+    public IAltFuture<List<IN>, List<IN>> filter(@NonNull final IActionOneR<IN, Boolean> action) {
         return filter(threadType, action);
     }
 
     @Override // IAltFuture
-    public IAltFuture<List<IN>, List<IN>> filter(IThreadType threadType, IActionOneR<IN, Boolean> action) {
+    @NonNull
+    public IAltFuture<List<IN>, List<IN>> filter(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<IN, Boolean> action) {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     final List<IN> outputList = new ArrayList<>(listIN.size());
@@ -917,7 +954,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget) {
+    @NonNull
+    public IAltFuture<OUT, OUT> set(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
         return then((OUT value) -> {
             reactiveTarget.fire(value);
         });
@@ -932,7 +970,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @return
      */
     @Override // IAltFuture
-    public IAltFuture<OUT, OUT> set(@NonNull ImmutableValue<OUT> immutableValue) {
+    @NonNull
+    public IAltFuture<OUT, OUT> set(@NonNull final ImmutableValue<OUT> immutableValue) {
         return then((OUT value) ->
                 immutableValue.set(value));
     }
@@ -999,8 +1038,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected static final class AltFutureStateCancelled implements IAltFutureStateCancelled {
         final String reason;
 
-        AltFutureStateCancelled(String reason) {
-            if (DEBUG && (reason == null || reason.length() == 0)) {
+        AltFutureStateCancelled(@NonNull String reason) {
+            if (DEBUG && reason.length() == 0) {
                 throwIllegalArgumentException(this, "You must specify the cancellation reason to keep debugging sane");
             }
             this.reason = reason;
@@ -1008,11 +1047,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         @Override // IAltFutureStateCancelled
+        @NonNull
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateCancelled.class.getSimpleName());
         }
 
         @Override // Object
+        @NonNull
         public String toString() {
             return "CANCELLED: reason=" + reason;
         }
@@ -1027,8 +1068,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         final Exception e;
         private volatile boolean consumed = false; // Set true to indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
 
-        AltFutureStateError(String reason, Exception e) {
-            if (DEBUG && (reason == null || reason.length() == 0 || e == null)) {
+        AltFutureStateError(@NonNull String reason, @NonNull Exception e) {
+            if (DEBUG && reason.length() == 0) {
                 throwIllegalArgumentException(this, "You must specify the error reason and exception to keep debugging sane");
             }
             this.reason = reason;
@@ -1039,6 +1080,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         /**
          * Note that this is not thread-safe. You may only process errors and consume them on a single thread
          */
+        //FIXME CONTINUE HERE- consume() is not used consistently- eliminate or use everywhere
         void consume() {
             consumed = true;
         }
@@ -1048,11 +1090,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         @Override // IAltFutureStateCancelled
+        @NonNull
         public Exception getException() {
             return e;
         }
 
         @Override // Object
+        @NonNull
         public String toString() {
             return "ERROR: reason=" + reason + " error=" + e + " consumed=" + consumed;
         }

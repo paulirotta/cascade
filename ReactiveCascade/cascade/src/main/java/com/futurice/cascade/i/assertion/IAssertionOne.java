@@ -24,11 +24,13 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.assertion;
 
+import android.support.annotation.NonNull;
+
 /**
  * A chainable runtime assertTrue assertion for debugOrigin builds
  *
  * @param <A>
  */
 public interface IAssertionOne<A> extends IBaseAssertion {
-    boolean call(A a) throws Exception;
+    boolean call(@NonNull A a) throws Exception;
 }

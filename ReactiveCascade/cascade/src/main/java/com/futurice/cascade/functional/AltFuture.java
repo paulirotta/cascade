@@ -102,7 +102,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that receives one input and no return value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IAction<IN> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IAction<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -123,7 +125,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that receives one input and no return value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionOne<IN> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOne<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -145,7 +149,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that does not vary with the input value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionR<IN, OUT> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionR<IN, OUT> action) {
         super(threadType);
 
         this.action = action;
@@ -158,7 +164,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a mapping function
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionOneR<IN, OUT> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<IN, OUT> action) {
         super(threadType);
 
         this.action = () -> {
@@ -185,7 +193,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
      */
-    public boolean cancel(String reason) {
+    public boolean cancel(@NonNull final String reason) {
         final Object state = stateAR.get();
 
         if (state instanceof AltFutureStateCancelled) {
