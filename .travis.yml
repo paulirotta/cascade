@@ -33,6 +33,6 @@ android:
 
 before_script:
   # Move into the Gradle subdirectory
-  - cd ReactiveCascade
+  #- cd ReactiveCascade
 
-install: gradle build connectedCheck
+install: ReactiveCascade/gradlew build ReactiveCascade/connectedCheck
