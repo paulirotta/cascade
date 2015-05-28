@@ -24,6 +24,7 @@ THE SOFTWARE.
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.AltWeakReference;
 import com.futurice.cascade.functional.ImmutableValue;
@@ -85,8 +86,8 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      * If there are multiple down-chain targets attached to this node, it will concurrently fire
      * all down-chain branches.
      *
-     * @param threadType
-     * @param name
+     * @param threadType the default thread group on which this subscription fires
+     * @param name the descriptive debug name of this subscription
      * @param upchainReactiveSource
      * @param action                Because there _may_ exist a possibility of multiple fire events racing each other on different
      *                              threads, it is important that the action functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
@@ -94,7 +95,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      */
     public Subscription(@NonNull IThreadType threadType,
                         @NonNull String name,
-                        IReactiveSource<IN> upchainReactiveSource,
+                        @Nullable IReactiveSource<IN> upchainReactiveSource,
                         @NonNull IActionOneR<IN, OUT> action,
                         @NonNull IOnErrorAction onError) {
         this.threadType = threadType;
@@ -136,12 +137,13 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 //================================= Public Utility Methods =======================================
 
     @Override // INamed
+    @NonNull
     public String getName() {
         return this.name;
     }
 
     @Override // IReactiveTarget
-    public void subscribeSource(@NonNull String reason, @NonNull IReactiveSource<IN> reactiveSource) {
+    public void subscribeSource(@NonNull final String reason, @NonNull final IReactiveSource<IN> reactiveSource) {
         if (!reactiveSources.addIfAbsent(reactiveSource)) {
             dd(this, origin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         } else {
@@ -151,7 +153,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 
     @Override
     @NotCallOrigin
-    public void unsubscribeSource(@NonNull String reason, @NonNull IReactiveSource<IN> reactiveSource) {
+    public void unsubscribeSource(@NonNull final String reason, @NonNull final IReactiveSource<IN> reactiveSource) {
         if (reactiveSources.remove(reactiveSource)) {
             vv(this, origin, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason);
         } else {
@@ -170,7 +172,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      * @return <code>true</code> if _any_ of the action(reactive_target) calls returns <code>true</code>
      * @throws Exception
      */
-    private boolean forEachReactiveTarget(@NonNull IActionOneR<IReactiveTarget<OUT>, Boolean> action) throws Exception {
+    private boolean forEachReactiveTarget(@NonNull final IActionOneR<IReactiveTarget<OUT>, Boolean> action) throws Exception {
         final Iterator<AltWeakReference<IReactiveTarget<OUT>>> iterator = reactiveTargets.iterator();
         boolean result = false;
 
@@ -192,9 +194,9 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     /**
      * Search downstream targets and do <code>actionIfFound</code> if you find the one specified
      *
-     * @param searchItem
-     * @param actionIfFound
-     * @return
+     * @param searchItem the target to be located in the subscribed targets list
+     * @param actionIfFound an action to perform on that target if found
+     * @return <code>true</code> if found and action performed
      * @throws Exception
      */
     protected final boolean searchReactiveTargets(@NonNull final IReactiveTarget<OUT> searchItem, @NonNull final IActionOne<IReactiveTarget<OUT>> actionIfFound) throws Exception {
@@ -259,6 +261,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on ThreadType.WORKER
      */
     @NotCallOrigin
+    @NonNull
     private OUT doAction(@NonNull final IN in) throws Exception {
         vv(this, origin, "doReceiveFire \"" + getName() + " value=" + in);
 //        visualize(getName(), latestFireIn.toString(), "AbstractBinding");
@@ -270,7 +273,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on Async.WORKER
      */
     @NotCallOrigin
-    private void doDownchainActions(@NonNull IN in, @NonNull OUT out) throws Exception {
+    private void doDownchainActions(@NonNull final IN in, @NonNull final OUT out) throws Exception {
         forEachReactiveTarget(reactiveTarget -> {
             vv(this, origin, "Fire down-chain reactive target " + reactiveTarget.getName() + ", value=" + out);
             reactiveTarget.fireNext(out);
@@ -284,10 +287,11 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 //=================================.subscribe() Actions ==========================================
 
     @Override // IReactiveSource
-    public boolean unsubscribe(@NonNull String reason, @NonNull IReactiveTarget<OUT> reactiveTarget) {
+    public boolean unsubscribe(@NonNull final String reason, @NonNull final IReactiveTarget<OUT> reactiveTarget) {
         try {
             return searchReactiveTargets(reactiveTarget, wr -> {
                         vv(this, origin, "unsubscribeSource(IReactiveTarget) reason=" + reason + " reactiveTarget=" + reactiveTarget);
+                        //TODO Annotate to remove the following warning. The action is safe due to AltWeakReference behavior
                         reactiveTargets.remove(reactiveTarget);
                     }
             );
@@ -298,7 +302,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     @Override // IReactiveTarget
-    public void unsubscribeAllSources(@NonNull String reason) {
+    public void unsubscribeAllSources(@NonNull final String reason) {
         final Iterator<IReactiveSource<IN>> iterator = reactiveSources.iterator();
 
         vv(this, origin, "Unsubscribing all sources, reason=" + reason);
@@ -308,12 +312,13 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     @Override // IReactiveSource
-    public void unsubscribeAll(@NonNull String reason) {
+    public void unsubscribeAll(@NonNull final String reason) {
         dd(this, origin, "unsubscribeAll() reason=" + reason);
 
         try {
             forEachReactiveTarget(reactiveTarget -> {
                 unsubscribe(reason, reactiveTarget);
+                //TODO Annotate to remove the following warning. The action is safe due to AltWeakReference behavior
                 reactiveTargets.remove(reactiveTarget);
                 return false;
             });
@@ -323,7 +328,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> split(@NonNull IReactiveTarget<OUT> reactiveTarget) {
+    public IReactiveSource<OUT> split(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
         subscribe(reactiveTarget);
 
         return this;
@@ -338,47 +343,59 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 //    }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> subscribe(@NonNull IAction<OUT> action) {
+    @NonNull
+    public IReactiveSource<OUT> subscribe(@NonNull final IAction<OUT> action) {
         return subscribe(threadType, action);
     }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType, @NonNull IAction<OUT> action) {
-        return subscribe(threadType, out -> {
+    @NonNull
+    public IReactiveSource<OUT> subscribe(@NonNull final IThreadType threadType, @NonNull final IAction<OUT> action) {
+        return subscribeMap(threadType, out -> {
             action.call();
             return out;
         });
     }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> subscribe(@NonNull IActionOne<OUT> action) {
+    @NonNull
+    public IReactiveSource<OUT> subscribe(@NonNull final IActionOne<OUT> action) {
         return subscribe(threadType, action);
     }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType, @NonNull IActionOne<OUT> action) {
-        return subscribe(threadType, out -> {
+    @NonNull
+    public IReactiveSource<OUT> subscribe(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOne<OUT> action) {
+        return subscribeMap(threadType, out -> {
             action.call(out);
             return out;
         });
     }
 
     @Override // IReactiveSource
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        return subscribe(threadType, action);
+    @NonNull
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+        return subscribeMap(threadType, action);
     }
 
     @Override // IReactiveSource
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IThreadType threadType, @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription(threadType, getName(), this, action, onError);
-        subscribe((IReactiveTarget<OUT>) subscription);
+    @NonNull
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(
+            @NonNull final IThreadType threadType,
+            @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(threadType, getName(), this, action, onError);
+        subscribe((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
 
         return subscription;
     }
 
     @Override // IReactiveSource
-    public IReactiveSource<OUT> subscribe(@NonNull IReactiveTarget<OUT> reactiveTarget) {
+    @NonNull
+    public IReactiveSource<OUT> subscribe(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
         if (reactiveTargets.addIfAbsent(new AltWeakReference<>(reactiveTarget))) {
+            reactiveTarget.subscribeSource("Reference to keep reactive chain from being garbage collected", this);
             vv(this, origin, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
         } else {
             ii(this, origin, "IGNORED duplicate subscribe of down-chain IReactiveTarget \"" + reactiveTarget.getName());
@@ -388,14 +405,15 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     @Override // IReactiveSource
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action) {
+    @NonNull
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return subscribe(threadType, action);
     }
 
     @Override // IReactiveSource
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IThreadType threadType, @NonNull IActionR<OUT, DOWNCHAIN_OUT> action) {
-        //TODO AbstractSubscription should probably be merged with and named "Subscription" to avoid referencing a child class in the abstract parent
-        IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription(
+    @NonNull
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IThreadType threadType, @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
                 threadType,
                 getName(),
                 this,

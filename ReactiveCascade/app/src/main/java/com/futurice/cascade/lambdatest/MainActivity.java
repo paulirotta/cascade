@@ -48,14 +48,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         if (async == null) {
-            //TODO Simplify
             async = new AsyncBuilder(this).build();
             typedText = new ReactiveValue<>(WORKER, "typedText", "Type here");
             chainedText = new ReactiveValue<>(WORKER, "chainedText");
             countText = new ReactiveValue<>(WORKER, "countText");
 
             typedText.subscribe(chainedText);
-            typedText.subscribe(s -> "" + s.length())
+            typedText.subscribeMap(s -> "" + s.length())
                     .subscribe(countText);
             typedText.fire();
         }
