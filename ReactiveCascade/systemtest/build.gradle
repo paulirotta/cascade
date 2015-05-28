@@ -23,7 +23,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
-        abortOnError false
+        // For Okio
+        // https://github.com/square/okio/issues/58
+        warning 'InvalidPackage'
     }
 }
 
@@ -35,6 +37,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile project(':cascade')
-    compile 'org.assertj:assertj-core:1.+'
+    compile 'org.assertj:assertj-core:1.7.1'
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
 }
