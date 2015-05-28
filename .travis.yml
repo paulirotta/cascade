@@ -40,6 +40,6 @@ before_script:
 
 script:
     - ./gradlew clean
-    - ./gradlew connectedAndroidTestLegacyProductionDebug
+    - ./gradlew build connectedCheck
 
-install: ./gradlew build connectedCheck
+#install: ./gradlew build connectedCheck
