@@ -37,22 +37,30 @@ retrolambda {
     defaultMethods true
 }
 
-task pmd(type: Pmd) {
+pmd {
     ruleSetFiles = files("${project.rootDir}/config/pmd/pmd-ruleset.xml")
-    ignoreFailures = true
-    ruleSets = ["java-basic", "java-braces", "java-strings"]
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
-    reports {
-        xml.enabled = true
-        html.enabled = false
-    }
 }
 
-check.dependsOn 'pmd'
+task pmd(type: Pmd) {
+    ruleSets = [] //"java-basic", "java-braces", "java-strings"
+    ignoreFailures = false
+}
+
+//task pmd(type: Pmd) {
+//    ruleSetFiles = files("${project.rootDir}/config/pmd/pmd-ruleset.xml")
+//    ignoreFailures = true
+//    ruleSets = ["java-basic", "java-braces", "java-strings"]
+//
+//    source 'src'
+//    include '**/*.java'
+//    exclude '**/gen/**'
+//
+//    reports {
+//        xml.enabled = true
+//        html.enabled = false
+//    }
+//}
+//
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
