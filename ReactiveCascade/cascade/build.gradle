@@ -24,10 +24,8 @@ android {
     }
 
     lintOptions {
-        // For Okio
-        // https://github.com/square/okio/issues/58
-        warning 'InvalidPackage'
-        abortOnError false
+        warning 'InvalidPackage' // For Okio, https://github.com/square/okio/issues/58
+        abortOnError false   // For RetroLambda, remove when possible
     }
 }
 
