@@ -33,7 +33,7 @@ android {
         packagingOptions {
             exclude 'META-INF/LICENSE.txt' // For PMD
             exclude 'META-INF/NOTICE.txt'  // For PMD
-            exclude 'META-INF/services/net.sourceforge.pmd.cpd.Language' // For PMD        }
+            exclude 'META-INF/services/net.sourceforge.pmd.cpd.Language' // For PMD
             exclude 'META-INF/services/net.sourceforge.pmd.lang.Language' // For PMD
         }
     }
@@ -61,10 +61,12 @@ retrolambda {
 //    }
 //}
 //
-check.doLast {
-    project.tasks.getByName("pmdMain").execute()
-    project.tasks.getByName("pmdTest").execute()
-}
+
+
+//check.doLast {
+//    project.tasks.getByName("pmdMain").execute()
+//    project.tasks.getByName("pmdTest").execute()
+//}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
