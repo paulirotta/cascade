@@ -42,7 +42,7 @@ pmd {
 }
 
 task pmd(type: Pmd) {
-    ruleSets = [] //"java-basic", "java-braces", "java-strings"
+    ruleSets = ["java-basic", "java-braces", "java-strings"] //"java-basic", "java-braces", "java-strings"
     ignoreFailures = false
 }
 
