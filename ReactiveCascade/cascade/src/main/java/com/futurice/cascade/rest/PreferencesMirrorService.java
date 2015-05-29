@@ -24,6 +24,7 @@
 package com.futurice.cascade.rest;
 
 import android.content.*;
+import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.*;
 
@@ -51,7 +52,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
      * by all {@link RESTService} operations
      *
      */
-    public PreferencesMirrorService(String name, Context context, IThreadType fileReadIThreadType, IThreadType fileWriteIThreadType) {
+    public PreferencesMirrorService(@NonNull final String name, @NonNull final Context context, @NonNull final IThreadType fileReadIThreadType, @NonNull final IThreadType fileWriteIThreadType) {
         super(name, fileReadIThreadType, fileWriteIThreadType);
 
         if (!fileReadIThreadType.isInOrderExecutor()) {
@@ -70,7 +71,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
      * @throws IOException
      */
     @Override
-    public String get(String key) throws IOException {
+    public String get(@NonNull final String key) throws IOException {
         vv(TAG, "Start preference read: " + key);
         return preferences.getString(key, null);
     }
@@ -84,7 +85,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
      * @throws IOException
      */
     @Override
-    public void put(String key, String value) throws Exception {
+    public void put(@NonNull final String key, @NonNull final String value) throws Exception {
         dd(TAG, "Put to SharedPreferences:" + key);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
@@ -95,7 +96,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public boolean replace(String key, String value, String expectedValue) throws Exception {
+    public boolean replace(@NonNull final String key, String value, @NonNull final String expectedValue) throws Exception {
         String currentValue = get(key);
 
         if ((currentValue == null && expectedValue == null) || (expectedValue != null && expectedValue.equals(currentValue))) {
@@ -110,7 +111,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public boolean delete(String key, String expectedValue) throws Exception {
+    public boolean delete(@NonNull final String key, @NonNull final String expectedValue) throws Exception {
         String currentValue = get(key);
 
         if ((currentValue == null && expectedValue == null) || (expectedValue != null && expectedValue.equals(currentValue))) {
@@ -125,7 +126,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public boolean delete(String key) throws Exception {
+    public boolean delete(@NonNull final String key) throws Exception {
         dd(TAG, "Start preference delete: " + key);
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -139,18 +140,19 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public void post(String key, String value) throws IOException {
+    public void post(@NonNull final String key, @NonNull final String value) throws IOException {
         throw new UnsupportedOperationException("PreferencesMirrorService does not implement post(filename, vale)");
     }
 
     @Override
+    @NonNull
     public List<String> index() throws IOException {
         dd(TAG, "preference index()");
         final SharedPreferences.Editor editor = preferences.edit();
 
-        Map<String, ?> map = preferences.getAll();
+        final Map<String, ?> map = preferences.getAll();
         editor.apply();
-        ArrayList<String> index = new ArrayList<>(map.size());
+        final ArrayList<String> index = new ArrayList<>(map.size());
         index.addAll(map.keySet());
 
         return index;
