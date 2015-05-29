@@ -146,9 +146,10 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     @Override
     public List<String> index() throws IOException {
         dd(TAG, "preference index()");
-        SharedPreferences.Editor editor = preferences.edit();
+        final SharedPreferences.Editor editor = preferences.edit();
 
         Map<String, ?> map = preferences.getAll();
+        editor.commit();
         ArrayList<String> index = new ArrayList<>(map.size());
         index.addAll(map.keySet());
 
