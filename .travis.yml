@@ -39,7 +39,4 @@ before_script:
 
 script:
     - cd ReactiveCascade
-    - gradle clean
-    - gradle build connectedCheck
-
-#install: ./gradlew build connectedCheck
+    - gradle clean build connectedCheck --info
