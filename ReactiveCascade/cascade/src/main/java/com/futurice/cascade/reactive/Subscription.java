@@ -220,7 +220,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
         latestFireInIsFireNext.set(false);
         /*
          There is a race at this point between latestFireIn and latestFireInIsFireNext.
-         By design, if the race is lost, then a normal fire will actually fire next. So we evaluate ahead of
+         By design, if the race is lost, map a normal fire will actually fire next. So we evaluate ahead of
          other pending actions- small loss, and not a problem as there is no dependency upset by this.
 
          This design is more efficient than the memory thrash at every reactive evaluation step that

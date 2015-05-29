@@ -193,7 +193,7 @@ public interface IThreadType extends INamed {
      * Set the chain to a value not yet determined, but which may be determined in a non-blocking
      * manner either before or at the time this point in the chain executes.
      *
-     * @param value the value returned by a pre-determined function and then injected into the chain at this point
+     * @param value the value returned by a pre-determined function and map injected into the chain at this point
      * @param <IN>  the type of input argument expected by the action
      * @param <OUT> the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
@@ -230,7 +230,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>  the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
      */
-    <IN, OUT> IAltFuture<IN, OUT> then(IActionOneR<IN, OUT> action);
+    <IN, OUT> IAltFuture<IN, OUT> map(IActionOneR<IN, OUT> action);
 
     /**
      * Transform input A to output T using each of the several actions provided and return
@@ -241,7 +241,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(IActionOneR<IN, OUT>... actions);
+    <IN, OUT> List<IAltFuture<IN, OUT>> map(IActionOneR<IN, OUT>... actions);
 
     /**
      * Place this the {@link com.futurice.cascade.i.functional.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.functional.AltFuture}

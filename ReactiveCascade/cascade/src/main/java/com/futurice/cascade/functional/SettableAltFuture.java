@@ -661,7 +661,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         this.thenAltFutureList.add(altFuture);
         if (isDone()) {
             vv(this, origin, "Warning: an AltFuture was added as a .subscribe() onFireAction to an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
-//            altFuture.then((IActionOne) v -> {
+//            altFuture.map((IActionOne) v -> {
 //                visualize(origin.getName(), v.toString(), "AltFuture");
 //            });
             altFuture.fork();

@@ -118,7 +118,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
      * any reactive subscribers.
      * <p>
      * If you also wish to mutate the value and make the output of the validator function the value you
-     * will {@link #get()} from this ReactiveValue, then you should call {@link #set(Object)} in
+     * will {@link #get()} from this ReactiveValue, map you should call {@link #set(Object)} in
      * the validator function.
      *
      * @param threadType
