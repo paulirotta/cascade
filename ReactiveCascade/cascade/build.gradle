@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'pmd'
+//apply plugin: 'pmd'
 
 android {
     compileSdkVersion 22
@@ -37,14 +37,14 @@ retrolambda {
     defaultMethods true
 }
 
-pmd {
-    ruleSetFiles = files("${project.rootDir}/config/pmd/pmd-ruleset.xml")
-}
-
-task pmd(type: Pmd) {
-    ruleSets = ["java-basic", "java-braces", "java-strings"] //"java-basic", "java-braces", "java-strings"
-    ignoreFailures = false
-}
+//pmd {
+//    ruleSetFiles = files("${project.rootDir}/config/pmd/pmd-ruleset.xml")
+//}
+//
+//task pmd(type: Pmd) {
+//    ruleSets = ["java-basic", "java-braces", "java-strings"] //"java-basic", "java-braces", "java-strings"
+//    ignoreFailures = false
+//}
 
 //task pmd(type: Pmd) {
 //    ruleSetFiles = files("${project.rootDir}/config/pmd/pmd-ruleset.xml")

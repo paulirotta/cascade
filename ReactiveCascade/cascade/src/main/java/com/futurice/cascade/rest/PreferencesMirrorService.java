@@ -149,7 +149,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
         final SharedPreferences.Editor editor = preferences.edit();
 
         Map<String, ?> map = preferences.getAll();
-        editor.commit();
+        editor.apply();
         ArrayList<String> index = new ArrayList<>(map.size());
         index.addAll(map.keySet());
 
