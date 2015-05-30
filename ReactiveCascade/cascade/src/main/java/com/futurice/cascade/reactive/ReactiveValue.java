@@ -206,14 +206,4 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
 
         return success;
     }
-
-    //FIXME Remove this and use reactiveValue.subscribe(mappingFunction).subscribe(reactiveValue2)
-//    public <R> ReactiveValue<R> map(@NonNull final IActionOneR<T, R> f) {
-//        final ReactiveValue<T> thisReactiveValue = this;
-//        ReactiveValue<R> newReactiveValue = new ReactiveValue<R>(threadType, getName());
-//        this.subscribe(() -> {
-//            newReactiveValue.set(f.call(thisReactiveValue.get()));
-//        });
-//        return newReactiveValue;
-//    }
 }
