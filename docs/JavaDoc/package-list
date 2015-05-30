@@ -3,9 +3,9 @@ com.futurice.cascade.functional
 com.futurice.cascade.i
 com.futurice.cascade.i.action
 com.futurice.cascade.i.assertion
-com.futurice.cascade.i.exception
 com.futurice.cascade.i.functional
 com.futurice.cascade.i.reactive
 com.futurice.cascade.reactive
 com.futurice.cascade.reactive.ui
 com.futurice.cascade.rest
+com.futurice.cascade.util
