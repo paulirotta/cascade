@@ -1,5 +1,7 @@
 package com.futurice.cascade.reactive;
 
+import android.support.annotation.NonNull;
+
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import static com.futurice.cascade.Async.*;
@@ -17,7 +19,11 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
         super(threadType, name, initialValue);
     }
 
-    public ReactiveInteger(IThreadType threadType, String name, int initialValue, IOnErrorAction onError) {
+    public ReactiveInteger(
+            @NonNull final IThreadType threadType,
+            @NonNull final String name,
+            final int initialValue,
+            @NonNull final IOnErrorAction onError) {
         super(threadType, name, initialValue, onError);
     }
 
