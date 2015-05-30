@@ -1,5 +1,7 @@
+plugins {
+    id "me.tatarka.retrolambda" version "3.1.0"
+}
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     signingConfigs {
@@ -33,15 +35,6 @@ android {
         abortOnError false   // For RetroLambda, remove when possible
         disable 'TypographyFractions', 'TypographyQuotes'
     }
-
-//    android {
-//        packagingOptions {
-//            exclude 'META-INF/LICENSE.txt' // For PMD
-//            exclude 'META-INF/NOTICE.txt'  // For PMD
-//            exclude 'META-INF/services/net.sourceforge.pmd.cpd.Language' // For PMD
-//            exclude 'META-INF/services/net.sourceforge.pmd.lang.Language' // For PMD
-//        }
-//    }
 }
 
 retrolambda {
