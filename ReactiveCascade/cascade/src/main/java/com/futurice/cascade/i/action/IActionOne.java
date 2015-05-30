@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.action;
 
+import android.support.annotation.NonNull;
+
 /**
  * A lambda-friendly functional interface for continuation actions that receive one parameter.
  *
@@ -39,5 +41,5 @@ package com.futurice.cascade.i.action;
  * the current thread.
  */
 public interface IActionOne<IN> extends IBaseAction<IN> {
-    void call(IN value) throws Exception;
+    void call(@NonNull IN value) throws Exception;
 }

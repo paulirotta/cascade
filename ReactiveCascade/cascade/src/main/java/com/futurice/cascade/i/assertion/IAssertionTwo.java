@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.assertion;
 
+import android.support.annotation.NonNull;
+
 /**
  * A function accepting two arguments and returning <code>true</code> if all is normal and good.
  *
@@ -39,5 +41,5 @@ public interface IAssertionTwo<A, B> extends IBaseAssertion {
      * @return
      * @throws Exception
      */
-    boolean call(A a, B b) throws Exception;
+    boolean call(@NonNull A a, @NonNull B b) throws Exception;
 }

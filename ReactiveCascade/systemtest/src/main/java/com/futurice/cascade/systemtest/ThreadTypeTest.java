@@ -231,34 +231,39 @@ public class ThreadTypeTest {
             final AtomicReference<String> ar = new AtomicReference<>("not set");
             IAltFuture<Object, Object> secondCatch = threadType.then(() -> d(tag, "Second catch exec"));
             IAltFuture<Object, Object> thirdCatch = threadType.then(() -> d(tag, "Third catch exec"));
-            IAltFuture<?, Long> altFuture = new SettableAltFuture<>(threadType, Long.MAX_VALUE)
+            IAltFuture<?, Long> altFuture = new SettableAltFuture<>(threadType, Long.MAX_VALUE);
+            IAltFuture<String, String> altFuture2 = altFuture
                     .then(() -> {
                         ar.set("C: first call");
                         throw new Exception("C: Ba2");
-                    });
-
-            altFuture.onError(e -> {
-                ar.set("C: 1st onCatch");
-                assertThat("C: ba2").isEqualToIgnoringCase(e.getMessage());
-                return false;
-            })
-                    .then(() ->
-                            ar.set("C: Foo"))
+                    })
+                    .onError(e -> {
+                        ar.set("C: 1st onCatch");
+                        assertThat("C: ba2").isEqualToIgnoringCase(e.getMessage());
+                        return true;
+                    })
+                    .then(s -> {
+                        ar.set(s + "C: Foo");
+                        return "It was set to " + ar.get();
+                    })
                     .onError(e -> {
                         //This will never be called because the up-chain onError(e,l) has absorbed the value and cancelled this, so there is not value to pass
-                        ar.set("C: 2nd onCatch");
+                        ar.set(ar + " -> C: 2nd onCatch");
                         secondCatch.fork();
                         return false;
                     })
-                    .then(() ->
-                            ar.set("C: Bar"))
+                    .then(s -> {
+                        ar.set(s + "C: Bar");
+                    })
                     .onError(e -> {
                         thirdCatch.fork();
                         return false;
                     })
                     .fork();
             awaitDone(altFuture);
+            awaitDone(altFuture2);
             awaitDone(thirdCatch);
+            assertThat(!secondCatch.isDone());
             assertThat(ar.get()).isEqualToIgnoringCase("C: 1st onCatch");
             assertThat(altFuture.isDone()).isTrue();
             assertThat(altFuture.isCancelled()).isTrue();
@@ -279,11 +284,12 @@ public class ThreadTypeTest {
                         ar.set("D: first call");
                         throw new Exception("Ba2");
                     });
-            altFuture.onError(e -> {
-                ar.set("D: 1st onCatch");
-                assertThat("D: ba2").isEqualToIgnoringCase(e.getMessage());
-                return true;
-            })
+            altFuture
+                    .onError(e -> {
+                        ar.set("D: 1st onCatch");
+                        assertThat("D: ba2").isEqualToIgnoringCase(e.getMessage());
+                        return true;
+                    })
                     .then(() -> ar.set("D: Foo"))
                     .onError(e -> {
                         //This will never be called because the up-chain onError(e,l) has absorbed the value and cancelled this, so there is not value to pass
@@ -499,7 +505,7 @@ public class ThreadTypeTest {
         logMethodStart();
         AtomicBoolean done = new AtomicBoolean(false);
 
-        threadType.execute((IAction)() -> done.set(true));
+        threadType.execute((IAction) () -> done.set(true));
 
         long timeout = System.currentTimeMillis() + 10000;
         while (!done.get() && System.currentTimeMillis() < timeout) {
@@ -513,7 +519,7 @@ public class ThreadTypeTest {
         logMethodStart();
         AtomicBoolean done = new AtomicBoolean(false);
 
-        threadType.execute((IAction)() -> done.set(true));
+        threadType.execute((IAction) () -> done.set(true));
 
         long timeout = System.currentTimeMillis() + 10000;
         while (!done.get() && System.currentTimeMillis() < timeout) {

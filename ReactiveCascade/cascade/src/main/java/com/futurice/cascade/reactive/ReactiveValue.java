@@ -28,9 +28,8 @@ import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IAtomicValue;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -58,7 +57,7 @@ import static com.futurice.cascade.Async.*;
  * </p>
  */
 @NotCallOrigin
-public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAtomicValue<T> {
+public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue<T> {
     private final AtomicReference<T> valueAR = new AtomicReference<>();
 
     /**
@@ -68,7 +67,10 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
      * @param name
      * @param initialValue
      */
-    public ReactiveValue(@NonNull IThreadType threadType, @NonNull String name, @NonNull T initialValue) {
+    public ReactiveValue(
+            @NonNull final IThreadType threadType,
+            @NonNull final String name,
+            @NonNull final T initialValue) {
         this(threadType, name);
 
         set(initialValue);
@@ -82,7 +84,11 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
      * @param initialValue
      * @param onError
      */
-    public ReactiveValue(@NonNull IThreadType threadType, @NonNull String name, @NonNull T initialValue, @NonNull IOnErrorAction onError) {
+    public ReactiveValue(
+            @NonNull final IThreadType threadType,
+            @NonNull final String name,
+            @NonNull final T initialValue,
+            @NonNull final IOnErrorAction onError) {
         this(threadType, name, onError);
 
         set(initialValue);
@@ -118,7 +124,7 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
      * any reactive subscribers.
      * <p>
      * If you also wish to mutate the value and make the output of the validator function the value you
-     * will {@link #get()} from this ReactiveValue, then you should call {@link #set(Object)} in
+     * will {@link #get()} from this ReactiveValue, map you should call {@link #set(Object)} in
      * the validator function.
      *
      * @param threadType
@@ -126,8 +132,12 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
      * @param onError
      * @param validator
      */
-    public ReactiveValue(@NonNull IThreadType threadType, @NonNull String name, @NonNull IOnErrorAction onError, @NonNull IActionOneR<T, T> validator) {
-        super(threadType, name, onError, validator);
+    public ReactiveValue(
+            @NonNull final IThreadType threadType,
+            @NonNull final String name,
+            @NonNull final IOnErrorAction onError,
+            @NonNull final IActionOneR<T, T> validator) {
+        super(threadType, name, null, validator, onError);
     }
 
     /**
@@ -163,6 +173,7 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
     }
 
     @Override // IAtomicValue
+    @NonNull
     public T get() {
         return valueAR.get();
     }
@@ -194,24 +205,5 @@ public class ReactiveValue<T> extends AbstractSubscription<T, T> implements IAto
         }
 
         return success;
-    }
-
-//    @Override
-//    public void unsubscribeSource(String reason) {
-//        //TODO Should we keep the AtomicValue deactivated while its ThreadType is deactivated? Probably yes, no sneaking leaking.
-//        unsubscribeAll("AtomicValue told to unsubscribeSource. Clearing all current bindings, but new bindings will be allowed (no reactivation needed). reason=" + reason);
-//    }
-
-    //FIXME Remove this and use reactiveValue.subscribe(mappingFunction).subscribe(reactiveValue2)
-    public <R> ReactiveValue<R> map(@NonNull IActionOneR<T, R> f) {
-        final ReactiveValue<T> thisReactiveValue = this;
-        ReactiveValue<R> newReactiveValue = new ReactiveValue<R>(threadType, getName());
-        this.subscribe(new IAction() {
-            @Override
-            public void call() throws Exception {
-                newReactiveValue.set(f.call(thisReactiveValue.get()));
-            }
-        });
-        return newReactiveValue;
     }
 }

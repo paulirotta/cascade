@@ -30,9 +30,10 @@ import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ import java.util.List;
  * the bounding of concurrency split other resource contention to increase runtime performance.
  * <p>
  * One special case of bounded concurrency is {@link #isInOrderExecutor()} that can be guaranteed
- * only for a single-threaded or single-thread-at-a-time implementation. {@link com.futurice.cascade.UIExecutorService}
+ * only for a single-threaded or single-thread-at-a-time implementation. {@link UIExecutorService}
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
  * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>
@@ -71,7 +72,7 @@ public interface IThreadType extends INamed {
 
     /**
      * Execute a runnable. Generally this is an action that has already been error-catch wrapped using for example
-     * {@link #wrapRunnableAsErrorProtection(IAction)} or {@link #wrapRunnableAsErrorProtection(IAction, IOnErrorAction)}
+     * {@link #wrapRunnableAsErrorProtection(IAction)}
      *
      * @param runnable
      */
@@ -84,7 +85,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void execute(IAction<IN> action, IOnErrorAction<IN> onErrorAction);
+    <IN> void execute(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
      * If this ThreadType permits out-of-order execution, execute this onFireAction before any previously
@@ -130,7 +131,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void executeNext(IAction<IN> action, IOnErrorAction<IN> onErrorAction);
+    <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
      * Convert this action into a runnable
@@ -149,7 +150,7 @@ public interface IThreadType extends INamed {
      * @param <IN>
      * @return
      */
-    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction<IN> onErrorAction);
+    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
 
     /**
      * Complete the onFireAction asynchronously.
@@ -193,7 +194,7 @@ public interface IThreadType extends INamed {
      * Set the chain to a value not yet determined, but which may be determined in a non-blocking
      * manner either before or at the time this point in the chain executes.
      *
-     * @param value the value returned by a pre-determined function and then injected into the chain at this point
+     * @param value the value returned by a pre-determined function and map injected into the chain at this point
      * @param <IN>  the type of input argument expected by the action
      * @param <OUT> the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
@@ -230,7 +231,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>  the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
      */
-    <IN, OUT> IAltFuture<IN, OUT> then(IActionOneR<IN, OUT> action);
+    <IN, OUT> IAltFuture<IN, OUT> map(IActionOneR<IN, OUT> action);
 
     /**
      * Transform input A to output T using each of the several actions provided and return
@@ -241,7 +242,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(IActionOneR<IN, OUT>... actions);
+    <IN, OUT> List<IAltFuture<IN, OUT>> map(IActionOneR<IN, OUT>... actions);
 
     /**
      * Place this the {@link com.futurice.cascade.i.functional.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.functional.AltFuture}

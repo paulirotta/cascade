@@ -29,12 +29,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.AltWeakReference;
-import com.futurice.cascade.DefaultThreadType;
+import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.functional.AltFutureFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;

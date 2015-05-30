@@ -37,7 +37,11 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IActionTwo;
 import com.futurice.cascade.i.action.IBaseAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.rest.RESTService;
+import com.futurice.cascade.util.AbstractThreadType;
+import com.futurice.cascade.util.DefaultThreadType;
+import com.futurice.cascade.util.TypedThread;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -94,6 +98,7 @@ public final class Async {
     public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
 
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
+    private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No origin provided in production builds");
 
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
@@ -307,7 +312,7 @@ public final class Async {
      * @param currentCallOrigin Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message           a message to display in the error log
      * @param t                 the throwable which triggered this error
-     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link com.futurice.cascade.i.exception.IOnErrorAction}
+     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
     public static boolean ee(@NonNull Object tag, @NonNull ImmutableValue<String> currentCallOrigin, @NonNull String message, @NonNull Throwable t) {
         if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
@@ -329,7 +334,7 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the error log
      * @param t       the throwable which triggered this error
-     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link com.futurice.cascade.i.exception.IOnErrorAction}
+     * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
     public static boolean ee(@NonNull Object tag, @NonNull String message, @NonNull Throwable t) {
         if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
@@ -554,9 +559,10 @@ public final class Async {
      *
      * @return a string holder that will be populated in the background on a WORKER thread (only in {@link #DEBUG} builds)
      */
+    @NonNull
     public static ImmutableValue<String> originAsync() {
         if (!TRACE_ASYNC_ORIGIN) {
-            return null;
+            return DEFAULT_ORIGIN;
         }
 
         final StackTraceElement[] traceElementsArray = Thread.currentThread().getStackTrace();

@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.action;
 
+import android.support.annotation.NonNull;
+
 /**
  * AFile lambda-friendly functional interface for subscribe actions which receive two parameters
  *
@@ -31,5 +33,5 @@ package com.futurice.cascade.i.action;
  * @param <IN2>
  */
 public interface IActionTwo<IN1, IN2> extends IBaseAction<IN1> {
-    void call(IN1 in1, IN2 in2) throws Exception;
+    void call(@NonNull IN1 in1, @NonNull IN2 in2) throws Exception;
 }

@@ -26,6 +26,7 @@ package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.i.*;
 import com.futurice.cascade.i.action.*;
 import com.futurice.cascade.i.functional.*;
@@ -101,14 +102,16 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that receives one input and no return value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IAction<IN> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IAction<IN> action) {
         super(threadType);
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
             IN out = null;
             if (paf != null) {
-                assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+                Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
                 out = paf.get();
             }
             action.call();
@@ -122,14 +125,16 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that receives one input and no return value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionOne<IN> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOne<IN> action) {
         super(threadType);
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            assertTrue("The previous altFuture must be non-null", paf != null);
-            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+            Async.assertTrue("The previous altFuture must be non-null", paf != null);
+            Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             final IN in = paf.get();
             action.call(in);
@@ -144,7 +149,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a function that does not vary with the input value
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionR<IN, OUT> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionR<IN, OUT> action) {
         super(threadType);
 
         this.action = action;
@@ -157,14 +164,16 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool to execute this command on
      * @param action a mapping function
      */
-    public AltFuture(@NonNull IThreadType threadType, @NonNull IActionOneR<IN, OUT> action) {
+    public AltFuture(
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<IN, OUT> action) {
         super(threadType);
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            assertTrue("previous altFuture must be non-null", paf != null);
-            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+            Async.assertTrue("previous altFuture must be non-null", paf != null);
+            Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             return action.call(paf.get());
         };
@@ -184,7 +193,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
      */
-    public boolean cancel(String reason) {
+    public boolean cancel(@NonNull final String reason) {
         final Object state = stateAR.get();
 
         if (state instanceof AltFutureStateCancelled) {

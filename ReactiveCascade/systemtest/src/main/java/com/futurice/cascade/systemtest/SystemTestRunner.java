@@ -6,6 +6,7 @@ import android.util.Log;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.action.IAction;
+import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
 import com.futurice.cascade.reactive.ReactiveInteger;
@@ -58,7 +59,8 @@ public class SystemTestRunner {
     }
 
     private IAltFuture<?, String> addResult(@NonNull String result) {
-        final IAltFuture<?, String> altFuture = listAdapter.addAsync(result)
+        final IAltFuture<?, String> altFuture = listAdapter
+                .addAsync(result)
                 .fork();
 
         return altFuture;
@@ -68,7 +70,8 @@ public class SystemTestRunner {
         for (int i = result.length - 1;
              i >= 0;
              i--) {
-            listAdapter.insertAsync(result[i], 0)
+            listAdapter
+                    .insertAsync(result[i], 0)
                     .fork();
         }
     }
@@ -85,9 +88,7 @@ public class SystemTestRunner {
         finished.subscribe((IAction) progress::fire);
         failed.subscribe((IAction<Integer>) progress::fire);
 
-        progress.subscribe(() -> {
-            return finished.get() + "/" + total.get() + " Err:" + failed.get();
-        })
+        progress.subscribe(() -> finished.get() + "/" + total.get() + " Err:" + failed.get())
                 .subscribe(progressTarget);
 
         status.subscribe(statusTarget);
@@ -136,9 +137,7 @@ public class SystemTestRunner {
                         success &= startMethod(cl, method);
                     }
                     if (success) {
-                        altFuture.then(
-                                (String line) -> listAdapter.removeAsync(line)
-                        );
+                        altFuture.then((IActionOne<String>) line -> listAdapter.removeAsync(line));
                     } else {
                         addResult("-" + cl.getSimpleName());
                     }
@@ -148,9 +147,10 @@ public class SystemTestRunner {
                 ee(this, origin, "Class mapping error", e);
             } finally {
                 try {
-                    int fin = finished.get();
-                    int tot = total.get();
-                    int fail = failed.get();
+                    final int fin = finished.get();
+                    final int tot = total.get();
+                    final int fail = failed.get();
+
                     if (fail == 0) {
                         addFirstResults(new String[]{
                                 "",
@@ -206,7 +206,6 @@ public class SystemTestRunner {
         boolean success = false;
 
         try {
-            total.incrementAndGet();
             method.invoke(cl.newInstance());
             finished.incrementAndGet();
             success = true;

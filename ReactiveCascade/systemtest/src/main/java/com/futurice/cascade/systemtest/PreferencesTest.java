@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.*;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.reactive.*;
 import com.futurice.cascade.rest.PreferencesMirrorService;
 
@@ -27,11 +27,11 @@ public class PreferencesTest {
         reactiveValue.set("Init");
         testMirror.indexAsync()
                 .then((List<String> index) -> {
-                    IOnErrorAction<String> onError = e -> Async.e(TAG, "Can not assertTrue delete key", e);
+                    IOnErrorAction onError = e -> Async.e(TAG, "Can not assertTrue delete key", e);
                     for (String key : index) {
                         reactiveValue.set("Delete key " + key);
                         testMirror.deleteAsync(key)
-//TODO                                .onError(onError)
+                                .onError(onError)
                                 .fork();
                     }
 

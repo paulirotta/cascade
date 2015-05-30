@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
             countText = new ReactiveValue<>(WORKER, "countText");
 
             typedText.subscribe(chainedText);
-            typedText.subscribe(s -> "" + s.length())
+            typedText.subscribeMap(s -> "" + s.length())
                     .subscribe(countText);
             typedText.fire();
         }

@@ -84,9 +84,12 @@ public interface IReactiveTarget<IN> extends INamed {
     /**
      * Notification that an {@link com.futurice.cascade.i.reactive.IReactiveSource}  will start sending updates
      *
-     * Since this target is responsible for holding a reference to the source to keep it from
-     * being garbage collected, this is used by the target to keep a list of references to the sources
-     * up to date.
+     * This allows the target which is responsible for holding a strong reference to the source to
+     * prevent it from being garbage collected until all targets of a given source go out of scope and
+     * are themselves garbage collected.
+     *
+     * You may manually speed this process by calling {@link #unsubscribeSource(String, IReactiveSource)},
+     * however if you choose not to or forget to do so, it will be taken care of for you fairly soon.
      *
      * @param reactiveSource
      */

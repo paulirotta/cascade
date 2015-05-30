@@ -4,7 +4,7 @@ import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.exception.IOnErrorAction;
+import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.reactive.ReactiveValue;
 
 import java.util.concurrent.ConcurrentHashMap;
