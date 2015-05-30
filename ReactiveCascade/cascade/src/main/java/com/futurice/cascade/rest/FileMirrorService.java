@@ -26,6 +26,7 @@ package com.futurice.cascade.rest;
 import android.content.*;
 
 import com.futurice.cascade.i.*;
+import com.futurice.cascade.util.FileUtil;
 
 import java.io.File;
 import java.io.*;

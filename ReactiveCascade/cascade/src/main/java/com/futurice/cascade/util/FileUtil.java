@@ -21,11 +21,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.futurice.cascade.util;
 
-import android.content.*;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static com.futurice.cascade.Async.*;
 
@@ -33,15 +37,10 @@ public class FileUtil {
     private static final String TAG = FileUtil.class.getSimpleName();
     private static final int BUFFER_SIZE = 16384;
 
-    public static void writeFile(Context ctx, String fileName, byte[] bytes) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, " writeFile(applicationContext, filename, bytes) was passed a null filename");
-        }
-
-        if (bytes == null) {
-            throwIllegalArgumentException(TAG, "writeFile(applicationContext, filename, bytes) was passed a null byte[]");
-        }
-
+    public static void writeFile(
+            @NonNull final Context ctx,
+            @NonNull final String fileName,
+            @NonNull final byte[] bytes) {
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -60,11 +59,9 @@ public class FileUtil {
         }
     }
 
-    public static byte[] readFile(final Context context, final String fileName) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, "readFile(applicationContext, filename) was passed a null filename");
-        }
-
+    public static byte[] readFile(
+            @NonNull final Context context,
+            @NonNull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -90,16 +87,14 @@ public class FileUtil {
                     ee(TAG, "Can not close FILE input stream: " + fileName, e);
                 }
             }
-
-            return bos.toByteArray();
         }
+
+        return bos.toByteArray();
     }
 
-    public static boolean deleteFile(Context ctx, String fileName) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, " delete(applicationContext, filename) was passed a null filename");
-        }
-
+    public static boolean deleteFile(
+            @NonNull final Context ctx,
+            @NonNull final String fileName) {
         return ctx.deleteFile(fileName);
     }
 }

@@ -20,7 +20,7 @@ public class PreferencesTest {
 
     public PreferencesTest(Context context, ReactiveValue<String> reactiveValue) {
         this.reactiveValue = reactiveValue;
-        testMirror = new PreferencesMirrorService("TestMirror", context, Async.FileThreadType.fileReadThreadType, Async.FileThreadType.fileWriteThreadType);
+        testMirror = new PreferencesMirrorService("TestMirror", context, Async.FILE_READ, Async.FILE_WRITE);
     }
 
     public void test() throws Exception {

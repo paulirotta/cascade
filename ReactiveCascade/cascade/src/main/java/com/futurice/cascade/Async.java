@@ -144,8 +144,8 @@ public final class Async {
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NetThreadType.netReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NetThreadType.netWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            FileThreadType.fileReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            FileThreadType.fileWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            FILE_READ.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            FILE_WRITE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             new Thread(() -> {
                 try {
                     // Give the user time to see a popup split adb time to receive the error messages from this process before it dies
@@ -903,10 +903,8 @@ public final class Async {
         }
     }
 
-    public static final class FileThreadType {
-        public static final IThreadType fileReadThreadType = ASYNC_BUILDER.getFileReadThreadType();
-        public static final IThreadType fileWriteThreadType = ASYNC_BUILDER.getFileWriteThreadType();
-    }
+    public static final IThreadType FILE_READ = ASYNC_BUILDER.getFileReadThreadType();
+    public static final IThreadType FILE_WRITE = ASYNC_BUILDER.getFileWriteThreadType();
 
     public static final class NetThreadType {
         /**

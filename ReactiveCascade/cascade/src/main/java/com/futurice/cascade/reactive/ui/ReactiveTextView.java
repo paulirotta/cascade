@@ -2,7 +2,9 @@ package com.futurice.cascade.reactive.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -70,7 +72,7 @@ public class ReactiveTextView extends TextView implements INamed {
 //        return sb.toString();
 //    }
 
-    public ReactiveTextView(Context context) {
+    public ReactiveTextView(@NonNull final Context context) {
         super(context);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -79,7 +81,9 @@ public class ReactiveTextView extends TextView implements INamed {
         reactiveValue.set(getText().toString());
     }
 
-    public ReactiveTextView(Context context, AttributeSet attrs) {
+    public ReactiveTextView(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
 ///        if (INSTANCE_ORIGINS != null) {
@@ -88,7 +92,10 @@ public class ReactiveTextView extends TextView implements INamed {
         reactiveValue.set(getText().toString());
     }
 
-    public ReactiveTextView(Context context, AttributeSet attrs, int defStyle) {
+    public ReactiveTextView(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            @StyleRes final int defStyle) {
         super(context, attrs, defStyle);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -98,12 +105,17 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     @TargetApi(21)
-    public ReactiveTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ReactiveTextView(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            @AttrRes final int defStyleAttr,
+            @StyleRes final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         reactiveValue.set(getText().toString());
     }
 
+    @NonNull
     public String getName() {
         return "ReactiveEditText" + getId();
     }
@@ -191,7 +203,7 @@ public class ReactiveTextView extends TextView implements INamed {
      * @param reactiveValue the new view model
      * @param fire          push the current value of the view model to the screen after this action completes on the UI thread
      */
-    public void setReactiveValue(@NonNull ReactiveValue<String> reactiveValue, boolean fire) {
+    public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute((IAction)() -> {
@@ -207,6 +219,7 @@ public class ReactiveTextView extends TextView implements INamed {
         });
     }
 
+    @NonNull
     public ReactiveValue<String> getReactiveValue() {
         return this.reactiveValue;
     }
