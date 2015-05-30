@@ -23,8 +23,8 @@
  */
 package com.futurice.cascade.systemtest;
 
-import com.futurice.cascade.TypedThread;
-import com.futurice.cascade.DefaultThreadType;
+import com.futurice.cascade.util.TypedThread;
+import com.futurice.cascade.util.DefaultThreadType;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

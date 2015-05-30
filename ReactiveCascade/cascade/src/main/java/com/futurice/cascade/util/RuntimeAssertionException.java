@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade;
+package com.futurice.cascade.util;
 
 /**
  * This is a message indicating a functional chain or other assert statement has failed at

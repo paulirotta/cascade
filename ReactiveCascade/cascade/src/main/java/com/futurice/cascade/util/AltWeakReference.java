@@ -1,4 +1,4 @@
-package com.futurice.cascade;
+package com.futurice.cascade.util;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;

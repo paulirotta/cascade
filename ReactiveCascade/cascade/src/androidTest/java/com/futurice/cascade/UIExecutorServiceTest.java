@@ -27,6 +27,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.test.AndroidTestCase;
 
+import com.futurice.cascade.util.UIExecutorService;
+
 import java.util.concurrent.Callable;
 
 public class UIExecutorServiceTest extends AndroidTestCase {

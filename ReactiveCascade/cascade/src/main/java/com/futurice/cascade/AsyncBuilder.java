@@ -31,6 +31,9 @@ import android.util.*;
 import com.futurice.cascade.functional.*;
 import com.futurice.cascade.i.*;
 import com.futurice.cascade.rest.*;
+import com.futurice.cascade.util.DefaultThreadType;
+import com.futurice.cascade.util.TypedThread;
+import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
