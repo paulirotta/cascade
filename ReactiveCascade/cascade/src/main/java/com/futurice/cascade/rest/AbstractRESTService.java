@@ -27,7 +27,7 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.i.IKeyFactory;
+import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.functional.IAltFuture;
@@ -48,11 +48,12 @@ import static com.futurice.cascade.Async.*;
  * needed split should be done with caution. It may make your application no longer consistent for
  * fine-grained asynchronous operation or harm performance.
  */
-public abstract class RESTService<K, V> implements INamed {
+public abstract class AbstractRESTService<KEY, VALUE> implements INamed {
     //TODO Make an IRESTService and implement that, name this AbstractRESTService
     protected final IThreadType readIThreadType;
     protected final IThreadType writeIThreadType;
-    private final ConcurrentHashMap<K, V> readCache = new ConcurrentHashMap<K, V>();
+    //TODO Can this cache be pushed down to the underlying File or Net service? Some interface magic..
+    private final ConcurrentHashMap<KEY, VALUE> readCache = new ConcurrentHashMap<>();
     private final AtomicInteger postCount = new AtomicInteger(0); // How many POST operations are pending on the writeIThreadType
     protected final String name;
     protected final ImmutableValue<String> origin;
@@ -61,17 +62,17 @@ public abstract class RESTService<K, V> implements INamed {
      * Create a new REST service using the specified asynchronous implementation with an appropriate
      * default {@link com.futurice.cascade.i.IThreadType} for reading split writing. Typically the
      *
-     * @param readIThreadType  may be the same in writeIThreadType unless consistency is otherwise assured through
-     *                    measures such as thread-safe caching
-     * @param writeIThreadType is usually a single thread
+     * @param readThreadType  may be the same in writeThreadType unless consistency is otherwise assured through
+     *                         measures such as thread-safe caching
+     * @param writeThreadType is usually a single thread
      */
-    public RESTService(@NonNull final String name,
-                       @NonNull final IThreadType readIThreadType,
-                       @NonNull final IThreadType writeIThreadType) {
+    public AbstractRESTService(@NonNull final String name,
+                               @NonNull final IThreadType readThreadType,
+                               @NonNull final IThreadType writeThreadType) {
         this.origin = originAsync();
         this.name = name;
-        this.readIThreadType = readIThreadType;
-        this.writeIThreadType = writeIThreadType;
+        this.readIThreadType = readThreadType;
+        this.writeIThreadType = writeThreadType;
     }
 
     /**
@@ -80,47 +81,47 @@ public abstract class RESTService<K, V> implements INamed {
      * @param key
      */
     @NonNull
-    public IAltFuture<?, V> getAsync(@NonNull final K key) {
+    public IAltFuture<?, VALUE> getAsync(@NonNull final KEY key) {
         vv(origin, "getAsync(" + key + ")");
 
         return readIThreadType.then(() -> {
-            V v = readCache.get(key);
+            VALUE VALUE = readCache.get(key);
 
-            if (v != null) {
+            if (VALUE != null) {
                 dd(origin, "Cache hit: " + key);
             } else {
                 dd(origin, "Cache miss: " + key);
-                v = get(key);
+                VALUE = get(key);
             }
 
-            return v;
+            return VALUE;
         });
     }
 
     /**
      * Get getValue in the near future
      *
-     * @param iKeyFactory
+     * @param gettable
      */
     @NonNull
-    public IAltFuture<?, Pair<K, V>> getAsync(@NonNull final IKeyFactory<K> iKeyFactory) {
-        vv(origin, "getAsync(" + iKeyFactory + ")");
+    public IAltFuture<?, Pair<KEY, VALUE>> getAsync(@NonNull final IGettable<KEY> gettable) {
+        vv(origin, "getAsync(" + gettable + ")");
 
         // Must read only after any pending POST operations, otherwise cached getValue are valid
         final IThreadType iThreadType = postCount.get() > 0 ? writeIThreadType : readIThreadType;
 
         return iThreadType.then(() -> {
-            final K key = iKeyFactory.getKey();
-            V v = readCache.get(key);
+            final KEY key = gettable.get();
+            VALUE value = readCache.get(key);
 
-            if (v != null) {
+            if (value != null) {
                 dd(origin, "Cache hit: " + key);
             } else {
                 dd(origin, "Cache miss: " + key);
-                v = get(key);
+                value = get(key);
             }
 
-            return new Pair<K, V>(key, v);
+            return new Pair<>(key, value);
         });
     }
 
@@ -131,13 +132,15 @@ public abstract class RESTService<K, V> implements INamed {
      * @param value
      */
     @NonNull
-    public IAltFuture<V, V> putAsync(@NonNull final K key, V value) {
+    public IAltFuture<VALUE, VALUE> putAsync(
+            @NonNull final KEY key,
+            @NonNull final VALUE value) {
         vv(origin, "putAsync(" + key + ", getValue=" + value + ")");
         readCache.put(key, value);
 
         return writeIThreadType.then(() -> {
-            V v = readCache.remove(key);
-            if (v != null) {
+            VALUE v = readCache.remove(key);
+            if (value != null) {
                 dd(origin, "Put: " + key);
                 put(key, readCache.remove(key));
             } else {
@@ -160,8 +163,9 @@ public abstract class RESTService<K, V> implements INamed {
      * @param value
      */
     @NonNull
-    public IAltFuture<V, V> postAsync(@NonNull final K key,
-                                      @NonNull final V value) {
+    public IAltFuture<VALUE, VALUE> postAsync(
+            @NonNull final KEY key,
+            @NonNull final VALUE value) {
         vv(origin, "postAsync(" + key + ", getValue=" + value + ")");
         postCount.incrementAndGet();
         readCache.clear();
@@ -180,7 +184,7 @@ public abstract class RESTService<K, V> implements INamed {
      * @param key
      */
     @NonNull
-    public IAltFuture<?, K> deleteAsync(@NonNull final K key) {
+    public IAltFuture<?, KEY> deleteAsync(@NonNull final KEY key) {
         vv(origin, "deleteAsync(" + key + ")");
         return writeIThreadType.then(() -> {
             readCache.remove(key);
@@ -189,11 +193,11 @@ public abstract class RESTService<K, V> implements INamed {
         });
     }
 
-    public abstract V get(K key) throws IOException;
+    public abstract VALUE get(KEY key) throws IOException;
 
-    public abstract void put(K key, V value) throws Exception;
+    public abstract void put(KEY key, VALUE value) throws Exception;
 
-    public abstract boolean delete(K key) throws Exception;
+    public abstract boolean delete(KEY key) throws Exception;
 
     /**
      * Note that in the strict definition of POST services there can be any undefined stateful
@@ -207,7 +211,7 @@ public abstract class RESTService<K, V> implements INamed {
      * @param value
      * @throws IOException
      */
-    public abstract void post(K key, V value) throws Exception;
+    public abstract void post(KEY key, VALUE value) throws Exception;
 
     @Override // INamed
     @NonNull

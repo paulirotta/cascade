@@ -23,6 +23,10 @@
  */
 package com.futurice.cascade.i.reactive;
 
+import android.support.annotation.NonNull;
+
+import com.futurice.cascade.i.IGettable;
+
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.
  * <p>
@@ -31,7 +35,7 @@ package com.futurice.cascade.i.reactive;
  *
  * @param <T>
  */
-public interface IAtomicValue<T> {
+public interface IAtomicValue<T> extends IGettable<T> {
     /**
      * Get the current valueAR.
      * <p>
@@ -43,6 +47,8 @@ public interface IAtomicValue<T> {
      *
      * @return
      */
+    @Override // IGettable
+    @NonNull
     T get();
 
     /**
@@ -57,7 +63,7 @@ public interface IAtomicValue<T> {
      * @param value the new value asserted
      * @return <code>true</code> if this is a change from the previous value
      */
-    boolean set(T value);
+    boolean set(@NonNull T value);
 
     /**
      * Replace the current valueAR with an update, but only if the valueAR is the expected valueAR.
@@ -71,5 +77,5 @@ public interface IAtomicValue<T> {
      * @return true of the expected value was the current value and the change of state completed
      * successfully
      */
-    boolean compareAndSet(T expected, T update);
+    boolean compareAndSet(@NonNull T expected, @NonNull T update);
 }

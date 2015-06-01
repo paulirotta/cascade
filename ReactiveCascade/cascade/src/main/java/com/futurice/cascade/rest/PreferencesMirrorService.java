@@ -49,7 +49,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
 
     /**
      * Create a new <code>FileService</code> with the specified default writeMode which will be used
-     * by all {@link RESTService} operations
+     * by all {@link AbstractRESTService} operations
      *
      */
     public PreferencesMirrorService(
@@ -138,7 +138,7 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
 
     @Override
     public boolean delete(@NonNull final String key) throws Exception {
-        dd(TAG, "Start preference delete: " + key);
+        dd(TAG, "Start preference remove: " + key);
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.remove(key);

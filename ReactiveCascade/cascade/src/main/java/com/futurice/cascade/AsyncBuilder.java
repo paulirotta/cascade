@@ -94,7 +94,7 @@ public class AsyncBuilder {
     private ExecutorService fileWriteExecutorService;
     private ExecutorService netReadExecutorService;
     private ExecutorService netWriteExecutorService;
-    private RESTService netRESTService;
+    private AbstractRESTService netAbstractRESTService;
 
     public static boolean isInitialized() {
         return asyncBuilder != null;
@@ -484,19 +484,19 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    public RESTService getNetRESTService() {
-        if (netRESTService == null) {
-            setNetRESTService(new NetRESTService("Default NetRESTService", applicationContext,
+    public AbstractRESTService getNetAbstractRESTService() {
+        if (netAbstractRESTService == null) {
+            setNetAbstractRESTService(new NetRESTService("Default NetRESTService", applicationContext,
                     getNetReadThreadType(), getNetWriteThreadType()));
         }
 
-        return netRESTService;
+        return netAbstractRESTService;
     }
 
     @NonNull
-    public AsyncBuilder setNetRESTService(@NonNull final NetRESTService netRESTService) {
-        Log.d(TAG, "setNetRESTService(" + netRESTService + ")");
-        this.netRESTService = netRESTService;
+    public AsyncBuilder setNetAbstractRESTService(@NonNull final NetRESTService netAbstractRESTService) {
+        Log.d(TAG, "setNetRESTService(" + netAbstractRESTService + ")");
+        this.netAbstractRESTService = netAbstractRESTService;
         return this;
     }
 

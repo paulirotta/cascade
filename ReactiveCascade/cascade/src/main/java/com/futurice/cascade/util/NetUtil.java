@@ -182,7 +182,7 @@ public final class NetUtil {
     public Response delete(
             @NonNull final String url,
             @Nullable final Collection<Header> headers) throws IOException {
-        dd(origin, "delete " + url);
+        dd(origin, "remove " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();

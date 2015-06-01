@@ -46,7 +46,7 @@ import static com.futurice.cascade.Async.*;
  * this split with more information about the applicationContext of the changes useful to reconciliation may be
  * created in an overriding class.
  */
-public abstract class MirrorService<K, V> extends RESTService<K, V> {
+public abstract class MirrorService<K, V> extends AbstractRESTService<K, V> {
     //    private static final String TAG = MirrorService.class.getSimpleName();
     //FIXME downstream mirror services should de-link when the got out of scope. Use AltWeakReference here
     private final CopyOnWriteArraySet<MirrorService<K, V>> downstreamMirrorServices = new CopyOnWriteArraySet<>();
@@ -164,8 +164,8 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
     }
 
     /**
-     * All MirrorService implementations must call <code>super.delete()</code> to notify downstream
-     * MirrorServices as soon as they either complete their <code>delete()</code> onFireAction
+     * All MirrorService implementations must call <code>super.remove()</code> to notify downstream
+     * MirrorServices as soon as they either complete their <code>remove()</code> onFireAction
      * or know that it will be completed without error.
      *
      * @param key
@@ -198,8 +198,8 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
     }
 
     /**
-     * All MirrorService implementations must call <code>super.delete()</code> to notify downstream
-     * MirrorServices as soon as they either complete their <code>delete()</code> onFireAction
+     * All MirrorService implementations must call <code>super.remove()</code> to notify downstream
+     * MirrorServices as soon as they either complete their <code>remove()</code> onFireAction
      * or know that it will be completed without error
      *
      * @param key
@@ -290,7 +290,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
         for (K key : index) {
             mirrorAltFutures.add(readIThreadType.then(() -> {
                 V value = get(key);
-                //TODO Mirror should have a new delete(expectedValue) atomic method instead of the following
+                //TODO Mirror should have a new remove(expectedValue) atomic method instead of the following
                 downstreamMirrorService.replace(key, get(key), null); // Replace only empty values downstream
                 return value;
             })

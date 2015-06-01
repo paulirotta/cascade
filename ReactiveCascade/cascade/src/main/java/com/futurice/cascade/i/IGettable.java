@@ -24,13 +24,15 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
+import com.futurice.cascade.rest.PrioritizedGettable;
+
 /**
  * Create the actual URL at the last minute, just before the request is processed.
  * <p>
  * This may be useful for load balancing between servers or late-prioritizing parameters
  * based on current conditions. For example use this in association with a Collection to
  * prioritize if/which-next at that moment based on current user interface state. See
- * {@link com.futurice.cascade.rest.PrioritizedKeyFactory} as an example default implementation.
+ * {@link PrioritizedGettable} as an example default implementation.
  * <p>
  * Your implementation must be thread safe since multiple WORKER threads may attempt to start
  * network connections simultaneously. The simplest way to do this is mark the method synchronized
@@ -38,14 +40,14 @@ package com.futurice.cascade.i;
  * Return <code>null</code> if no URL should be loaded at this time. Depending on your use case
  * this may signal the end of a collection of URLs to be downloaded.
  *
- * @param <A>
+ * @param <T>
  */
-public interface IKeyFactory<A> {
+public interface IGettable<T> {
     /**
      * Get the next key which is highest priority to act on at this moment. How you prioritize keys
      * for a smooth user experience is application-dependent, but may be more complex than FIFO.
      *
      * @return
      */
-    public A getKey();
+    public T get();
 }

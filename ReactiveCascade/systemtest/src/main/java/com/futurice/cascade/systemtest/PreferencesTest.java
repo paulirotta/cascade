@@ -28,7 +28,7 @@ public class PreferencesTest {
         reactiveValue.set("Init");
         testMirror.indexAsync()
                 .then((List<String> index) -> {
-                    IOnErrorAction onError = e -> Async.e(TAG, "Can not assertTrue delete key", e);
+                    IOnErrorAction onError = e -> Async.e(TAG, "Can not assertTrue remove key", e);
                     for (String key : index) {
                         reactiveValue.set("Delete key " + key);
                         testMirror.deleteAsync(key)

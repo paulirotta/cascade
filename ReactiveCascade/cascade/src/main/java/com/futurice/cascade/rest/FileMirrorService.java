@@ -55,7 +55,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
 
     /**
      * Create a new <code>FileService</code> with the specified default writeMode which will be used
-     * by all {@link RESTService} operations
+     * by all {@link AbstractRESTService} operations
      *
      * @param dir             a relative or full directory name, not ending with "/", accessible with the writeMode
      * @param deleteOnExit
@@ -153,7 +153,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
     public boolean delete(String key) throws Exception {
         synchronized (mutex) {
             key = applyPath(key);
-            vv(this, "Start FILE delete: " + key);
+            vv(this, "Start FILE remove: " + key);
             boolean result = fileUtil.deleteFile(key);
             if (result == true) {
                 super.delete(key);

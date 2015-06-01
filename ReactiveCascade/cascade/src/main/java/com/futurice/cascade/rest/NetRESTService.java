@@ -26,7 +26,6 @@ package com.futurice.cascade.rest;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.NetUtil;
 import com.squareup.okhttp.MediaType;
@@ -49,7 +48,7 @@ import static com.futurice.cascade.Async.*;
  * TODO Measure the achieved bandwidth split total latency for each network connection type
  * TODO Register to be notified when network connection changes
  */
-public class NetRESTService extends RESTService<String, byte[]> {
+public class NetRESTService extends AbstractRESTService<String, byte[]> {
     private final NetUtil netUtil;
 
     public NetRESTService(
@@ -100,11 +99,11 @@ public class NetRESTService extends RESTService<String, byte[]> {
 
     @Override
     public boolean delete(@NonNull final String url) throws IOException {
-        vv(origin, "NetRESTService delete: " + url);
+        vv(origin, "NetRESTService remove: " + url);
         final Response response = netUtil.delete(url);
 
         if (!response.isSuccessful()) {
-            final String s = "Bad response to NetRESTService delete(" + url + "): " + response;
+            final String s = "Bad response to NetRESTService remove(" + url + "): " + response;
             ii(origin, s);
             throw new IOException(s);
         }

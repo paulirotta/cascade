@@ -172,7 +172,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
         fire(valueAR.get());
     }
 
-    @Override // IAtomicValue
+    @Override // IAtomicValue, IGettable
     @NonNull
     public T get() {
         return valueAR.get();
