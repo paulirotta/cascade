@@ -23,48 +23,107 @@
  */
 package com.futurice.cascade.rest;
 
-import android.content.*;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import java.io.*;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.functional.IAltFuture;
 
-import static com.futurice.cascade.Async.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-public class FileUtil {
-    private static final String TAG = FileUtil.class.getSimpleName();
+import static com.futurice.cascade.Async.FILE;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.throwRuntimeException;
+
+public final class FileUtil {
     private static final int BUFFER_SIZE = 16384;
+    private final Context context;
+    private final int mode;
+    private final ImmutableValue<String> origin;
 
-    public static void writeFile(Context ctx, String fileName, byte[] bytes) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, " writeFile(applicationContext, filename, bytes) was passed a null filename");
-        }
+    public FileUtil(
+            @NonNull final Context context,
+            final int mode) {
+        this.context = context;
+        this.mode = mode;
+        origin = originAsync();
+    }
 
-        if (bytes == null) {
-            throwIllegalArgumentException(TAG, "writeFile(applicationContext, filename, bytes) was passed a null byte[]");
-        }
+    @NonNull
+    public IAltFuture<?, byte[]> writeFileAsync(
+            @NonNull final String fileName,
+            @NonNull final byte[] bytes) {
+        return FILE.then(() -> {
+            writeFile(fileName, bytes);
+            return bytes;
+        });
+    }
 
+    @NonNull
+    public IAltFuture<String, byte[]> writeFileAsync(
+            @NonNull final byte[] bytes) {
+        return FILE.map(fileName -> {
+            writeFile(fileName, bytes);
+            return bytes;
+        });
+    }
+
+    @NonNull
+    public IAltFuture<byte[], byte[]> writeFileAsync(
+            @NonNull final String fileName) {
+        return FILE.map(bytes -> {
+            writeFile(fileName, bytes);
+            return bytes;
+        });
+    }
+
+    public void writeFile(
+            @NonNull final String fileName,
+            @NonNull final byte[] bytes) {
         FileOutputStream fileOutputStream = null;
 
         try {
-            fileOutputStream = ctx.openFileOutput(fileName, Context.MODE_PRIVATE);
+            fileOutputStream = context.openFileOutput(fileName, mode);
             fileOutputStream.write(bytes);
-        } catch (Exception e) {
-            throwRuntimeException(TAG, "Can not write FILE: " + fileName, e);
+        } catch (FileNotFoundException e) {
+            final String s = "Can not locate FILE: " + fileName;
+            dd(origin, s);
+            throwRuntimeException(origin, s, e);
+        } catch (IOException e) {
+            final String s = "Can not write FILE: " + fileName;
+            dd(origin, s);
+            throwRuntimeException(origin, s, e);
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    ee(TAG, "Can not close FILE output stream", e);
+                    ee(origin, "Can not close FILE output stream", e);
                 }
             }
         }
     }
 
-    public static byte[] readFile(final Context context, final String fileName) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, "readFile(applicationContext, filename) was passed a null filename");
-        }
+    @NonNull
+    public IAltFuture<String, byte[]> readFileAsync() {
+        return FILE.map(this::readFile);
+    }
 
+    @NonNull
+    public IAltFuture<?, byte[]> readFileAsync(@NonNull final String fileName) {
+        return FILE.then(() -> {
+            return readFile(fileName);
+        });
+    }
+
+    @NonNull
+    public byte[] readFile(@NonNull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -73,33 +132,47 @@ public class FileUtil {
 
             final byte[] buffer = new byte[BUFFER_SIZE];
             int count;
-            while (true) {
+            for (; ; ) {
                 count = fileInputStream.read(buffer, 0, buffer.length);
                 if (count < 0) {
                     break;
                 }
                 bos.write(buffer, 0, count);
             }
-        } catch (Exception e) {
-            throwRuntimeException(TAG, "Can not read FILE", e);
+        } catch (FileNotFoundException e) {
+            final String s = "Can not locate FILE: " + fileName;
+            dd(origin, s);
+            throwRuntimeException(origin, s, e);
+        } catch (IOException e) {
+            final String s = "Can not read FILE: " + fileName;
+            dd(origin, s);
+            throwRuntimeException(origin, s, e);
         } finally {
             if (fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    ee(TAG, "Can not close FILE input stream: " + fileName, e);
+                    ee(origin, "Can not close FILE input stream: " + fileName, e);
                 }
             }
-
-            return bos.toByteArray();
         }
+
+        return bos.toByteArray();
     }
 
-    public static boolean deleteFile(Context ctx, String fileName) {
-        if (fileName == null) {
-            throwIllegalArgumentException(TAG, " delete(applicationContext, filename) was passed a null filename");
-        }
+    public boolean deleteFile(@NonNull final String fileName) {
+        return context.deleteFile(fileName);
+    }
 
-        return ctx.deleteFile(fileName);
+    @NonNull
+    public IAltFuture<?, Boolean> deleteFileAsync(@NonNull final String fileName) {
+        return FILE.then(() -> {
+            return deleteFile(fileName);
+        });
+    }
+
+    @NonNull
+    public IAltFuture<String, Boolean> deleteFileAsync() {
+        return FILE.map(this::deleteFile);
     }
 }

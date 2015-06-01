@@ -23,6 +23,7 @@
  */
 package com.futurice.cascade.rest;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.futurice.cascade.Async;
@@ -43,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * needed split should be done with caution. It may make your application no longer consistent for
  * fine-grained asynchronous operation or harm performance.
  */
-public abstract class RESTService<K, V> {
+public abstract class RESTService<K, V> implements INamed {
     private static final String TAG = RESTService.class.getSimpleName();
     protected final IThreadType readIThreadType;
     protected final IThreadType writeIThreadType;
@@ -59,7 +60,9 @@ public abstract class RESTService<K, V> {
      *                    measures such as thread-safe caching
      * @param writeIThreadType is usually a single thread
      */
-    public RESTService(String name, IThreadType readIThreadType, IThreadType writeIThreadType) {
+    public RESTService(@NonNull final String name,
+                       @NonNull final IThreadType readIThreadType,
+                       @NonNull final IThreadType writeIThreadType) {
         this.name = name;
         this.readIThreadType = readIThreadType;
         this.writeIThreadType = writeIThreadType;
@@ -70,7 +73,8 @@ public abstract class RESTService<K, V> {
      *
      * @param key
      */
-    public IAltFuture<?, V> getAsync(final K key) {
+    @NonNull
+    public IAltFuture<?, V> getAsync(@NonNull final K key) {
         Async.v(TAG, "getAsync(" + key + ")");
         return readIThreadType.then(() -> {
             V v = readCache.get(key);
@@ -89,7 +93,8 @@ public abstract class RESTService<K, V> {
      *
      * @param iKeyFactory
      */
-    public IAltFuture<?, Pair<K, V>> getAsync(IKeyFactory<K> iKeyFactory) {
+    @NonNull
+    public IAltFuture<?, Pair<K, V>> getAsync(@NonNull final IKeyFactory<K> iKeyFactory) {
         Async.v(TAG, "getAsync(" + iKeyFactory + ")");
 
         // Must read only after any pending POST operations, otherwise cached getValue are valid
@@ -113,7 +118,8 @@ public abstract class RESTService<K, V> {
      * @param key
      * @param value
      */
-    public IAltFuture<V, V> putAsync(final K key, V value) {
+    @NonNull
+    public IAltFuture<V, V> putAsync(@NonNull final K key, V value) {
         Async.v(TAG, "putAsync(" + key + ", getValue=" + value + ")");
         readCache.put(key, value);
 
@@ -141,7 +147,9 @@ public abstract class RESTService<K, V> {
      * @param key
      * @param value
      */
-    public IAltFuture<V, V> postAsync(final K key, V value) {
+    @NonNull
+    public IAltFuture<V, V> postAsync(@NonNull final K key,
+                                      @NonNull final V value) {
         Async.v(TAG, "postAsync(" + key + ", getValue=" + value + ")");
         postCount.incrementAndGet();
         readCache.clear();
@@ -159,7 +167,8 @@ public abstract class RESTService<K, V> {
      *
      * @param key
      */
-    public IAltFuture<?, K> deleteAsync(final K key) {
+    @NonNull
+    public IAltFuture<?, K> deleteAsync(@NonNull final K key) {
         Async.v(TAG, "deleteAsync(" + key + ")");
         return writeIThreadType.then(() -> {
             readCache.remove(key);
@@ -187,4 +196,10 @@ public abstract class RESTService<K, V> {
      * @throws IOException
      */
     public abstract void post(K key, V value) throws Exception;
+
+    @Override // INamed
+    @NonNull
+    public String getName() {
+        return this.name;
+    }
 }
