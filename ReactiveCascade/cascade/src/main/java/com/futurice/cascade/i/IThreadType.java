@@ -25,9 +25,10 @@ THE SOFTWARE.
 package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.action.IAction;
+import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
@@ -149,19 +150,31 @@ public interface IThreadType extends INamed {
      * @param <IN>
      * @return
      */
-    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
+    <IN> Runnable wrapRunnableAsErrorProtection(
+            @NonNull IAction<IN> action,
+            @NonNull IOnErrorAction onErrorAction);
 
     /**
-     * Complete the onFireAction asynchronously.
+     * Complete the action asynchronously.
      * <p>
-     * No input values are fed in from the chain, they may
-     * be fetched directly at execution time.
+     * No input values are fed in from the chain.
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
      * @return a chainable handle to track completion of this unit of work
      */
-    <IN> IAltFuture<IN, IN> then(IAction<IN> action);
+    <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action);
+
+    /**
+     * Complete the action asynchronously.
+     * <p>
+     * One input value is fed in from the chain and thus determined at execution time.
+     *
+     * @param action
+     * @param <IN>
+     * @return
+     */
+    <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action);
 
     /**
      * Complete several actions asynchronously.
@@ -173,7 +186,7 @@ public interface IThreadType extends INamed {
      * @param <IN>    the type of input argument expected by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
-    <IN> List<IAltFuture<IN, IN>> then(IAction<IN>... actions);
+    <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions);
 
     /**
      * Set the chain value to a value which can be determined at the time the chain is built.
@@ -183,23 +196,19 @@ public interface IThreadType extends INamed {
      *
      * @param value the pre-determined value to be injected into the chain at this point
      * @param <IN>  the type of input argument expected by the action
-     * @param <OUT> the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
-     * @throws Exception
      */
-    <IN, OUT> IAltFuture<IN, OUT> then(OUT value) throws Exception;
+    <IN> IAltFuture<?, IN> from(@NonNull IN value);
 
     /**
      * Set the chain to a value not yet determined, but which may be determined in a non-blocking
      * manner either before or at the time this point in the chain executes.
      *
      * @param value the value returned by a pre-determined function and map injected into the chain at this point
-     * @param <IN>  the type of input argument expected by the action
      * @param <OUT> the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
-     * @throws Exception
      */
-    <IN, OUT> IAltFuture<IN, OUT> then(ImmutableValue<OUT> value) throws Exception;
+//    <?, OUT> IAltFuture<?, OUT> from(@NonNull ImmutableValue<OUT> value);
 
     /**
      * Complete the onFireAction asynchronously
@@ -209,7 +218,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>  the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
      */
-    <IN, OUT> IAltFuture<IN, OUT> then(IActionR<IN, OUT> action);
+    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action);
 
     /**
      * Perform several actions which need no input value (except perhaps values from closure escape),
@@ -220,7 +229,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(IActionR<IN, OUT>... actions);
+    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions);
 
     /**
      * Transform input A to output T, possibly with other input which may be fetched directly in the function.
@@ -230,7 +239,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>  the type of output returned by the action
      * @return a chainable handle to track completion of this unit of work
      */
-    <IN, OUT> IAltFuture<IN, OUT> map(IActionOneR<IN, OUT> action);
+    <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action);
 
     /**
      * Transform input A to output T using each of the several actions provided and return
@@ -241,7 +250,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
-    <IN, OUT> List<IAltFuture<IN, OUT>> map(IActionOneR<IN, OUT>... actions);
+    <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
     /**
      * Place this the {@link com.futurice.cascade.i.functional.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.functional.AltFuture}
@@ -267,5 +276,9 @@ public interface IThreadType extends INamed {
      * @param <IN>                                                    the type of input argument expected by the action
      * @return a list of work which failed to complete before shutdown
      */
-    <IN> List<Runnable> shutdownNow(String reason, IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis);
+    <IN> List<Runnable> shutdownNow(
+            @NonNull String reason,
+            @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+            @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
+            long timeoutMillis);
 }

@@ -27,6 +27,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.io.ByteArrayOutputStream;
@@ -56,12 +57,11 @@ public final class FileUtil {
     }
 
     @NonNull
-    public IAltFuture<?, byte[]> writeFileAsync(
+    public <IN> IAltFuture<IN, IN> writeFileAsync(
             @NonNull final String fileName,
             @NonNull final byte[] bytes) {
         return FILE.then(() -> {
             writeFile(fileName, bytes);
-            return bytes;
         });
     }
 
@@ -77,9 +77,8 @@ public final class FileUtil {
     @NonNull
     public IAltFuture<byte[], byte[]> writeFileAsync(
             @NonNull final String fileName) {
-        return FILE.map(bytes -> {
+        return FILE.then(bytes -> {
             writeFile(fileName, bytes);
-            return bytes;
         });
     }
 

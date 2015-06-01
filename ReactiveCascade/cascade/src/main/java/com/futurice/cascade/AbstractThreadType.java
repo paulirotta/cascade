@@ -30,10 +30,10 @@ import android.util.Log;
 
 import com.futurice.cascade.functional.AltFuture;
 import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IAction;
+import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
@@ -49,7 +49,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.assertTrue;
+import static com.futurice.cascade.Async.e;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.i;
+import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * The baseline implementation of ThreadType convenience classes. It provides functional interfaces
@@ -169,18 +175,25 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override // IThreadType
     @NonNull
-    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final OUT value) throws Exception {
-        vv(this, origin, "map(" + value + ")");
-        return new SettableAltFuture<>(this, value);
+    public <IN> IAltFuture<IN, IN> then(@NonNull final IActionOne<IN> action) {
+        vv(this, origin, "map()");
+        return new AltFuture<>(this, action);
     }
 
-    @Override // IThreadType
-    @NonNull
-    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final ImmutableValue<OUT> immutableValue) throws Exception {
-        final OUT value = immutableValue.get();
-        vv(this, origin, "map('" + immutableValue.getName() + "'=" + value + ")");
-        return new SettableAltFuture<>(this, value);
-    }
+//    @Override // IThreadType
+//    @NonNull
+//    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final OUT value) throws Exception {
+//        vv(this, origin, "map(" + value + ")");
+//        return new SettableAltFuture<>(this, value);
+//    }
+
+//    @Override // IThreadType
+//    @NonNull
+//    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final ImmutableValue<OUT> immutableValue) throws Exception {
+//        final OUT value = immutableValue.get();
+//        vv(this, origin, "map('" + immutableValue.getName() + "'=" + value + ")");
+//        return new SettableAltFuture<>(this, value);
+//    }
 
     @Override // IThreadType
     @NonNull
@@ -197,6 +210,13 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     //======================= .subscribe() List Operations =========================================
+
+    @Override // IThreadType
+    @NonNull
+    public <IN> IAltFuture<?, IN> from(@NonNull final IN value) {
+        return then(() -> value);
+    }
+
     @Override // IThreadType
     @NonNull
     public final <IN> List<IAltFuture<IN, IN>> then(@NonNull final IAction<IN>... actions) {
