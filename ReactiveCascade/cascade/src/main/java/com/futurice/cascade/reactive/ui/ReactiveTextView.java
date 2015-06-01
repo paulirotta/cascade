@@ -120,63 +120,6 @@ public class ReactiveTextView extends TextView implements INamed {
         return "ReactiveEditText" + getId();
     }
 
-    //    @Override // IReactiveTarget
-//    @NotCallOrigin
-//    public void fire(String s, IThreadType currentThreadType, IReactiveSource<String> reactiveSource) {
-//        try {
-//            dd(this, origin, "ReactiveTextView updated, text=" + s);
-//            if (currentThreadType == UI) {
-//                setText(s);
-//            } else {
-//                UI.execute(
-//                        () -> setText(s));
-//            }
-//        } catch (Throwable t) {
-//            final String str = "Can not receiveFire " + s + " from " + reactiveSource;
-//            ee(this, str, t);
-//            unsubscribeSource(str, reactiveSource);
-//        }
-//    }
-//
-//    @Override // IReactiveTarget
-//    @NotCallOrigin
-//    public void subscribeSource(String reason, IReactiveSource<String> reactiveSource) {
-//        assertNotNull("reactiveSource must be non-null", reactiveSource);
-//
-//        dd(this, origin, "Subscribing ReactiveTextView, reason=" + reason + " reactiveSource=" + reactiveSource.getName());
-//        if (reactiveSources.addIfAbsent(reactiveSource)) {
-//            vv(this, origin, reactiveSource.getName() + " subscribed to this: reason=" + reason);
-//        } else {
-//            dd(this, origin, reactiveSource.getName() + " subscribed to this: reason=" + reason + ", but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"  Are you _SURE_ you want to change value based on two different data sources?");
-//        }
-//    }
-//
-//    @Override // IReactiveTarget
-//    @NotCallOrigin
-//    public void unsubscribeSource(String reason, IReactiveSource<String> reactiveSource) {
-//        if (reactiveSource == null) {
-//            dd(this, origin, "Ignoring unsubscribing null ReactiveTextView: " + reason);
-//            return;
-//        }
-//
-//        if (reactiveSources.remove(reactiveSource)) {
-//            dd(this, origin, "Unsubscribing ReactiveTextView: " + reason);
-//            reactiveSource.unsubscribe(reason, this);
-//        } else {
-//            throwIllegalStateException(this, "Can not remove unknown reactive reactiveSource: " + reactiveSource);
-//        }
-//        ;
-//    }
-//
-//    @Override // IReactiveTarget
-//    public void unsubscribeAllSources(String reason) {
-//        final Iterator<IReactiveSource<String>> iterator = reactiveSources.iterator();
-//
-//        while (iterator.hasNext()) {
-//            iterator.next().unsubscribeAll(reason);
-//        }
-//    }
-
     @Override // View
     public void onDetachedFromWindow() {
         if (reactiveSource != null) {

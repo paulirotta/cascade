@@ -21,6 +21,7 @@ public class FileUtilTest extends ApplicationTestCase<Application> {
     public int fileReads = 0;
     public int fileBufferReads = 0;
     public int fileDeletes = 0;
+
     public FileUtilTest() {
         super(Application.class);
     }
@@ -64,7 +65,6 @@ public class FileUtilTest extends ApplicationTestCase<Application> {
         boolean reDeleted = FileUtil.deleteFile(realContext, TEST_FILE_NAME);
         assertFalse("File should have been already deleted", reDeleted);
     }
-
 
     final MockContext mockContext = new MockContext() {
         @Override

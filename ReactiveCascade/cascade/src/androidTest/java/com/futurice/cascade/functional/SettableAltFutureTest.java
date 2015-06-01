@@ -1,15 +1,14 @@
 package com.futurice.cascade.functional;
 
-import android.test.suitebuilder.annotation.LargeTest;
-
-import junit.framework.TestCase;
+import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.MediumTest;
 
 /**
  * Created by phou on 5/29/2015.
  */
-public class SettableAltFutureTest extends TestCase {
+public class SettableAltFutureTest extends AndroidTestCase {
 
-    @LargeTest
+    @MediumTest
     public void testCancel() throws Exception {
 
     }
