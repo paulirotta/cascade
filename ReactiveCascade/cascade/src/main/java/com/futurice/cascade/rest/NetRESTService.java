@@ -30,6 +30,7 @@ import android.net.wifi.*;
 import android.telephony.*;
 
 import com.futurice.cascade.i.*;
+import com.futurice.cascade.util.NetUtil;
 import com.squareup.okhttp.*;
 
 import java.io.*;

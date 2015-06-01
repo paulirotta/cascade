@@ -1,4 +1,4 @@
-package com.futurice.cascade.rest;
+package com.futurice.cascade.util;
 
 import com.futurice.cascade.Async;
 import com.squareup.okhttp.Call;

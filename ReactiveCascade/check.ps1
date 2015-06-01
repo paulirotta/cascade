@@ -1,1 +1,1 @@
-gradle --parallel clean build connectedCheck
+./gradlew --parallel clean build connectedCheck
