@@ -29,8 +29,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.AltWeakReference;
-import com.futurice.cascade.DefaultThreadType;
+import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.functional.AltFutureFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;

@@ -27,6 +27,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,10 +57,10 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
      * Create a new <code>FileService</code> with the specified default writeMode which will be used
      * by all {@link RESTService} operations
      *
-     * @param dir              a relative or full directory name, not ending with "/", accessible with the writeMode
+     * @param dir             a relative or full directory name, not ending with "/", accessible with the writeMode
      * @param deleteOnExit
      * @param context
-     * @param writeMode        - AFile FILE system write writeMode from the constants defined in {@link android.content.Context}
+     * @param writeMode       - AFile FILE system write writeMode from the constants defined in {@link android.content.Context}
      * @param fileIThreadType
      */
     public FileMirrorService(String name, String dir, boolean deleteOnExit, Context context, int writeMode, IThreadType fileIThreadType) {

@@ -26,7 +26,7 @@ package com.futurice.cascade.reactive;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.AltWeakReference;
+import com.futurice.cascade.util.AltWeakReference;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;

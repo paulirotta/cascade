@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.test.ApplicationTestCase;
 
-import com.futurice.cascade.rest.FileUtil;
+import com.futurice.cascade.util.FileUtil;
 
 /**
  * A connectedTest harness which bootstraps the Async class

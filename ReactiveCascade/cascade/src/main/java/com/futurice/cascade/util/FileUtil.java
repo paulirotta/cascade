@@ -21,7 +21,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.futurice.cascade.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -32,15 +32,16 @@ import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static com.futurice.cascade.Async.FILE;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.throwRuntimeException;
+import static com.futurice.cascade.Async.*;
 
 public final class FileUtil {
     private static final int BUFFER_SIZE = 16384;

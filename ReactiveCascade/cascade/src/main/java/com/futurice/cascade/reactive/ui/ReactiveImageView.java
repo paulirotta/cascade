@@ -27,6 +27,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -58,7 +59,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> reactiveSources = new CopyOnWriteArrayList<>();
 
-    public ReactiveImageView(Context context) {
+    public ReactiveImageView(@NonNull final Context context) {
         super(context);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -66,7 +67,9 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 //        }
     }
 
-    public ReactiveImageView(@NonNull Context context, @NonNull AttributeSet attrs) {
+    public ReactiveImageView(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -74,7 +77,10 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 //        }
     }
 
-    public ReactiveImageView(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
+    public ReactiveImageView(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            @StyleRes final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -84,7 +90,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void fire(@NonNull Bitmap bitmap) {
+    public void fire(@NonNull final Bitmap bitmap) {
         dd(this, origin, "fire bitmap=");
 
         if (isUiThread()) {
@@ -96,21 +102,24 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void fireNext(@NonNull Bitmap bitmap) {
+    public void fireNext(@NonNull final Bitmap bitmap) {
         //FIXME is not really fire next
 
         fire(bitmap);
     }
 
     @Override
-    public void setImageURI(@NonNull Uri uri) {
+    public void setImageURI(@NonNull final Uri uri) {
         throw new UnsupportedOperationException();
     }
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void subscribeSource(@NonNull String reason, @NonNull IReactiveSource<Bitmap> reactiveSource) {
-        dd(this, origin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
+    public void subscribeSource(
+            @NonNull final String reason,
+            @NonNull final IReactiveSource<Bitmap> reactiveSource) {
+        vv(this, origin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
+
         if (reactiveSources.addIfAbsent(reactiveSource)) {
             vv(this, origin, reactiveSource.getName() + " says hello: reason=" + reason);
         } else {
@@ -120,7 +129,9 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void unsubscribeSource(@NonNull String reason, @NonNull IReactiveSource<Bitmap> reactiveSource) {
+    public void unsubscribeSource(
+            @NonNull final String reason,
+            @NonNull final IReactiveSource<Bitmap> reactiveSource) {
         if (reactiveSources.remove(reactiveSource)) {
             vv(this, origin, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
             reactiveSource.unsubscribe(reason, this);
@@ -130,7 +141,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     }
 
     @Override // IReactiveTarget
-    public void unsubscribeAllSources(@NonNull String reason) {
+    public void unsubscribeAllSources(@NonNull final String reason) {
         final Iterator<IReactiveSource<Bitmap>> iterator = reactiveSources.iterator();
 
         while (iterator.hasNext()) {
@@ -139,6 +150,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     }
 
     @Override // INamed
+    @NonNull
     public String getName() {
         return "ReactiveTextView-" + getId();
     }

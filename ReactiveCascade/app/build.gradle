@@ -1,5 +1,7 @@
+plugins {
+    id "me.tatarka.retrolambda" version "3.1.0"
+}
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 22

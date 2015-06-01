@@ -22,18 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.assertion;
+package com.futurice.cascade.util;
 
 /**
- * A chainable runtime assertTrue assertion for debugOrigin builds
+ * This is a message indicating a functional chain or other assert statement has failed at
+ * runtime. This is for debugOrigin build assert statements which fail based on actual values split states
+ * observed in the running application.
+ *
+ * The contract is that these exceptions should not be thrown in production builds.
  *
  */
-public interface IAssertion extends IBaseAssertion {
-    /**
-     *  A chainable runtime assertion for debugOrigin builds
-     *
-     * @return
-     * @throws Exception
-     */
-    boolean call() throws Exception;
+public class RuntimeAssertionException extends RuntimeException {
+    public RuntimeAssertionException(String message) {
+        super(message);
+    }
+
+    public RuntimeAssertionException(String message, Exception e) {
+        super(message, e);
+    }
 }

@@ -1,4 +1,4 @@
-package com.futurice.cascade.rest;
+package com.futurice.cascade.util;
 
 import android.app.Application;
 import android.content.Context;

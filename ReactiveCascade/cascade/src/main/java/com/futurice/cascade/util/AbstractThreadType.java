@@ -22,12 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade;
+package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.AltFuture;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.INamed;

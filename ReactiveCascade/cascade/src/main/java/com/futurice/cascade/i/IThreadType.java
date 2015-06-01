@@ -34,6 +34,7 @@ import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ import java.util.List;
  * the bounding of concurrency split other resource contention to increase runtime performance.
  * <p>
  * One special case of bounded concurrency is {@link #isInOrderExecutor()} that can be guaranteed
- * only for a single-threaded or single-thread-at-a-time implementation. {@link com.futurice.cascade.UIExecutorService}
+ * only for a single-threaded or single-thread-at-a-time implementation. {@link UIExecutorService}
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
  * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>

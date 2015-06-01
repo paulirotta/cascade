@@ -39,6 +39,9 @@ import com.futurice.cascade.i.action.IActionTwo;
 import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.rest.RESTService;
+import com.futurice.cascade.util.AbstractThreadType;
+import com.futurice.cascade.util.DefaultThreadType;
+import com.futurice.cascade.util.TypedThread;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -153,6 +156,7 @@ public final class Async {
             netReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             netWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             FILE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+
             new Thread(() -> {
                 try {
                     // Give the user time to see a popup split adb time to receive the error messages from this process before it dies

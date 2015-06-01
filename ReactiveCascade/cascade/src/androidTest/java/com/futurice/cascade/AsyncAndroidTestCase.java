@@ -3,11 +3,11 @@ package com.futurice.cascade;
 import android.content.Context;
 import android.test.AndroidTestCase;
 
-import com.futurice.cascade.rest.FileUtil;
+import com.futurice.cascade.util.FileUtil;
 
 /**
  * A connectedTest harness which bootstraps the Async class
- *
+ * <p>
  * Created by phou on 6/1/2015.
  */
 public class AsyncAndroidTestCase extends AndroidTestCase {
