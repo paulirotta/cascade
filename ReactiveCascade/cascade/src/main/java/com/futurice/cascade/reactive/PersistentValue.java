@@ -412,7 +412,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
                 throw new UnsupportedOperationException("Only native types like String are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
             }
             if (!editor.commit()) {
-                throw new RuntimeException("Failed to commit PersistentValue value=" + value + ". Probably some other thread besides Async.Net.netWriteThreadType is concurrently updating SharedPreferences for this Context");
+                throw new RuntimeException("Failed to commit PersistentValue value=" + value + ". Probably some other thread besides Async.Net.NET_WRITE is concurrently updating SharedPreferences for this Context");
             }
             vv(this, origin, "Successful PersistentValue persist, value=" + value);
         })

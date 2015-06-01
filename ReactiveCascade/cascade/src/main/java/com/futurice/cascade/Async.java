@@ -38,7 +38,6 @@ import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IActionTwo;
 import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.rest.RESTService;
 import com.futurice.cascade.util.AbstractThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
@@ -135,9 +134,8 @@ public final class Async {
      * Use this instead of the more general purpose WORKER methods if you want to limit the resource
      * contention of concurrent network operations for better average throughput
      */
-    public static final IThreadType netReadThreadType = ASYNC_BUILDER.getNetReadThreadType();
-    public static final IThreadType netWriteThreadType = ASYNC_BUILDER.getNetWriteThreadType();
-    public static final RESTService netRESTService = ASYNC_BUILDER.getNetRESTService();
+    public static final IThreadType NET_READ = ASYNC_BUILDER.getNetReadThreadType();
+    public static final IThreadType NET_WRITE = ASYNC_BUILDER.getNetWriteThreadType();
 
     Async() {
     }
@@ -153,8 +151,8 @@ public final class Async {
             Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
             exitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            netReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            netWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            NET_READ.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            NET_WRITE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             FILE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
 
             new Thread(() -> {

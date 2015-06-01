@@ -23,21 +23,20 @@
  */
 package com.futurice.cascade.rest;
 
-import android.app.*;
-import android.content.*;
-import android.net.*;
-import android.net.wifi.*;
-import android.telephony.*;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.NetUtil;
-import com.squareup.okhttp.*;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
-import java.io.*;
+import java.io.IOException;
 
-import okio.*;
+import okio.BufferedSink;
 
-import static android.telephony.TelephonyManager.*;
 import static com.futurice.cascade.Async.*;
 
 /**
@@ -51,105 +50,41 @@ import static com.futurice.cascade.Async.*;
  * TODO Register to be notified when network connection changes
  */
 public class NetRESTService extends RESTService<String, byte[]> {
-    private static final String TAG = NetRESTService.class.getSimpleName();
-    private static final int MAX_NUMBER_OF_WIFI_NET_CONNECTIONS = 6;
-    private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
-    private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
+    private final NetUtil netUtil;
+    private final ImmutableValue<String> origin;
 
-    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G}
+    public NetRESTService(
+            @NonNull final String name,
+            @NonNull final Context context) {
+        this(name, context, NET_READ, NET_WRITE);
+    }
 
-    private final TelephonyManager telephonyManager;
-    private final WifiManager wifiManager;
-
-    public NetRESTService(String name, Context context, IThreadType readIThreadType, IThreadType writeIThreadType) {
+    public NetRESTService(
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final IThreadType readIThreadType,
+            @NonNull final IThreadType writeIThreadType) {
         super(name, readIThreadType, writeIThreadType);
 
-        vv(TAG, "Initializing NetRESTService");
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
-    }
-
-    //TODO Use max number of NET connections on startup split adapt as these change
-    public int getMaxNumberOfNetConnections() {
-        if (isWifi()) {
-            return MAX_NUMBER_OF_WIFI_NET_CONNECTIONS;
-        }
-
-        switch (getNetworkType()) {
-            case NET_2G:
-            case NET_2_5G:
-                return MAX_NUMBER_OF_2G_NET_CONNECTIONS;
-
-            case NET_3G:
-            case NET_3_5G:
-            case NET_4G:
-            default:
-                return MAX_NUMBER_OF_3G_NET_CONNECTIONS;
-
-        }
-    }
-
-    /**
-     * Check if a current network WIFI connection is CONNECTED
-     *
-     * @return
-     */
-    public boolean isWifi() {
-        SupplicantState s = wifiManager.getConnectionInfo().getSupplicantState();
-        NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
-
-        return state == NetworkInfo.DetailedState.CONNECTED;
-    }
-
-    public NetType getNetworkType() {
-        switch (telephonyManager.getNetworkType()) {
-            case NETWORK_TYPE_UNKNOWN:
-            case NETWORK_TYPE_CDMA:
-            case NETWORK_TYPE_GPRS:
-            case NETWORK_TYPE_IDEN:
-                return NetType.NET_2_5G.NET_2G;
-
-            case NETWORK_TYPE_EDGE:
-                return NetType.NET_2_5G;
-
-            case NETWORK_TYPE_UMTS:
-            case NETWORK_TYPE_1xRTT:
-            default:
-                return NetType.NET_3G;
-
-            case NETWORK_TYPE_EHRPD:
-            case NETWORK_TYPE_EVDO_0:
-            case NETWORK_TYPE_EVDO_A:
-            case NETWORK_TYPE_EVDO_B:
-            case NETWORK_TYPE_HSPA:
-            case NETWORK_TYPE_HSPAP:
-            case NETWORK_TYPE_HSUPA:
-            case NETWORK_TYPE_HSDPA:
-                return NetType.NET_3_5G;
-
-            case NETWORK_TYPE_LTE:
-                return NetType.NET_4G;
-        }
+        this.origin = originAsync();
+        netUtil = new NetUtil(context);
     }
 
     @Override
-    public byte[] get(String key) throws IOException {
-        return NetUtil.get(key).body().bytes();
+    @NonNull
+    public byte[] get(@NonNull final String key) throws IOException {
+        return netUtil.get(key).body().bytes();
     }
 
     @Override
-    public void put(String key, byte[] value) throws IOException {
-        if (key == null) {
-            throwIllegalArgumentException(TAG, "put(url, getValue) was passed a null url");
-        }
-        if (value == null) {
-            throwIllegalArgumentException(TAG, "put(url, getValue) was passed a null getValue");
-        }
-        dd(TAG, "NetRESTSservice put: " + key);
-        NetUtil.put(key, new RequestBody() {
+    public void put(
+            @NonNull final String url,
+            @NonNull final byte[] value) throws IOException {
+        dd(origin, "NetRESTSservice put: " + url);
+        final Response response = netUtil.put(url, new RequestBody() {
             @Override
             public MediaType contentType() {
-                return MediaType.parse(key); //TODO Is this right?
+                return MediaType.parse(url); //TODO Is this right?
             }
 
             @Override
@@ -157,36 +92,50 @@ public class NetRESTService extends RESTService<String, byte[]> {
                 sink.write(value);
             }
         });
+
+        if (!response.isSuccessful()) {
+            final String s = "Bad response to NetRESTService put(" + url + "): " + response;
+            ii(origin, s);
+            throw new IOException(s);
+        }
     }
 
     @Override
-    public boolean delete(String key) throws IOException {
-        vv(TAG, "NetRESTService delete: " + key);
-        NetUtil.delete(key);
+    public boolean delete(@NonNull final String url) throws IOException {
+        vv(origin, "NetRESTService delete: " + url);
+        final Response response = netUtil.delete(url);
+
+        if (!response.isSuccessful()) {
+            final String s = "Bad response to NetRESTService delete(" + url + "): " + response;
+            ii(origin, s);
+            throw new IOException(s);
+        }
 
         return false;
     }
 
+    //TODO No general mechanism for handling bad response in a RESTService
     @Override
-    public void post(String url, byte[] value) throws IOException {
-        if (url == null) {
-            throwIllegalArgumentException(TAG, " post(url, getValue) was passed a null url");
-        }
-        if (value == null) {
-            throwIllegalArgumentException(TAG, " post(url, getValue) was passed a null getValue");
-        }
-
-        vv(TAG, "NetRESTService.post(" + url + ", byte[])");
-        NetUtil.post(url, new RequestBody() {
+    public void post(
+            @NonNull final String url,
+            @NonNull final byte[] value) throws IOException {
+        vv(origin, "NetRESTService.post(" + url + ", byte[])");
+        final Response response = netUtil.post(url, new RequestBody() {
             @Override
             public MediaType contentType() {
                 return MediaType.parse(url); //TODO Is this correct?
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(final BufferedSink sink) throws IOException {
                 sink.write(value);
             }
         });
+
+        if (!response.isSuccessful()) {
+            final String s = "Bad response to NetRESTService put(" + url + "): " + response;
+            ii(origin, s);
+            throw new IOException(s);
+        }
     }
 }
