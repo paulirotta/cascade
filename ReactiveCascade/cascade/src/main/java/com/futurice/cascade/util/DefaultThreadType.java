@@ -27,6 +27,7 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;

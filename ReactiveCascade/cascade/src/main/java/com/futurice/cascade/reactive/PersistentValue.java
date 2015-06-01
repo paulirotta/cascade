@@ -209,8 +209,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         } catch (Exception e) {
             ee(this, origin, "Can not initialize", e);
             try {
-                threadType.then(e)
-                        .then(e2 -> onError);
+                threadType.then(() -> onError.call(e));
             } catch (Exception e2) {
                 ee(this, origin, "Can not call onError after failure to initialize: " + e, e2);
             }

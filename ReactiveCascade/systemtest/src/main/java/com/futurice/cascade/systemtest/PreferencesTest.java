@@ -9,6 +9,7 @@ import com.futurice.cascade.reactive.*;
 import com.futurice.cascade.rest.PreferencesMirrorService;
 
 import java.util.List;
+import static com.futurice.cascade.Async.*;
 
 /**
  * Created by Paul Houghton on 25/06/2014.
@@ -20,7 +21,7 @@ public class PreferencesTest {
 
     public PreferencesTest(Context context, ReactiveValue<String> reactiveValue) {
         this.reactiveValue = reactiveValue;
-        testMirror = new PreferencesMirrorService("TestMirror", context, Async.FileThreadType.fileReadThreadType, Async.FileThreadType.fileWriteThreadType);
+        testMirror = new PreferencesMirrorService("TestMirror", context, FILE, FILE);
     }
 
     public void test() throws Exception {

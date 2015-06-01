@@ -181,7 +181,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
     @Override // IAtomicValue
     public boolean set(@NonNull final T value) {
         final T previousValue = valueAR.getAndSet(value);
-        final boolean valueChanged = !(value == previousValue || (value != null && value.equals(previousValue)) || (previousValue != null && previousValue.equals(value)));
+        final boolean valueChanged = !(value == previousValue || value.equals(previousValue) || (previousValue != null && previousValue.equals(value)));
 
         if (valueChanged) {
             vv(this, origin, "Successful set(" + value + "), about to fire()");

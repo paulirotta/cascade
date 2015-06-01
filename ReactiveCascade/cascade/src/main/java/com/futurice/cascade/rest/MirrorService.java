@@ -23,6 +23,8 @@
  */
 package com.futurice.cascade.rest;
 
+import android.support.annotation.NonNull;
+
 import com.futurice.cascade.*;
 import com.futurice.cascade.i.*;
 import com.futurice.cascade.i.action.*;
@@ -45,7 +47,8 @@ import static com.futurice.cascade.Async.*;
  * created in an overriding class.
  */
 public abstract class MirrorService<K, V> extends RESTService<K, V> {
-//    private static final String TAG = MirrorService.class.getSimpleName();
+    //    private static final String TAG = MirrorService.class.getSimpleName();
+    //FIXME downstream mirror services should de-link when the got out of scope. Use AltWeakReference here
     private final CopyOnWriteArraySet<MirrorService<K, V>> downstreamMirrorServices = new CopyOnWriteArraySet<>();
 
     /**
@@ -57,11 +60,14 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @param readIThreadType
      * @param writeIThreadType
      */
-    public MirrorService(String name, IThreadType readIThreadType, IThreadType writeIThreadType) {
+    public MirrorService(
+            @NonNull final String name,
+            @NonNull final IThreadType readIThreadType,
+            @NonNull final IThreadType writeIThreadType) {
         super(name, readIThreadType, writeIThreadType);
     }
 
-    protected void publish(IActionOne<MirrorService<K, V>> action) throws Exception {
+    protected void publish(@NonNull final IActionOne<MirrorService<K, V>> action) throws Exception {
         final ArrayList<MirrorService<K, V>> mirrorServices = new ArrayList<>();
         mirrorServices.addAll(downstreamMirrorServices);
 
@@ -145,7 +151,10 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * values based on their local result before calling super.replace()
      * @throws IOException
      */
-    public boolean replace(K key, V value, V expectedValue) throws Exception {
+    public boolean replace(
+            @NonNull final K key,
+            @NonNull final V value,
+            @NonNull final V expectedValue) throws Exception {
         publish(service -> {
             service.replace(key, value, expectedValue);
         });
@@ -164,7 +173,9 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @return
      * @throws IOException
      */
-    public boolean delete(K key, V expectedValue) throws Exception {
+    public boolean delete(
+            @NonNull final K key,
+            @NonNull final V expectedValue) throws Exception {
         publish(service -> service.delete(key, expectedValue));
         return true;
     }
@@ -179,7 +190,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @throws IOException
      */
     @Override
-    public void put(K key, V value) throws Exception {
+    public void put(final K key, final V value) throws Exception {
         publish(service -> service.put(key, value));
 
         //TODO Should we catch errors downstream split return aggregate true/false boolean instead of letting one put cancel all others?
@@ -195,7 +206,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @return
      * @throws IOException
      */
-    public boolean delete(K key) throws Exception {
+    public boolean delete(final K key) throws Exception {
         publish(downstreamMirrorService -> downstreamMirrorService.delete(key));
 
         //TODO Check split return the getValue of each downstream replace
@@ -211,7 +222,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @param value
      * @throws IOException
      */
-    public void post(K key, V value) throws Exception {
+    public void post(final K key, final V value) throws Exception {
         publish(downstreamMirrorService -> downstreamMirrorService.post(key, value));
 
         //TODO Should we catch errors downstream split return aggregate true/false boolean instead of letting one put cancel all others?
@@ -232,9 +243,10 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      */
     public abstract List<K> index() throws IOException;
 
+    @NonNull
     public IAltFuture<?, List<K>> indexAsync() {
         vv(this, "indexAsync()");
-        return readIThreadType.then((IAction) this::index);
+        return readIThreadType.then(this::index);
     }
 
     /**
@@ -252,21 +264,25 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @return a list of <code>Future</code>s for each step of the asynchronous concurrent initialization
      * @throws IOException if there is a problem during the {@link #index()} step
      */
-    public List<IAltFuture<?, V>> subscribe(MirrorService<K, V> downstreamMirrorService, Comparator<K> comparator) throws IOException {
-        if (downstreamMirrorService == null) {
-            throwIllegalArgumentException(this, "Can not subscribe(null) to a MirrorService");
-        }
+    @NonNull
+    public List<IAltFuture<?, V>> subscribe(
+            @NonNull final MirrorService<K, V> downstreamMirrorService,
+            @NonNull final Comparator<K> comparator) throws IOException {
         downstreamMirrorServices.add(downstreamMirrorService); // Start sending changes downstream, even as we concurrently init the index
 
         return initMirror(downstreamMirrorService, comparator);
     }
 
-    private List<IAltFuture<?, V>> initMirror(MirrorService<K, V> downstreamMirrorService, Comparator<K> comparator) throws IOException {
+    @NonNull
+    private List<IAltFuture<?, V>> initMirror(
+            @NonNull final MirrorService<K, V> downstreamMirrorService,
+            @NonNull final Comparator<K> comparator) throws IOException {
         final List<K> index = index();
         final List<IAltFuture<?, V>> mirrorAltFutures = new ArrayList<>(index.size());
 
         // If the comparator is null we will get the natural (alphabetical etc) order
         Collections.sort(index, comparator);
+        //TODO Allow more flexible definition of onError
         final IOnErrorAction onError = e -> {
             Async.e(this, "initMirror downstreamMirrorService.replace problem", e);
             return true;
@@ -274,6 +290,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
         for (K key : index) {
             mirrorAltFutures.add(readIThreadType.then(() -> {
                 V value = get(key);
+                //TODO Mirror should have a new delete(expectedValue) atomic method instead of the following
                 downstreamMirrorService.replace(key, get(key), null); // Replace only empty values downstream
                 return value;
             })
@@ -292,10 +309,7 @@ public abstract class MirrorService<K, V> extends RESTService<K, V> {
      * @param downstreamMirrorService
      * @throws IOException
      */
-    public void unsubscribe(MirrorService<K, V> downstreamMirrorService) throws IOException {
-        if (downstreamMirrorService == null) {
-            throwIllegalArgumentException(this, "Can not unsubscribeSource(null) to a MirrorService");
-        }
+    public void unsubscribe(@NonNull final MirrorService<K, V> downstreamMirrorService) throws IOException {
         downstreamMirrorServices.remove(downstreamMirrorService);
     }
 }

@@ -127,6 +127,17 @@ public final class Async {
      * </pre></code>
      */
     public static final IThreadType UI = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getUiThreadType();
+    public static final IThreadType FILE = ASYNC_BUILDER.getFileThreadType();
+
+    /**
+     * {@link com.futurice.cascade.rest.NetRESTService} singleton tuned to the currently available bandwidth
+     * <p>
+     * Use this instead of the more general purpose WORKER methods if you want to limit the resource
+     * contention of concurrent network operations for better average throughput
+     */
+    public static final IThreadType netReadThreadType = ASYNC_BUILDER.getNetReadThreadType();
+    public static final IThreadType netWriteThreadType = ASYNC_BUILDER.getNetWriteThreadType();
+    public static final RESTService netRESTService = ASYNC_BUILDER.getNetRESTService();
 
     Async() {
     }
@@ -142,10 +153,10 @@ public final class Async {
             Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
             exitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            NetThreadType.netReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            NetThreadType.netWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            FileThreadType.fileReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
-            FileThreadType.fileWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            netReadThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            netWriteThreadType.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+            FILE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
+
             new Thread(() -> {
                 try {
                     // Give the user time to see a popup split adb time to receive the error messages from this process before it dies
@@ -901,22 +912,5 @@ public final class Async {
         if (DEBUG && !(Thread.currentThread() instanceof TypedThread)) {
             throwIllegalStateException(Async.class.getSimpleName(), "assertTypedThread() but actually running on " + Thread.currentThread().getName());
         }
-    }
-
-    public static final class FileThreadType {
-        public static final IThreadType fileReadThreadType = ASYNC_BUILDER.getFileReadThreadType();
-        public static final IThreadType fileWriteThreadType = ASYNC_BUILDER.getFileWriteThreadType();
-    }
-
-    public static final class NetThreadType {
-        /**
-         * {@link com.futurice.cascade.rest.NetRESTService} singleton tuned to the currently available bandwidth
-         * <p>
-         * Use this instead of the more general purpose WORKER methods if you want to limit the resource
-         * contention of concurrent network operations for better average throughput
-         */
-        public static final IThreadType netReadThreadType = ASYNC_BUILDER.getNetReadThreadType();
-        public static final IThreadType netWriteThreadType = ASYNC_BUILDER.getNetWriteThreadType();
-        public static final RESTService netRESTService = ASYNC_BUILDER.getNetRESTService();
     }
 }

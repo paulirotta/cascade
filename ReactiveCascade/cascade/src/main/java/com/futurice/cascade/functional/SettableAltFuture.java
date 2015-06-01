@@ -35,9 +35,6 @@ import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.assertion.IAssertion;
-import com.futurice.cascade.i.assertion.IAssertionOne;
-import com.futurice.cascade.i.assertion.IAssertionTwo;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.i.functional.IAltFutureState;
@@ -50,7 +47,12 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.DEBUG;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.throwIllegalArgumentException;
+import static com.futurice.cascade.Async.throwIllegalStateException;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * An {@link com.futurice.cascade.i.functional.IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
@@ -305,140 +307,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     /**
-     * Assert that a logic statement, evaluated after any previous steps in a chain, is true
-     * <p>
-     * No late-binding-evaluation-time or functional-chain-creation-time parameters are provided
-     * to the logical assertion in this variant. The assertion logic itself may still contain
-     * references to in-scope final variables (closures) and/or method calls that check that
-     * state is as expected.
-     * <p>
-     * Runtime assertions such as this serve both the notify early of potentially regressive changes
-     * in the code and as a form of documentation about assumptions an algorithm makes that might
-     * otherwise not be clear to the reader. You may also have reason to do unit tests particularly
-     * where test data sets are needed. The advantage of these runtime assertions is they are clear
-     * and easy to read directly in the affected code and little extra work is required to write and
-     * no extra work is required to execute them. Runtime assertions are execute iff you are running a debugOrigin
-     * build but removed automatically in production builds.
-     *
-     * @param reason
-     * @param assertion
-     * @return
-     * @throws AssertionError
-     */
-    //TODO Either add a unit test or eliminate in favor of manual (BETTER TO ELIMINATE THIS?)
-    //TODO Or add this to the interface
-    @NonNull
-    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull final IAssertion assertion) throws AssertionError {
-        if (DEBUG) {
-            then(this
-                            .onError(e -> {
-                                ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
-                                return true;
-                            })
-                            .then(() -> Async.assertTrue(reason, assertion.call()))
-                            .onError(e -> {
-                                return cancel(
-                                        "Problem performing runtime assertion",
-                                        new RuntimeException("Problem performing runtime assertion", e));
-                            })
-            );
-        }
-
-        return this;
-    }
-
-    /**
-     * Assert that a logic statement, evaluated after any previous steps in a chain, is true
-     * <p>
-     * For performance in production builds (at which point your architecture problems are already fixed, right? :) this assertTrue
-     * will always return <code>false</code>. In this case the re-fork will still
-     * throw an {@link java.lang.IllegalStateException}, but does so a bit later. This would happen when the underlying
-     * {@link java.util.concurrent.RunnableFuture} finds it has already been execute.
-     *
-     * @param reason
-     * @param IN
-     * @param assertion
-     * @return - true if everything is as expected
-     * @throws AssertionError
-     */
-    @NonNull
-    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull IN IN, @NonNull IAssertionOne<IN> assertion) throws AssertionError {
-        if (DEBUG) {
-            then(this
-                            .onError(e -> {
-                                ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
-                                return true;
-                            })
-                            .then(() -> Async.assertTrue(reason, assertion.call(IN)))
-                            .onError((Exception e) -> {
-                                return cancel(
-                                        "Problem performing runtime assertion",
-                                        new RuntimeException("Problem performing runtime assertion", e));
-                            })
-            );
-        }
-
-        return this;
-    }
-
-    /**
-     * Assert that a logic statement including the value returned from the previous AltFuture in a
-     * chain is true.
-     *
-     * @param reason
-     * @param assertion
-     * @return - true if everything is as expected
-     * @throws AssertionError
-     */
-    @NonNull
-    public IAltFuture<IN, OUT> assertTrue(@NonNull final String reason, @NonNull final IAssertionOne<IN> assertion) throws AssertionError {
-        if (DEBUG) {
-            then(this
-                            .onError(e -> {
-                                ee(this, origin, "Consuming up-chain error on split chain before assertion", e);
-                                return true;
-                            })
-                            .then(() -> Async.assertTrue(reason, assertion.call((IN) get())))
-                            .onError(e -> {
-                                return cancel(
-                                        "Problem performing runtime assertion",
-                                        new RuntimeException("Problem performing runtime assertion", e));
-                            })
-            );
-        }
-
-        return this;
-    }
-
-    /**
-     * Assert that a logic statement including the value returned from the previous AltFuture in a
-     * chain and a second value passed in at the time the chain is created is true.
-     *
-     * @param reason
-     * @param b
-     * @param assertion
-     * @param <B>       - a value which is fixed at the time the functional chain is created
-     * @return - true if everything is as expected
-     */
-    @NonNull
-    public <B> IAltFuture<OUT, OUT> assertTrue(@NonNull final String reason, @NonNull final B b, @NonNull final IAssertionTwo<B, IN> assertion) {
-        if (DEBUG) {
-            return split(onError(e -> {
-                dd(this, origin, "Consuming up-chain error before assertTrue: " + e);
-                return true;
-            })
-                    .then(() -> Async.assertTrue(reason, assertion.call(b, (IN) get())))
-                    .onError(e -> {
-                        String s = "Problem performing runtime assertion: " + reason + " value=" + b;
-                        ee(this, origin, s, e);
-                        throw new RuntimeException(s, e);
-                    }));
-        }
-
-        return (IAltFuture<OUT, OUT>) this;
-    }
-
-    /**
      * Return the value of this AltFuture which has already completed execution
      * <p>
      * Note that unlike a standard Future, this will return an {@link java.lang.IllegalStateException}
@@ -551,11 +419,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         // Already set, cancelled or error state
         throwIllegalStateException(this, origin, "Attempted to set " + this + " to value=" + value + ", but the value can only be set once");
-    }
-
-    //TODO Eliminate or use, and perhaps add to interface
-    public final boolean isHeadOfChain() {
-        return getPreviousAltFuture() == null;
     }
 
     /**
@@ -759,7 +622,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     @Override // IAltFuture
     @NonNull
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
+            @NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
             dd(this, origin, ".subscribe() to an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
@@ -777,7 +641,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     @Override // IAltFuture
     @NonNull
-    public IAltFuture<OUT, OUT> then(@NonNull final IActionOne<OUT> action) {
+    public IAltFuture<OUT, OUT> then(
+            @NonNull final IActionOne<OUT> action) {
         return then(threadType, action);
     }
 
@@ -804,7 +669,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     @Override // IAltFuture
     @NonNull
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
+            @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 

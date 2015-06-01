@@ -52,7 +52,11 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
      * by all {@link RESTService} operations
      *
      */
-    public PreferencesMirrorService(@NonNull final String name, @NonNull final Context context, @NonNull final IThreadType fileReadIThreadType, @NonNull final IThreadType fileWriteIThreadType) {
+    public PreferencesMirrorService(
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final IThreadType fileReadIThreadType,
+            @NonNull final IThreadType fileWriteIThreadType) {
         super(name, fileReadIThreadType, fileWriteIThreadType);
 
         if (!fileReadIThreadType.isInOrderExecutor()) {
@@ -85,7 +89,9 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
      * @throws IOException
      */
     @Override
-    public void put(@NonNull final String key, @NonNull final String value) throws Exception {
+    public void put(
+            @NonNull final String key,
+            @NonNull final String value) throws Exception {
         dd(TAG, "Put to SharedPreferences:" + key);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
@@ -96,7 +102,10 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public boolean replace(@NonNull final String key, String value, @NonNull final String expectedValue) throws Exception {
+    public boolean replace(
+            @NonNull final String key,
+            @NonNull final String value,
+            @NonNull final String expectedValue) throws Exception {
         String currentValue = get(key);
 
         if ((currentValue == null && expectedValue == null) || (expectedValue != null && expectedValue.equals(currentValue))) {
@@ -111,7 +120,9 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public boolean delete(@NonNull final String key, @NonNull final String expectedValue) throws Exception {
+    public boolean delete(
+            @NonNull final String key,
+            @NonNull final String expectedValue) throws Exception {
         String currentValue = get(key);
 
         if ((currentValue == null && expectedValue == null) || (expectedValue != null && expectedValue.equals(currentValue))) {
@@ -140,7 +151,9 @@ public class PreferencesMirrorService extends MirrorService<String, String> {
     }
 
     @Override
-    public void post(@NonNull final String key, @NonNull final String value) throws IOException {
+    public void post(
+            @NonNull final String key,
+            @NonNull final String value) throws IOException {
         throw new UnsupportedOperationException("PreferencesMirrorService does not implement post(filename, vale)");
     }
 

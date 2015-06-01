@@ -23,15 +23,20 @@
  */
 package com.futurice.cascade.rest;
 
-import android.content.*;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.util.FileUtil;
 
 import java.io.File;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.throwIllegalArgumentException;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * AFile set of utility methods for limiting select sections of File-system-bound code. These prevent
@@ -46,22 +51,22 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
     private final Context context;
     private final int writeMode;
     private final File dir;
+    private final FileUtil fileUtil;
 
     /**
      * Create a new <code>FileService</code> with the specified default writeMode which will be used
      * by all {@link RESTService} operations
      *
-     * @param dir              a relative or full directory name, not ending with "/", accessible with the writeMode
+     * @param dir             a relative or full directory name, not ending with "/", accessible with the writeMode
      * @param deleteOnExit
      * @param context
-     * @param writeMode        - AFile FILE system write writeMode from the constants defined in {@link android.content.Context}
-     * @param fileReadIThreadType
-     * @param fileWriteIThreadType
+     * @param writeMode       - AFile FILE system write writeMode from the constants defined in {@link android.content.Context}
+     * @param fileIThreadType
      */
-    public FileMirrorService(String name, String dir, boolean deleteOnExit, Context context, int writeMode, IThreadType fileReadIThreadType, IThreadType fileWriteIThreadType) {
-        super(name, fileReadIThreadType, fileWriteIThreadType);
+    public FileMirrorService(String name, String dir, boolean deleteOnExit, Context context, int writeMode, IThreadType fileIThreadType) {
+        super(name, fileIThreadType, fileIThreadType);
 
-        if (!fileWriteIThreadType.isInOrderExecutor()) {
+        if (!fileIThreadType.isInOrderExecutor()) {
             throwIllegalArgumentException(this, "Provide a fileWriteIThreadType which supports in order execution. Usually this means a single threaded ServiceExecutor");
         }
         //TODO Confirm file write permissions for the specified directory
@@ -69,6 +74,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
         this.dir = context.getDir(dir, writeMode);
         this.path = dir;
         this.context = context;
+        this.fileUtil = new FileUtil(context, Context.MODE_PRIVATE);
         this.writeMode = writeMode;
         if (deleteOnExit) {
             this.dir.deleteOnExit();
@@ -91,11 +97,12 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
      * @throws IOException
      */
     @Override
-    public byte[] get(String key) throws IOException {
+    @NonNull
+    public byte[] get(@NonNull final String key) throws IOException {
         synchronized (mutex) {
-            key = applyPath(key);
-            vv(this, "Start FILE read: " + key);
-            return FileUtil.readFile(context, key);
+            final String keyWithPath = applyPath(key);
+            vv(this, "Start FILE read: " + keyWithPath);
+            return fileUtil.readFile(keyWithPath);
         }
     }
 
@@ -108,9 +115,10 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
      * @throws IOException
      */
     @Override
-    public void put(String key, byte[] bytes) throws Exception {
+    public void put(@NonNull final String key,
+                    @NonNull final byte[] bytes) throws Exception {
         synchronized (mutex) {
-            put(key, bytes, writeMode);
+            fileUtil.writeFile(key, bytes);
             super.put(key, bytes);
         }
     }
@@ -146,7 +154,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
         synchronized (mutex) {
             key = applyPath(key);
             vv(this, "Start FILE delete: " + key);
-            boolean result = FileUtil.deleteFile(context, key);
+            boolean result = fileUtil.deleteFile(key);
             if (result == true) {
                 super.delete(key);
             }
@@ -174,31 +182,27 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
      * @return
      * @throws IOException
      */
-    protected byte[] put(String filename, byte[] bytes, int writeMode) throws IOException {
-        FileOutputStream fos = null;
-
-        if (filename == null) {
-            throwIllegalArgumentException(this, "put(filename, bytes) was passed a null filename");
-        }
-
-        if (filename == null || bytes == null) {
-            throwIllegalArgumentException(this, " put(filename, bytes) was passed a null byte[]");
-        }
-
-        filename = applyPath(filename);
-        try {
-            vv(this, "Start FILE write: " + filename);
-            fos = context.openFileOutput(filename, writeMode);
-            fos.write(bytes);
-        } catch (IOException e) {
-            ee(this, "Can not put(" + filename + ")" + bytes.length, e);
-        } finally {
-            if (fos != null) {
-                fos.close();
-            }
-        }
-        vv(this, "End FILE write: " + filename);
-
-        return bytes;
-    }
+//    @NonNull
+//    protected byte[] put(
+//            @NonNull final String filename,
+//            @NonNull final byte[] bytes,
+//            final int writeMode) throws IOException {
+//        FileOutputStream fos = null;
+//
+//        final String filenameWithPath = applyPath(filename);
+//        try {
+//            vv(this, "Start FILE write: " + filenameWithPath);
+//            fos = context.openFileOutput(filenameWithPath, writeMode);
+//            fos.write(bytes);
+//        } catch (IOException e) {
+//            ee(this, "Can not put(" + filenameWithPath + ")" + bytes.length, e);
+//        } finally {
+//            if (fos != null) {
+//                fos.close();
+//            }
+//        }
+//        vv(this, "End FILE write: " + filename);
+//
+//        return bytes;
+//    }
 }

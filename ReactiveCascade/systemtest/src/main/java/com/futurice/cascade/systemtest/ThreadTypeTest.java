@@ -414,7 +414,7 @@ public class ThreadTypeTest {
         logMethodStart();
         String expected = "aabb";
         IAltFuture<String, String> continueAltFuture = threadType.then(() -> v(tag, "Continuing"));
-        IAltFuture<?, String> test = threadType.then("aa")
+        IAltFuture<?, String> test = threadType.from("aa")
                 .then((String s) -> {
                     v(tag, "Merge strings");
                     return s + "bb";
@@ -430,7 +430,7 @@ public class ThreadTypeTest {
     public void thenIActionOneRChainCombination() throws Throwable {
         logMethodStart();
         String expected = "abcd";
-        IAltFuture<String, String> test = threadType.then("a")
+        IAltFuture<String, String> test = threadType.from("a")
                 .then(s -> s + "b")
                 .then(s -> s + "c")
                 .then(s -> s + "d")
