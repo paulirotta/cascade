@@ -26,13 +26,17 @@ package com.futurice.cascade.rest;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.IKeyFactory;
+import com.futurice.cascade.i.INamed;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.futurice.cascade.Async.*;
 
 /**
  * AFile base class for implementations which handle REST activities in an asynchronous manner
@@ -45,12 +49,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * fine-grained asynchronous operation or harm performance.
  */
 public abstract class RESTService<K, V> implements INamed {
-    private static final String TAG = RESTService.class.getSimpleName();
+    //TODO Make an IRESTService and implement that, name this AbstractRESTService
     protected final IThreadType readIThreadType;
     protected final IThreadType writeIThreadType;
     private final ConcurrentHashMap<K, V> readCache = new ConcurrentHashMap<K, V>();
     private final AtomicInteger postCount = new AtomicInteger(0); // How many POST operations are pending on the writeIThreadType
     protected final String name;
+    protected final ImmutableValue<String> origin;
 
     /**
      * Create a new REST service using the specified asynchronous implementation with an appropriate
@@ -63,6 +68,7 @@ public abstract class RESTService<K, V> implements INamed {
     public RESTService(@NonNull final String name,
                        @NonNull final IThreadType readIThreadType,
                        @NonNull final IThreadType writeIThreadType) {
+        this.origin = originAsync();
         this.name = name;
         this.readIThreadType = readIThreadType;
         this.writeIThreadType = writeIThreadType;
@@ -75,15 +81,18 @@ public abstract class RESTService<K, V> implements INamed {
      */
     @NonNull
     public IAltFuture<?, V> getAsync(@NonNull final K key) {
-        Async.v(TAG, "getAsync(" + key + ")");
+        vv(origin, "getAsync(" + key + ")");
+
         return readIThreadType.then(() -> {
             V v = readCache.get(key);
+
             if (v != null) {
-                Async.d(TAG, "Cache hit: " + key);
+                dd(origin, "Cache hit: " + key);
             } else {
-                Async.d(TAG, "Cache miss: " + key);
+                dd(origin, "Cache miss: " + key);
                 v = get(key);
             }
+
             return v;
         });
     }
@@ -95,19 +104,22 @@ public abstract class RESTService<K, V> implements INamed {
      */
     @NonNull
     public IAltFuture<?, Pair<K, V>> getAsync(@NonNull final IKeyFactory<K> iKeyFactory) {
-        Async.v(TAG, "getAsync(" + iKeyFactory + ")");
+        vv(origin, "getAsync(" + iKeyFactory + ")");
 
         // Must read only after any pending POST operations, otherwise cached getValue are valid
-        IThreadType iThreadType = postCount.get() > 0 ? writeIThreadType : readIThreadType;
+        final IThreadType iThreadType = postCount.get() > 0 ? writeIThreadType : readIThreadType;
+
         return iThreadType.then(() -> {
-            K key = iKeyFactory.getKey();
+            final K key = iKeyFactory.getKey();
             V v = readCache.get(key);
+
             if (v != null) {
-                Async.d(TAG, "Cache hit: " + key);
+                dd(origin, "Cache hit: " + key);
             } else {
-                Async.d(TAG, "Cache miss: " + key);
+                dd(origin, "Cache miss: " + key);
                 v = get(key);
             }
+
             return new Pair<K, V>(key, v);
         });
     }
@@ -120,16 +132,16 @@ public abstract class RESTService<K, V> implements INamed {
      */
     @NonNull
     public IAltFuture<V, V> putAsync(@NonNull final K key, V value) {
-        Async.v(TAG, "putAsync(" + key + ", getValue=" + value + ")");
+        vv(origin, "putAsync(" + key + ", getValue=" + value + ")");
         readCache.put(key, value);
 
         return writeIThreadType.then(() -> {
             V v = readCache.remove(key);
             if (v != null) {
-                Async.d(TAG, "Put: " + key);
+                dd(origin, "Put: " + key);
                 put(key, readCache.remove(key));
             } else {
-                Async.d(TAG, "Put after cache cleared by POST: " + key);
+                dd(origin, "Put after cache cleared by POST: " + key);
                 put(key, value);
             }
         });
@@ -150,7 +162,7 @@ public abstract class RESTService<K, V> implements INamed {
     @NonNull
     public IAltFuture<V, V> postAsync(@NonNull final K key,
                                       @NonNull final V value) {
-        Async.v(TAG, "postAsync(" + key + ", getValue=" + value + ")");
+        vv(origin, "postAsync(" + key + ", getValue=" + value + ")");
         postCount.incrementAndGet();
         readCache.clear();
         return writeIThreadType.then(() -> {
@@ -169,7 +181,7 @@ public abstract class RESTService<K, V> implements INamed {
      */
     @NonNull
     public IAltFuture<?, K> deleteAsync(@NonNull final K key) {
-        Async.v(TAG, "deleteAsync(" + key + ")");
+        vv(origin, "deleteAsync(" + key + ")");
         return writeIThreadType.then(() -> {
             readCache.remove(key);
             delete(key);

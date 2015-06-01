@@ -51,7 +51,6 @@ import static com.futurice.cascade.Async.*;
  */
 public class NetRESTService extends RESTService<String, byte[]> {
     private final NetUtil netUtil;
-    private final ImmutableValue<String> origin;
 
     public NetRESTService(
             @NonNull final String name,
@@ -66,7 +65,6 @@ public class NetRESTService extends RESTService<String, byte[]> {
             @NonNull final IThreadType writeIThreadType) {
         super(name, readIThreadType, writeIThreadType);
 
-        this.origin = originAsync();
         netUtil = new NetUtil(context);
     }
 
@@ -88,7 +86,7 @@ public class NetRESTService extends RESTService<String, byte[]> {
             }
 
             @Override
-            public void writeTo(BufferedSink sink) throws IOException {
+            public void writeTo(final BufferedSink sink) throws IOException {
                 sink.write(value);
             }
         });
@@ -114,7 +112,6 @@ public class NetRESTService extends RESTService<String, byte[]> {
         return false;
     }
 
-    //TODO No general mechanism for handling bad response in a RESTService
     @Override
     public void post(
             @NonNull final String url,
