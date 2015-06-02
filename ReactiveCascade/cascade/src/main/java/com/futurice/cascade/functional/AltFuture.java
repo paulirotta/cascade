@@ -26,14 +26,20 @@ package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.i.*;
-import com.futurice.cascade.i.action.*;
-import com.futurice.cascade.i.functional.*;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.i.action.IAction;
+import com.futurice.cascade.i.action.IActionOne;
+import com.futurice.cascade.i.action.IActionOneR;
+import com.futurice.cascade.i.action.IActionR;
+import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.i.functional.IRunnableAltFuture;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CancellationException;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.assertTrue;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
 
 /**
  * A present-time representation of one of many possible alternate future results
@@ -111,7 +117,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
             IN out = null;
             if (paf != null) {
-                Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+                assertTrue("The previous AltFuture to Iaction is not finished", paf.isDone());
                 out = paf.get();
             }
             action.call();
@@ -133,8 +139,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            Async.assertTrue("The previous altFuture must be non-null", paf != null);
-            Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+            assertTrue("The previous altFuture to IActionOne() must be non-null", paf != null);
+            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             final IN in = paf.get();
             action.call(in);
@@ -172,8 +178,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            Async.assertTrue("previous altFuture must be non-null", paf != null);
-            Async.assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+            assertTrue("previous altFuture must be non-null", paf != null);
+            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             return action.call(paf.get());
         };

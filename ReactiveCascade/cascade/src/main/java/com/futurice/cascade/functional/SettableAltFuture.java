@@ -506,8 +506,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public IAltFuture<OUT, OUT> onError(@NonNull final IOnErrorAction action) {
         setOnError(action);
 
-        return new AltFuture<>(threadType, o -> {
-            return o;
+        //NOTE: onError must return a new object to allow proper chaining of onError actions
+        if (previousAltFuture != null) {
+            return new AltFuture<>(threadType, out -> out);
+        }
+
+        // No input argument, head of chain
+        return new AltFuture<>(threadType, () -> {
         });
     }
 
@@ -935,9 +940,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         private volatile boolean consumed = false; // Set true to indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
 
         AltFutureStateError(@NonNull String reason, @NonNull Exception e) {
-            if (DEBUG && reason.length() == 0) {
-                throwIllegalArgumentException(this, "You must specify the error reason and exception to keep debugging sane");
-            }
             this.reason = reason;
             this.e = e;
             ee(this, "Moving to StateError:\n" + this.reason, e);
