@@ -43,7 +43,7 @@ retrolambda {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':cascade')
     compile 'org.assertj:assertj-core:1.7.1'
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
