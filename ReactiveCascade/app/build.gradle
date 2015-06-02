@@ -34,15 +34,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-//    android {
-//        packagingOptions {
-//            exclude 'META-INF/LICENSE.txt' // For PMD
-//            exclude 'META-INF/NOTICE.txt'  // For PMD
-//            exclude 'META-INF/services/net.sourceforge.pmd.cpd.Language' // For PMD
-//            exclude 'META-INF/services/net.sourceforge.pmd.lang.Language' // For PMD
-//        }
-//    }
 }
 
 retrolambda {
@@ -51,7 +42,7 @@ retrolambda {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.0.2'
     compile project(':cascade')
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
 }
