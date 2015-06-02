@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 
+import com.futurice.cascade.functional.AltFuture;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.squareup.okhttp.Call;
@@ -64,7 +65,12 @@ public final class NetUtil {
     }
 
     @NonNull
-    public IAltFuture<?, Response> getAsync(@NonNull final String url) throws IOException {
+    public <IN, OUT> IAltFuture<IN, IN> execAfterPendingReadsAsync(@NonNull final IAltFuture<IN, OUT> delayedAltFuture) {
+        return new AltFuture<IN, IN>(NET_READ, delayedAltFuture::fork);
+    }
+
+    @NonNull
+    public IAltFuture<?, Response> getAsync(@NonNull final String url) {
         return NET_READ.then(() -> get(url, null));
     }
 
