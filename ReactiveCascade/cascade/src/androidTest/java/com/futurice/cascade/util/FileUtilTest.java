@@ -14,7 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.futurice.cascade.Async.*;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -107,7 +108,7 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
     private FileUtil mockFileUtil;
 
     public FileUtilTest() {
-        super(Application.class);
+        super(Application.class, SERIAL_WORKER);
     }
 
     @Override

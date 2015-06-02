@@ -25,7 +25,6 @@ package com.futurice.cascade.systemtest;
 
 import android.util.Log;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.AltFutureFuture;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.functional.SettableAltFuture;
@@ -41,7 +40,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
+import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.d;
+import static com.futurice.cascade.Async.v;
+import static com.futurice.cascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -62,7 +65,7 @@ public class ThreadTypeTest {
     }
 
     private void logMethodStart() {
-        Async.v(tag, "Start " + Thread.currentThread().getStackTrace()[0].getMethodName());
+        v(tag, "Start " + Thread.currentThread().getStackTrace()[0].getMethodName());
     }
 
     private <IN, OUT> OUT awaitDone(IAltFuture<IN, OUT> altFuture) throws Exception {
