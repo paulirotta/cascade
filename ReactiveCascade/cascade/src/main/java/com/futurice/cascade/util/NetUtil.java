@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 
 import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.functional.IAltFuture;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -63,20 +64,18 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response get(@NonNull final URL url) throws IOException {
-        return get(url.toString(), null);
+    public IAltFuture<?, Response> getAsync(@NonNull final String url) throws IOException {
+        return NET_READ.then(() -> get(url, null));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> getAsync() {
+        return NET_READ.map(url -> get(url, null));
     }
 
     @NonNull
     public Response get(@NonNull final String url) throws IOException {
         return get(url, null);
-    }
-
-    @NonNull
-    public Response get(
-            @NonNull final URL url,
-            @Nullable final Collection<Header> headers) throws IOException {
-        return get(url.toString(), headers);
     }
 
     @NonNull
@@ -90,25 +89,57 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response put(
-            @NonNull final URL url,
-            RequestBody body) throws IOException {
-        return put(url.toString(), body);
+    public IAltFuture<String, Response> getAsync(
+            @Nullable final Collection<Header> headers) {
+        return NET_READ.map(url -> get(url, headers));
+    }
+
+    @NonNull
+    public IAltFuture<?, Response> putAsync(
+            @NonNull final String url,
+            @NonNull final RequestBody body) {
+        return NET_WRITE.then(() -> put(url, body));
+    }
+
+    @NonNull
+    public IAltFuture<RequestBody, Response> putAsync(
+            @NonNull final String url) {
+        return NET_WRITE.map(body -> put(url, body));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> putAsync(
+            @NonNull final RequestBody body) {
+        return NET_WRITE.map(url -> put(url, body));
     }
 
     @NonNull
     public Response put(
             @NonNull final String url,
-            RequestBody body) throws IOException {
+            @NonNull final RequestBody body) throws IOException {
         return put(url, null, body);
     }
 
     @NonNull
-    public Response put(
-            @NonNull final URL url,
+    public IAltFuture<?, Response> putAsync(
+            @NonNull final String url,
             @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) throws IOException {
-        return put(url.toString(), headers, body);
+            @NonNull final RequestBody body) {
+        return NET_WRITE.then(() -> put(url, headers, body));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> putAsync(
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
+        return NET_WRITE.map(url -> put(url, headers, body));
+    }
+
+    @NonNull
+    public IAltFuture<RequestBody, Response> putAsync(
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
+        return NET_WRITE.map(body -> put(url, headers, body));
     }
 
     @NonNull
@@ -133,6 +164,25 @@ public final class NetUtil {
     }
 
     @NonNull
+    public IAltFuture<?, Response> postAsync(
+            @NonNull final String url,
+            @NonNull final RequestBody body) {
+        return NET_WRITE.then(() -> post(url, null, body));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> postAsync(
+            @NonNull final RequestBody body) {
+        return NET_WRITE.map(url -> post(url, null, body));
+    }
+
+    @NonNull
+    public IAltFuture<RequestBody, Response> postAsync(
+            @NonNull final String url) {
+        return NET_WRITE.map(body -> post(url, null, body));
+    }
+
+    @NonNull
     public Response post(
             @NonNull final URL url,
             @NonNull final RequestBody body) throws IOException {
@@ -140,11 +190,25 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response post(
-            @NonNull final URL url,
+    public IAltFuture<?, Response> postAsync(
+            @NonNull final String url,
             @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) throws IOException {
-        return post(url.toString(), headers, body);
+            @NonNull final RequestBody body) {
+        return NET_WRITE.then(() -> post(url, headers, body));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> postAsync(
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
+        return NET_WRITE.map(url -> post(url, headers, body));
+    }
+
+    @NonNull
+    public IAltFuture<RequestBody, Response> postAsync(
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
+        return NET_WRITE.map(body -> post(url, headers, body));
     }
 
     @NonNull
@@ -162,8 +226,13 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response delete(@NonNull final URL url) throws IOException {
-        return delete(url.toString(), null);
+    public IAltFuture<?, Response> deleteAsync(@NonNull final String url) {
+        return NET_WRITE.then(() -> delete(url, null));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> deleteAsync() {
+        return NET_WRITE.map(url -> delete(url, null));
     }
 
     @NonNull
@@ -172,17 +241,23 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response delete(
-            @NonNull final URL url,
-            @Nullable final Collection<Header> headers) throws IOException {
-        return delete(url.toString(), headers);
+    public IAltFuture<?, Response> deleteAsync(
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
+        return NET_WRITE.then(() -> delete(url, headers));
+    }
+
+    @NonNull
+    public IAltFuture<String, Response> deleteAsync(
+            @Nullable final Collection<Header> headers) {
+        return NET_WRITE.map(url -> delete(url, headers));
     }
 
     @NonNull
     public Response delete(
             @NonNull final String url,
             @Nullable final Collection<Header> headers) throws IOException {
-        dd(origin, "remove " + url);
+        dd(origin, "delete " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();
@@ -283,7 +358,7 @@ public final class NetUtil {
             case NETWORK_TYPE_CDMA:
             case NETWORK_TYPE_GPRS:
             case NETWORK_TYPE_IDEN:
-                return NetType.NET_2_5G.NET_2G;
+                return NetType.NET_2G;
 
             case NETWORK_TYPE_EDGE:
                 return NetType.NET_2_5G;

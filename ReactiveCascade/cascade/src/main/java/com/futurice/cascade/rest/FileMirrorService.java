@@ -102,7 +102,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
         synchronized (mutex) {
             final String keyWithPath = applyPath(key);
             vv(this, "Start FILE read: " + keyWithPath);
-            return fileUtil.readFile(keyWithPath);
+            return fileUtil.read(keyWithPath);
         }
     }
 
@@ -118,7 +118,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
     public void put(@NonNull final String key,
                     @NonNull final byte[] bytes) throws Exception {
         synchronized (mutex) {
-            fileUtil.writeFile(key, bytes);
+            fileUtil.write(key, bytes);
             super.put(key, bytes);
         }
     }
@@ -154,7 +154,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
         synchronized (mutex) {
             key = applyPath(key);
             vv(this, "Start FILE remove: " + key);
-            boolean result = fileUtil.deleteFile(key);
+            boolean result = fileUtil.delete(key);
             if (result == true) {
                 super.delete(key);
             }

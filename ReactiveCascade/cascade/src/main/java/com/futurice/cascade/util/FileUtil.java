@@ -27,7 +27,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.io.ByteArrayOutputStream;
@@ -35,11 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import static com.futurice.cascade.Async.*;
 
@@ -58,32 +53,32 @@ public final class FileUtil {
     }
 
     @NonNull
-    public <IN> IAltFuture<IN, IN> writeFileAsync(
+    public <IN> IAltFuture<IN, IN> writeAsync(
             @NonNull final String fileName,
             @NonNull final byte[] bytes) {
         return FILE.then(() -> {
-            writeFile(fileName, bytes);
+            write(fileName, bytes);
         });
     }
 
     @NonNull
-    public IAltFuture<String, byte[]> writeFileAsync(
+    public IAltFuture<String, byte[]> writeAsync(
             @NonNull final byte[] bytes) {
         return FILE.map(fileName -> {
-            writeFile(fileName, bytes);
+            write(fileName, bytes);
             return bytes;
         });
     }
 
     @NonNull
-    public IAltFuture<byte[], byte[]> writeFileAsync(
+    public IAltFuture<byte[], byte[]> writeAsync(
             @NonNull final String fileName) {
         return FILE.then(bytes -> {
-            writeFile(fileName, bytes);
+            write(fileName, bytes);
         });
     }
 
-    public void writeFile(
+    public void write(
             @NonNull final String fileName,
             @NonNull final byte[] bytes) {
         FileOutputStream fileOutputStream = null;
@@ -111,19 +106,19 @@ public final class FileUtil {
     }
 
     @NonNull
-    public IAltFuture<String, byte[]> readFileAsync() {
-        return FILE.map(this::readFile);
+    public IAltFuture<String, byte[]> readAsync() {
+        return FILE.map(this::read);
     }
 
     @NonNull
-    public IAltFuture<?, byte[]> readFileAsync(@NonNull final String fileName) {
+    public IAltFuture<?, byte[]> readAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
-            return readFile(fileName);
+            return read(fileName);
         });
     }
 
     @NonNull
-    public byte[] readFile(@NonNull final String fileName) {
+    public byte[] read(@NonNull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -160,19 +155,19 @@ public final class FileUtil {
         return bos.toByteArray();
     }
 
-    public boolean deleteFile(@NonNull final String fileName) {
+    public boolean delete(@NonNull final String fileName) {
         return context.deleteFile(fileName);
     }
 
     @NonNull
-    public IAltFuture<?, Boolean> deleteFileAsync(@NonNull final String fileName) {
+    public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
-            return deleteFile(fileName);
+            return delete(fileName);
         });
     }
 
     @NonNull
-    public IAltFuture<String, Boolean> deleteFileAsync() {
-        return FILE.map(this::deleteFile);
+    public IAltFuture<String, Boolean> deleteAsync() {
+        return FILE.map(this::delete);
     }
 }

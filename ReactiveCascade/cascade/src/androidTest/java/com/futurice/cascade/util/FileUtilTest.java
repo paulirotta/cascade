@@ -119,14 +119,14 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
 
     @MediumTest
     public void testMockWriteShouldAccessFileSystemOnce() {
-        mockFileUtil.writeFile("someFile", "something to write".getBytes());
+        mockFileUtil.write("someFile", "something to write".getBytes());
         assertThat(mockContext.fileOpens).isEqualTo(1);
         assertThat(mockContext.fileWrites).isEqualTo(1);
     }
 
     @MediumTest
     public void testMockReadFileShouldAccessFileSystemOnce() {
-        mockFileUtil.readFile("someFile");
+        mockFileUtil.read("someFile");
         assertThat(mockContext.fileOpens).isEqualTo(1);
         assertThat(mockContext.fileBufferReads).isEqualTo(3);
         assertThat(mockContext.fileReads).isEqualTo(2);
@@ -134,14 +134,14 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
 
     @MediumTest
     public void testMockDeleteOfNonexistantFile() {
-        boolean response = mockFileUtil.deleteFile("nonFile");
+        boolean response = mockFileUtil.delete("nonFile");
         assertThat(response).isFalse();
         assertThat(mockContext.fileDeletes).isEqualTo(0);
     }
 
     @MediumTest
     public void testMockDeleteOfFile() {
-        boolean response = mockFileUtil.deleteFile("someFile");
+        boolean response = mockFileUtil.delete("someFile");
         assertThat(response).isTrue();
         assertThat(mockContext.fileDeletes).isEqualTo(1);
     }
@@ -151,12 +151,12 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
 
     @MediumTest
     public void testActualWriteReadDelete() {
-        fileUtil.writeFile(TEST_FILE_NAME, TEST_CODE.getBytes());
-        byte[] bytes = fileUtil.readFile(TEST_FILE_NAME);
+        fileUtil.write(TEST_FILE_NAME, TEST_CODE.getBytes());
+        byte[] bytes = fileUtil.read(TEST_FILE_NAME);
         assertThat(new String(bytes)).isEqualTo(TEST_CODE);
-        boolean deleted = fileUtil.deleteFile(TEST_FILE_NAME);
+        boolean deleted = fileUtil.delete(TEST_FILE_NAME);
         assertThat(deleted).isTrue();
-        boolean reDeleted = fileUtil.deleteFile(TEST_FILE_NAME);
+        boolean reDeleted = fileUtil.delete(TEST_FILE_NAME);
         assertThat(reDeleted).isFalse();
     }
 }
