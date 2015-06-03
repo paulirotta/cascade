@@ -147,7 +147,9 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> boolean moveToHeadOfQueue(@NonNull final Runnable runnable) {
+    public boolean moveToHeadOfQueue(@NonNull final Runnable runnable) {
+        //TODO Analyze if this non-atomic operation is a risk for closing a ThreadType and moving all pending actions to a new thread type as we would like to do for NET_READ when the available bandwdith changes
+
         if (!(queue instanceof Deque)) {
             return false; // The UI thread does not have a visible queue, and some queues choose not to support re-ordering
         }
@@ -185,14 +187,6 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 //    @NonNull
 //    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final OUT value) throws Exception {
 //        vv(this, origin, "map(" + value + ")");
-//        return new SettableAltFuture<>(this, value);
-//    }
-
-//    @Override // IThreadType
-//    @NonNull
-//    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final ImmutableValue<OUT> immutableValue) throws Exception {
-//        final OUT value = immutableValue.get();
-//        vv(this, origin, "map('" + immutableValue.getName() + "'=" + value + ")");
 //        return new SettableAltFuture<>(this, value);
 //    }
 

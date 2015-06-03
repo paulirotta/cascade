@@ -57,6 +57,7 @@ public interface IAtomicValue<T extends Object> extends IGettable<T> {
      * @return
      */
     @Override // Object
+    @NonNull
     String toString();
 
     /**
