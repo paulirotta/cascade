@@ -1,12 +1,11 @@
 package com.futurice.cascade.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.test.mock.MockContext;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import com.futurice.cascade.test.AsyncApplicationTestCase;
+import com.futurice.cascade.test.AsyncAndroidTestCase;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
-public class FileUtilTest extends AsyncApplicationTestCase<Application> {
+public class FileUtilTest extends AsyncAndroidTestCase {
     final AsyncMockContext mockContext = new AsyncMockContext();
 
     class AsyncMockContext extends MockContext {
@@ -107,7 +106,7 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
     private FileUtil mockFileUtil;
 
     public FileUtilTest() {
-        super(Application.class);
+        super();
     }
 
     @Override

@@ -50,7 +50,7 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
     /**
      * Access {@link TestUtil} from within an integration test
      *
-     * @return
+     * @return the test util implementation
      */
     @NonNull
     public TestUtil getTestUtil() {
@@ -61,8 +61,11 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
     }
 
     /**
+     * Change from the default {@link TestUtil} implementation.
      *
-     * @param testUtil
+     * It is usually not needed to call this method.
+     *
+     * @param testUtil the test util implementation
      */
     public void setTestUtil(@NonNull final TestUtil testUtil) {
         this.testUtil = testUtil;
@@ -81,7 +84,7 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
      *
      * It is usually not needed to call this method.
      *
-     * @param fileUtil
+     * @param fileUtil the file util implementation
      */
     public void setFileUtil(@NonNull final FileUtil fileUtil) {
         this.fileUtil = fileUtil;

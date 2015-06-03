@@ -413,14 +413,14 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    public ExecutorService getFileExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getFileExecutorService(
+            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (fileReadExecutorService == null) {
             Log.d(TAG, "Creating default file read executor service");
             setFileReadExecutorService(new ThreadPoolExecutor(1, 1,
                             0L, TimeUnit.MILLISECONDS,
                             getFileQueue(),
-                            runnable ->
-                                    new TypedThread(threadTypeImmutableValue.get(), runnable, "FileThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "FileThread" + threadNumber.getAndIncrement()))
             );
         }
         //TODO else Warn if threadType does match the previously created IThreadType parameter
@@ -429,13 +429,13 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    public ExecutorService getNetReadExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getNetReadExecutorService(
+            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (netReadExecutorService == null) {
             Log.d(TAG, "Creating default net read executor service");
             setNetReadExecutorService(new ThreadPoolExecutor(1, NUMBER_OF_CONCURRENT_NET_READS,
                             1000, TimeUnit.MILLISECONDS, getNetReadQueue(),
-                            runnable ->
-                                    new TypedThread(threadTypeImmutableValue.get(), runnable, "NetReadThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetReadThread" + threadNumber.getAndIncrement()))
             );
         }
 
@@ -443,12 +443,12 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    public ExecutorService getNetWriteExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getNetWriteExecutorService(
+            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (netWriteExecutorService == null) {
             Log.d(TAG, "Creating default net write executor service");
             setNetWriteExecutorService(Executors.newSingleThreadExecutor(
-                            runnable ->
-                                    new TypedThread(threadTypeImmutableValue.get(), runnable, "NetWriteThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetWriteThread" + threadNumber.getAndIncrement()))
             );
         }
 
@@ -586,7 +586,7 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    public AsyncBuilder setFailFast(boolean failFast) {
+    public AsyncBuilder setFailFast(final boolean failFast) {
         Log.v(TAG, "setFailFast(" + failFast + ")");
         this.failFast = failFast;
         return this;
