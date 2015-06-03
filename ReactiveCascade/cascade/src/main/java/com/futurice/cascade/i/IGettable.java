@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
+import android.support.annotation.Nullable;
+
 import com.futurice.cascade.rest.PrioritizedGettable;
 
 /**
@@ -44,10 +46,10 @@ import com.futurice.cascade.rest.PrioritizedGettable;
  */
 public interface IGettable<T> {
     /**
-     * Get the next key which is highest priority to act on at this moment. How you prioritize keys
-     * for a smooth user experience is application-dependent, but may be more complex than FIFO.
+     * Get the current value of a variable or the next value in a list.
      *
-     * @return
+     * @return the current value, next value in the series, or <code>null</code> of the series has ended
      */
+    @Nullable
     public T get();
 }

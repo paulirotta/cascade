@@ -142,7 +142,14 @@ public class PrioritizedGettable<KEY extends Comparable> implements IGettable<KE
     }
 
     @Override
+    @Nullable
     public String toString() {
-        return "PrioritizedUrlFactory- Priority:" + priority + " Size:" + queue.size();
+        final KEY key = get();
+
+        if (key == null) {
+            return null;
+        }
+
+        return key.toString();
     }
 }
