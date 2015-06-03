@@ -82,7 +82,10 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
      *                        reduces context switching and peak memory load it may delay the start of execution
      *                        of tasks in one thread type by tasks in another thread type
      */
-    public AbstractThreadType(@NonNull String name, @NonNull ExecutorService executorService, BlockingQueue<Runnable> queue) {
+    public AbstractThreadType(
+            @NonNull final String name,
+            @NonNull final ExecutorService executorService,
+            @NonNull final BlockingQueue<Runnable> queue) {
         this.name = name;
         this.executorService = executorService;
         this.queue = queue;
@@ -107,7 +110,9 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override
     @NonNull
-    public <IN> Runnable wrapRunnableAsErrorProtection(@NonNull final IAction<IN> action, @NonNull final IOnErrorAction onErrorAction) {
+    public <IN> Runnable wrapRunnableAsErrorProtection(
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         return () -> {
             try {
                 action.call();
@@ -137,7 +142,9 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> void execute(@NonNull final IAction<IN> action, @NonNull final IOnErrorAction onErrorAction) {
+    public <IN> void execute(
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         execute(wrapRunnableAsErrorProtection(action, onErrorAction));
     }
 
@@ -164,7 +171,9 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> void executeNext(@NonNull final IAction<IN> action, @NonNull final IOnErrorAction onErrorAction) {
+    public <IN> void executeNext(
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         vv(this, origin, "executeNext()");
         executeNext(wrapRunnableAsErrorProtection(action, onErrorAction));
     }
@@ -182,13 +191,6 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         vv(this, origin, "map()");
         return new AltFuture<>(this, action);
     }
-
-//    @Override // IThreadType
-//    @NonNull
-//    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final OUT value) throws Exception {
-//        vv(this, origin, "map(" + value + ")");
-//        return new SettableAltFuture<>(this, value);
-//    }
 
     @Override // IThreadType
     @NonNull
@@ -213,6 +215,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
+    @SafeVarargs
     @NonNull
     public final <IN> List<IAltFuture<IN, IN>> then(@NonNull final IAction<IN>... actions) {
         final List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
@@ -252,40 +255,6 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     //TODO public <A> AltFuture<A> flush()  - current thread type
     //TODO public <A> AltFuture<A> flush(IThreadType threadType)   - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
 
-    /**
-     * Complete this AltFuture asynchronously. Do not call this method directly. Call {@link com.futurice.cascade.i.functional.IRunnableAltFuture#fork()} instead.
-     * This is only public to allow alternate implementations which follow the interface contracts.
-     * <p>
-     * This will be called automatically as each step in the function chain executes. It can only be
-     * called one time split with the IThreadType for which this AltFuture was created. These checks are done
-     * only in debugOrigin builds to runtime assert this consistency of your architecture without degrading
-     * production execution efficiency.
-     * <p>
-     * This will also be called for all your chained functions such as {@link com.futurice.cascade.functional.AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)}
-     * as each previous link in the chain completes.
-     * <p>
-     * It is generally not be needed to call this method directly. The other convenience
-     * methods in this interface provide less verbose alternatives which will call this at
-     * the appropriate time.
-     * <p>
-     * Either the <code>onSuccess</code> or <code>onError</code> of the <code>AltFuture</code>
-     * are guaranteed to be called unless the associated {@link java.util.concurrent.ExecutorService}
-     * is killed prematurely by the platform in lifecycle events. If your
-     * {@link android.content.Context} terminates itself such as with
-     * {@link AbstractThreadType#shutdown(int, IAction)} subscribe the continuation
-     * functions will complete before shutdown.
-     * <p>
-     * In the case of irregular termination, the {@link java.lang.Exception} provided will be a
-     * {@link java.util.concurrent.CancellationException} if
-     * {@link com.futurice.cascade.functional.AltFuture#cancel(String)} was called on a previous method
-     * in a functional chain of <code>.subscribe()</code> actions. This may happen for example if there
-     * is a {@link java.lang.RuntimeException}. The {@link java.lang.Exception} provided will be a
-     * {@link java.util.concurrent.CancellationException} if
-     * {@link com.futurice.cascade.functional.AltFuture#cancel(String)} was called directly on this object.
-     * You may wish to use this difference to alter or filter your <code>onError</code> actions.
-     *
-     * @param runnableAltFuture
-     */
     @Override // IThreadType
     public <IN, OUT> void fork(@NonNull final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
         assertTrue("AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
@@ -297,47 +266,11 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         execute(runnableAltFuture); // Atomic state checks must be completed later in the .execute() method
     }
 
-    /**
-     * <p>
-     * Wait for all pending actions to complete. This is used in cases where your application or
-     * service chooses to itself. In such cases you can wait an arbitrary amount of time for the
-     * orderly completion of any pending tasks split execute some onFireAction once this finishes.
-     * <p>
-     * Under normal circumstances, you do call this. Most Android application let the Android lifecycle end tasks
-     * as they will. Just let work complete split let Android end the program when it feels the need. This
-     * is the safest design Android offers since there are no guarantees your application will change
-     * Android execute states with graceful notification. Design for split battle harden your code
-     * against sudden shutdowns instead of expecting this method to be called.
-     * <p>
-     * This method returns immediately split does not wait. It will start to shut down the executor
-     * threads. No more asynchronous tasks may be sent to the executor after this point.
-     * <p>
-     * Use the returned Future to know when current tasks complete.
-     * <p>
-     * <code>
-     * // Do not get from a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
-     * shutdown(5000, () -> doSomethingAfterShutdown()).get(); // Block calling thread up to 5 seconds
-     * </code>
-     * <p>
-     * After shutdown starts, new WORKER operations (operations queued to a WORKER) will throw a runtime Exception.
-     * <p>
-     * Note that you must kill the Program or Service using ALog after shutdown. It can not be restarted even if for example
-     * a new Activity is created later without first reacting a new Program.
-     *
-     * @param timeout             milliseconds to wait for shutdown before calling <code>afterShutdownAction</code>. Unless
-     *                            otherwise interrupted, shutdown may continue after this time. This getValue must be
-     *                            more than zero.
-     * @param afterShutdownAction start on a dedicated thread after successful shutdown. The returned
-     *                            {@link java.util.concurrent.Future} will complete only after this operation completes
-     * @return a Future that will return true if the shutdown completes within the specified time, otherwise shutdown continues
-     * split <code>afterShutdownAction</code> will not be called
-     * @throws InterruptedException
-     */
+    @Override // IThreadType
     @NonNull
     public <IN> Future<Boolean> shutdown(
-            int timeout,
-            @Nullable final IAction<IN> afterShutdownAction)
-            throws InterruptedException {
+            final long timeout,
+            @Nullable final IAction<IN> afterShutdownAction) {
         if (timeout < 1) {
             Async.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
@@ -370,30 +303,15 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
                         terminated = false;
                     }
                 }
-
-                return terminated;
             }
+            return terminated;
         });
         (new Thread(futureTask, "Shutdown ThreadType " + getName())).start();
 
         return futureTask;
     }
 
-    /**
-     * A best-effort stop any currently executing tasks. These current tasks may choose to continue
-     * running after this point. The method returns immediately.
-     * <p>
-     * This really is the end of the ThreadType. It can not be be re-started after it is shut down. You
-     * will need to create a new ThreadType or restart the application.
-     * <p>
-     * Note that it is possible that the underlying {@link java.util.concurrent.ExecutorService} is shared
-     * by multiple {@link com.futurice.cascade.i.IThreadType} implementations. This is not true in default
-     * implementations. If this is true in your implementation, subscribe calling <code>shutdownNow()</code>
-     * will have side effects on the other ThreadTypes.
-     *
-     * @return items which have not yet started executing.
-     */
-    @Override
+    @Override // IThreadType
     @NonNull
     public <IN> List<Runnable> shutdownNow(
             @NonNull final String reason,

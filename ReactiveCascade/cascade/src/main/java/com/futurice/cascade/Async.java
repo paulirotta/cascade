@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -909,28 +910,15 @@ public final class Async {
      * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
      * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage provided.
      *
-     * @param errorMessage
-     * @param testResult
+     * @param errorMessage a message to display when the assertion fails. It should indicate the
+     *                     reason which was not true and, if possible, the likely corrective action
+     * @param testResult the result of the test, <code>true</code> if the assertion condition is met
      */
     public static void assertTrue(
             @NonNull final String errorMessage,
             final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
-        }
-    }
-
-    /**
-     * A runtime pre-condition for following logic that says it must be execute on one of the threads
-     * created for an {@link com.futurice.cascade.i.IThreadType}, specifically a {@link TypedThread}
-     * and not the system main thread ("UI thread").
-     * <p>
-     * Logically you may use this as assert-not-ui-thread. Creating threads which are not <code>ThreadTypeThread</code>s
-     * would require you to provide a different assertion.
-     */
-    public static void assertTypedThread() {
-        if (DEBUG && !(Thread.currentThread() instanceof TypedThread)) {
-            throwIllegalStateException(Async.class.getSimpleName(), "assertTypedThread() but actually running on " + Thread.currentThread().getName());
         }
     }
 
@@ -1036,11 +1024,18 @@ public final class Async {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
+        @NonNull
+        @Override
+        public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable IAction<IN> afterShutdownAction) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
         @Override
         public final <IN> List<Runnable> shutdownNow(@NonNull String reason, @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
+        @NonNull
         @Override
         public final String getName() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");

@@ -34,10 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is a marker class to aid in runtime tests.
- * <p>
- * If you create a custom {@link com.futurice.cascade.i.IThreadType} or {@link java.util.concurrent.ExecutorService}, the <code>Thread</code>s
- * should come from this marker class to avoid breaking any application code that makes use of
- * {@link Async#assertTypedThread()}
+ *
  */
 @NotCallOrigin
 public class TypedThread extends Thread {
