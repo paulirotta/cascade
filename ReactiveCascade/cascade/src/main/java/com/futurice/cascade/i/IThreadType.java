@@ -120,10 +120,9 @@ public interface IThreadType extends INamed {
      * times should be executing or queued only once at any given time.
      *
      * @param runnable the work to be performed
-     * @param <IN>     the type of input argument expected by the action
      * @return <code>true</code> if found in the queue and moved
      */
-    <IN> boolean moveToHeadOfQueue(@NonNull Runnable runnable);
+    boolean moveToHeadOfQueue(@NonNull Runnable runnable);
 
     /**
      * Run this onFireAction after all previously submitted actions (FIFO).

@@ -25,6 +25,7 @@ THE SOFTWARE.
 package com.futurice.cascade;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.futurice.cascade.functional.ImmutableValue;
@@ -36,8 +37,9 @@ import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IActionTwo;
-import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.action.IOnErrorAction;
+import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.i.functional.IRunnableAltFuture;
 import com.futurice.cascade.util.AbstractThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
@@ -172,7 +174,7 @@ public final class Async {
         }
     }
 
-    private static String tagWithAspectAndThreadName(String message) {
+    private static String tagWithAspectAndThreadName(@NonNull String message) {
         if (!DEBUG || message.contains("at .")) {
             return message;
         }
@@ -730,41 +732,6 @@ public final class Async {
         return origin + " - " + reason; //TODO Not fully async. Not critical, but can sometimes race to a non-set origin
     }
 
-    private static final class StackTaceLine {
-        final Class claz;
-        final ImmutableValue<Method> method;
-        final StackTraceElement stackTraceElement;
-
-        StackTaceLine(final StackTraceElement stackTraceElement) throws ClassNotFoundException {
-            this.stackTraceElement = stackTraceElement;
-            final String className = stackTraceElement.getClassName();
-            Class c = classNameMap.get(className);
-            if (c == null) {
-                c = Class.forName(className);
-                classNameMap.putIfAbsent(className, c);
-            }
-            this.claz = c;
-            final String methodName = stackTraceElement.getMethodName();
-            final String key = className + methodName;
-            this.method = new ImmutableValue<>(
-                    () -> {
-                        Method meth = methodNameMap.get(key);
-
-                        if (meth == null) {
-                            final Method[] methods = claz.getMethods();
-                            for (final Method m : methods) {
-                                methodNameMap.putIfAbsent(key, m);
-                                if (m.getName().equals(methodName)) {
-                                    meth = m;
-                                    break;
-                                }
-                            }
-                        }
-                        return meth;
-                    });
-        }
-    }
-
     private static List<StackTaceLine> findClassAndMethod(final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
@@ -875,23 +842,19 @@ public final class Async {
      * This is used for debugging only. For performance reasons it will always return <code>null</code>
      * in production builds.
      *
-     * @return the current ThreadType if it can be determined (no use of one Thread for multiple ThreadTypes), or null if it can not be deetermined
+     * Beware of debugging confusion if you use one Thread as part of the executor in multiple different ThreadTypes
+     *
+     * @return the current ThreadType or {@link #NON_CASCADE_THREAD} if the type can be determined
      */
     @NonNull
     public static IThreadType currentThreadType() {
-        if (!DEBUG) {
-            return null; //FIXME nullable or marker value in production builds?
-        }
-
-        Thread thread = Thread.currentThread();
-        IThreadType threadType = null;
+        final Thread thread = Thread.currentThread();
+        IThreadType threadType = NON_CASCADE_THREAD;
 
         if (thread instanceof TypedThread) {
             threadType = ((TypedThread) thread).getThreadType();
-        } else {
-            if (isUiThread()) {
-                threadType = UI;
-            }
+        } else if (isUiThread()) {
+            threadType = UI;
         }
 
         return threadType;
@@ -919,10 +882,10 @@ public final class Async {
     }
 
     /**
-     * A runtime assertTrue you may insert at the beginning of code to ensure your design does
-     * not do code requiring the UI thread when not on the UI thread.
+     * A runtime assertion you may use at the beginning of code to mark your contract for code
+     * which must run on the main system thread.
      * <p>
-     * For performance, the assertTrue is not performed in production builds, only debugOrigin builds.
+     * For performance, the assertion is not tested in production builds
      */
     public static void assertUIThread() {
         if (DEBUG && !isUiThread()) {
@@ -930,6 +893,12 @@ public final class Async {
         }
     }
 
+    /**
+     * A runtime assertion you may use at the beginning of code to mark your contract for code
+     * which must run in the default background task thread pool.
+     *
+     * For performance, the assertion is not tested in production builds
+     */
     public static void assertWorkerThread() {
         if (DEBUG && !isWorkerThread()) {
             throwIllegalStateException(Async.class.getSimpleName(), "assertWorkerThread() but actually running on " + Thread.currentThread().getName());
@@ -943,7 +912,9 @@ public final class Async {
      * @param errorMessage
      * @param testResult
      */
-    public static void assertTrue(String errorMessage, boolean testResult) {
+    public static void assertTrue(
+            @NonNull final String errorMessage,
+            final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
         }
@@ -960,6 +931,154 @@ public final class Async {
     public static void assertTypedThread() {
         if (DEBUG && !(Thread.currentThread() instanceof TypedThread)) {
             throwIllegalStateException(Async.class.getSimpleName(), "assertTypedThread() but actually running on " + Thread.currentThread().getName());
+        }
+    }
+
+    /**
+     * A marker value returned when a thread is not part of Cascade
+     */
+    public static final IThreadType NON_CASCADE_THREAD = new IThreadType() {
+        @Override
+        public final boolean isInOrderExecutor() {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> void execute(IAction<IN> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final void execute(Runnable runnable) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> void execute(IAction<IN> action, IOnErrorAction onErrorAction) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> void executeNext(IAction<IN> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final void executeNext(Runnable runnable) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final boolean moveToHeadOfQueue(@NonNull Runnable runnable) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        @SafeVarargs
+        public final <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> IAltFuture<?, IN> from(@NonNull IN value) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        @SafeVarargs
+        public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        @SafeVarargs
+        public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN, OUT> void fork(IRunnableAltFuture<IN, OUT> runnableAltFuture) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final <IN> List<Runnable> shutdownNow(@NonNull String reason, @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public final String getName() {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+    };
+
+    private static final class StackTaceLine {
+        final Class claz;
+        final ImmutableValue<Method> method;
+        final StackTraceElement stackTraceElement;
+
+        StackTaceLine(final StackTraceElement stackTraceElement) throws ClassNotFoundException {
+            this.stackTraceElement = stackTraceElement;
+            final String className = stackTraceElement.getClassName();
+            Class c = classNameMap.get(className);
+            if (c == null) {
+                c = Class.forName(className);
+                classNameMap.putIfAbsent(className, c);
+            }
+            this.claz = c;
+            final String methodName = stackTraceElement.getMethodName();
+            final String key = className + methodName;
+            this.method = new ImmutableValue<>(
+                    () -> {
+                        Method meth = methodNameMap.get(key);
+
+                        if (meth == null) {
+                            final Method[] methods = claz.getMethods();
+                            for (final Method m : methods) {
+                                methodNameMap.putIfAbsent(key, m);
+                                if (m.getName().equals(methodName)) {
+                                    meth = m;
+                                    break;
+                                }
+                            }
+                        }
+                        return meth;
+                    });
         }
     }
 }

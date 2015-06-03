@@ -24,11 +24,14 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
+import android.support.annotation.NonNull;
+
 public interface INamed {
     /**
      * A descriptive name to assist the developer with debugging
      *
      * @return
      */
+    @NonNull
     String getName();
 }

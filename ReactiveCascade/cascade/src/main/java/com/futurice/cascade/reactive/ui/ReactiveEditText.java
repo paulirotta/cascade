@@ -2,6 +2,7 @@ package com.futurice.cascade.reactive.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -10,15 +11,19 @@ import android.widget.EditText;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.reactive.ReactiveValue;
 
 import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.assertUIThread;
 import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.vv;
 
 /**
+ * An {@link EditText} which can be manipulated and which in turn manipulates a supporting
+ * {@link ReactiveValue<String>} which reflects the current on-screen value
+ *
+ * FIXME The cursor position on screen is not maintained nicely when values update
+ *
  * Created by Paul Houghton on 12-03-2015.
  */
 @NotCallOrigin
@@ -27,51 +32,76 @@ public class ReactiveEditText extends EditText implements INamed {
     public volatile ReactiveValue<String> reactiveValue;
     private TextWatcher textWatcher;
 
-    public ReactiveEditText(Context context) {
+    public ReactiveEditText(@NonNull final Context context) {
         super(context);
 
         reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
     }
 
-    public ReactiveEditText(Context context, ReactiveValue<String> reactiveValue) {
+    public ReactiveEditText(
+            @NonNull final Context context,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context);
 
         this.reactiveValue = reactiveValue;
     }
 
-    public ReactiveEditText(Context context, AttributeSet attrs) {
+    public ReactiveEditText(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
         reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
     }
 
-    public ReactiveEditText(Context context, AttributeSet attrs, ReactiveValue<String> reactiveValue) {
+    public ReactiveEditText(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs);
 
         this.reactiveValue = reactiveValue;
     }
 
-    public ReactiveEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ReactiveEditText(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
     }
 
-    public ReactiveEditText(Context context, AttributeSet attrs, int defStyleAttr, ReactiveValue<String> reactiveValue) {
+    public ReactiveEditText(
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            final int defStyleAttr,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
 
         this.reactiveValue = reactiveValue;
     }
 
     @TargetApi(21)
-    public ReactiveEditText(String name, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ReactiveEditText(
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            final int defStyleAttr,
+            final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
     }
 
     @TargetApi(21)
-    public ReactiveEditText(String name, Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, ReactiveValue<String> reactiveValue) {
+    public ReactiveEditText(
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            final int defStyleAttr,
+            final int defStyleRes,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         this.reactiveValue = reactiveValue;
@@ -84,8 +114,11 @@ public class ReactiveEditText extends EditText implements INamed {
      * @param fire
      * @return
      */
-    public ReactiveValue<String> setReactiveValue(ReactiveValue<String> reactiveValue, boolean fire) {
-        UI.execute((IAction)() -> {
+    @NonNull
+    public ReactiveValue<String> setReactiveValue(
+            @NonNull final ReactiveValue<String> reactiveValue,
+            final boolean fire) {
+        UI.execute(() -> {
             this.reactiveValue = reactiveValue;
             if (fire) {
                 reactiveValue.fire();
@@ -96,18 +129,20 @@ public class ReactiveEditText extends EditText implements INamed {
     }
 
     @Override // INamed
+    @NonNull
     public String getName() {
         return "ReactiveEditText" + getId();
     }
 
     @Override // View
     public void onAttachedToWindow() {
+        assertUIThread();
         final String currentText = reactiveValue.get();
         setText(currentText);
 
         vv(this, origin, "onAttachedToWindow " + getName() + ", value=" + currentText);
 
-        reactiveValue.subscribe(UI, (IActionOne<String>) this::setText);
+        reactiveValue.subscribe(UI, this::setText);
 
         if (textWatcher == null) {
             textWatcher = new TextWatcher() {
@@ -134,5 +169,7 @@ public class ReactiveEditText extends EditText implements INamed {
     public void onDetachedFromWindow() {
         vv(this, origin, "onDetachedFromWindow " + getName() + ", current value=" + getText());
         reactiveValue.unsubscribeAll("onDetachedFromWindow");
+
+        super.onDetachedFromWindow();
     }
 }

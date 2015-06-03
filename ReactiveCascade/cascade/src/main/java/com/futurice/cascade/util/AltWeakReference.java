@@ -1,5 +1,7 @@
 package com.futurice.cascade.util;
 
+import android.support.annotation.NonNull;
+
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
@@ -11,11 +13,13 @@ import java.lang.ref.WeakReference;
  */
 public class AltWeakReference<T> extends WeakReference<T> {
 
-    public AltWeakReference(T r) {
+    public AltWeakReference(@NonNull final T r) {
         super(r);
     }
 
-    public AltWeakReference(T r, ReferenceQueue<? super T> q) {
+    public AltWeakReference(
+            @NonNull final T r,
+            @NonNull final ReferenceQueue<? super T> q) {
         super(r, q);
     }
 
