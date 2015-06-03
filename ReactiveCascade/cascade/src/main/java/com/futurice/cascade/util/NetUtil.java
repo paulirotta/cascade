@@ -12,6 +12,7 @@ import android.telephony.TelephonyManager;
 
 import com.futurice.cascade.functional.AltFuture;
 import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -40,7 +41,11 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_IDEN;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_LTE;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_UNKNOWN;
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.NET_READ;
+import static com.futurice.cascade.Async.NET_WRITE;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.originAsync;
 
 /**
  * OkHttp convenience wrapper methods
@@ -75,13 +80,18 @@ public final class NetUtil {
     }
 
     @NonNull
-    public IAltFuture<String, Response> getAsync() {
-        return NET_READ.map(url -> get(url, null));
+    public <T extends Object> IAltFuture<T, Response> getAsync() {
+        return NET_READ.map(url -> get(url.toString(), null));
     }
 
     @NonNull
     public Response get(@NonNull final String url) throws IOException {
         return get(url, null);
+    }
+
+    @NonNull
+    public Response get(@NonNull final IGettable<String> stringGettable) throws IOException {
+        return get(stringGettable.get(), null);
     }
 
     @NonNull

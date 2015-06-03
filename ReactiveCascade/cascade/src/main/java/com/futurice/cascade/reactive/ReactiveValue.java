@@ -206,4 +206,10 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
 
         return success;
     }
+
+    @Override // Object
+    @NonNull
+    public String toString() {
+        return get().toString();
+    }
 }

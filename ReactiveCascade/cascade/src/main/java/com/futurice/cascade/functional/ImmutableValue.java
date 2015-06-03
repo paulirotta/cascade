@@ -26,10 +26,10 @@ package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
+import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.functional.IAltFutureState;
@@ -38,7 +38,9 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.throwIllegalStateException;
 
 /**
  * This can be useful for referring in a lambda expression to the the lambda expression.
@@ -146,15 +148,33 @@ public class ImmutableValue<T> implements INamed {
         final Iterator<IBaseAction<T>> iterator = thenActions.iterator();
 
         while (iterator.hasNext()) {
-            final IBaseAction action = iterator.next();
+            final IBaseAction<T> action = iterator.next();
             if (thenActions.remove(action)) {
                 try {
-                    Async.call(value, action);
+                    call(value, action);
                 } catch (Exception e) {
                     ee(this, "Can not do .subscribe() onFireAction after ImmutableValue was set to value=" + value, e);
                 }
             }
         }
+    }
+
+    private <IN, OUT> OUT call(
+            @NonNull final IN in,
+            @NonNull final IBaseAction<IN> action)
+            throws Exception {
+        if (action instanceof IAction) {
+            ((IAction) action).call();
+            return null;
+        } else if (action instanceof IActionOne) {
+            ((IActionOne<IN>) action).call(in);
+            return null;
+        } else if (action instanceof IActionOneR) {
+            return ((IActionOneR<IN, OUT>) action).call(in);
+        } else if (action instanceof IActionR) {
+            return ((IActionR<IN, OUT>) action).call();
+        }
+        throw new UnsupportedOperationException("Not sure how to call this IBaseAction type: " + action.getClass());
     }
 
     /**

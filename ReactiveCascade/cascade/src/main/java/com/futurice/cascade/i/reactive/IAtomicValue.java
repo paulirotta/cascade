@@ -35,7 +35,7 @@ import com.futurice.cascade.i.IGettable;
  *
  * @param <T>
  */
-public interface IAtomicValue<T> extends IGettable<T> {
+public interface IAtomicValue<T extends Object> extends IGettable<T> {
     /**
      * Get the current valueAR.
      * <p>
@@ -50,6 +50,14 @@ public interface IAtomicValue<T> extends IGettable<T> {
     @Override // IGettable
     @NonNull
     T get();
+
+    /**
+     * Implementations are required to map this value to be <code>get().toString()</code>
+     *
+     * @return
+     */
+    @Override // Object
+    String toString();
 
     /**
      * Set the current value.

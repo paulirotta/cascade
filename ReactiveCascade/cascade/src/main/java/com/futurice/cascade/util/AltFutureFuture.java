@@ -47,50 +47,49 @@ import java.util.concurrent.TimeoutException;
  * asynchronous process. There is no risk because the situation is tightly controlled and
  * requires performance be secondary to rigid conformance.
  *
- * @param <T>
+ * @param <OUT>
  */
-public class AltFutureFuture<T> implements Future<T> {
+public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     private static final long CHECK_INTERVAL = 50; // This is a fallback in case you for example have an error and fail to altFuture.notifyAll() when finished
-    private final IAltFuture<?, T> altFuture;
+    private final IAltFuture<IN, OUT> altFuture;
     private final Object mutex = new Object();
 
-    public AltFutureFuture(IAltFuture<?, T> altFuture) {
+    public AltFutureFuture(@NonNull final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
     }
 
-    @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    @Override // Future
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         return altFuture.cancel("DoneFuture was cancelled");
     }
 
-    @Override
+    @Override // Future
     public boolean isCancelled() {
         return altFuture.isCancelled();
     }
 
-    @Override
+    @Override // Future
     public boolean isDone() {
         return altFuture.isDone();
     }
 
-    @Override
+    @Override // Future
     @NonNull
-    public T get() throws InterruptedException, ExecutionException {
+    public OUT get() throws InterruptedException, ExecutionException {
+        final OUT out;
+
         try {
-            return get(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+            out = get(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            try {
-                Async.throwTimeoutException(this, "Timeout waiting for AltFuture to complete. Did you remember to .fork()?, new RuntimeException");
-            } catch (TimeoutException e1) {
-                throw new ExecutionException(e1);
-            }
-            return null; // This line is never reached but the IDE doesn't know that
+            throw new ExecutionException("Timeout waiting for AltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
         }
+
+        return out;
     }
 
-    @Override
+    @Override // Future
     @NonNull
-    public T get(
+    public OUT get(
             final long timeout,
             @NonNull final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
@@ -98,7 +97,7 @@ public class AltFutureFuture<T> implements Future<T> {
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
-            final IAction<T> action = () -> {
+            final IAction<OUT> action = () -> {
                 // Attach this to speed up and notify to continue the Future when the AltFuture finishes
                 // For speed, we don't normally notify after AltFuture end
                 synchronized (mutex) {
@@ -117,9 +116,6 @@ public class AltFutureFuture<T> implements Future<T> {
                     mutex.wait(t2);
                 }
             }
-        }
-        if (altFuture.isCancelled()) {
-            return null;
         }
 
         return altFuture.get();
