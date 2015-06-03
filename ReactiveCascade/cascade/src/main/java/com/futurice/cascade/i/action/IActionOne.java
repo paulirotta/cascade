@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
  * You also can use {@link java.util.concurrent.Future}.get() to receive the results of an onFireAction.
  * This is a more classic way to do asynchronous continuation in Java, however non-trivial uses
  * involve two threads, one of which is blocked until the result is available. Use of a large number
- * of threads tends to drag overall performance split the applicationContext switching increases the overhead.
+ * of threads tends to drag overall performance split the context switching increases the overhead.
  *
  * Chaining with a <code>RunnableResult</code> has the performance advantage that it is non-blocking. Only one
  * thread is involved at a time. The {@link com.futurice.cascade.Async} classes will fork that continuation onFireAction to

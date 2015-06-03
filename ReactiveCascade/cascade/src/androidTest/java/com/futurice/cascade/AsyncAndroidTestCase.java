@@ -1,28 +1,39 @@
-package com.futurice.cascade.test;
+package com.futurice.cascade;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.test.AndroidTestCase;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.AsyncBuilder;
 import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.test.TestUtil;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
+
+import org.junit.Before;
+import org.junit.runner.RunWith;
 
 /**
  * A connectedTest harness which bootstraps the Async class
  * <p>
  * Created by phou on 6/1/2015.
  */
-public class AsyncAndroidTestCase extends AndroidTestCase {
+@LargeTest
+@RunWith(AndroidJUnit4.class)
+public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
     private TestUtil testUtil;
     private FileUtil fileUtil;
     private NetUtil netUtil;
     private long defaultTimeoutMillis = 1000;
+    protected final Context context;
 
     public AsyncAndroidTestCase() {
-        super();
+        super(Activity.class);
+
+        context = InstrumentationRegistry.getContext();
     }
 
     /**
@@ -31,11 +42,12 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
      *
      * @throws Exception
      */
+    @Before
     @Override // TestCase
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
 
-        new AsyncBuilder(getContext()).build();
+        new AsyncBuilder(context).build();
     }
 
     /**
@@ -74,7 +86,7 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
     @NonNull
     public FileUtil getFileUtil() {
         if (fileUtil == null) {
-            setFileUtil(new FileUtil(getContext(), Context.MODE_PRIVATE));
+            setFileUtil(new FileUtil(context, Context.MODE_PRIVATE));
         }
         return fileUtil;
     }
@@ -93,7 +105,7 @@ public class AsyncAndroidTestCase extends AndroidTestCase {
     @NonNull
     public NetUtil getNetUtil() {
         if (netUtil == null) {
-            setNetUtil(new NetUtil(getContext()));
+            setNetUtil(new NetUtil(context));
         }
         return netUtil;
     }

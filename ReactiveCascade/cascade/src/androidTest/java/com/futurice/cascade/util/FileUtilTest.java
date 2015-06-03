@@ -2,10 +2,16 @@ package com.futurice.cascade.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.mock.MockContext;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.LargeTest;
+import android.test.suitebuilder.annotation.SmallTest;
 
-import com.futurice.cascade.test.AsyncAndroidTestCase;
+import com.futurice.cascade.AsyncAndroidTestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -18,10 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class FileUtilTest extends AsyncAndroidTestCase {
     final AsyncMockContext mockContext = new AsyncMockContext();
 
-    class AsyncMockContext extends MockContext {
+    public class AsyncMockContext extends MockContext {
         public int fileWrites = 0;
         public int fileReads = 0;
         public int fileBufferReads = 0;
@@ -109,21 +117,23 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         super();
     }
 
+    @Before
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
 
         mockFileUtil = new FileUtil(mockContext, Context.MODE_PRIVATE);
     }
 
-    @MediumTest
+    @Test
+    @SmallTest
     public void testMockWriteShouldAccessFileSystemOnce() {
         mockFileUtil.write("someFile", "something to write".getBytes());
         assertThat(mockContext.fileOpens).isEqualTo(1);
         assertThat(mockContext.fileWrites).isEqualTo(1);
     }
 
-    @MediumTest
+    @Test
     public void testMockReadFileShouldAccessFileSystemOnce() {
         mockFileUtil.read("someFile");
         assertThat(mockContext.fileOpens).isEqualTo(1);
@@ -131,14 +141,14 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         assertThat(mockContext.fileReads).isEqualTo(2);
     }
 
-    @MediumTest
+    @Test
     public void testMockDeleteOfNonexistantFile() {
         boolean response = mockFileUtil.delete("nonFile");
         assertThat(response).isFalse();
         assertThat(mockContext.fileDeletes).isEqualTo(0);
     }
 
-    @MediumTest
+    @Test
     public void testMockDeleteOfFile() {
         boolean response = mockFileUtil.delete("someFile");
         assertThat(response).isTrue();
@@ -148,7 +158,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
     private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
     private static final String TEST_CODE = "TESTcode";
 
-    @MediumTest
+    @Test
     public void testActualWriteReadDelete() {
         getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
         byte[] bytes = getFileUtil().read(TEST_FILE_NAME);

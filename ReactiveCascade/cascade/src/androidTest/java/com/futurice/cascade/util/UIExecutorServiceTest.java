@@ -24,22 +24,39 @@ THE SOFTWARE.
 package com.futurice.cascade.util;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
-import android.test.AndroidTestCase;
+import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.LargeTest;
+
+import com.futurice.cascade.AsyncAndroidTestCase;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 
-public class UIExecutorServiceTest extends AndroidTestCase {
+@LargeTest
+@RunWith(AndroidJUnit4.class)
+public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     int handleMessageCount;
     int dispatchMessageCount;
     int sendCount;
-    Handler handler;
+
     UIExecutorService uiExecutorService;
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        handler = new Handler() {
+        try {
+            Looper.prepare();
+        } catch (RuntimeException e) {
+            // Only looper this test thread once
+        }
+        uiExecutorService = new UIExecutorService(new Handler() {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 handleMessageCount++;
@@ -48,34 +65,29 @@ public class UIExecutorServiceTest extends AndroidTestCase {
             /**
              * Handle system messages here.
              */
-            public void dispatchMessage(Message msg) {
+            public void dispatchMessage(@NonNull Message msg) {
                 super.dispatchMessage(msg);
                 dispatchMessageCount++;
             }
 
-            public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
+            public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
                 sendCount++;
                 return super.sendMessageAtTime(msg, uptimeMillis);
             }
-        };
-
-        uiExecutorService = new UIExecutorService(handler);
+        });
     }
 
-    public void tearDown() throws Exception {
-        handler = null;
-        handleMessageCount = 0;
-        dispatchMessageCount = 0;
-    }
-
+    @Test
     public void testIsShutdown() throws Exception {
         assertFalse(uiExecutorService.isShutdown());
     }
 
+    @Test
     public void testIsTerminated() throws Exception {
         assertFalse(uiExecutorService.isTerminated());
     }
 
+    @Test
     public void testSubmitCallable() throws Exception {
         uiExecutorService.submit(new Callable<Object>() {
             @Override
@@ -86,6 +98,7 @@ public class UIExecutorServiceTest extends AndroidTestCase {
         assertEquals("testSubmitCallable sends 1", 1, this.sendCount);
     }
 
+    @Test
     public void testSubmitRunnable() throws Exception {
         uiExecutorService.submit(new Runnable() {
             @Override
@@ -96,10 +109,12 @@ public class UIExecutorServiceTest extends AndroidTestCase {
         assertEquals("testSubmitRunnable sends 1", 1, this.sendCount);
     }
 
+    @Test
     public void testInvokeAll() throws Exception {
 
     }
 
+    @Test
     public void testInvokeAll1() throws Exception {
 
     }
@@ -122,10 +137,12 @@ public class UIExecutorServiceTest extends AndroidTestCase {
         assertTrue("Send at least 1", sendCount > 0);
     }*/
 
+    @Test
     public void testInvokeAnyRunnable() throws Exception {
 
     }
 
+    @Test
     public void testExecute() throws Exception {
         uiExecutorService.execute(new Runnable() {
             @Override

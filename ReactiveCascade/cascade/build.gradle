@@ -12,6 +12,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -34,6 +35,10 @@ android {
         checkReleaseBuilds false
         disable 'TypographyFractions', 'TypographyQuotes'
     }
+
+    packagingOptions {
+        exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
+    }
 }
 
 retrolambda {
@@ -45,5 +50,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
+    androidTestCompile 'com.android.support.test:runner:0.2'
+    androidTestCompile 'com.android.support.test:rules:0.2'
     androidTestCompile 'org.assertj:assertj-core:1.7.1'
+
 }

@@ -317,7 +317,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * Usually getValue() is called indirectly for you by creating a functional chain. When you
      * use {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)} split related convenience methods,
      * the functional chain will execute in explicit chain dependency order efficiently without blocking.
-     * This avoids several common multi-threaded design problems like excessive concurrency split applicationContext
+     * This avoids several common multi-threaded design problems like excessive concurrency split context
      * switching. Non-blocking thread design also eliminates common thread starvation or running out
      * of thread resources due to one or more blocked operations.
      * <p>

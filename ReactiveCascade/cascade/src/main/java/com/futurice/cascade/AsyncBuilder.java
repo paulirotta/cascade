@@ -64,7 +64,7 @@ public class AsyncBuilder {
 
     public static volatile AsyncBuilder asyncBuilder = null;
     public Thread uiThread;
-    public final Context applicationContext;
+    public final Context context;
     public ExecutorService uiExecutorService;
     public boolean debug = true; //BuildConfig.DEBUG; // true in debugOrigin builds, false in production builds, determined at build time to help JAVAC and PROGUARD clean out debugOrigin-only support code for speed and size
     public boolean failFast = debug;
@@ -114,7 +114,13 @@ public class AsyncBuilder {
      * @param context
      */
     public AsyncBuilder(@NonNull final Context context) {
-        this.applicationContext = context.getApplicationContext();
+        Context c = context;
+        try {
+            c = context.getApplicationContext();
+        } catch(NullPointerException e) {
+            // Needed for instrumentation setup with Android test runner
+        }
+        this.context = c;
     }
 
     @NonNull
@@ -259,7 +265,7 @@ public class AsyncBuilder {
             setFileService(new FileMirrorService("Default FileMirrorService",
                     "FileMirrorService",
                     false,
-                    applicationContext,
+                    context,
                     Context.MODE_PRIVATE,
                     getFileThreadType()));
         }
@@ -457,13 +463,13 @@ public class AsyncBuilder {
 
     @NonNull
     public ExecutorService getUiExecutorService() {
-        if (applicationContext == null) {
+        if (context == null) {
             Exception e = new IllegalStateException(NOT_INITIALIZED);
             Log.e(TAG, NOT_INITIALIZED, e);
             System.exit(-1);
         }
         if (uiExecutorService == null) {
-            setUiExecutorService(new UIExecutorService(new Handler(applicationContext.getMainLooper())));
+            setUiExecutorService(new UIExecutorService(new Handler(context.getMainLooper())));
         }
 
         return uiExecutorService;
@@ -486,7 +492,7 @@ public class AsyncBuilder {
     @NonNull
     public AbstractRESTService getNetAbstractRESTService() {
         if (netAbstractRESTService == null) {
-            setNetAbstractRESTService(new NetRESTService("Default NetRESTService", applicationContext,
+            setNetAbstractRESTService(new NetRESTService("Default NetRESTService", context,
                     getNetReadThreadType(), getNetWriteThreadType()));
         }
 
@@ -626,11 +632,14 @@ public class AsyncBuilder {
 
     @NonNull
     public Async build() {
-        if (applicationContext == null) {
-            throw new IllegalArgumentException("Please call new ThreadTypeBuilder(Context) with a non-null Context");
-        }
         if (uiThread == null) {
-            setUI_Thread(applicationContext.getMainLooper().getThread());
+            Thread thread = Thread.currentThread();
+            try {
+                context.getMainLooper().getThread();
+            } catch (NullPointerException e) {
+                // Needed for Google instrumentation test runner
+            }
+            setUI_Thread(thread);
         }
         if (strictMode) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
@@ -649,6 +658,7 @@ public class AsyncBuilder {
         Log.v(TAG, "AsyncBuilder complete");
 
         asyncBuilder = this;
-        return new Async();
+//        return new Async();
+        return null;
     }
 }

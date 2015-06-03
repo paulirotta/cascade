@@ -43,7 +43,7 @@ import static com.futurice.cascade.Async.*;
  * Concurrent changes to this structure will be concurrently pushed to subscribing
  * <code>MirrorService</code> implementations to create an eventually-consistent copy. Bi-directional
  * subscription is not supported but not specifically forbidden. Additional structures based on
- * this split with more information about the applicationContext of the changes useful to reconciliation may be
+ * this split with more information about the context of the changes useful to reconciliation may be
  * created in an overriding class.
  */
 public abstract class MirrorService<K, V> extends AbstractRESTService<K, V> {

@@ -1,19 +1,25 @@
 package com.futurice.cascade.util;
 
+import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.test.AsyncAndroidTestCase;
 import com.squareup.okhttp.Response;
 
-import static org.assertj.core.api.Assertions.*;
-import static com.futurice.cascade.Async.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static com.futurice.cascade.Async.WORKER;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for the NetUtil class
  *
  * Created by phou on 6/2/2015.
  */
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class NetUtilTest extends AsyncAndroidTestCase {
 
     public NetUtilTest() {
@@ -30,14 +36,14 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     }
 
-    @LargeTest
+    @Test
     public void testGetAsync() throws Exception {
         IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get")
                 .fork();
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 
-    @LargeTest
+    @Test
     public void testGetAsyncFromWORKER() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
@@ -46,7 +52,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 
-    @LargeTest
+    @Test
     public void testGet() throws Exception {
         assertThat(getNetUtil().get("http://httpbin.org/").body().bytes().length).isGreaterThan(100);
     }
