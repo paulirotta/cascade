@@ -25,6 +25,7 @@ THE SOFTWARE.
 package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncBuilder;
@@ -343,7 +344,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    @NonNull
+    @Nullable
     public OUT safeGet() {
         final Object state = stateAR.get();
 

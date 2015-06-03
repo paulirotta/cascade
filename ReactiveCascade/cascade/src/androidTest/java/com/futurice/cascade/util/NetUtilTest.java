@@ -2,12 +2,11 @@ package com.futurice.cascade.util;
 
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.test.AsyncAndroidTestCase;
 import com.squareup.okhttp.Response;
 
-import static com.futurice.cascade.Async.SERIAL_WORKER;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for the NetUtil class
@@ -17,11 +16,13 @@ import static org.assertj.core.api.Assertions.*;
 public class NetUtilTest extends AsyncAndroidTestCase {
 
     public NetUtilTest() {
-        super(SERIAL_WORKER);
+        super();
     }
 
     public void setUp() throws Exception {
         super.setUp();
+
+        setDefaultTimeoutMillis(15000); // Give real net traffic enough time to complete
     }
 
     public void testExecAfterPendingReadsAsync() throws Exception {
@@ -30,7 +31,8 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @LargeTest
     public void testGetAsync() throws Exception {
-        IAltFuture<?, Response> iaf = netUtil.getAsync("http://httpbin.org/get")
+        IAltFuture<?, Response> iaf = getNetUtil()
+                .getAsync("http://httpbin.org/get")
                 .fork();
         Response response = awaitDone(iaf);
         assertThat(response.isSuccessful()).isTrue();
@@ -41,7 +43,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     }
 
     public void testGet() throws Exception {
-
+        assertThat(getNetUtil().get("http://httpbin.org/get").isSuccessful()).isTrue();
     }
 
     public void testGet1() throws Exception {

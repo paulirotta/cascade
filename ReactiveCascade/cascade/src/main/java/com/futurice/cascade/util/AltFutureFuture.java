@@ -22,13 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.functional;
+package com.futurice.cascade.util;
 
-import com.futurice.cascade.*;
-import com.futurice.cascade.i.action.*;
-import com.futurice.cascade.i.functional.*;
+import android.support.annotation.NonNull;
 
-import java.util.concurrent.*;
+import com.futurice.cascade.Async;
+import com.futurice.cascade.i.action.IAction;
+import com.futurice.cascade.i.functional.IAltFuture;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results
@@ -69,6 +74,7 @@ public class AltFutureFuture<T> implements Future<T> {
     }
 
     @Override
+    @NonNull
     public T get() throws InterruptedException, ExecutionException {
         try {
             return get(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
@@ -82,10 +88,12 @@ public class AltFutureFuture<T> implements Future<T> {
         }
     }
 
-    private static final long TIMEOUT = 9000; //ms hold if the thread is blocked this entire time
-
     @Override
-    public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    @NonNull
+    public T get(
+            final long timeout,
+            @NonNull final TimeUnit unit)
+            throws InterruptedException, ExecutionException, TimeoutException {
         final long t = System.currentTimeMillis();
         final long endTime = t + unit.toMillis(timeout);
 

@@ -31,7 +31,7 @@ import android.support.annotation.NonNull;
 
 import com.futurice.cascade.util.AltWeakReference;
 import com.futurice.cascade.util.DefaultThreadType;
-import com.futurice.cascade.functional.AltFutureFuture;
+import com.futurice.cascade.util.AltFutureFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IOnErrorAction;

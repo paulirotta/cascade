@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.test.mock.MockContext;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import com.futurice.cascade.AsyncApplicationTestCase;
+import com.futurice.cascade.test.AsyncApplicationTestCase;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -14,8 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static com.futurice.cascade.Async.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
@@ -108,7 +107,7 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
     private FileUtil mockFileUtil;
 
     public FileUtilTest() {
-        super(Application.class, SERIAL_WORKER);
+        super(Application.class);
     }
 
     @Override
@@ -152,12 +151,12 @@ public class FileUtilTest extends AsyncApplicationTestCase<Application> {
 
     @MediumTest
     public void testActualWriteReadDelete() {
-        fileUtil.write(TEST_FILE_NAME, TEST_CODE.getBytes());
-        byte[] bytes = fileUtil.read(TEST_FILE_NAME);
+        getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
+        byte[] bytes = getFileUtil().read(TEST_FILE_NAME);
         assertThat(new String(bytes)).isEqualTo(TEST_CODE);
-        boolean deleted = fileUtil.delete(TEST_FILE_NAME);
+        boolean deleted = getFileUtil().delete(TEST_FILE_NAME);
         assertThat(deleted).isTrue();
-        boolean reDeleted = fileUtil.delete(TEST_FILE_NAME);
+        boolean reDeleted = getFileUtil().delete(TEST_FILE_NAME);
         assertThat(reDeleted).isFalse();
     }
 }

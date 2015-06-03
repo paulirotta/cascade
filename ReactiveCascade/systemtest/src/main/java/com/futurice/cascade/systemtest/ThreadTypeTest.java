@@ -25,7 +25,7 @@ package com.futurice.cascade.systemtest;
 
 import android.util.Log;
 
-import com.futurice.cascade.functional.AltFutureFuture;
+import com.futurice.cascade.util.AltFutureFuture;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.CallOrigin;
