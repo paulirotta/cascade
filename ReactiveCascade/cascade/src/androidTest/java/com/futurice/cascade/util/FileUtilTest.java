@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.mock.MockContext;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 
@@ -126,7 +125,6 @@ public class FileUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    @SmallTest
     public void testMockWriteShouldAccessFileSystemOnce() {
         mockFileUtil.write("someFile", "something to write".getBytes());
         assertThat(mockContext.fileOpens).isEqualTo(1);
