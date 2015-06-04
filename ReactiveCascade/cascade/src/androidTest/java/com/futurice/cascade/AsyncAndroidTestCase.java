@@ -47,6 +47,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public void setUp() throws Exception {
         super.setUp();
 
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         new AsyncBuilder(context).build();
     }
 
