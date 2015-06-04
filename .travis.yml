@@ -30,6 +30,8 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-22
     - extras
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 before_script:
     - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a

@@ -36,8 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.Callable;
-
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
@@ -89,12 +87,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     @Test
     public void testSubmitCallable() throws Exception {
-        uiExecutorService.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return null;
-            }
-        });
+        uiExecutorService.submit(() -> null);
         assertEquals("testSubmitCallable sends 1", 1, this.sendCount);
     }
 
