@@ -105,7 +105,7 @@ public interface IThreadType extends INamed {
     /**
      * Like {@link #execute(Runnable)} but the task is queued LIFO as the first item of the
      * {@link java.util.Deque} if this executor supports out of order execution.
-     *
+     * <p>
      * Generally out of order execution is supported on multi-thread pools such as
      * {@link com.futurice.cascade.Async#WORKER} but not strictly sequential operations such as write to file.
      *
@@ -282,11 +282,11 @@ public interface IThreadType extends INamed {
      * Note that you must kill the Program or Service using ALog after shutdown. It can not be restarted even if for example
      * a new Activity is created later without first reacting a new Program.
      *
-     * @param timeoutMillis         length of time to wait for shutdown to complete normally before forcing completion
+     * @param timeoutMillis       length of time to wait for shutdown to complete normally before forcing completion
      * @param afterShutdownAction start on a dedicated thread after successful shutdown. The returned
      *                            {@link java.util.concurrent.Future} will complete only after this operation completes
-     * split <code>afterShutdownAction</code> will not be called
-     * @param <IN>                  the type of input argument expected by the action
+     *                            split <code>afterShutdownAction</code> will not be called
+     * @param <IN>                the type of input argument expected by the action
      * @return a Future that will return true if the shutdown completes within the specified time, otherwise shutdown continues
      */
     @NonNull
@@ -294,18 +294,19 @@ public interface IThreadType extends INamed {
             long timeoutMillis,
             @Nullable final IAction<IN> afterShutdownAction);
 
-        /**
-         * Halt execution of all functional and reactive subscriptions in this threadType.
-         *
-         * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all functional chain elements
-         *                                                                and unbinding all reactive chain elements which have not otherwise expired.
-         * @param actionOnDedicatedThreadAfterAlreadyStartedTasksComplete optional callback once current tasks completely finished
-         * @param actionOnDedicatedThreadIfTimeout                        optional what to do if an already started task blocks for too long
-         * @param timeoutMillis                                           length of time to wait for shutdown to complete normally before forcing completion
-         * @param <IN>                                                    the type of input argument expected by the action
-         * @return a list of work which failed to complete before shutdown
-         */
-    <IN> List<Runnable> shutdownNow(
+    /**
+     * Halt execution of all functional and reactive subscriptions in this threadType.
+     *
+     * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all functional chain elements
+     *                                                                and unbinding all reactive chain elements which have not otherwise expired.
+     * @param actionOnDedicatedThreadAfterAlreadyStartedTasksComplete optional callback once current tasks completely finished
+     * @param actionOnDedicatedThreadIfTimeout                        optional what to do if an already started task blocks for too long
+     * @param timeoutMillis                                           length of time to wait for shutdown to complete normally before forcing completion
+     * @param <IN>                                                    the type of input argument expected by the action
+     * @return a list of work which failed to complete before shutdown
+     */
+    @NonNull
+    public <IN> List<Runnable> shutdownNow(
             @NonNull String reason,
             @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
             @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,

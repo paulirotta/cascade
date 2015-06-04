@@ -47,7 +47,7 @@ public final class UIExecutorService implements ExecutorService {
     private static final String TAG = UIExecutorService.class.getSimpleName();
     private final Handler handler;
 
-    public UIExecutorService(@NonNull Handler handler) {
+    public UIExecutorService(@NonNull final Handler handler) {
         this.handler = handler;
     }
 
@@ -163,11 +163,7 @@ public final class UIExecutorService implements ExecutorService {
 
         final List<Future<T>> futures = invokeAll(callables);
         final CountDownLatch latch = new CountDownLatch(latchSize);
-        if (unit != null) {
-            latch.await(timeout, unit);
-        } else {
-            latch.await();
-        }
+        latch.await(timeout, unit);
 
         return futures;
     }
@@ -176,7 +172,7 @@ public final class UIExecutorService implements ExecutorService {
     public <T> T invokeAny(
             @NonNull final Collection<? extends Callable<T>> callables)
             throws InterruptedException, ExecutionException {
-        final List<Future<T>> list = doInvoke(callables, 1, 0, null);
+        final List<Future<T>> list = doInvoke(callables, 1, 0, TimeUnit.MILLISECONDS);
 
         return doFindAny(list);
     }

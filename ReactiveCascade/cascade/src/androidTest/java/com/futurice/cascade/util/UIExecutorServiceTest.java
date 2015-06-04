@@ -24,10 +24,11 @@ THE SOFTWARE.
 package com.futurice.cascade.util;
 
 import android.os.Handler;
-import android.os.Looper;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
@@ -44,46 +45,52 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.futurice.cascade.Async.UI;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SmallTest
+@MediumTest
 @RunWith(AndroidJUnit4.class)
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
-    int handleMessageCount;
-    int dispatchMessageCount;
-    int sendCount;
+    volatile int handleMessageCount;
+    volatile int dispatchMessageCount;
+    volatile int sendCount;
 
-    UIExecutorService uiExecutorService;
+    volatile UIExecutorService uiExecutorService;
+    Thread fakeUiThread;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        try {
-            Looper.prepare();
-        } catch (RuntimeException e) {
-            // This is a clean-ish way to run tests not on the UI thread
+        fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
+            protected void onLooperPrepared() {
+                uiExecutorService = new UIExecutorService(new Handler() {
+                    public void handleMessage(@NonNull Message msg) {
+                        super.handleMessage(msg);
+                        handleMessageCount++;
+                    }
+
+                    /**
+                     * Handle system messages here.
+                     */
+                    public void dispatchMessage(@NonNull Message msg) {
+                        super.dispatchMessage(msg);
+                        dispatchMessageCount++;
+                    }
+
+                    public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
+                        sendCount++;
+                        return super.sendMessageAtTime(msg, uptimeMillis);
+                    }
+                });
+            }
+        };
+        fakeUiThread.start();
+
+        for (; ; ) {
+            if (uiExecutorService != null) {
+                break;
+            }
+            Thread.yield();
         }
-//        InstrumentationRegistry.getInstrumentation().runOnMainSync(() ->
-                        uiExecutorService = new UIExecutorService(new Handler() {
-                            public void handleMessage(Message msg) {
-                                super.handleMessage(msg);
-                                handleMessageCount++;
-                            }
-
-                            /**
-                             * Handle system messages here.
-                             */
-                            public void dispatchMessage(@NonNull Message msg) {
-                                super.dispatchMessage(msg);
-                                dispatchMessageCount++;
-                            }
-
-                            public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
-                                sendCount++;
-                                return super.sendMessageAtTime(msg, uptimeMillis);
-                            }
-                        });
-  //      );
     }
 
     @Test
@@ -98,18 +105,26 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     @Test
     public void testSubmitCallable() throws Exception {
-        uiExecutorService.submit(() -> null);
+        uiExecutorService.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return null;
+            }
+        });
+        Thread.sleep(1000);
         assertEquals("testSubmitCallable sends 1", 1, this.sendCount);
     }
 
     @Test
     public void testSubmitRunnable() throws Exception {
         uiExecutorService.submit(new Runnable() {
-            @Override
-            public void run() {
+                                     @Override
+                                     public void run() {
 
-            }
-        });
+                                     }
+                                 }
+        );
+        Thread.sleep(1000);
         assertEquals("testSubmitRunnable sends 1", 1, this.sendCount);
     }
 

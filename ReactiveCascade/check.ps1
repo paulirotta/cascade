@@ -1,1 +1,2 @@
-./gradlew clean build connectedCheck
+./gradlew clean
+./gradlew build connectedCheck

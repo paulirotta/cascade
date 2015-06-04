@@ -1030,6 +1030,7 @@ public final class Async {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
+        @NonNull
         @Override
         public final <IN> List<Runnable> shutdownNow(@NonNull String reason, @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");

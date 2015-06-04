@@ -35,6 +35,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.futurice.cascade.Async.currentThreadType;
+
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results
  * from an {@link com.futurice.cascade.i.functional.IAltFuture}.
@@ -87,12 +89,22 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
         return out;
     }
 
+    public void assertThreadSafe() {
+        if (altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
+            throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
+        }
+    }
+
     @Override // Future
     @NonNull
     public OUT get(
             final long timeout,
             @NonNull final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
+        if (!isDone()) {
+            assertThreadSafe();
+        }
+
         final long t = System.currentTimeMillis();
         final long endTime = t + unit.toMillis(timeout);
 

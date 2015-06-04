@@ -2,14 +2,12 @@ package com.futurice.cascade.test;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.AltFutureFuture;
-import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.util.AltFutureFuture;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
-import static com.futurice.cascade.Async.currentThreadType;
 
 /**
  * Intergration test utilities.
@@ -26,12 +24,6 @@ public class TestUtil {
     public TestUtil() {
     }
 
-    public void assertThreadSafe(@NonNull final IThreadType threadType) {
-        if (threadType == currentThreadType() && threadType.isInOrderExecutor()) {
-            throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + threadType);
-        }
-    }
-
     /**
      * Run a unit of work on the specified thread
      *
@@ -45,7 +37,6 @@ public class TestUtil {
             @NonNull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
-        assertThreadSafe(altFuture.getThreadType());
         return new AltFutureFuture<>(altFuture)
                 .get(timeoutMillis, TimeUnit.MILLISECONDS);
     }

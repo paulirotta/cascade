@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.test.TestUtil;
 import com.futurice.cascade.util.FileUtil;
@@ -15,6 +16,8 @@ import com.futurice.cascade.util.NetUtil;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
+
+import static com.futurice.cascade.Async.*;
 
 /**
  * A connectedTest harness which bootstraps the Async class
@@ -29,6 +32,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     private NetUtil netUtil;
     private long defaultTimeoutMillis = 1000;
     protected final Context context;
+    protected ImmutableValue<String> origin;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
@@ -49,6 +53,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         new AsyncBuilder(context).build();
+        origin = originAsync();
     }
 
     /**
@@ -58,6 +63,10 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      */
     public void setDefaultTimeoutMillis(final long defaultTimeoutMillis) {
         this.defaultTimeoutMillis = defaultTimeoutMillis;
+    }
+
+    public long getDefaultTimeoutMillis() {
+        return  this.defaultTimeoutMillis;
     }
 
     /**

@@ -61,6 +61,8 @@ public class AsyncBuilder {
     static final String NOT_INITIALIZED = "Please initialize the following in for example Activity.onCreate() before the classloader directly or indirectly invokes ThreadType.class:  new AsyncBuilder(this).build();";
     private static final String TAG = AsyncBuilder.class.getSimpleName();
     private static final AtomicInteger threadNumber = new AtomicInteger();
+    private static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
+    public static Thread serialWorkerThread;
 
     public static volatile AsyncBuilder asyncBuilder = null;
     public Thread uiThread;
@@ -280,8 +282,7 @@ public class AsyncBuilder {
         return this;
     }
 
-    private static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
-
+    @NonNull
     private static Thread getWorkerThread(IThreadType threadType, Runnable runnable) {
         if (NUMBER_OF_CORES == 1 || workerPoolIncludesSerialWorkerThread.getAndSet(true)) {
             return new TypedThread(threadType, runnable, "WorkerThread" + threadNumber.getAndIncrement());
@@ -309,8 +310,6 @@ public class AsyncBuilder {
 
         return workerExecutorService;
     }
-
-    private static Thread serialWorkerThread;
 
     private static synchronized Thread getSerialWorkerThread(@NonNull final IThreadType threadType, @NonNull final Runnable runnable) {
         if (serialWorkerThread == null) {
@@ -370,7 +369,7 @@ public class AsyncBuilder {
             setSerialWorkerQueue(new DoubleQueue<>(getWorkerQueue()));
         }
 
-        return workerQueue;
+        return serialWorkerQueue;
     }
 
     public void setFileQueue(@NonNull final BlockingQueue<Runnable> queue) {
