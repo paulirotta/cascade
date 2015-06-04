@@ -29,10 +29,10 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,11 +43,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
+    final Object looperFlushMutex = new Object();
+
     volatile int handleMessageCount;
     volatile int dispatchMessageCount;
     volatile int sendCount;
@@ -93,6 +96,28 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         }
     }
 
+    @After
+    @Override
+    public void tearDown() throws Exception {
+        if (fakeUiThread != null) {
+            fakeUiThread.interrupt();
+        }
+
+        super.tearDown();
+    }
+
+    protected void flushLooper() throws InterruptedException {
+        synchronized (looperFlushMutex) {
+            uiExecutorService.execute(() -> {
+                synchronized (looperFlushMutex) {
+                    vv(origin, "Looper flushed");
+                    looperFlushMutex.notifyAll();
+                }
+            });
+            looperFlushMutex.wait();
+        }
+    }
+
     @Test
     public void testIsShutdown() throws Exception {
         assertFalse(uiExecutorService.isShutdown());
@@ -111,8 +136,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
                 return null;
             }
         });
-        Thread.sleep(1000);
-        assertEquals("testSubmitCallable sends 1", 1, this.sendCount);
+        flushLooper();
+        assertThat(sendCount).isEqualTo(2);
     }
 
     @Test
@@ -124,8 +149,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
                                      }
                                  }
         );
-        Thread.sleep(1000);
-        assertEquals("testSubmitRunnable sends 1", 1, this.sendCount);
+        flushLooper();
+        assertThat(sendCount).isEqualTo(2);
     }
 
     @Test
