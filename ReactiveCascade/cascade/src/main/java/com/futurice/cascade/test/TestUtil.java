@@ -28,7 +28,7 @@ public class TestUtil {
 
     public void assertThreadSafe(@NonNull final IThreadType threadType) {
         if (threadType == currentThreadType() && threadType.isInOrderExecutor()) {
-            throw new UnsupportedOperationException("Do not run your integration tests from the same single-threaded IThreadType as the threads you are testing: " + threadType);
+            throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + threadType);
         }
     }
 

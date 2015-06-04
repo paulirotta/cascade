@@ -28,15 +28,23 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@LargeTest
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.futurice.cascade.Async.UI;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     int handleMessageCount;
@@ -46,33 +54,36 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     UIExecutorService uiExecutorService;
 
     @Before
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
         try {
             Looper.prepare();
         } catch (RuntimeException e) {
-            // Only looper this test thread once
+            // This is a clean-ish way to run tests not on the UI thread
         }
-        uiExecutorService = new UIExecutorService(new Handler() {
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                handleMessageCount++;
-            }
+//        InstrumentationRegistry.getInstrumentation().runOnMainSync(() ->
+                        uiExecutorService = new UIExecutorService(new Handler() {
+                            public void handleMessage(Message msg) {
+                                super.handleMessage(msg);
+                                handleMessageCount++;
+                            }
 
-            /**
-             * Handle system messages here.
-             */
-            public void dispatchMessage(@NonNull Message msg) {
-                super.dispatchMessage(msg);
-                dispatchMessageCount++;
-            }
+                            /**
+                             * Handle system messages here.
+                             */
+                            public void dispatchMessage(@NonNull Message msg) {
+                                super.dispatchMessage(msg);
+                                dispatchMessageCount++;
+                            }
 
-            public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
-                sendCount++;
-                return super.sendMessageAtTime(msg, uptimeMillis);
-            }
-        });
+                            public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
+                                sendCount++;
+                                return super.sendMessageAtTime(msg, uptimeMillis);
+                            }
+                        });
+  //      );
     }
 
     @Test
@@ -112,36 +123,29 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     }
 
-/*    public void testInvokeAnyCallable() throws Exception {
+    @Ignore
+    @Test
+    public void testInvokeAnyCallable() throws Exception {
         ArrayList<Callable<String>> callableList = new ArrayList<>();
-        callableList.add(new Callable() {
-            @Override
-            public String call() throws Exception {
-                return null;
-            }
-        });
-        callableList.add(new Callable() {
-            @Override
-            public String call() throws Exception {
-                return null;
-            }
-        });
+        callableList.add(() -> null);
+        callableList.add(() -> null);
         uiExecutorService.invokeAny(callableList);
         assertTrue("Send at least 1", sendCount > 0);
-    }*/
+    }
 
     @Test
     public void testInvokeAnyRunnable() throws Exception {
 
     }
 
+    @Ignore
     @Test
     public void testExecute() throws Exception {
-        uiExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-
-            }
+        final AtomicInteger ai = new AtomicInteger(0);
+        uiExecutorService.execute(() -> {
+            ai.set(100);
         });
+        awaitDone(UI.from(1)); // Hold for UI to complete
+        assertThat(ai.get()).isEqualTo(100);
     }
 }
