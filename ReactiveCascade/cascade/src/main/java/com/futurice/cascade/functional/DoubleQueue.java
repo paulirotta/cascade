@@ -29,19 +29,19 @@ import static com.futurice.cascade.Async.*;
 
 /**
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
- * from a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
+ * fromKey a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
  *
- * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads to
- * operate as an in-order single threaded executor which reverts to help with the common
+ * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads toKey
+ * operate as an in-order single threaded executor which reverts toKey help with the common
  * {@link com.futurice.cascade.AsyncBuilder#getWorkerQueue()} tasks when no in-order tasks are pending.
  *
- * Note clearly there is an upside and downside to this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
+ * Note clearly there is an upside and downside toKey this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
- * and less and faster context switches (context switches tend to cost marginally more as thread count
- * increases). The downside is delays fom other background tasks unrelated to this may slow the start
- * of execution. A very slow task pulled from the {@link com.futurice.cascade.Async#WORKER}
- * queue and perhaps unrelated to the current focus of your attention will, once started, block the
- * next {@link com.futurice.cascade.functional.DoubleQueue} item from
+ * and less and faster context switches (context switches tend toKey cost marginally more as thread count
+ * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
+ * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
+ * queue and perhaps unrelated toKey the current focus of your attention will, once started, block the
+ * next {@link com.futurice.cascade.functional.DoubleQueue} item fromKey
  * starting until it completes.
  *
  * In practice this performs well for most uses since everything is best effort anyway and the single
@@ -97,7 +97,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     public void put(E e) throws InterruptedException {
         super.put(e);
-        synchronized (this) { //TODO Refactor to get rid of mutex
+        synchronized (this) { //TODO Refactor toKey get rid of mutex
             this.notifyAll();
         }
     }
@@ -105,11 +105,11 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
     /**
-     * Poll both queues for work to do. This will wake up immediately if new work is added to this
+     * Poll both queues for work toKey do. This will wake up immediately if new work is added toKey this
      * queue, and within the next polling time window for the lowPriorityQueue. Since other threads
-     * which may be taking work from the low priority queue are probably waking up immediately this
+     * which may be taking work fromKey the low priority queue are probably waking up immediately this
      * is OK. It keeps any dual-use thread associated with this queue relatively free for immediate
-     * response to the single use queue until such time as all other threads are busy, subscribe it pitches
+     * response toKey the single use queue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.
      *
      * @return

@@ -40,8 +40,8 @@ public class MainActivity extends Activity {
 
         if (systemTestRunner == null) {
             systemTestRunner = new SystemTestRunner();
-            progress = new ReactiveValue<>(UI, "MainActivity Progress");
-            result = new ReactiveValue<>(UI, "MainActivity Result");
+            progress = new ReactiveValue<>("MainActivity Progress", "Progress..");
+            result = new ReactiveValue<>("MainActivity Result", "Result..");
             systemTestResultsListAdapter = new AltArrayAdapter<>(this, R.layout.list_item_layout, R.id.list_item, testResultModel);
         }
 

@@ -49,9 +49,9 @@ public class MainActivity extends Activity {
 
         if (async == null) {
             async = new AsyncBuilder(this).build();
-            typedText = new ReactiveValue<>(WORKER, "typedText", "Type here");
-            chainedText = new ReactiveValue<>(WORKER, "chainedText");
-            countText = new ReactiveValue<>(WORKER, "countText");
+            typedText = new ReactiveValue<>("typedText", "Type here");
+            chainedText = new ReactiveValue<>("chainedText", "");
+            countText = new ReactiveValue<>("countText", "");
 
             typedText.subscribe(chainedText);
             typedText.subscribeMap(s -> "" + s.length())

@@ -446,8 +446,7 @@ public class ThreadTypeTest {
     public void atomicValueBasicSetGet() throws Throwable {
         logMethodStart();
         String expected = "abcd";
-        ReactiveValue<String> reactiveValue = new ReactiveValue<>(threadType, "empty");
-        reactiveValue.set(expected);
+        ReactiveValue<String> reactiveValue = new ReactiveValue<>("empty", expected);
 
         assertThat(reactiveValue.get()).isEqualTo(expected);
     }
@@ -615,8 +614,8 @@ public class ThreadTypeTest {
     public void reactiveBind_Then_functionalFork_Then_Set() throws Throwable {
         logMethodStart();
         String expected = "yes binding set";
-        ReactiveValue<String> reactiveValue = new ReactiveValue<>(threadType, "first binding", "not set");
-        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>(threadType, "second binding", "not set either");
+        ReactiveValue<String> reactiveValue = new ReactiveValue<>("first binding", "not set");
+        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>("second binding", "not set either");
         SettableAltFuture<?, String> altFuture = new SettableAltFuture<>(threadType, "AV set");
         ImmutableValue<String> immutableValue = new ImmutableValue<String>().then(altFuture::fork);
         reactiveValue.subscribe(() -> {
@@ -635,8 +634,8 @@ public class ThreadTypeTest {
     public void functionalFork_Then_Set_Then_reactiveBind() throws Throwable {
         logMethodStart();
         String expected = "yes binding set";
-        ReactiveValue<String> reactiveValue = new ReactiveValue<>(threadType, "first binding", "not set");
-        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>(threadType, "second binding", "not set either");
+        ReactiveValue<String> reactiveValue = new ReactiveValue<>("first binding", "not set");
+        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>("second binding", "not set either");
         SettableAltFuture<?, String> altFuture = new SettableAltFuture<>(threadType);
         altFuture.fork(); // The fork execution will be delayed until and triggered by the .set() below
         reactiveValue.set(expected);
@@ -653,8 +652,8 @@ public class ThreadTypeTest {
     public void reactiveBind_Then_functionalSet_Then_Fork() throws Throwable {
         logMethodStart();
         String expected = "yes binding set";
-        ReactiveValue<String> reactiveValue = new ReactiveValue<>(threadType, "first binding", "not set");
-        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>(threadType, "second binding", "not set either");
+        ReactiveValue<String> reactiveValue = new ReactiveValue<>("first binding", "not set");
+        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>("second binding", "not set either");
         SettableAltFuture<?, String> altFuture = new SettableAltFuture<>(threadType);
         reactiveValue.subscribe(threadType, () -> secondReactiveValue.set(expected));
         reactiveValue.subscribe(threadType, (IActionOne<String>) altFuture::set);
@@ -670,8 +669,8 @@ public class ThreadTypeTest {
     public void functionalSet_Then_Fork_Then_reactiveBind() throws Throwable {
         logMethodStart();
         String expected = "yes binding set";
-        ReactiveValue<String> reactiveValue = new ReactiveValue<>(threadType, "first binding", "not set");
-        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>(threadType, "second binding", "not set either");
+        ReactiveValue<String> reactiveValue = new ReactiveValue<>("first binding", "not set");
+        ReactiveValue<String> secondReactiveValue = new ReactiveValue<>("second binding", "not set either");
         SettableAltFuture<?, String> altFuture = new SettableAltFuture<>(threadType, expected);
         altFuture.fork();
         awaitDone(altFuture);

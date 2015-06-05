@@ -28,7 +28,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.util.AltWeakReference;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.AltFutureFuture;
@@ -80,7 +82,6 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         persistentValue.onSharedPreferenceChanged();
     };
 
-
     protected final SharedPreferences sharedPreferences; // Once changes from an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
     protected final String key;
     protected final Class classOfPersistentValue;
@@ -94,7 +95,11 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return getKey(context.getClass(), name);
     }
 
-    private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(@NonNull Context context, @NonNull String name, @NonNull IOnErrorAction onErrorAction) {
+    @Nullable
+    private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(
+            @NonNull String name,
+            @NonNull Context context,
+            @NonNull IOnErrorAction onErrorAction) {
         final AltWeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(getKey(context, name));
         if (wr == null) {
             return null;
@@ -117,99 +122,59 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return false;
     };
 
-    public static <TT> PersistentValue<TT> getPersistentValue(
-            @NonNull final Context context,
-            @NonNull final IThreadType threadType,
-            @NonNull final String name,
-            @NonNull final TT defaultValueIfNoPersistedValue) {
-        return getPersistentValue(context, threadType, null, name, defaultValueIfNoPersistedValue, defaultOnErrorAction);
-    }
-
+    /**
+     * Initialize a value, loading it from flash memory if it has been previously saved
+     *
+     * @param name
+     * @param defaultValueIfNoPersistedValue
+     * @param threadType
+     * @param inputMapping
+     * @param onError
+     * @param context
+     * @param <TT>
+     * @return
+     */
     public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-            @NonNull final Context context,
-            @NonNull final IThreadType threadType,
-            @NonNull final SharedPreferences sharedPreferences,
             @NonNull final String name,
             @NonNull final TT defaultValueIfNoPersistedValue,
-            IOnErrorAction onError) {
-        if (onError == null) {
-            onError = defaultOnErrorAction;
-        }
+            @NonNull final IThreadType threadType,
+            @Nullable final IActionOneR<TT, TT> inputMapping,
+            @Nullable final IOnErrorAction onError,
+            @NonNull final Context context) {
+        final IOnErrorAction errorAction = onError != null ? onError : defaultOnErrorAction;
 
-        PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(context, name, onError);
+        PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(name, context, errorAction);
 
         if (persistentValue == null) {
-            persistentValue = new PersistentValue<>(context, threadType, name, defaultValueIfNoPersistedValue, sharedPreferences, onError);
+            persistentValue = new PersistentValue<>(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError, context);
         } else {
-            final TT v = persistentValue.get();
-            if (v == null) {
-                vv(TAG, persistentValue.origin, "Found existing PersistentValue name=" + name + " with existing value=null. Setting initial value=" + defaultValueIfNoPersistedValue);
-                persistentValue.set(defaultValueIfNoPersistedValue);
-            } else {
-                vv(TAG, persistentValue.origin, "Found existing PersistentValue name=" + name + " with existing value " + v);
-            }
+            final TT tt = persistentValue.get();
+            vv(TAG, persistentValue.origin, "Found existing PersistentValue name=" + name + " with existing value: " + tt);
         }
 
         return persistentValue;
     }
 
-//    public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-//            final Context context,
-//            final IThreadType threadType,
-//            final String name,
-//            final TT defaultValueIfNoPersistedValue,
-//            final SharedPreferences sharedPreferences,
-//            final IOnErrorAction onError) {
-//        assertNotNull("name must be non-null", name);
-//        assertNotNull("context must be non-null", context);
-//        assertNotNull("threadType must be non-null", threadType);
-//        assertNotNull("defaultValueIfNoPersistedValue must be non-null", defaultValueIfNoPersistedValue);
-//
-//        PersistentValue<TT> persistentValue = loadPersistentValueFromCacheOrFlash(context, name, defaultValueIfNoPersistedValue);
-//        if (persistentValue == null) {
-//            vv(TAG, "PersistentValue name=" + name + " has not previously been instantiated. Constructing with asserted value=" + defaultValueIfNoPersistedValue);
-//            persistentValue = new PersistentValue<TT>(context, threadType, name, defaultValueIfNoPersistedValue, sharedPreferences, onError);
-//        }
-//
-//        return persistentValue;
-//    }
-
-    private static SharedPreferences getSharedPreferences(@NonNull Context context, @NonNull SharedPreferences sharedPreferences) {
-        if (sharedPreferences != null) {
-            return sharedPreferences;
-        }
-
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-            Context context,
-            IThreadType threadType,
-            String name,
-            TT defaultValueIfNoPersistedValue,
-            IOnErrorAction onError) {
-        return getPersistentValue(context, threadType, null, name, defaultValueIfNoPersistedValue, onError);
-    }
-
     protected PersistentValue(
-            @NonNull Context context,
-            @NonNull IThreadType threadType,
             @NonNull String name,
             @NonNull T defaultValueIfNoPersistedValue,
-            @NonNull SharedPreferences sharedPreferences,
-            @NonNull IOnErrorAction onError) {
-        super(threadType, name, onError);
+            @NonNull IThreadType threadType,
+            @Nullable final IActionOneR<T, T> inputMapping,
+            @Nullable IOnErrorAction onError,
+            @NonNull Context context) {
+        super(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError);
+
         this.defaultValue = defaultValueIfNoPersistedValue;
         this.classOfPersistentValue = defaultValueIfNoPersistedValue.getClass();
-        this.sharedPreferences = getSharedPreferences(context, sharedPreferences);
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.key = getKey(context, name);
 
         try {
-            init(context, defaultValueIfNoPersistedValue);
+            init(context);
         } catch (Exception e) {
             ee(this, origin, "Can not initialize", e);
             try {
-                threadType.then(() -> onError.call(e));
+                threadType.then(() -> this.onError.call(e));
             } catch (Exception e2) {
                 ee(this, origin, "Can not call onError after failure to initialize: " + e, e2);
             }
@@ -241,7 +206,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         }
     }
 
-    private void init(final Context context, T defaultValueIfNoPersistedValue) throws InterruptedException, ExecutionException, TimeoutException {
+    private void init(final Context context) throws InterruptedException, ExecutionException, TimeoutException {
         // Always access SharedPreferences from the same thread
         // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
         new AltFutureFuture<>(persistentValueThreadType.then(() -> {
@@ -252,21 +217,18 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
             if (sharedPreferences.contains(key)) {
-                vv(this, origin, "Newly instantiated PersistentValue is being loaded with a persistent value from flash memory");
+                vv(this, origin, "PersistentValue value loadedd from flash memory");
                 onSharedPreferenceChanged();
-            } else {
-                vv(this, origin, "Newly instantiated PersistentValue is not found in flash memory");
-                set(defaultValueIfNoPersistedValue);
             }
         })
                 .onError(onError)
                 .fork()
         )
-                .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS); // Wait for initialization on the other thread
     }
 
     private static String toStringSet(final long[] value) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -295,7 +257,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     private static String toStringSet(final int[] value) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);

@@ -46,7 +46,7 @@ public class ReactiveTextView extends TextView implements INamed {
 //    private final CopyOnWriteArrayList<IReactiveSource<String>> reactiveSources = new CopyOnWriteArrayList<>();
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     private IReactiveSource<String> reactiveSource; // Access only from UI thread
-    private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(UI, getName()); // Change only from UI thread
+    private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
 
     //TODO Memory test, see that everything is cleaned up after multiple app cycles and bad real world events
 //    public static String getInstanceOrigins() {

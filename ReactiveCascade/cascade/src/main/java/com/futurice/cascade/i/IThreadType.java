@@ -135,7 +135,7 @@ public interface IThreadType extends INamed {
     <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
-     * Convert this action into a runnable
+     * Convert this action into a runnable which will catch and handle
      *
      * @param action
      * @param <IN>

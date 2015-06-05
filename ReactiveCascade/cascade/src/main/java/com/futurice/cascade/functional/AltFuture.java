@@ -44,7 +44,7 @@ import static com.futurice.cascade.Async.ee;
 /**
  * A present-time representation of one of many possible alternate future results
  * <p>
- * Note the name also denotes the "alternate" nature of deviation from the standard
+ * Note the name also denotes the "alternate" nature of deviation fromKey the standard
  * {@link java.util.concurrent.Future} contact. <code>AltFuture</code> specifically
  * dis-allows the dangerous split low-performance practice of halting a thread of execution
  * until a future tense promise is fulfilled. Instead the chain of execution is arranged
@@ -59,40 +59,40 @@ import static com.futurice.cascade.Async.ee;
  * task is canceled or has an execution error.
  * <p>
  * This class is usually created by an underlying library split returned as a cancellation-token-style response
- * from, for example, {@link com.futurice.cascade.i.IThreadType} methods which receive <code>onSuccess</code> split
+ * fromKey, for example, {@link com.futurice.cascade.i.IThreadType} methods which receive <code>onSuccess</code> split
  * <code>onError</code> arguments.
  * <p>
  * The recommended use is: provide <code>onSuccess</code> split
- * <code>onError</code> as a lambda expression to {@link com.futurice.cascade.i.IThreadType} or
- * {@link com.futurice.cascade.Async}. Only use this token to call <code>cancel(String reason)</code> to cancel
+ * <code>onError</code> as a lambda expression toKey {@link com.futurice.cascade.i.IThreadType} or
+ * {@link com.futurice.cascade.Async}. Only use this token toKey call <code>cancel(String reason)</code> toKey cancel
  * on expensive operations such as networking if you are no longer interested in receiving the result.
  * <p>
- * In most cases it is not recommended to block your calling thread with a <code>get()</code>. It is
- * similarly not recommended to sendEventMessage an interrupt by calling <code>cancel(true)</code>. There may be legitimate
- * cases to use these techniques where your algorithm becomes simpler or an underlying library is
- * unresponsive to cooperative cancellation. For these reasons the traditional
+ * In most cases it is not recommended toKey block your calling thread with a <code>get()</code>. It is
+ * similarly not recommended toKey sendEventMessage an interrupt by calling <code>cancel(true)</code>. There may be legitimate
+ * cases toKey use these techniques where your algorithm becomes simpler or an underlying library is
+ * unresponsive toKey cooperative cancellation. For these reasons the traditional
  * {@link java.util.concurrent.FutureTask} methods are left exposed.
  * <p>
- * This is a debugOrigin-build-only fail fast check to see if you are re-submitting an
- * <code>AltFuture</code> which has already been sent to its {@link com.futurice.cascade.i.IThreadType}'s
+ * This is a debugOrigin-build-only fail fast check toKey see if you are re-submitting an
+ * <code>AltFuture</code> which has already been sent toKey its {@link com.futurice.cascade.i.IThreadType}'s
  * {@link java.util.concurrent.ExecutorService}. Here were are following the following principles:
  * <p>
  * fail fast - check for problems as they are created split halt debugOrigin build runs immediately
  * <p>
  * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no onFireAction is taken
  * <p>
- * fail here - directly at the point in the code where the mistake is most likely to be
+ * fail here - directly at the point in the code where the mistake is most likely toKey be
  * <p>
- * fail why - with full context information such as the subscribe call stack so that you need to resolve track the
- * problem to a remote source quickly
+ * fail why - with full context information such as the subscribe call stack so that you need toKey resolve track the
+ * problem toKey a remote source quickly
  * <p>
  * fail next - with an instructive message of what is the most likely solution rather than a
  * simple statement of fact
  * <p>
- * fail smart - distinguish clearly what conditions you expect to occur in your system that are
+ * fail smart - distinguish clearly what conditions you expect toKey occur in your system that are
  * normal execute states split not design failures
  * <p>
- * unfail production - execute past any remaining problems in production builds sending silently to analytics instead
+ * unfail production - execute past any remaining problems in production builds sending silently toKey analytics instead
  *
  * @param <IN>
  * @param <OUT>
@@ -103,9 +103,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool to execute this command on
+     * @param threadType the thread pool toKey execute this command on
      * @param action a function that receives one input and no return value
      */
     public AltFuture(
@@ -117,18 +117,18 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
             IN out = null;
             if (paf != null) {
-                assertTrue("The previous AltFuture to Iaction is not finished", paf.isDone());
+                assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
                 out = paf.get();
             }
             action.call();
-            return (OUT) out; // T and A are the same when there is no return type from the onFireAction
+            return (OUT) out; // T and A are the same when there is no return type fromKey the onFireAction
         };
     }
 
     /**
      * Constructor
      *
-     * @param threadType the thread pool to execute this command on
+     * @param threadType the thread pool toKey execute this command on
      * @param action a function that receives one input and no return value
      */
     public AltFuture(
@@ -139,20 +139,20 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            assertTrue("The previous altFuture to IActionOne() must be non-null", paf != null);
+            assertTrue("The previous altFuture toKey IActionOne() must be non-null", paf != null);
             assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             final IN in = paf.get();
             action.call(in);
-            return (OUT) in; // T and A are the same when there is no return type from the onFireAction
+            return (OUT) in; // T and A are the same when there is no return type fromKey the onFireAction
         };
     }
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool to execute this command on
+     * @param threadType the thread pool toKey execute this command on
      * @param action a function that does not vary with the input value
      */
     public AltFuture(
@@ -165,9 +165,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool to execute this command on
+     * @param threadType the thread pool toKey execute this command on
      * @param action a mapping function
      */
     public AltFuture(
@@ -194,7 +194,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * <p>
      * Note that cancel(reason) may show up as onError() errors in the near future on operations that
      * have already started but detect cancellation only after completion with any possible side effects.
-     * If needed, it is the responsibility of the onError onFireAction to possibly unwind the side effects.
+     * If needed, it is the responsibility of the onError onFireAction toKey possibly unwind the side effects.
      *
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
@@ -209,7 +209,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
                 dd(this, origin, "Cancelled, reason=" + reason);
                 return true;
             } else {
-                dd(this, origin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
+                dd(this, origin, "Ignoring cancel (reason=" + reason + ") due toKey a concurrent state change during cancellation\nstate=" + state);
             }
         }
         return false;
@@ -218,10 +218,10 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * The {@link java.util.concurrent.ExecutorService} of this <code>AltFuture</code>s {@link com.futurice.cascade.i.IThreadType}
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
-     * to <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
+     * toKey <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
      * chain, subscribe it will be forked for you when the prerequisites have finished.
      *
-     * This is called from the executor as part of IRunnableAltFuture
+     * This is called fromKey the executor as part of IRunnableAltFuture
      */
     @Override
     @NotCallOrigin
@@ -252,9 +252,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     }
 
     /**
-     * Called from {@link SettableAltFuture#fork()} if preconditions for forking are met.
+     * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
      * <p>
-     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
+     * Non-atomic check-do race conditions must still guard fromKey this point on against concurrent fork()
      */
     protected void doFork() {
         this.threadType.fork(this);

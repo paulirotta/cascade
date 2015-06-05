@@ -25,6 +25,7 @@ THE SOFTWARE.
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
@@ -34,7 +35,8 @@ import com.futurice.cascade.i.reactive.IAtomicValue;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * Thread-safe reactive display of a variable getValue. Add one or more {@link com.futurice.cascade.i.action.IActionOne}
@@ -63,81 +65,32 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue
     /**
      * Create a new AtomicValue
      *
-     * @param threadType
      * @param name
      * @param initialValue
      */
     public ReactiveValue(
-            @NonNull final IThreadType threadType,
             @NonNull final String name,
             @NonNull final T initialValue) {
-        this(threadType, name);
-
-        set(initialValue);
+        this(name, initialValue, null, null, null);
     }
 
     /**
      * Create a new AtomicValue
-     *
-     * @param threadType
-     * @param name
+     *  @param name
      * @param initialValue
+     * @param threadType
+     * @param inputMapping
      * @param onError
      */
     public ReactiveValue(
-            @NonNull final IThreadType threadType,
             @NonNull final String name,
             @NonNull final T initialValue,
-            @NonNull final IOnErrorAction onError) {
-        this(threadType, name, onError);
+            @Nullable final IThreadType threadType,
+            @Nullable final IActionOneR<T, T> inputMapping,
+            @Nullable final IOnErrorAction onError) {
+        super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
         set(initialValue);
-    }
-
-    /**
-     * Create a new AtomicValue
-     *
-     * @param threadType
-     * @param name
-     */
-    public ReactiveValue(@NonNull IThreadType threadType, @NonNull final String name) {
-        this(threadType, name, e -> ee(ReactiveValue.class.getSimpleName(), "Problem firing subscription, name=" + name, e));
-    }
-
-    /**
-     * Create a new AtomicValue
-     *
-     * @param threadType
-     * @param name
-     * @param onError
-     */
-    public ReactiveValue(@NonNull IThreadType threadType, @NonNull String name, @NonNull IOnErrorAction onError) {
-        this(threadType, name, onError, out -> out);
-    }
-
-    /**
-     * Create a new AtomicValue and provide a function which will observe each value right after it is {@link #set(Object)}
-     * and before it fires downchain to any linked actions.
-     * <p>
-     * This validator function can optionally also throw {@link RuntimeException}s
-     * or initiate other actions. The validator function controls the values passed down-chain to
-     * any reactive subscribers.
-     * <p>
-     * If you also wish to mutate the value and make the output of the validator function the value you
-     * will {@link #get()} from this ReactiveValue, map you should call {@link #set(Object)} in
-     * the validator function.
-     *
-     * @param threadType
-     * @param name
-     * @param onError
-     * @param validator
-     */
-    public ReactiveValue(
-            @NonNull final IThreadType threadType,
-            @NonNull final String name,
-            @NonNull final IOnErrorAction onError,
-            @NonNull final IActionOneR<T, T> validator) {
-        super(threadType, name, null, validator, onError);
     }
 
     /**

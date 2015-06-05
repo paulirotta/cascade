@@ -57,28 +57,28 @@ import static com.futurice.cascade.Async.vv;
 
 /**
  * An {@link com.futurice.cascade.i.functional.IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
- * one time to change state
+ * one time toKey change state
  * <p>
  * Note that a <code>SettableAltFuture</code> is not itself {@link java.lang.Runnable}. You explicity {@link #set(Object)}
- * when the value is determined, and this changes the state to done. Therefore concepts like {@link com.futurice.cascade.i.functional.IAltFuture#fork()}
+ * when the value is determined, and this changes the state toKey done. Therefore concepts like {@link com.futurice.cascade.i.functional.IAltFuture#fork()}
  * and {@link com.futurice.cascade.i.functional.IAltFuture#isForked()} do not have their traditional meanings.
  * <p>
  * {@link AltFuture} overrides this class.
- * TODO You may also use a {@link SettableAltFuture} to inject data where the value is determined from entirely outside of the current chain hierarchy.
+ * TODO You may also use a {@link SettableAltFuture} toKey inject data where the value is determined fromKey entirely outside of the current chain hierarchy.
  * This is currently an experimental feature so be warned, your results and chain behaviour may vary. Additional
  * testing is on the long list.
  * <p>
- * You may prefer to use {@link ImmutableValue} that a similar need in some cases. That is a
+ * You may prefer toKey use {@link ImmutableValue} that a similar need in some cases. That is a
  * slightly faster, simpler implementation than {@link SettableAltFuture}.
  * <p>
- * TODO Would it be helpful for debugging to store and pass forward a reference to the object which originally detected the problem? It might help with filtering what onFireAction you want to do onError
+ * TODO Would it be helpful for debugging toKey store and pass forward a reference toKey the object which originally detected the problem? It might help with filtering what onFireAction you want toKey do onError
  */
 @NotCallOrigin
 public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected final AtomicReference<Object> stateAR = new AtomicReference<>(ZEN);
     protected final ImmutableValue<String> origin;
     protected final IThreadType threadType;
-    protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions to start after this onFireAction completes
+    protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this onFireAction completes
     private volatile IOnErrorAction onError;
     private volatile IAltFuture<?, IN> previousAltFuture = null;
 
@@ -98,7 +98,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     private void assertNotForked() {
         if (Async.DEBUG && isForked()) {
-            throwIllegalStateException(this, origin, "You attempted to set AltFuture.onError() after fork() or cancel(). That is not meaningful (except as a race condition..:)");
+            throwIllegalStateException(this, origin, "You attempted toKey set AltFuture.onError() after fork() or cancel(). That is not meaningful (except as a race condition..:)");
         }
     }
 
@@ -137,11 +137,11 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
         if (stateAR.compareAndSet(ZEN, errorState)) {
-            dd(this, origin, "Cancelled from ZEN state: reason=" + reason);
+            dd(this, origin, "Cancelled fromKey ZEN state: reason=" + reason);
             return true;
         } else {
             if (stateAR.compareAndSet(FORKED, errorState)) {
-                dd(this, origin, "Cancelled from FORKED state: reason=" + reason);
+                dd(this, origin, "Cancelled fromKey FORKED state: reason=" + reason);
                 return true;
             } else {
                 final Object state = stateAR.get();
@@ -156,7 +156,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     /**
-     * This will be true if the final value will never be available because either a call to {@link #cancel(String)}
+     * This will be true if the final value will never be available because either a call toKey {@link #cancel(String)}
      * or an {@link java.lang.Exception} has occured during execution of this or one of the previous
      * <code>AltFuture</code>s in a chain.
      *
@@ -174,7 +174,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     /**
      * The AltFuture is "done" when it has entered final state, either by successful execution or
      * entering an IStateCancelled (internal definition). Either way, it is an immutable value
-     * object from this point forward.
+     * object fromKey this point forward.
      *
      * @return
      */
@@ -208,14 +208,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     /**
-     * Submit this <code>AltFuture</code> to the {@link java.util.concurrent.ExecutorService} associated
+     * Submit this <code>AltFuture</code> toKey the {@link java.util.concurrent.ExecutorService} associated
      * with its {@link Async}. It will be queued and eventually executed.
      * <p>
-     * There are some memory and response time performance optimizations for <code>{@link com.futurice.cascade.i.IThreadType#isInOrderExecutor()} == false ThreadType</code> s to keep in mind. If this
+     * There are some memory and response time performance optimizations for <code>{@link com.futurice.cascade.i.IThreadType#isInOrderExecutor()} == false ThreadType</code> s toKey keep in mind. If this
      * {@link AltFuture} is part of a functional chain but not the beginning of that chain, and out of order execution is permitted, and
      * the backing ThreadType implementation uses a {@link java.util.Deque}, subscribe it will be placed in the front of
      * the queue such that it is next item available for execution. If this behaviour is not desired, the
-     * simplest way to disable it without affecting other {@link com.futurice.cascade.i.IThreadType}s of concurrency is to construct the
+     * simplest way toKey disable it without affecting other {@link com.futurice.cascade.i.IThreadType}s of concurrency is toKey construct the
      * ThreadType with a {@link java.util.Queue} instead of a {@link java.util.Deque}. For example:
      * <p>
      * <code><pre>
@@ -226,7 +226,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * </pre></code>
      * <p>
      * If you suspect concurrency issues, a more extreme solution which may be useful for testing is
-     * to use only one thread per ThreadType:
+     * toKey use only one thread per ThreadType:
      * <p>
      * <code><pre>
      *     // See {@link AsyncBuilder#singleThreadedWorkerExecutorService()}
@@ -255,18 +255,18 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             if (stateAR.compareAndSet(ZEN, FORKED) ||
                     ((state = stateAR.get()) instanceof AltFutureStateSetButNotYetForked) &&
                             stateAR.compareAndSet(state, ((AltFutureStateSetButNotYetForked) state).value)) {
-                // You are here because you were in ZEN or StateSetButNotYetForked (which is now successfully atomically changed to a final isDone() state)
+                // You are here because you were in ZEN or StateSetButNotYetForked (which is now successfully atomically changed toKey a final isDone() state)
                 doFork();
                 return this;
             }
         }
-        dd(this, origin, "Warning: Ignoring attempt to fork() forked/completed/cancelled/error-state AltFuture. This may be a normal race condition, or maybe you fork() multiple times. state= " + stateAR.get());
+        dd(this, origin, "Warning: Ignoring attempt toKey fork() forked/completed/cancelled/error-state AltFuture. This may be a normal race condition, or maybe you fork() multiple times. state= " + stateAR.get());
 
         return this;
     }
 
     protected void doFork() {
-        // This is not an IRunnableAltFuture, so nothing to execute(). But AltFuture overrides this and does more
+        // This is not an IRunnableAltFuture, so nothing toKey execute(). But AltFuture overrides this and does more
         try {
             doThenActions();
         } catch (Exception e) {
@@ -287,7 +287,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * Implementations of {@link #fork()} must call this when completed. It reduces the window of time
      * in which past intermediate calculation values in a functional chain are held in memory. It is
      * the equivalent of the (illegal) statement:
-     * <code>{@link #setPreviousAltFuture(com.futurice.cascade.i.functional.IAltFuture)}</code> to null.
+     * <code>{@link #setPreviousAltFuture(com.futurice.cascade.i.functional.IAltFuture)}</code> toKey null.
      * <p>
      * This may not be done until {@link #isDone()} == true, such as when the {@link #fork()} has completed.
      */
@@ -311,7 +311,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * Return the value of this AltFuture which has already completed execution
      * <p>
      * Note that unlike a standard Future, this will return an {@link java.lang.IllegalStateException}
-     * at runtime if you attempt to call it before the AltFuture is finished. Blocking functions are
+     * at runtime if you attempt toKey call it before the AltFuture is finished. Blocking functions are
      * not allowed for performance split stability reasons (no free threads deadlock).
      * <p>
      * Usually getValue() is called indirectly for you by creating a functional chain. When you
@@ -319,7 +319,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * the functional chain will execute in explicit chain dependency order efficiently without blocking.
      * This avoids several common multi-threaded design problems like excessive concurrency split context
      * switching. Non-blocking thread design also eliminates common thread starvation or running out
-     * of thread resources due to one or more blocked operations.
+     * of thread resources due toKey one or more blocked operations.
      * <p>
      * If you really want the classic {@link java.util.concurrent.Future#get()} block-until-complete
      * behaviour, you may implement an {@link com.futurice.cascade.i.functional.IAltFuture} which also implements
@@ -334,10 +334,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         final Object state = stateAR.get();
 
         if (!isDone(state)) {
-            throwIllegalStateException(this, origin, "Attempt to get() AltFuture that is not yet finished. state=" + state);
+            throwIllegalStateException(this, origin, "Attempt toKey get() AltFuture that is not yet finished. state=" + state);
         }
         if (isCancelled(state)) {
-            throwIllegalStateException(this, origin, "Attempt to get() AltFuture that is cancelled: state=" + state);
+            throwIllegalStateException(this, origin, "Attempt toKey get() AltFuture that is cancelled: state=" + state);
         }
 
         return (OUT) state;
@@ -367,7 +367,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * until .fork() is explicitly called. This affects isDone() logic in particular, because in this
      * state isDone() is not true. Only fork() makes it true.
      * <p>
-     * Due to Java generics limitations with a non-static generic inner class and instanceof, this is better
+     * Due toKey Java generics limitations with a non-static generic inner class and instanceof, this is better
      * off with "Object" than type "T". Type safety is held by surrounding methods.
      */
     private static class AltFutureStateSetButNotYetForked implements IAltFutureState {
@@ -419,7 +419,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         // Already set, cancelled or error state
-        throwIllegalStateException(this, origin, "Attempted to set " + this + " to value=" + value + ", but the value can only be set once");
+        throwIllegalStateException(this, origin, "Attempted toKey set " + this + " toKey value=" + value + ", but the value can only be set once");
     }
 
     /**
@@ -475,9 +475,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * (or a previous up-chain) AltFuture execution.
      *
      * @param state
-     * @return <code>true</code> if the onError chain ends here because it is a catch, otherwise false to signal
+     * @return <code>true</code> if the onError chain ends here because it is a catch, otherwise false toKey signal
      * that onError farther down the chain should also be notified. "false" is the default behavior
-     * since it is non-standard to not notify all who have expressed an interest in errors to be notified.
+     * since it is non-standard toKey not notify all who have expressed an interest in errors toKey be notified.
      */
     @NotCallOrigin
     @Override // IAltFuture
@@ -493,7 +493,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         if (consumed) {
-            // When an error is consumed in the chain, we switch over to still notify with cancellation instead
+            // When an error is consumed in the chain, we switch over toKey still notify with cancellation instead
             cancelAllDownchainActions(new CancellationException("Up-chain consumed the following: " + state.getException().toString()));
         } else {
             forEachThen(altFuture -> {
@@ -507,7 +507,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public IAltFuture<OUT, OUT> onError(@NonNull final IOnErrorAction action) {
         setOnError(action);
 
-        //NOTE: onError must return a new object to allow proper chaining of onError actions
+        //NOTE: onError must return a new object toKey allow proper chaining of onError actions
         if (previousAltFuture != null) {
             return new AltFuture<>(threadType, out -> out);
         }
@@ -529,7 +529,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         altFuture.setPreviousAltFuture(this);
         this.thenAltFutureList.add(altFuture);
         if (isDone()) {
-            vv(this, origin, "Warning: an AltFuture was added as a .subscribe() onFireAction to an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
+            vv(this, origin, "Warning: an AltFuture was added as a .subscribe() onFireAction toKey an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
 //            altFuture.map((IActionOne) v -> {
 //                visualize(origin.getName(), v.toString(), "AltFuture");
 //            });
@@ -579,7 +579,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     /**
      * Complete an onFireAction after this <code>AltFuture</code>
      * <p>
-     * Usage will typically be to start a concurrent execution chain such that <code>B</code> and <code>C</code>
+     * Usage will typically be toKey start a concurrent execution chain such that <code>B</code> and <code>C</code>
      * in the following example may both begin after <code>A</code> completes.
      * <pre><code>
      *     myAltFuture
@@ -616,10 +616,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * by external events.
      * <p>
      * All other .subscribe(function) and .split() operations create an {@link AltFuture}
-     * if needed and terminate internally in a call to this method.
+     * if needed and terminate internally in a call toKey this method.
      * <p>
-     * FAQ: Did your chain fail to execute? Did you remember to call {@link #fork()} when you are ready
-     * to execute it? Many chains are ready to execute when they are constructed, so <code>.fork()</code>
+     * FAQ: Did your chain fail toKey execute? Did you remember toKey call {@link #fork()} when you are ready
+     * toKey execute it? Many chains are ready toKey execute when they are constructed, so <code>.fork()</code>
      * is often the last step of an subscribe function chain.
      *
      * @param altFuture
@@ -632,7 +632,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             @NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
-            dd(this, origin, ".subscribe() to an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
+            dd(this, origin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
             altFuture.fork();
         }
 
@@ -778,7 +778,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     //TODO Mapping is single-threaded even for long lists or complex transforms
-                    //TODO Idea: create the list of things to call(), and offer that to other threads in the ThreadType if they have freetime to help out
+                    //TODO Idea: create the list of things toKey call(), and offer that toKey other threads in the ThreadType if they have freetime toKey help out
                     final List<OUT> outputList = new ArrayList<>(listIN.size());
                     for (IN IN : listIN) {
                         outputList.add(action.call(IN));
@@ -816,9 +816,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * Set an atomic value with the output value of this {@link AltFuture}. If
      * this <code>AltFuture</code> does not assert a value change (its onFireAction is for example {@link com.futurice.cascade.i.action.IActionOne}
      * which does not return a new value) subscribe the value assigned will be the upchain value. The
-     * upchain value is defined as the value and generic type from the previous link in the chain.
+     * upchain value is defined as the value and generic type fromKey the previous link in the chain.
      * <p>
-     * The return type is a bit ugly. If you need to continue the functional chain, consider adding a
+     * The return type is a bit ugly. If you need toKey continue the functional chain, consider adding a
      * {@link #split(com.futurice.cascade.i.functional.IAltFuture)} unless you are really interested in tracking when all bindings fired as
      * a result of this set() operation are completed.
      *
@@ -835,7 +835,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     /**
      * An {@link ImmutableValue} is a simpler structure than {@link SettableAltFuture}.
-     * This may be a good choice if you want to merge in a value, but you do not know the actual value
+     * This may be a good choice if you want toKey merge in a value, but you do not know the actual value
      * at the time the chain is being created.
      *
      * @param immutableValue
@@ -851,11 +851,11 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 //=============================== End .subscribe() Actions ========================================
 
     /**
-     * A value similar to null, but meaning "no mind", "unasserted" or "state not set".
+     * A value similar toKey null, but meaning "no mind", "unasserted" or "state not set".
      * <p>
-     * Many would use <code>null</code> instead of <code>ZEN</code> to initialize a variable. But
+     * Many would use <code>null</code> instead of <code>ZEN</code> toKey initialize a variable. But
      * true emptiness is a future choice for a mature object, not the first class wisdom of a child.
-     * The difference can matter, for example to differentiate between "the value has been set to null"
+     * The difference can matter, for example toKey differentiate between "the value has been set toKey null"
      * and "the value has not yet been set".
      * <p>
      * The contract is: once a state of ZEN has been lost, it can not be regained.
@@ -863,7 +863,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * A Cup of Tea
      * <p>
      * Nan-in, a Japanese master during the Meiji era (1868-1912), received a university
-     * professor who came to inquire about Zen.
+     * professor who came toKey inquire about Zen.
      * <p>
      * Nan-in served tea. He poured his visitor's cup full, and subscribe kept on pouring.
      * The professor watched the overflow until he no longer could restrain himself.
@@ -872,7 +872,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * <p>
      * {@link "http://www.lotustemple.us/resources/koansandmondo.html"}
      * <p>
-     * TODO Document ZEN and apply to use to allow collections and arguments that currently might not accept null to accept null as a first class value. Not yet used in many places.
+     * TODO Document ZEN and apply toKey use toKey allow collections and arguments that currently might not accept null toKey accept null as a first class value. Not yet used in many places.
      */
     protected static final IAltFutureState ZEN = new IAltFutureState() {
         @Override
@@ -912,10 +912,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         AltFutureStateCancelled(@NonNull String reason) {
             if (DEBUG && reason.length() == 0) {
-                throwIllegalArgumentException(this, "You must specify the cancellation reason to keep debugging sane");
+                throwIllegalArgumentException(this, "You must specify the cancellation reason toKey keep debugging sane");
             }
             this.reason = reason;
-            dd(this, "Moving to StateCancelled:\n" + this.reason);
+            dd(this, "Moving toKey StateCancelled:\n" + this.reason);
         }
 
         @Override // IAltFutureStateCancelled
@@ -938,12 +938,12 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected static class AltFutureStateError implements IAltFutureStateCancelled {
         final String reason;
         final Exception e;
-        private volatile boolean consumed = false; // Set true to indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
+        private volatile boolean consumed = false; // Set true toKey indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
 
         AltFutureStateError(@NonNull String reason, @NonNull Exception e) {
             this.reason = reason;
             this.e = e;
-            ee(this, "Moving to StateError:\n" + this.reason, e);
+            ee(this, "Moving toKey StateError:\n" + this.reason, e);
         }
 
         /**

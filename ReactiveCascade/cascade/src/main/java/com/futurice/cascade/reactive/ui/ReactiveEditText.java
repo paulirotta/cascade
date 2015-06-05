@@ -32,10 +32,12 @@ public class ReactiveEditText extends EditText implements INamed {
     public volatile ReactiveValue<String> reactiveValue;
     private TextWatcher textWatcher;
 
+//TODO Constructors which support a string validator (example: trim whitespace or fix capitalization as you type)
+
     public ReactiveEditText(@NonNull final Context context) {
         super(context);
 
-        reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
+        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -51,7 +53,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
-        reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
+        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -69,7 +71,7 @@ public class ReactiveEditText extends EditText implements INamed {
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
+        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -91,7 +93,7 @@ public class ReactiveEditText extends EditText implements INamed {
             final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        reactiveValue = new ReactiveValue<>(UI, getName(), getText().toString());
+        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     @TargetApi(21)

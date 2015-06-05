@@ -1,8 +1,10 @@
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 
 import static com.futurice.cascade.Async.*;
@@ -19,15 +21,13 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     /**
      * Create a new atomic integer
      *
-     * @param threadType
      * @param name
      * @param initialValue
      */
     public ReactiveInteger(
-            @NonNull final IThreadType threadType,
             @NonNull final String name,
             final int initialValue) {
-        super(threadType, name, initialValue);
+        super(name, initialValue);
     }
 
     /**
@@ -36,40 +36,16 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param threadType
      * @param name
      * @param initialValue
+     * @param onFireAction a mapping for incoming values, for example <code>i -> Math.max(0, i)</code>
      * @param onError
      */
     public ReactiveInteger(
             @NonNull final IThreadType threadType,
             @NonNull final String name,
             final int initialValue,
+            @Nullable final IActionOneR<Integer, Integer> onFireAction,
             @NonNull final IOnErrorAction onError) {
-        super(threadType, name, initialValue, onError);
-    }
-
-    /**
-     * Create a new atomic integer
-     *
-     * @param threadType
-     * @param name
-     */
-    public ReactiveInteger(
-            @NonNull final IThreadType threadType,
-            @NonNull final String name) {
-        super(threadType, name);
-    }
-
-    /**
-     * Create a new atomic integer
-     *
-     * @param threadType
-     * @param name
-     * @param onError
-     */
-    public ReactiveInteger(
-            @NonNull final IThreadType threadType,
-            @NonNull final String name,
-            @NonNull final IOnErrorAction onError) {
-        super(threadType, name, onError);
+        super(name, initialValue, threadType, onFireAction, onError);
     }
 
     /**

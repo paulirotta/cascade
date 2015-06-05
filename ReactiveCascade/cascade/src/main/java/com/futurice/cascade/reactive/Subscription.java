@@ -26,7 +26,6 @@ package com.futurice.cascade.reactive;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.util.AltWeakReference;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
@@ -37,6 +36,7 @@ import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
+import com.futurice.cascade.util.AltWeakReference;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -44,11 +44,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.ii;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.vv;
+import static com.futurice.cascade.Async.*;
 
 /**
  * This is the default implementation for a reactive functional chain link.
@@ -59,12 +55,15 @@ import static com.futurice.cascade.Async.vv;
  * <code>Subscription</code>s are both an {@link com.futurice.cascade.i.reactive.IReactiveTarget} and
  * {@link com.futurice.cascade.i.reactive.IReactiveSource}.
  * <p>
+ * <p>
+ * TODO Add setFireEveryValue(true) option to queue up and fire all states one by one. If inOrderExecutor, this fire will be FIFO sequential, otherwise concurrent
  *
  * @param <OUT>
  * @param <IN>  the type of the second link in the functional chain
  */
 @NotCallOrigin
 public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSource<OUT> {
+    //FIXME Replace these values with changing lastFireInIsFireNext to be volatile boolean needToQueue to simplify logic
     private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to queue on next fire
     private static final Object FIRE_ACTION_EXECUTING = new Object(); // A marker state for fireAction to indicate that it is now running on a thread
 
@@ -85,24 +84,27 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
      * <p>
      * If there are multiple down-chain targets attached to this node, it will concurrently fire
      * all down-chain branches.
-     *
-     * @param threadType the default thread group on which this subscription fires
-     * @param name the descriptive debug name of this subscription
+     *  @param name                  the descriptive debug name of this subscription
      * @param upchainReactiveSource
-     * @param action                Because there _may_ exist a possibility of multiple fire events racing each other on different
-     *                              threads, it is important that the action functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
+     * @param threadType            the default thread group on which this subscription fires
+     * @param onFireAction          Because there _may_ exist a possibility of multiple fire events racing each other on different
+*                              threads, it is important that the onFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
      * @param onError
      */
-    public Subscription(@NonNull IThreadType threadType,
-                        @NonNull String name,
+    public Subscription(@NonNull String name,
                         @Nullable IReactiveSource<IN> upchainReactiveSource,
-                        @NonNull IActionOneR<IN, OUT> action,
-                        @NonNull IOnErrorAction onError) {
-        this.threadType = threadType;
-        this.name = name;
-        this.onError = onError;
-        this.onFireAction = action;
+                        @Nullable IThreadType threadType,
+                        @NonNull IActionOneR<IN, OUT> onFireAction,
+                        @Nullable IOnErrorAction onError) {
         this.origin = originAsync();
+        this.name = name;
+        this.upchainReactiveSource = upchainReactiveSource;
+        if (upchainReactiveSource != null) {
+            upchainReactiveSource.subscribe(this);
+        }
+        this.threadType = threadType != null ? threadType : UI;
+        this.onFireAction = onFireAction;
+        this.onError = onError != null ? onError : e -> ee(getOrigin(), "Problem firing subscription, name=" + getName(), e);
 
         /*
          * Singleton executor - there is only one which is never queued more than once at any time
@@ -112,22 +114,21 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
           *
           * Re-queue if the input value changes before exiting
          */
-        fireRunnable = threadType.wrapRunnableAsErrorProtection(() -> {
+        fireRunnable = this.threadType.wrapRunnableAsErrorProtection(() -> {
             final Object latestValueFired = latestFireIn.get();
             doReceiveFire((IN) latestValueFired); // This step may take some time
             if (!latestFireIn.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
                 if (latestFireInIsFireNext.getAndSet(true)) {
-                    threadType.executeNext(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
+                    this.threadType.executeNext(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
                 } else {
-                    threadType.execute(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
+                    this.threadType.execute(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
                 }
             }
         });
+    }
 
-        this.upchainReactiveSource = upchainReactiveSource;
-        if (upchainReactiveSource != null) {
-            upchainReactiveSource.subscribe(this);
-        }
+    protected ImmutableValue<String> getOrigin() {
+        return this.origin;
     }
 
     private Runnable getFireRunnable() {
@@ -194,7 +195,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     /**
      * Search downstream targets and do <code>actionIfFound</code> if you find the one specified
      *
-     * @param searchItem the target to be located in the subscribed targets list
+     * @param searchItem    the target to be located in the subscribed targets list
      * @param actionIfFound an action to perform on that target if found
      * @return <code>true</code> if found and action performed
      * @throws Exception
@@ -385,7 +386,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(
             @NonNull final IThreadType threadType,
             @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(threadType, getName(), this, action, onError);
+        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), this, threadType, action, onError);
         subscribe((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
 
         return subscription;
@@ -414,9 +415,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     @NonNull
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IThreadType threadType, @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
-                threadType,
-                getName(),
-                this,
+                getName(), this, threadType,
                 t -> {
                     return action.call();
                 },

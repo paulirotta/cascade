@@ -51,10 +51,10 @@ public class SystemTestRunner {
     private final ImmutableValue<String> origin;
 
     public SystemTestRunner() {
-        finished = new ReactiveInteger(WORKER, "Finished", 0);
-        failed = new ReactiveInteger(WORKER, "Failed", 0);
-        progress = new ReactiveValue<>(WORKER, "Progress");
-        status = new ReactiveValue<>(WORKER, "Status");
+        finished = new ReactiveInteger("Finished", 0);
+        failed = new ReactiveInteger("Failed", 0);
+        progress = new ReactiveValue<>("Progress", "Progress..");
+        status = new ReactiveValue<>("Status", "Status..");
         origin = originAsync();
     }
 

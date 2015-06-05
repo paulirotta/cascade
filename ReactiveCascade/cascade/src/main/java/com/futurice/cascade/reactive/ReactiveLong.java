@@ -1,8 +1,10 @@
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 
 import static com.futurice.cascade.Async.*;
@@ -18,58 +20,30 @@ import static com.futurice.cascade.Async.*;
 public class ReactiveLong extends ReactiveValue<Long> {
     /**
      * Create a new atomic long
-     *
-     * @param threadType
-     * @param name
+     *  @param name
      * @param initialValue
      */
     public ReactiveLong(
-            @NonNull final IThreadType threadType,
             @NonNull final String name,
             final long initialValue) {
-        super(threadType, name, initialValue);
+        super(name, initialValue);
     }
 
     /**
      * Create a new atomic long
-     *
-     * @param threadType
-     * @param name
+     *  @param name
      * @param initialValue
-     * @param onError
+     * @param threadType
+     * @param inputMapping a mapping for incoming values, for example <code>l -> Math.max(0, l)</code>
+     * @param onErrorAction
      */
     public ReactiveLong(
-            @NonNull final IThreadType threadType,
             @NonNull final String name,
             final long initialValue,
-            @NonNull final IOnErrorAction onError) {
-        super(threadType, name, initialValue, onError);
-    }
-
-    /**
-     * Create a new atomic long
-     *
-     * @param threadType
-     * @param name
-     */
-    public ReactiveLong(
             @NonNull final IThreadType threadType,
-            @NonNull final String name) {
-        super(threadType, name);
-    }
-
-    /**
-     * Create a new atomic long
-     *
-     * @param threadType
-     * @param name
-     * @param onError
-     */
-    public ReactiveLong(
-            @NonNull final IThreadType threadType,
-            @NonNull final String name,
-            @NonNull final IOnErrorAction onError) {
-        super(threadType, name, onError);
+            @Nullable final IActionOneR<Long, Long> inputMapping,
+            @NonNull final IOnErrorAction onErrorAction) {
+        super(name, initialValue, threadType, inputMapping, onErrorAction);
     }
 
     /**
