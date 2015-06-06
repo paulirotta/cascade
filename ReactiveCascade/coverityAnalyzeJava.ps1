@@ -1,0 +1,2 @@
+./check
+./gradlew covAnalyzeJava
