@@ -1,5 +1,6 @@
 plugins {
     id "me.tatarka.retrolambda" version "3.1.0"
+    id "com.github.mjdetullio.gradle.coverity" version "1.0.2"
 }
 apply plugin: 'com.android.library'
 
