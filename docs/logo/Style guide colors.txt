@@ -1,0 +1,13 @@
+Reactive cascade colors
+
+Main blue		0x2E75B6
+Highlight blue	0x5B9BD5
+Dark blue		0x1F4E79
+Half-dark blue	0x41719C
+
+Main green		0x418038
+Highlight green	0x478E2a
+Dark green		0x204719
+Half-dark green	0x385723
+
+
