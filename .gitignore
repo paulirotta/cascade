@@ -31,3 +31,7 @@ Thumbs.db
 # IntelliJ Files
 .idea
 *.iml
+
+# gulp and http build
+build/node_modules
+general.css
