@@ -181,7 +181,7 @@ public final class Async {
         }
         final IThreadType threadType = currentThreadType();
 
-        if (threadType != null) {
+        if (threadType != NON_CASCADE_THREAD) {
             return "<" + threadType.getName() + "," + Thread.currentThread().getName() + "> " + message;
         }
 
