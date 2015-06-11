@@ -42,10 +42,6 @@ android {
     }
 }
 
-retrolambda {
-    defaultMethods true
-}
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.0'
