@@ -64,7 +64,7 @@ import java.util.concurrent.Future;
  * <p>
  * Instead, use {@link IAltFuture#get()}. If the <code>AltFuture</code> has not yet completed
  * execution successfully it will immediately throw a {@link java.lang.IllegalStateException}
- * at execute time. This allows you to make your lambdas more simple, but still handle asynchronous
+ * at run time. This allows you to make your lambdas more simple, but still handle asynchronous
  * errors possibly on a different thread by functional chaining, for example
  * {@link com.futurice.cascade.functional.AltFuture#onError)}.
  * <p>
@@ -141,7 +141,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     boolean isConsumed();
 
     /**
-     * Place this {@link IAltFuture} in the ready-to-execute-without-blocking
+     * Place this {@link IAltFuture} in the ready-to-run-without-blocking
      * queue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getPreviousAltFuture()}
      * subscribe that will be forked instead until finding one where {@link #isDone()} is false.
      *
@@ -218,7 +218,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * <p>
      * Additional {@link #split(IAltFuture)} split {@link com.futurice.cascade.functional.AltFuture#then(IAltFuture)}
      * functions chained after this will receive the same input argument split (depending on the {@link com.futurice.cascade.i.IThreadType}
-     * may execute concurrently.
+     * may run concurrently.
      *
      * @param altFuture
      * @return the alt future which was passed in

@@ -25,7 +25,7 @@ THE SOFTWARE.
 package com.futurice.cascade.i.action;
 
 /**
- * AFile lambda-friendly continuation onFireAction which may be execute in the future or on a different thread
+ * AFile lambda-friendly continuation onFireAction which may be run in the future or on a different thread
  * similar to {@link java.lang.Runnable}. The differences is that an explicit <code>Exception</code>
  * may be thrown which helps facilitate asynchronous exception handling in a lambda-friendly manner.
  *

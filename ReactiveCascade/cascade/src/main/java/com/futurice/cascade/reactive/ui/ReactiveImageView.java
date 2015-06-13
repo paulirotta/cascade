@@ -33,7 +33,6 @@ import android.widget.ImageView;
 
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
 
@@ -96,7 +95,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         if (isUiThread()) {
             setImageBitmap(bitmap);
         } else {
-            UI.execute((IAction) () -> setImageBitmap(bitmap));
+            UI.execute(() -> setImageBitmap(bitmap));
         }
     }
 

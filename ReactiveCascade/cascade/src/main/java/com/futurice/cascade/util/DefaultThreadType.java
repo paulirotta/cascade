@@ -27,7 +27,6 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -54,7 +53,7 @@ public class DefaultThreadType extends AbstractThreadType {
     public DefaultThreadType(String name, ExecutorService executorService, BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
-        this.inOrderExecution = queue == null || queue instanceof BlockingDeque;
+        this.inOrderExecution = queue instanceof BlockingDeque;
     }
 
     private volatile boolean wakeUpIsPending = false; // Efficiency filter to wake the ServiceExecutor only once TODO Is there a simpler way with AtomicBoolean?
@@ -64,9 +63,9 @@ public class DefaultThreadType extends AbstractThreadType {
     };
 
     @Override // IThreadType
-    public void execute(@NonNull final Runnable runnable) {
+    public void run(@NonNull final Runnable runnable) {
         if (executorService.isShutdown()) {
-            e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not execute " + runnable);
+            e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not run " + runnable);
         }
 
         executorService.submit(runnable);
@@ -77,7 +76,7 @@ public class DefaultThreadType extends AbstractThreadType {
      * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
      * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
      * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
-     * item to execute. In an execution resource constrained situation this is "depth-first" behaviour
+     * item to run. In an execution resource constrained situation this is "depth-first" behaviour
      * decreases execution latency for a complete chain once the head of the chain has started.
      * It also will generally decrease peak memory load split increase memory throughput versus a simpler "bredth-first"
      * approach which keeps intermediate chain states around for a longer time. Some
@@ -87,7 +86,7 @@ public class DefaultThreadType extends AbstractThreadType {
      * a {@link java.util.concurrent.BlockingQueue}, not a {@link java.util.concurrent.BlockingDeque}
      * <p>
      * Overriding alternative implementations may safely choose to call synchronously or with
-     * additional execute restrictions
+     * additional run restrictions
      * <p>
      * Concurrent algorithms may support last-to-first execution order to speed execution of chains
      * once they have started execution, but users and developers are
@@ -97,19 +96,24 @@ public class DefaultThreadType extends AbstractThreadType {
      * @param runnable
      */
     @Override // IThreadType
-    public void executeNext(@NonNull final Runnable runnable) {
+    public void runNext(@NonNull final Runnable runnable) {
         int n;
         if (inOrderExecution || (n = queue.size()) == 0) {
-            execute(runnable);
+            run(runnable);
             return;
         }
 
         if (executorService.isShutdown()) {
-            e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not execute " + runnable);
+            e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not run " + runnable);
         }
 
         // Out of order execution is permitted and desirable to finish functional chains we have started before clouding memory and execution queues by starting more
-        ((BlockingDeque) queue).addFirst(runnable);
+        if (isInOrderExecutor()) {
+            vv(origin, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
+            queue.add(runnable);
+        } else {
+            ((BlockingDeque) queue).addFirst(runnable);
+        }
         if (!wakeUpIsPending && ++n != queue.size()) {
             // The queue changed during submit- just be sure something is submitted to wake the executor right now to pull from the queue
             wakeUpIsPending = true;

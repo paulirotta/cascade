@@ -31,10 +31,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.functional.AltFuture;
+import com.futurice.cascade.i.functional.IAltFuture;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,8 +43,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.vv;
+import static com.futurice.cascade.Async.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest
@@ -163,14 +163,32 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     }
 
-    @Ignore
     @Test
-    public void testInvokeAnyCallable() throws Exception {
-        ArrayList<Callable<String>> callableList = new ArrayList<>();
-        callableList.add(() -> null);
-        callableList.add(() -> null);
-        uiExecutorService.invokeAny(callableList);
-        assertTrue("Send at least 1", sendCount > 0);
+    public void testInvokeAllCallable() throws Exception {
+        AtomicInteger ai = new AtomicInteger(0);
+        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
+        });
+        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
+        });
+        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        callableList.add(() -> {
+            ai.set(100);
+            done1.fork();
+            return 100;
+        });
+        callableList.add(() -> {
+            ai.set(200);
+            done2.fork();
+            return 200;
+        });
+        WORKER.execute(() -> {
+            uiExecutorService.invokeAll(callableList);
+        });
+
+        awaitDone(done1);
+        awaitDone(done2);
+        assertTrue(sendCount > 0);
+        assertTrue(ai.get() > 0);
     }
 
     @Test
@@ -178,14 +196,19 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     }
 
-    @Ignore
     @Test
     public void testExecute() throws Exception {
         final AtomicInteger ai = new AtomicInteger(0);
+        final AtomicInteger ai2 = new AtomicInteger(0);
+        final IAltFuture<Object, Object> done = new AltFuture<>(WORKER, () -> {
+            ai2.set(200);
+        });
         uiExecutorService.execute(() -> {
             ai.set(100);
+            done.fork();
         });
-        awaitDone(UI.from(1)); // Hold for UI to complete
+        awaitDone(done); // Hold for UI to complete
         assertThat(ai.get()).isEqualTo(100);
+        assertThat(ai2.get()).isEqualTo(200);
     }
 }

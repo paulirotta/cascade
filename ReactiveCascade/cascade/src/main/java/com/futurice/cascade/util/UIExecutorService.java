@@ -38,7 +38,7 @@ import static com.futurice.cascade.Async.*;
  * <p>
  * This is done to allow UI codes to be part of UI {@link com.futurice.cascade.i.IThreadType}
  * so that {@link com.futurice.cascade.i.functional.IAltFuture} objects can be easily defined to
- * execute on the UI thread in {@link Async#UI} vs background worker threads.
+ * run on the UI thread in {@link Async#UI} vs background worker threads.
  * <p>
  * Since the system UI thread runs forever, not all {@link java.util.concurrent.ExecutorService}
  * items, for example related to lifecycle. make sense to implement.

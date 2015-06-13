@@ -79,7 +79,7 @@ public class FileMirrorService extends MirrorService<String, byte[]> {
         if (deleteOnExit) {
             this.dir.deleteOnExit();
             for (String file : this.dir.list()) {
-                dd(this, "Found FILE in deleteOnExit() FileService directory. Likely irregular app termination last execute. Deleting: " + file);
+                dd(this, "Found FILE in deleteOnExit() FileService directory. Likely irregular app termination last run. Deleting: " + file);
                 context.deleteFile(applyPath(file));
             }
         }

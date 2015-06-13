@@ -121,9 +121,9 @@ public class ImmutableValue<T> implements INamed {
     }
 
     /**
-     * Add an onFireAction which will be execute when {@link #set(Object)} is called.
+     * Add an onFireAction which will be run when {@link #set(Object)} is called.
      * <p>
-     * If the value is already {@link #set(Object)}, the passed onFireAction will be execute immediately and
+     * If the value is already {@link #set(Object)}, the passed onFireAction will be run immediately and
      * synchronously.
      *
      * @return
@@ -251,7 +251,7 @@ public class ImmutableValue<T> implements INamed {
      * Set the value.
      * <p>
      * If this atomic onFireAction succeeds, any {@link #then(com.futurice.cascade.i.action.IActionOne)} actions
-     * will also be execute synchronously. This is a fairly low-level class which is used by other classes
+     * will also be run synchronously. This is a fairly low-level class which is used by other classes
      * and for practical reasons it violates the "always asynchronous" assumption. Traditional. Sorry. :)
      *
      * @param value
@@ -270,7 +270,7 @@ public class ImmutableValue<T> implements INamed {
      * <p>
      * In other cases marker text "(ImmutableValue not yet set)" will be returned. If you see
      * this text, consider using a {@link #then(com.futurice.cascade.i.action.IActionOne)} onFireAction
-     * toKey make your logic execute when this value is set.
+     * toKey make your logic run when this value is set.
      *
      * @return
      */

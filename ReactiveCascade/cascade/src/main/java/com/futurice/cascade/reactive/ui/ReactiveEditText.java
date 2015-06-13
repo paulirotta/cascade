@@ -120,7 +120,7 @@ public class ReactiveEditText extends EditText implements INamed {
     public ReactiveValue<String> setReactiveValue(
             @NonNull final ReactiveValue<String> reactiveValue,
             final boolean fire) {
-        UI.execute((Runnable)() -> {
+        UI.run(() -> {
             this.reactiveValue = reactiveValue;
             if (fire) {
                 reactiveValue.fire();

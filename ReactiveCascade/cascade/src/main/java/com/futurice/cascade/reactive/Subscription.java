@@ -119,9 +119,9 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
             doReceiveFire((IN) latestValueFired); // This step may take some time
             if (!latestFireIn.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
                 if (latestFireInIsFireNext.getAndSet(true)) {
-                    this.threadType.executeNext(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
+                    this.threadType.runNext(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
                 } else {
-                    this.threadType.execute(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
+                    this.threadType.run(getFireRunnable()); // Input was set again while processing this value- re-queue to fire again after other pending work
                 }
             }
         });
@@ -229,7 +229,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
          */
         if (latestFireIn.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
             // Only queue for execution if not already queued
-            threadType.execute(fireRunnable);
+            threadType.run(getFireRunnable());
         }
     }
 
@@ -239,7 +239,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
         vv(this, origin, "fireNext latestFireIn=" + in);
         if (latestFireIn.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
             // Only queue for execution if not already queued
-            threadType.executeNext(fireRunnable);
+            threadType.runNext(fireRunnable);
         } else {
             // Already queued for execution, but possibly not soon- push it to the top of the stack
             threadType.moveToHeadOfQueue(fireRunnable);

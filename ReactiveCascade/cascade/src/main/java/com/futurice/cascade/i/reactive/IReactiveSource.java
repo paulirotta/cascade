@@ -139,7 +139,7 @@ public interface IReactiveSource<OUT> extends INamed {
     /**
      * Add an onFireAction as a new branch down-chain from this node.
      * <p>
-     * It will execute on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
+     * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
@@ -155,7 +155,7 @@ public interface IReactiveSource<OUT> extends INamed {
     /**
      * Add an onFireAction as a new branch down-chain from this node.
      * <p>
-     * It will execute on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
+     * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
@@ -171,7 +171,7 @@ public interface IReactiveSource<OUT> extends INamed {
     /**
      * Add an onFireAction as a new branch down-chain from this node.
      * <p>
-     * It will execute on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
+     * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
@@ -240,7 +240,7 @@ public interface IReactiveSource<OUT> extends INamed {
     /**
      * Add an onFireAction as a new branch down-chain from this node.
      * <p>
-     * It will execute on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
+     * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      *
      * @param reactiveTarget
      * @return

@@ -7,7 +7,7 @@ import com.futurice.cascade.util.AltFutureFuture;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
+import static com.futurice.cascade.Async.*;
 
 /**
  * Intergration test utilities.
@@ -37,8 +37,7 @@ public class TestUtil {
             @NonNull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
-        return new AltFutureFuture<>(altFuture)
-                .get(timeoutMillis, TimeUnit.MILLISECONDS);
+        return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     /**

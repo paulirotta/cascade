@@ -99,7 +99,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
 
     /**
      * Although the underlying call is thread safe to call directly, we always want this to
-     * execute after any pending changes on the UI thread.
+     * run after any pending changes on the UI thread.
      *
      * @param <A>
      * @return
@@ -110,7 +110,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
 
     /**
      * Although the underlying call is thread safe to call directly, we always want this to
-     * execute after any pending changes on the UI thread.
+     * run after any pending changes on the UI thread.
      *
      * @param <A>
      * @return

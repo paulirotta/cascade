@@ -51,7 +51,7 @@ import java.util.concurrent.Future;
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
  * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>
- * which will execute with less object creation overhead split synchronously if possible.
+ * which will run with less object creation overhead split synchronously if possible.
  */
 public interface IThreadType extends INamed {
     /**
@@ -78,7 +78,7 @@ public interface IThreadType extends INamed {
      *
      * @param runnable
      */
-    void execute(Runnable runnable);
+    void run(Runnable runnable);
 
     /**
      * Run this onFireAction after all previously submitted actions (FIFO).
@@ -87,10 +87,10 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void execute(IAction<IN> action, IOnErrorAction onErrorAction);
+    <IN> void run(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
-     * If this ThreadType permits out-of-order execution, execute this onFireAction before any previously
+     * If this ThreadType permits out-of-order execution, run this onFireAction before any previously
      * submitted tasks. This is a LIFO onFireAction. Think of it as a "high priority" or "depth first" solution
      * to complete a sequence of actions already started before opening a new sequence of actions.
      * <p>
@@ -100,10 +100,10 @@ public interface IThreadType extends INamed {
      * @param <IN>   the type of input argument expected by the action
      * @param action the work to be performed
      */
-    <IN> void executeNext(IAction<IN> action);
+    <IN> void runNext(IAction<IN> action);
 
     /**
-     * Like {@link #execute(Runnable)} but the task is queued LIFO as the first item of the
+     * Like {@link #run(Runnable)} but the task is queued LIFO as the first item of the
      * {@link java.util.Deque} if this executor supports out of order execution.
      * <p>
      * Generally out of order execution is supported on multi-thread pools such as
@@ -111,10 +111,10 @@ public interface IThreadType extends INamed {
      *
      * @param runnable
      */
-    void executeNext(Runnable runnable);
+    void runNext(Runnable runnable);
 
     /**
-     * The same as {@link #executeNext(IAction)}, however it is only moved if it is already in the
+     * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
      * queue. If it is not found in the queue, it will not be added.
      * <p>
      * This is useful as part singleton executor patterns where an action that can be queued multiple
@@ -132,7 +132,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction);
+    <IN> void runNext(IAction<IN> action, IOnErrorAction onErrorAction);
 
     /**
      * Convert this action into a runnable which will catch and handle
@@ -259,12 +259,12 @@ public interface IThreadType extends INamed {
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or
      * service chooses to itself. In such cases you can wait an arbitrary amount of time for the
-     * orderly completion of any pending tasks split execute some onFireAction once this finishes.
+     * orderly completion of any pending tasks split run some onFireAction once this finishes.
      * <p>
      * Under normal circumstances, you do call this. Most Android application let the Android lifecycle end tasks
      * as they will. Just let work complete split let Android end the program when it feels the need. This
      * is the safest design Android offers since there are no guarantees your application will change
-     * Android execute states with graceful notification. Design for split battle harden your code
+     * Android run states with graceful notification. Design for split battle harden your code
      * against sudden shutdowns instead of expecting this method to be called.
      * <p>
      * This method returns immediately split does not wait. It will start to shut down the executor

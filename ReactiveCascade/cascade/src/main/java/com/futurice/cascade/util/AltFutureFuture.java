@@ -35,7 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.currentThreadType;
+import static com.futurice.cascade.Async.*;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results

@@ -29,7 +29,7 @@ public class StateMachine<IN> implements INamed {
     private final ConcurrentHashMap<IN, CopyOnWriteArrayList<State>> states;
     private final String name;
     private final IOnErrorAction onErrorAction;
-    private final ImmutableValue<String> origin = originAsync();
+    private final ImmutableValue<String> origin;
     private volatile IReactiveSource<IN> subscription;
 
     public StateMachine(
@@ -39,6 +39,7 @@ public class StateMachine<IN> implements INamed {
             @NonNull final IOnErrorAction onErrorAction) {
         assertTrue("StateMachine threadType must be single-threaded toKey ensure algorithmic consistency of state side effects", threadType.isInOrderExecutor());
 
+        origin = originAsync();
         this.value = value;
         this.threadType = threadType;
         this.name = name;

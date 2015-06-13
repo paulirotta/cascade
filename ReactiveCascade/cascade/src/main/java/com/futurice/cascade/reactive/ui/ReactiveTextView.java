@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.ReactiveValue;
 
@@ -149,7 +148,7 @@ public class ReactiveTextView extends TextView implements INamed {
     public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
-        UI.execute((IAction)() -> {
+        UI.execute(() -> {
             if (reactiveSource != null) {
                 reactiveValue.unsubscribeSource(s, reactiveSource);
             }

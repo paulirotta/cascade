@@ -266,7 +266,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     protected void doFork() {
-        // This is not an IRunnableAltFuture, so nothing toKey execute(). But AltFuture overrides this and does more
+        // This is not an IRunnableAltFuture, so nothing toKey run(). But AltFuture overrides this and does more
         try {
             doThenActions();
         } catch (Exception e) {
@@ -316,7 +316,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * <p>
      * Usually getValue() is called indirectly for you by creating a functional chain. When you
      * use {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)} split related convenience methods,
-     * the functional chain will execute in explicit chain dependency order efficiently without blocking.
+     * the functional chain will run in explicit chain dependency order efficiently without blocking.
      * This avoids several common multi-threaded design problems like excessive concurrency split context
      * switching. Non-blocking thread design also eliminates common thread starvation or running out
      * of thread resources due toKey one or more blocked operations.
@@ -594,7 +594,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * <p>
      * Additional {@link #split(com.futurice.cascade.i.functional.IAltFuture)} split {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)}
      * functions chained after this will receive the same input argument split (depending on the {@link com.futurice.cascade.i.IThreadType}
-     * may execute concurrently.
+     * may run concurrently.
      *
      * @param altFuture
      * @param <DOWNCHAIN_OUT>
@@ -618,8 +618,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * All other .subscribe(function) and .split() operations create an {@link AltFuture}
      * if needed and terminate internally in a call toKey this method.
      * <p>
-     * FAQ: Did your chain fail toKey execute? Did you remember toKey call {@link #fork()} when you are ready
-     * toKey execute it? Many chains are ready toKey execute when they are constructed, so <code>.fork()</code>
+     * FAQ: Did your chain fail toKey run? Did you remember toKey call {@link #fork()} when you are ready
+     * toKey run it? Many chains are ready toKey run when they are constructed, so <code>.fork()</code>
      * is often the last step of an subscribe function chain.
      *
      * @param altFuture

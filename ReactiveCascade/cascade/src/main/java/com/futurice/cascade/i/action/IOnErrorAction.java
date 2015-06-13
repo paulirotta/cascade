@@ -27,7 +27,7 @@ package com.futurice.cascade.i.action;
 import android.support.annotation.NonNull;
 
 /**
- * A function to execute in the event of an {@link java.lang.Exception} or similar irregular termination
+ * A function to run in the event of an {@link java.lang.Exception} or similar irregular termination
  * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
  */
 public interface IOnErrorAction extends IBaseAction<Exception> {

@@ -71,7 +71,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     protected final ExecutorService executorService;
     private final String name;
     protected final BlockingQueue<Runnable> queue;
-    private final ImmutableValue<String> origin;
+    protected final ImmutableValue<String> origin;
 
     /**
      * Create an asynchronous onFireAction handler that embodies certain rules for threading split concurrency
@@ -94,7 +94,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
 //============================= Internal Utility Methods =========================================
 
-    public abstract void execute(@NonNull Runnable runnable);
+    public abstract void run(@NonNull Runnable runnable);
 
     @Override
     @NonNull
@@ -103,7 +103,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             try {
                 action.call();
             } catch (Exception e) {
-                ee(this, origin, "execute(IAction) problem", e);
+                ee(this, origin, "run(IAction) problem", e);
             }
         };
     }
@@ -117,11 +117,11 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             try {
                 action.call();
             } catch (Exception e) {
-                ee(this, origin, "execute(Runnable) problem", e);
+                ee(this, origin, "run(Runnable) problem", e);
                 try {
                     onErrorAction.call(e);
                 } catch (Exception e1) {
-                    ee(this, origin, "execute(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
+                    ee(this, origin, "run(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
                 }
             }
         };
@@ -134,23 +134,23 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         return !ste[4].getClassName().startsWith("com.futurice.cascade");
     }
 
-//========================== .subscribe() and .execute() Methods ================================
+//========================== .subscribe() and .run() Methods ================================
 
     @Override // IThreadType
     public <IN> void execute(@NonNull final IAction<IN> action) {
-        execute(wrapRunnableAsErrorProtection(action));
+        run(wrapRunnableAsErrorProtection(action));
     }
 
     @Override // IThreadType
-    public <IN> void execute(
+    public <IN> void run(
             @NonNull final IAction<IN> action,
             @NonNull final IOnErrorAction onErrorAction) {
-        execute(wrapRunnableAsErrorProtection(action, onErrorAction));
+        run(wrapRunnableAsErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
-    public <IN> void executeNext(@NonNull final IAction<IN> action) {
-        executeNext(wrapRunnableAsErrorProtection(action));
+    public <IN> void runNext(@NonNull final IAction<IN> action) {
+        runNext(wrapRunnableAsErrorProtection(action));
     }
 
     @Override // IThreadType
@@ -171,11 +171,11 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
-    public <IN> void executeNext(
+    public <IN> void runNext(
             @NonNull final IAction<IN> action,
             @NonNull final IOnErrorAction onErrorAction) {
-        vv(this, origin, "executeNext()");
-        executeNext(wrapRunnableAsErrorProtection(action, onErrorAction));
+        vv(this, origin, "runNext()");
+        runNext(wrapRunnableAsErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
@@ -263,7 +263,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         }
 
         vv(this, origin, "fork()");
-        execute(runnableAltFuture); // Atomic state checks must be completed later in the .execute() method
+        run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
     }
 
     @Override // IThreadType
@@ -275,7 +275,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             Async.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
         if (timeout == 0 && afterShutdownAction != null) {
-            Async.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would execute immediately which is probably an error");
+            Async.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
         }
         final ImmutableValue<String> originImmutableValue = originAsync()
                 .then(o -> {

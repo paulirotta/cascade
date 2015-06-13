@@ -90,9 +90,9 @@ import static com.futurice.cascade.Async.ee;
  * simple statement of fact
  * <p>
  * fail smart - distinguish clearly what conditions you expect toKey occur in your system that are
- * normal execute states split not design failures
+ * normal run states split not design failures
  * <p>
- * unfail production - execute past any remaining problems in production builds sending silently toKey analytics instead
+ * unfail production - run past any remaining problems in production builds sending silently toKey analytics instead
  *
  * @param <IN>
  * @param <OUT>
@@ -105,7 +105,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Create a {@link java.lang.Runnable} which will be executed one time on the
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool toKey execute this command on
+     * @param threadType the thread pool toKey run this command on
      * @param action a function that receives one input and no return value
      */
     public AltFuture(
@@ -128,7 +128,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * Constructor
      *
-     * @param threadType the thread pool toKey execute this command on
+     * @param threadType the thread pool toKey run this command on
      * @param action a function that receives one input and no return value
      */
     public AltFuture(
@@ -152,7 +152,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Create a {@link java.lang.Runnable} which will be executed one time on the
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool toKey execute this command on
+     * @param threadType the thread pool toKey run this command on
      * @param action a function that does not vary with the input value
      */
     public AltFuture(
@@ -167,7 +167,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Create a {@link java.lang.Runnable} which will be executed one time on the
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
-     * @param threadType the thread pool toKey execute this command on
+     * @param threadType the thread pool toKey run this command on
      * @param action a mapping function
      */
     public AltFuture(
@@ -239,7 +239,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             if (e instanceof CancellationException || e instanceof InterruptedException) {
                 this.cancel("AltFuture had a problem (may be normal, will not fail fast)", e);
             } else {
-                this.stateAR.set(new AltFutureStateError("AltFuture execute problem:\n" + origin, e));
+                this.stateAR.set(new AltFutureStateError("AltFuture run problem:\n" + origin, e));
             }
         } finally {
             try {

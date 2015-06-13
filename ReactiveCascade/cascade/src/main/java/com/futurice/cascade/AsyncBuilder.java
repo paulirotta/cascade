@@ -103,8 +103,8 @@ public class AsyncBuilder {
     }
 
     /**
-     * Create a new <code>AsyncBuilder</code> that will execute as long as the specified
-     * {@link android.content.Context} will execute.
+     * Create a new <code>AsyncBuilder</code> that will run as long as the specified
+     * {@link android.content.Context} will run.
      * <p>
      * Unless you have reason to do otherwise, you probably want to pass
      * {@link android.app.Activity#getApplicationContext()} to ensure that the asynchronous

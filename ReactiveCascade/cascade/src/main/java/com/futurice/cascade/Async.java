@@ -640,9 +640,7 @@ public final class Async {
         final ImmutableValue<String> immutableValue = new ImmutableValue<>();
 
         if (WORKER != null) {
-            WORKER.execute((Runnable) () ->
-                            immutableValue.set(prettyFormat(origin(traceElementsArray).get(0).stackTraceElement))
-            );
+            WORKER.run(() -> immutableValue.set(prettyFormat(origin(traceElementsArray).get(0).stackTraceElement)));
         } else {
             // During bootstrapping of the ThreadTypes
             final List<StackTaceLine> list = origin(traceElementsArray);
@@ -964,22 +962,22 @@ public final class Async {
         }
 
         @Override
-        public final void execute(Runnable runnable) {
+        public final void run(Runnable runnable) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
         @Override
-        public final <IN> void execute(IAction<IN> action, IOnErrorAction onErrorAction) {
+        public final <IN> void run(IAction<IN> action, IOnErrorAction onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
         @Override
-        public final <IN> void executeNext(IAction<IN> action) {
+        public final <IN> void runNext(IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
         @Override
-        public final void executeNext(Runnable runnable) {
+        public final void runNext(Runnable runnable) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -989,7 +987,7 @@ public final class Async {
         }
 
         @Override
-        public final <IN> void executeNext(IAction<IN> action, IOnErrorAction onErrorAction) {
+        public final <IN> void runNext(IAction<IN> action, IOnErrorAction onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
