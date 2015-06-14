@@ -31,7 +31,6 @@ import android.util.*;
 
 import com.futurice.cascade.functional.*;
 import com.futurice.cascade.i.*;
-import com.futurice.cascade.rest.*;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
 import com.futurice.cascade.util.UIExecutorService;
@@ -82,7 +81,7 @@ public class AsyncBuilder {
     private IThreadType netReadThreadType;
     private IThreadType netWriteThreadType;
     private IThreadType fileThreadType;
-    private MirrorService fileService;
+//    private MirrorService fileService;
     //    private SignalVisualizerClient signalVisualizerClient = null;
     private static BlockingQueue<Runnable> workerQueue;
     private static BlockingQueue<Runnable> serialWorkerQueue;
@@ -95,7 +94,7 @@ public class AsyncBuilder {
     private ExecutorService fileWriteExecutorService;
     private ExecutorService netReadExecutorService;
     private ExecutorService netWriteExecutorService;
-    private AbstractRESTService netAbstractRESTService;
+//    private AbstractRESTService netAbstractRESTService;
 
     public static boolean isInitialized() {
         return asyncBuilder != null;
@@ -252,27 +251,27 @@ public class AsyncBuilder {
         return this;
     }
 
-    @NonNull
-    public MirrorService getFileService() {
-        if (fileService == null) {
-            Log.v(TAG, "Creating default file service");
-            setFileService(new FileMirrorService("Default FileMirrorService",
-                    "FileMirrorService",
-                    false,
-                    context,
-                    Context.MODE_PRIVATE,
-                    getFileThreadType()));
-        }
+//    @NonNull
+//    public MirrorService getFileService() {
+//        if (fileService == null) {
+//            Log.v(TAG, "Creating default file service");
+//            setFileService(new FileMirrorService("Default FileMirrorService",
+//                    "FileMirrorService",
+//                    false,
+//                    context,
+//                    Context.MODE_PRIVATE,
+//                    getFileThreadType()));
+//        }
+//
+//        return fileService;
+//    }
 
-        return fileService;
-    }
-
-    @NonNull
-    public AsyncBuilder setFileService(@NonNull final MirrorService fileService) {
-        Log.v(TAG, "setFileService(" + fileService + ")");
-        this.fileService = fileService;
-        return this;
-    }
+//    @NonNull
+//    public AsyncBuilder setFileService(@NonNull final MirrorService fileService) {
+//        Log.v(TAG, "setFileService(" + fileService + ")");
+//        this.fileService = fileService;
+//        return this;
+//    }
 
     @NonNull
     private static Thread getWorkerThread(IThreadType threadType, Runnable runnable) {
@@ -480,22 +479,22 @@ public class AsyncBuilder {
         return this;
     }
 
-    @NonNull
-    public AbstractRESTService getNetAbstractRESTService() {
-        if (netAbstractRESTService == null) {
-            setNetAbstractRESTService(new NetRESTService("Default NetRESTService", context,
-                    getNetReadThreadType(), getNetWriteThreadType()));
-        }
-
-        return netAbstractRESTService;
-    }
-
-    @NonNull
-    public AsyncBuilder setNetAbstractRESTService(@NonNull final NetRESTService netAbstractRESTService) {
-        Log.d(TAG, "setNetRESTService(" + netAbstractRESTService + ")");
-        this.netAbstractRESTService = netAbstractRESTService;
-        return this;
-    }
+//    @NonNull
+//    public AbstractRESTService getNetAbstractRESTService() {
+//        if (netAbstractRESTService == null) {
+//            setNetAbstractRESTService(new NetRESTService("Default NetRESTService", context,
+//                    getNetReadThreadType(), getNetWriteThreadType()));
+//        }
+//
+//        return netAbstractRESTService;
+//    }
+//
+//    @NonNull
+//    public AsyncBuilder setNetAbstractRESTService(@NonNull final NetRESTService netAbstractRESTService) {
+//        Log.d(TAG, "setNetRESTService(" + netAbstractRESTService + ")");
+//        this.netAbstractRESTService = netAbstractRESTService;
+//        return this;
+//    }
 
     /**
      * Note that if you override this, you may also want to override the associated

@@ -26,15 +26,12 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.rest.PrioritizedGettable;
-
 /**
  * Create the actual URL at the last minute, just before the request is processed.
  * <p>
  * This may be useful for load balancing between servers or late-prioritizing parameters
  * based on current conditions. For example use this in association with a Collection to
- * prioritize if/which-next at that moment based on current user interface state. See
- * {@link PrioritizedGettable} as an example default implementation.
+ * prioritize if/which-next at that moment based on current user interface state.
  * <p>
  * Your implementation must be thread safe since multiple WORKER threads may attempt to start
  * network connections simultaneously. The simplest way to do this is mark the method synchronized

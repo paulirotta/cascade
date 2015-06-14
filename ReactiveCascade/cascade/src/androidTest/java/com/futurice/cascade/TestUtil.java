@@ -1,4 +1,4 @@
-package com.futurice.cascade.test;
+package com.futurice.cascade;
 
 import android.support.annotation.NonNull;
 

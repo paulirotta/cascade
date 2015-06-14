@@ -10,7 +10,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.test.TestUtil;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
 
