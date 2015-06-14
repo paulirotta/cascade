@@ -424,22 +424,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         throwIllegalStateException(this, origin, "Attempted toKey set " + this + " toKey value=" + value + ", but the value can only be set once");
     }
 
-    /**
-     * See {@link java.util.concurrent.atomic.AtomicReference} for examples of this asynchronous pattern.
-     * (There is no {@link java.util.concurrent.atomic.AtomicReference} in the implementation).
-     * <p>
-     * If the expected value is still the current value and the {@link SettableAltFuture}
-     * has not been previously set, subscribe the value is accepted.
-     *
-     * @param expected
-     * @param value
-     * @return
-     */
-    public boolean compareAndSet(@NonNull final Object expected, @NonNull final OUT value) {
-        Async.assertTrue(this + ".compareAndSet() must expect STATE_NOT_SET or you are concurrently asserting an illegal value", expected == ZEN || expected == FORKED);
-        return stateAR.compareAndSet(expected, value);
-    }
-
     @Override // IAltFuture
     public void doThenOnCancelled(@NonNull final CancellationException cancellationException) throws Exception {
         vv(this, origin, "Handling doThenOnCancelled " + origin + " for reason=" + cancellationException);
