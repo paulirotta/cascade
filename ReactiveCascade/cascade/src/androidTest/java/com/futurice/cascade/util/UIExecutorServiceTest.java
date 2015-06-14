@@ -187,8 +187,36 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
         awaitDone(done1);
         awaitDone(done2);
-        assertTrue(sendCount > 0);
-        assertTrue(ai.get() > 0);
+        assertThat(sendCount).isGreaterThan(0);
+        assertThat(ai.get()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testInvokeAnyCallable() throws Exception {
+        AtomicInteger ai = new AtomicInteger(0);
+        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
+        });
+        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
+        });
+        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        callableList.add(() -> {
+            ai.set(100);
+            done1.fork();
+            return 100;
+        });
+        callableList.add(() -> {
+            ai.set(200);
+            done2.fork();
+            return 200;
+        });
+        WORKER.execute(() -> {
+            uiExecutorService.invokeAny(callableList);
+        });
+
+        awaitDone(done1);
+        awaitDone(done2);
+        assertThat(sendCount).isGreaterThan(0);
+        assertThat(ai.get()).isGreaterThan(0);
     }
 
     @Test

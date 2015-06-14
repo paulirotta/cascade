@@ -82,7 +82,6 @@ public class AsyncBuilder {
     private IThreadType netReadThreadType;
     private IThreadType netWriteThreadType;
     private IThreadType fileThreadType;
-    private IThreadType fileWriteThreadType;
     private MirrorService fileService;
     //    private SignalVisualizerClient signalVisualizerClient = null;
     private static BlockingQueue<Runnable> workerQueue;
@@ -250,13 +249,6 @@ public class AsyncBuilder {
     public AsyncBuilder setFileThreadType(@NonNull final IThreadType fileThreadType) {
         Log.v(TAG, "setFileThreadType(" + fileThreadType + ")");
         this.fileThreadType = fileThreadType;
-        return this;
-    }
-
-    @NonNull
-    public AsyncBuilder setFileWriteThreadType(@NonNull final IThreadType fileWriteThreadType) {
-        Log.v(TAG, "setFileWriteThreadType(" + fileWriteThreadType + ")");
-        this.fileWriteThreadType = fileWriteThreadType;
         return this;
     }
 
