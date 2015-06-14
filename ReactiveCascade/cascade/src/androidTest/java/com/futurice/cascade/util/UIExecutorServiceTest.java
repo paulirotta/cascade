@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.futurice.cascade.Async.*;
@@ -154,13 +155,31 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testInvokeAll() throws Exception {
+    public void testInvokeAllCallableTimeout() throws Exception {
+        AtomicInteger ai = new AtomicInteger(0);
+        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
+        });
+        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
+        });
+        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        callableList.add(() -> {
+            ai.set(100);
+            done1.fork();
+            return 100;
+        });
+        callableList.add(() -> {
+            ai.set(200);
+            done2.fork();
+            return 200;
+        });
+        WORKER.execute(() -> {
+            uiExecutorService.invokeAll(callableList, 1000, TimeUnit.DAYS.MILLISECONDS);
+        });
 
-    }
-
-    @Test
-    public void testInvokeAll1() throws Exception {
-
+        awaitDone(done1);
+        awaitDone(done2);
+        assertThat(sendCount).isGreaterThan(0);
+        assertThat(ai.get()).isGreaterThan(0);
     }
 
     @Test
@@ -217,11 +236,6 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         awaitDone(done2);
         assertThat(sendCount).isGreaterThan(0);
         assertThat(ai.get()).isGreaterThan(0);
-    }
-
-    @Test
-    public void testInvokeAnyRunnable() throws Exception {
-
     }
 
     @Test
