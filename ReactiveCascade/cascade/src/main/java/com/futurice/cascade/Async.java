@@ -208,9 +208,11 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
-     * @param t
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
+     * @param t the {@link Throwable} which triggered this error message
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     public static boolean e(
@@ -234,8 +236,10 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     @NotCallOrigin
@@ -254,8 +258,10 @@ public final class Async {
     /**
      * Log a verbose message including the thread name
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      */
     public static void v(
             @NonNull final Object tag,
@@ -266,8 +272,10 @@ public final class Async {
     /**
      * Log a debugOrigin message including the thread name
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      */
     public static void d(
             @NonNull final Object tag,
@@ -278,8 +286,10 @@ public final class Async {
     /**
      * Log an information message including the thread name
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      */
     public static void i(
             @NonNull final Object tag,
@@ -486,8 +496,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
     public static void throwIllegalStateException(
@@ -500,9 +512,11 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag
-     * @param origin
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param origin a link to the point from which the object throwing the exception was called in the application code
+     * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
     public static void throwIllegalStateException(
@@ -516,8 +530,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
     public static void throwIllegalArgumentException(
@@ -530,9 +546,11 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag
-     * @param origin
-     * @param message
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param origin the point from which the object throwing the exception was called
+     * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
     public static void throwIllegalArgumentException(
@@ -546,9 +564,11 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
-     * @param t
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param message to display and help the developer resolve the issue
+     * @param t the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(
@@ -571,7 +591,7 @@ public final class Async {
      * Create a detailed log with a {@link TimeoutException} thrown at the current code point
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
+     * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
     public static void throwTimeoutException(
@@ -586,9 +606,12 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
+     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     *            the exception was created. This may be a {@link String}, {@link INamed},
+     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin  a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param message
-     * @param t
+     * @param message to display and help the developer resolve the issue
+     * @param t the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(
@@ -660,7 +683,7 @@ public final class Async {
      * Extract from the current stack trace the most interesting "origin" line from which this was
      * called. Once this is done on a background thread, pass this short text to action
      *
-     * @param action
+     * @param action to be performed when the current stack trace is resolved asynchronously
      */
     private static void debugOriginThen(@NonNull final IActionOne<String> action) {
         if (TRACE_ASYNC_ORIGIN && WORKER != null) {
@@ -678,8 +701,8 @@ public final class Async {
      * Perform an action once both the async-resolved object creation call stack origin and
      * async current call stack origin are settled
      *
-     * @param objectCreationOrigin
-     * @param action
+     * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
+     * @param action to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
      */
     private static void debugOriginThen(
             @NonNull final ImmutableValue<String> objectCreationOrigin,
@@ -1027,14 +1050,6 @@ public final class Async {
 
     private static final class StackTaceLine {
 
-        /**
-         * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-         * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage provided.
-         *
-         * @param errorMessage a message to display when the assertion fails. It should indicate the
-         * reason which was not true and, if possible, the likely corrective action
-         * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
-         */
         final Class claz;
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;
