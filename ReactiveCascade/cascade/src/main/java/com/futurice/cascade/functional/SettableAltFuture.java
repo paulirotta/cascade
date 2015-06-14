@@ -379,6 +379,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             this.value = value;
         }
 
+        @NonNull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateSetButNotYetForked.class.getSimpleName());
@@ -861,6 +862,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * TODO Document ZEN and apply toKey use toKey allow collections and arguments that currently might not accept null toKey accept null as a first class value. Not yet used in many places.
      */
     protected static final IAltFutureState ZEN = new IAltFutureState() {
+        @NonNull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state ZEN");
@@ -873,6 +875,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     };
 
     protected static final IAltFutureState FORKED = new IAltFutureState() {
+        @NonNull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state FORKED");

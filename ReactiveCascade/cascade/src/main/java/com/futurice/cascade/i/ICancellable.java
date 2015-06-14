@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
-import com.futurice.cascade.i.functional.IAltFuture;
+import android.support.annotation.NonNull;
 
 /**
  * Stop an ongoing activity early if it has not already completed.
@@ -47,7 +47,7 @@ public interface ICancellable {
      * @param reason
      * @return
      */
-    boolean cancel(String reason);
+    boolean cancel(@NonNull String reason);
 
     /**
      * A plain text reason and an exception that originally caused the cancellation. This exception
@@ -58,7 +58,7 @@ public interface ICancellable {
      * @param e
      * @return
      */
-    boolean cancel(String reason, Exception e);
+    boolean cancel(@NonNull String reason, @NonNull Exception e);
 
     /**
      * Check if {@link #cancel(String)} or a similar occurrence such as a {@link java.lang.Exception}

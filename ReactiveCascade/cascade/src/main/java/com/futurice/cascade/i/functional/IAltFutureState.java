@@ -24,14 +24,17 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.functional;
 
+import android.support.annotation.NonNull;
+
 /**
  * This is a marker interface. If you return state information, the atomic inner state of your
  * implementation should implement this interface.
  */
 public interface IAltFutureState {
     /**
-     * Get the exception which triggered this state change, or throw
+     * Get the exception which triggered this state change
      * @return
      */
+    @NonNull
     public Exception getException();
 }

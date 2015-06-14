@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i.action;
 
+import android.support.annotation.NonNull;
+
 import java.util.concurrent.Callable;
 
 /**
@@ -32,4 +34,7 @@ import java.util.concurrent.Callable;
  *
  */
 public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
+    @Override // Callable
+    @NonNull
+    OUT call() throws Exception;
 }
