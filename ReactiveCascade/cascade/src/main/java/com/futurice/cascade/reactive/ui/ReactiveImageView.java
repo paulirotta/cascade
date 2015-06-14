@@ -27,6 +27,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -36,7 +37,6 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.futurice.cascade.Async.*;
@@ -55,6 +55,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 //        }
 //    }
 
+    @Nullable
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> reactiveSources = new CopyOnWriteArrayList<>();
 
@@ -90,6 +91,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @Override // IReactiveTarget
     @NotCallOrigin
     public void fire(@NonNull final Bitmap bitmap) {
+        assertNotNull(origin);
         dd(this, origin, "fire bitmap=");
 
         if (isUiThread()) {
@@ -117,6 +119,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void subscribeSource(
             @NonNull final String reason,
             @NonNull final IReactiveSource<Bitmap> reactiveSource) {
+        assertNotNull(origin);
         vv(this, origin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
 
         if (reactiveSources.addIfAbsent(reactiveSource)) {
@@ -131,6 +134,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void unsubscribeSource(
             @NonNull final String reason,
             @NonNull final IReactiveSource<Bitmap> reactiveSource) {
+        assertNotNull(origin);
         if (reactiveSources.remove(reactiveSource)) {
             vv(this, origin, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
             reactiveSource.unsubscribe(reason, this);
@@ -141,10 +145,9 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     public void unsubscribeAllSources(@NonNull final String reason) {
-        final Iterator<IReactiveSource<Bitmap>> iterator = reactiveSources.iterator();
 
-        while (iterator.hasNext()) {
-            iterator.next().unsubscribeAll(reason);
+        for (IReactiveSource<Bitmap> reactiveSource : reactiveSources) {
+            reactiveSource.unsubscribeAll(reason);
         }
     }
 
@@ -157,6 +160,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @Override // View
     public void onDetachedFromWindow() {
         unsubscribeAllSources("onDetachedFromWindow");
+        super.onDetachedFromWindow();
     }
 
 //    @Override // Object

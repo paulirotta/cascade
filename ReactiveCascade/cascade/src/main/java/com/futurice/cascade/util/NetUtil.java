@@ -62,7 +62,7 @@ public final class NetUtil {
     private final TelephonyManager telephonyManager;
     private final WifiManager wifiManager;
 
-    public NetUtil(final Context context) {
+    public NetUtil(@NonNull final Context context) {
         origin = originAsync();
         client = new OkHttpClient();
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

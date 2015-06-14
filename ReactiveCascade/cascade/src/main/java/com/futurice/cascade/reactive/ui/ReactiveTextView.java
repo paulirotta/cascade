@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -41,8 +42,9 @@ public class ReactiveTextView extends TextView implements INamed {
 //        }
 //    }
 
-    //    private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
+
 //    private final CopyOnWriteArrayList<IReactiveSource<String>> reactiveSources = new CopyOnWriteArrayList<>();
+    @Nullable
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     private IReactiveSource<String> reactiveSource; // Access only from UI thread
     private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
@@ -125,18 +127,18 @@ public class ReactiveTextView extends TextView implements INamed {
             reactiveValue.unsubscribeSource("onDetachedFromWindow", reactiveSource);
             reactiveSource = null;
         }
+        super.onDetachedFromWindow();
     }
 
     @Override // View
     public void onAttachedToWindow() {
         onDetachedFromWindow();
         subscribe();
+        super.onAttachedToWindow();
     }
 
     private void subscribe() {
-        reactiveSource = reactiveValue.subscribe(UI, text -> {
-            setText(text);
-        });
+        reactiveSource = reactiveValue.subscribe(UI, this::setText);
     }
 
     /**
@@ -146,6 +148,7 @@ public class ReactiveTextView extends TextView implements INamed {
      * @param fire          push the current value of the view model to the screen after this action completes on the UI thread
      */
     public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
+        assertNotNull(origin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute(() -> {

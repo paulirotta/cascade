@@ -2,7 +2,10 @@ package com.futurice.cascade.reactive.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -14,6 +17,7 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
 
 import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.assertNotNull;
 import static com.futurice.cascade.Async.assertUIThread;
 import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.vv;
@@ -28,6 +32,7 @@ import static com.futurice.cascade.Async.vv;
  */
 @NotCallOrigin
 public class ReactiveEditText extends EditText implements INamed {
+    @Nullable
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     public volatile ReactiveValue<String> reactiveValue;
     private TextWatcher textWatcher;
@@ -68,6 +73,7 @@ public class ReactiveEditText extends EditText implements INamed {
     public ReactiveEditText(
             @NonNull final Context context,
             @NonNull final AttributeSet attrs,
+            @AttrRes
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
@@ -77,6 +83,7 @@ public class ReactiveEditText extends EditText implements INamed {
     public ReactiveEditText(
             @NonNull final Context context,
             @NonNull final AttributeSet attrs,
+            @AttrRes
             final int defStyleAttr,
             @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
@@ -89,7 +96,9 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull final String name,
             @NonNull final Context context,
             @NonNull final AttributeSet attrs,
+            @AttrRes
             final int defStyleAttr,
+            @StyleRes
             final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
@@ -101,7 +110,9 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull final String name,
             @NonNull final Context context,
             @NonNull final AttributeSet attrs,
+            @AttrRes
             final int defStyleAttr,
+            @StyleRes
             final int defStyleRes,
             @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -138,6 +149,7 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @Override // View
     public void onAttachedToWindow() {
+        assertNotNull(origin);
         assertUIThread();
         final String currentText = reactiveValue.get();
         setText(currentText);
@@ -169,6 +181,7 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @Override // View
     public void onDetachedFromWindow() {
+        assertNotNull(origin);
         vv(this, origin, "onDetachedFromWindow " + getName() + ", current value=" + getText());
         reactiveValue.unsubscribeAll("onDetachedFromWindow");
 
