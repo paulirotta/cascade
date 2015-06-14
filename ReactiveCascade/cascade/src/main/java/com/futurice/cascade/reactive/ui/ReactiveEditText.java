@@ -6,6 +6,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.annotation.UiThread;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -148,6 +149,7 @@ public class ReactiveEditText extends EditText implements INamed {
     }
 
     @Override // View
+    @UiThread
     public void onAttachedToWindow() {
         assertNotNull(origin);
         assertUIThread();
@@ -180,6 +182,7 @@ public class ReactiveEditText extends EditText implements INamed {
     }
 
     @Override // View
+    @UiThread
     public void onDetachedFromWindow() {
         assertNotNull(origin);
         vv(this, origin, "onDetachedFromWindow " + getName() + ", current value=" + getText());

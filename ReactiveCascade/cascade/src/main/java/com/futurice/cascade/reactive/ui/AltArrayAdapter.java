@@ -1,13 +1,20 @@
 package com.futurice.cascade.reactive.ui;
 
-import android.content.*;
-import android.view.*;
-import android.widget.*;
+import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
 
-import com.futurice.cascade.i.action.*;
-import com.futurice.cascade.i.functional.*;
+import com.futurice.cascade.i.functional.IAltFuture;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.futurice.cascade.Async.*;
 
@@ -42,36 +49,68 @@ import static com.futurice.cascade.Async.*;
  */
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     //TODO Add full coverage and remove trivial implementations that are thread safe
-    public AltArrayAdapter(Context context, int resource) {
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource) {
         super(context, resource, 0, new ArrayList<T>());
     }
 
-    public AltArrayAdapter(Context context, int resource, int textViewResourceId) {
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource,
+            @LayoutRes final int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<T>());
     }
 
-    public AltArrayAdapter(Context context, int resource, T[] objects) {
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource,
+            @NonNull final T[] objects) {
         super(context, resource, 0, Arrays.asList(objects));
     }
 
-    public AltArrayAdapter(Context context, int resource, int textViewResourceId, T[] objects) {
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource,
+            @LayoutRes final int textViewResourceId,
+            @NonNull final T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
     }
 
-    public AltArrayAdapter(Context context, int resource, List<T> objects) {
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource,
+            @NonNull final List<T> objects) {
         super(context, resource, 0, objects);
     }
 
-    public AltArrayAdapter(Context context, int resource, int textViewResourceId, List<T> objects) {
+    //FIXME Is this really both @LayoutRes ?
+    public AltArrayAdapter(
+            @NonNull final Context context,
+            @LayoutRes final int resource,
+            @LayoutRes final int textViewResourceId,
+            @NonNull final List<T> objects) {
         super(context, resource, textViewResourceId, objects);
     }
 
-    public static AltArrayAdapter<CharSequence> createFromResource(Context context, int textArrayResId, int textViewResId) {
-        CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
+    @NonNull
+    public static AltArrayAdapter<CharSequence> createFromResource(
+            @NonNull final Context context,
+            @LayoutRes final int textArrayResId,
+            @LayoutRes final int textViewResId) {
+        final CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
+
         return new AltArrayAdapter<>(context, textViewResId, strings);
     }
 
-    public <A> IAltFuture<A, T> addAsync(T value) {
+    /**
+     * Add the value to the end of the list
+     *
+     * @param value
+     * @return
+     */
+    @NonNull
+    public IAltFuture<?, T> addAsync(@NonNull final T value) {
         return UI.then(
                 () -> {
                     add(value);
@@ -79,21 +118,29 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
                 });
     }
 
-    public <A> IAltFuture<A, T> insertAsync(T object, int index) {
-        return UI.then(() -> {
-            insert(object, index);
-            return object;
-        });
-    }
-
-    public <A> IAltFuture<A, T> removeAsync(T object) {
+    /**
+     * Remove the item from the list
+     *
+     * @param object
+     * @return
+     */
+    @NonNull
+    public IAltFuture<?, T> removeAsync(@NonNull final T object) {
         return UI.then(() -> {
             remove(object);
             return object;
         });
     }
 
-    public <A> IAltFuture<A, A> sortAsync(Comparator<? super T> comparator) {
+    /**
+     * Sort the display list
+     *
+     * @param comparator
+     * @param <A>
+     * @return
+     */
+    @NonNull
+    public <A> IAltFuture<A, A> sortAsync(@NonNull final Comparator<? super T> comparator) {
         return UI.then(() -> sort(comparator));
     }
 
@@ -101,67 +148,78 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
      * Although the underlying call is thread safe to call directly, we always want this to
      * run after any pending changes on the UI thread.
      *
-     * @param <A>
-     * @return
+     * @param <A> the upstream output value type
+     * @return the output value from upstream
      */
+    @NonNull
     public <A> IAltFuture<A, A> notifyDataSetChangedAsync() {
-        return UI.then(() -> notifyDataSetChanged());
+        return UI.then(this::notifyDataSetChanged);
     }
 
     /**
      * Although the underlying call is thread safe to call directly, we always want this to
      * run after any pending changes on the UI thread.
      *
-     * @param <A>
-     * @return
+     * @param <A> the upstream output value type
+     * @return the output value from upstream
      */
+    @NonNull
     public <A> IAltFuture<A, A> notifyDataSetInvalidatedAsync() {
-        return UI.then(() -> notifyDataSetInvalidated());
+        return UI.then(this::notifyDataSetInvalidated);
     }
 
-    public <A> IAltFuture<A, A> setNotifyOnChangeAsync(boolean notifyOnChange) {
+    @NonNull
+    public <A> IAltFuture<A, A> setNotifyOnChangeAsync(final boolean notifyOnChange) {
         return UI.then(() -> setNotifyOnChange(notifyOnChange));
     }
 
-    public <A> IAltFuture<A, A> addAllAsync(Collection<T> collection) {
+    @NonNull
+    public <A> IAltFuture<A, A> addAllAsync(@NonNull final Collection<T> collection) {
         return UI.then(() -> addAll(collection));
     }
 
-    public <A> IAltFuture<A, A> addAllAsync(T... items) {
+    @SafeVarargs
+    @NonNull
+    public final IAltFuture<?, T[]> addAllAsync(@NonNull final T... items) {
         //TODO Not an atomic add operation
         return UI.then(() -> {
             for (T item : items) {
                 add(item);
             }
+            return items;
         });
     }
 
+    @NonNull
     public <A> IAltFuture<A, A> clearAsync() {
-        return UI.then(() -> clear());
+        return UI.then(this::clear);
     }
 
-    public <A> IAltFuture<A, Integer> getCountAsync() {
-        return UI.then((IActionR) () -> getCount());
+    @NonNull
+    public IAltFuture<?, Integer> getCountAsync() {
+        return UI.then(this::getCount);
     }
 
-    public <A> IAltFuture<A, T> getItemAsync(int position) {
-        return UI.then((IActionR) () -> getItem(position));
+    @NonNull
+    public IAltFuture<?, T> getItemAsync(final int position) {
+        return UI.then(() -> getItem(position));
     }
 
     /**
      * Warning: inherently not thread safe. There may be changes to the model which render the
      * returned index obsolete before you get a chance to use it.
      *
-     * @param item
-     * @param <A>
-     * @return
+     * @param item the object to be found in the list
+     * @return the position where the item was found, or -1 if not found
      */
-    public <A> IAltFuture<A, Integer> getPositionAsync(T item) {
-        return UI.then((IActionR) () -> getPosition(item));
+    @NonNull
+    public IAltFuture<?, Integer> getPositionAsync(@NonNull final T item) {
+        return UI.then(() -> getPosition(item));
     }
 
-    public <A> IAltFuture<A, Filter> getFilterAsync(T item) {
-        return UI.then((IActionR) () -> getFilter());
+    @NonNull
+    public IAltFuture<?, Filter> getFilterAsync(@NonNull final T item) {
+        return UI.then(this::getFilter);
     }
 
     /**
@@ -169,14 +227,15 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
      * returned index obsolete before you get a chance to use it.
      *
      * @param position
-     * @param <A>
      * @return
      */
-    public <A> IAltFuture<A, Long> getItemIdAsync(int position) {
-        return UI.then((IActionR) () -> getItemId(position));
+    @NonNull
+    public IAltFuture<?, Long> getItemIdAsync(final int position) {
+        return UI.then(() -> getItemId(position));
     }
 
-    public <A> IAltFuture<A, A> setDropDownViewResourceAsync(int resource) {
+    @NonNull
+    public <A> IAltFuture<A, A> setDropDownViewResourceAsync(@LayoutRes final int resource) {
         return UI.then(() -> setDropDownViewResource(resource));
     }
 
@@ -190,15 +249,24 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
      * @param <A>
      * @return
      */
-    public <A> IAltFuture<A, View> getViewAsync(int position, View convertView, ViewGroup parent) {
-        return UI.then((IActionR) () -> getView(position, convertView, parent));
+    @NonNull
+    public <A> IAltFuture<A, View> getViewAsync(
+            final int position,
+            @NonNull final View convertView,
+            @NonNull final ViewGroup parent) {
+        return UI.then(() -> getView(position, convertView, parent));
     }
 
-    public <A> IAltFuture<A, View> getDropDownViewAsync(int position, View convertView, ViewGroup parent) {
-        return UI.then((IActionR) () -> getDropDownView(position, convertView, parent));
+    @NonNull
+    public IAltFuture<?, View> getDropDownViewAsync(
+            final int position,
+            @NonNull final View convertView,
+            @NonNull final ViewGroup parent) {
+        return UI.then(() -> getDropDownView(position, convertView, parent));
     }
 
-    public <A> IAltFuture<A, Boolean> isEmptyAsync() {
-        return UI.then((IActionR) () -> isEmpty());
+    @NonNull
+    public IAltFuture<?, Boolean> isEmptyAsync() {
+        return UI.then(this::isEmpty);
     }
 }

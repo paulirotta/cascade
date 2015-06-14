@@ -50,13 +50,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import static com.futurice.cascade.Async.assertTrue;
-import static com.futurice.cascade.Async.e;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.i;
-import static com.futurice.cascade.Async.ii;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.vv;
+import static com.futurice.cascade.Async.*;
 
 /**
  * The baseline implementation of ThreadType convenience classes. It provides functional interfaces

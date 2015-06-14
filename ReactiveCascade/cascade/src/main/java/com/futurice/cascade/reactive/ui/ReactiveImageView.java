@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -158,6 +159,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     }
 
     @Override // View
+    @UiThread
     public void onDetachedFromWindow() {
         unsubscribeAllSources("onDetachedFromWindow");
         super.onDetachedFromWindow();

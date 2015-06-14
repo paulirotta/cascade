@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.util;
 
+import android.support.annotation.NonNull;
+
 /**
  * This is a message indicating a functional chain or other assert statement has failed at
  * runtime. This is for debugOrigin build assert statements which fail based on actual values split states
@@ -33,11 +35,11 @@ package com.futurice.cascade.util;
  *
  */
 public class RuntimeAssertionException extends RuntimeException {
-    public RuntimeAssertionException(String message) {
+    public RuntimeAssertionException(@NonNull final String message) {
         super(message);
     }
 
-    public RuntimeAssertionException(String message, Exception e) {
+    public RuntimeAssertionException(@NonNull final String message, @NonNull final Exception e) {
         super(message, e);
     }
 }

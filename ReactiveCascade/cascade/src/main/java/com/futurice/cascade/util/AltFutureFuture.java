@@ -56,6 +56,16 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     private final IAltFuture<IN, OUT> altFuture;
     private final Object mutex = new Object();
 
+    /**
+     * Create a new {@link Future} which wraps an {@link IAltFuture} to allow use of blocking
+     * operations.
+     *
+     * Note that generally we do not wish to use this except for special circumstances such as synchronizing
+     * the system test thread with the items being tested. They may exist other special cases, but most
+     * often you can re-factor your code as a pure non-blocking chain instead of using this class.
+     *
+     * @param altFuture
+     */
     public AltFutureFuture(@NonNull final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
     }
@@ -89,6 +99,10 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
         return out;
     }
 
+    /**
+     * Verify that calls to wait for this {@link Future} such as {@link #get(long, TimeUnit)} will not
+     * deadlock due to single-threaded access on the same thread as the item which might block.
+     */
     public void assertThreadSafe() {
         if (altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
             throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());

@@ -6,6 +6,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -122,6 +123,7 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     @Override // View
+    @UiThread
     public void onDetachedFromWindow() {
         if (reactiveSource != null) {
             reactiveValue.unsubscribeSource("onDetachedFromWindow", reactiveSource);
@@ -131,6 +133,7 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     @Override // View
+    @UiThread
     public void onAttachedToWindow() {
         onDetachedFromWindow();
         subscribe();

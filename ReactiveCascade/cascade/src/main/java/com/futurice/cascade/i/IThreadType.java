@@ -109,6 +109,26 @@ public interface IThreadType extends INamed {
      * Generally out of order execution is supported on multi-thread pools such as
      * {@link com.futurice.cascade.Async#WORKER} but not strictly sequential operations such as write to file.
      *
+     * This is called for you when it is time to add the {@link com.futurice.cascade.functional.AltFuture} to the
+     * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
+     * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
+     * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
+     * item to run. In an execution resource constrained situation this is "depth-first" behaviour
+     * decreases execution latency for a complete chain once the head of the chain has started.
+     * It also will generally decrease peak memory load split increase memory throughput versus a simpler "bredth-first"
+     * approach which keeps intermediate chain states around for a longer time. Some
+     * {@link com.futurice.cascade.i.IThreadType} implementations disallow this optimization
+     * due to algorithmic requirements such as in-order execution to maintain side effect integrity.
+     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing from
+     * a {@link java.util.concurrent.BlockingQueue}, not a {@link java.util.concurrent.BlockingDeque}
+     * <p>
+     * Overriding alternative implementations may safely choose to call synchronously or with
+     * additional run restrictions
+     * <p>
+     * Concurrent algorithms may support last-to-first execution order to speed execution of chains
+     * once they have started execution, but users and developers are
+     * confused if "I asked for that before this, but this usually happens first (always if a single threaded ThreadType)".
+     *
      * @param runnable
      */
     void runNext(@NonNull Runnable runnable);

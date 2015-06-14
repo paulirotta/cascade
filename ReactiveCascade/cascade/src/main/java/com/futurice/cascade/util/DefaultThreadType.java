@@ -46,11 +46,12 @@ public class DefaultThreadType extends AbstractThreadType {
     final boolean inOrderExecution;
 
     /**
+     * Construct a new thread group
      * @param name
      * @param executorService
      * @param queue           may be null; may be {@link java.util.concurrent.BlockingDeque} in which case out-of-order execution is supported
      */
-    public DefaultThreadType(String name, ExecutorService executorService, BlockingQueue<Runnable> queue) {
+    public DefaultThreadType(@NonNull final String name, @NonNull final ExecutorService executorService, @NonNull final BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
         this.inOrderExecution = queue instanceof BlockingDeque;
@@ -71,30 +72,6 @@ public class DefaultThreadType extends AbstractThreadType {
         executorService.submit(runnable);
     }
 
-    /**
-     * This is called for you when it is time to add the {@link com.futurice.cascade.functional.AltFuture} to the
-     * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
-     * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
-     * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
-     * item to run. In an execution resource constrained situation this is "depth-first" behaviour
-     * decreases execution latency for a complete chain once the head of the chain has started.
-     * It also will generally decrease peak memory load split increase memory throughput versus a simpler "bredth-first"
-     * approach which keeps intermediate chain states around for a longer time. Some
-     * {@link com.futurice.cascade.i.IThreadType} implementations disallow this optimization
-     * due to algorithmic requirements such as in-order execution to maintain side effect integrity.
-     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing from
-     * a {@link java.util.concurrent.BlockingQueue}, not a {@link java.util.concurrent.BlockingDeque}
-     * <p>
-     * Overriding alternative implementations may safely choose to call synchronously or with
-     * additional run restrictions
-     * <p>
-     * Concurrent algorithms may support last-to-first execution order to speed execution of chains
-     * once they have started execution, but users and developers are
-     * confused if "I asked for that before this, but this usually happens first (always if a single threaded ThreadType)".
-     * IDEA: Mark a "next insert" spot in the queue and insert items in order after that item. If that point has started execution already, insert first as currently done
-     *
-     * @param runnable
-     */
     @Override // IThreadType
     public void runNext(@NonNull final Runnable runnable) {
         int n;
@@ -121,7 +98,7 @@ public class DefaultThreadType extends AbstractThreadType {
         }
     }
 
-    @Override
+    @Override // IThreadType
     public boolean isInOrderExecutor() {
         return inOrderExecution;
     }

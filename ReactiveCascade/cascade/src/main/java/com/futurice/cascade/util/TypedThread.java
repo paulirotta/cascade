@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
+import static com.futurice.cascade.Async.*;
 /**
  * This is a marker class to aid in runtime tests.
  */
@@ -53,8 +53,8 @@ public class TypedThread extends Thread {
 
     public static final ThreadGroup THREAD_GROUP = new ThreadGroup("ThreadTypeThreadGroup") {
         @Override
-        public void uncaughtException(Thread t, Throwable throwable) {
-            Async.e(TAG, "uncaughtException in " + t, throwable);
+        public void uncaughtException(@NonNull final Thread t, @NonNull final Throwable throwable) {
+            e(TAG, "uncaughtException in " + t, throwable);
         }
     };
 

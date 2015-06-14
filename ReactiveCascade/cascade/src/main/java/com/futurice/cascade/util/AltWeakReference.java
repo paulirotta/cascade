@@ -13,16 +13,36 @@ import java.lang.ref.WeakReference;
  */
 public class AltWeakReference<T> extends WeakReference<T> {
 
+    /**
+     * Create a new reference
+     *
+     * @param r
+     */
     public AltWeakReference(@NonNull final T r) {
         super(r);
     }
 
+    /**
+     * Create a new reference
+     *
+     * @param r
+     * @param q
+     */
     public AltWeakReference(
             @NonNull final T r,
             @NonNull final ReferenceQueue<? super T> q) {
         super(r, q);
     }
 
+    /**
+     * Test equality. The definition of equality is different from {@link WeakReference}. Two items
+     * are also equal if the <em>items referenced</em> are equal or if one of them is the item referenced.
+     *
+     * This helps to simplify some logic associated with {@link WeakReference}
+     *
+     * @param other
+     * @return
+     */
     @Override // Object
     public boolean equals(Object other) {
         if (super.equals(other)) {
