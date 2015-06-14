@@ -918,7 +918,7 @@ public final class Async {
 
     /**
      * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage provided.
+     * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage pr
      *
      * @param errorMessage a message to display when the assertion fails. It should indicate the
      *                     reason which was not true and, if possible, the likely corrective action
@@ -940,7 +940,7 @@ public final class Async {
      * @return the value, guaranteed to be non-null and annotated at <code>@NonNull</code> for rapidly catching errors in the IDE
      */
     @NonNull
-    public static <T> T assertNotNull(final T t) {
+    public static <T> T assertNotNull(@Nullable final T t) {
         if (t == null) {
             throw new NullPointerException();
         }
@@ -1069,6 +1069,15 @@ public final class Async {
     };
 
     private static final class StackTaceLine {
+
+        /**
+         * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
+         * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage provided.
+         *
+         * @param errorMessage a message to display when the assertion fails. It should indicate the
+         * reason which was not true and, if possible, the likely corrective action
+         * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
+         */
         final Class claz;
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;

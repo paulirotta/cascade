@@ -26,6 +26,7 @@ package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IAction;
@@ -37,9 +38,7 @@ import com.futurice.cascade.i.functional.IRunnableAltFuture;
 
 import java.util.concurrent.CancellationException;
 
-import static com.futurice.cascade.Async.assertTrue;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.*;
 
 /**
  * A present-time representation of one of many possible alternate future results
@@ -117,7 +116,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
             IN out = null;
             if (paf != null) {
-                assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
+                Async.assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
                 out = paf.get();
             }
             action.call();
@@ -139,7 +138,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            assertTrue("The previous altFuture toKey IActionOne() must be non-null", paf != null);
+            assertNotNull(paf);
             assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             final IN in = paf.get();

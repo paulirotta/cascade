@@ -79,7 +79,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected final ImmutableValue<String> origin;
     protected final IThreadType threadType;
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this onFireAction completes
+    @Nullable
     private volatile IOnErrorAction onError;
+    @Nullable
     private volatile IAltFuture<?, IN> previousAltFuture = null;
 
     public SettableAltFuture(@NonNull final IThreadType threadType) {
@@ -298,7 +300,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    @NonNull
+    @Nullable
     public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture() {
         return (IAltFuture<UPCHAIN_IN, IN>) this.previousAltFuture;
     }

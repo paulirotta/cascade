@@ -173,7 +173,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param <UPCHAIN_IN>
      * @return
      */
-    @NonNull
+    @Nullable
     <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture();
 
     /**
