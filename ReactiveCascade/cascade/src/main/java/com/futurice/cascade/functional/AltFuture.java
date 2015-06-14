@@ -26,7 +26,6 @@ package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IAction;
@@ -114,13 +113,13 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
-            IN out = null;
+            OUT out = null;
             if (paf != null) {
-                Async.assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
-                out = paf.get();
+                assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
+                out = (OUT) paf.get();
             }
             action.call();
-            return (OUT) out; // T and A are the same when there is no return type fromKey the onFireAction
+            return out; // T and A are the same when there is no return type fromKey the onFireAction
         };
     }
 

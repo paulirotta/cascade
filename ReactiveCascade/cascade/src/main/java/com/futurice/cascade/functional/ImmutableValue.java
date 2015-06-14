@@ -25,6 +25,7 @@ THE SOFTWARE.
 package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.action.IAction;
@@ -67,6 +68,7 @@ public class ImmutableValue<T> implements INamed {
 
     private final AtomicReference<Object> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
     private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
+    @Nullable
     private final IActionR<?, T> action;
 
     /**
@@ -93,7 +95,7 @@ public class ImmutableValue<T> implements INamed {
         action = null;
     }
 
-    public ImmutableValue(@NonNull IActionR<?, T> action) {
+    public ImmutableValue(@Nullable IActionR<?, T> action) {
         this.action = action;
     }
 
@@ -108,7 +110,7 @@ public class ImmutableValue<T> implements INamed {
      * @return if <code>false</code> is returned, you may try again as the value as needed since the
      * final value has not been set.
      */
-    private boolean compareAndSet(@NonNull Object expected, @NonNull T value) {
+    private boolean compareAndSet(@NonNull final Object expected, @NonNull final T value) {
         boolean success = valueAR.compareAndSet(expected, value);
 
         if (success) {
@@ -128,6 +130,7 @@ public class ImmutableValue<T> implements INamed {
      *
      * @return
      */
+    @NonNull
     public ImmutableValue<T> then(@NonNull final IActionOne<T> action) {
         thenActions.add(action);
         if (isSet()) {
@@ -136,6 +139,7 @@ public class ImmutableValue<T> implements INamed {
         return this;
     }
 
+    @NonNull
     public ImmutableValue<T> then(@NonNull final IAction<T> action) {
         thenActions.add(action);
         if (isSet()) {
@@ -159,6 +163,7 @@ public class ImmutableValue<T> implements INamed {
         }
     }
 
+    @Nullable
     private <IN, OUT> OUT call(
             @NonNull final IN in,
             @NonNull final IBaseAction<IN> action)
@@ -209,6 +214,7 @@ public class ImmutableValue<T> implements INamed {
      * @return
      * @throws IllegalStateException if the supplied lazy evaluation IAction throws an error during evaluation
      */
+    @NonNull
     public T get() {
         final Object value = valueAR.get();
 
@@ -235,8 +241,9 @@ public class ImmutableValue<T> implements INamed {
      * if other parts of your application is reactive and will update the value again when it has
      * been finally set.
      *
-     * @return
+     * @return the value, or <code>null</code> if the value has not yet been determined
      */
+    @Nullable
     public T safeGet() {
         final Object value = valueAR.get();
 
@@ -257,7 +264,8 @@ public class ImmutableValue<T> implements INamed {
      * @param value
      * @return
      */
-    public T set(T value) {
+    @NonNull
+    public T set(@NonNull final T value) {
         if (!compareAndSet(ZEN, value)) {
             throwIllegalStateException(this, "ImmutableReference can not be set multiple times. It is already set toKey " + safeGet() + " so we can not assert new value=" + value);
         }
@@ -274,6 +282,7 @@ public class ImmutableValue<T> implements INamed {
      *
      * @return
      */
+    @NonNull
     public String toString() {
         T t = safeGet();
 
@@ -285,6 +294,7 @@ public class ImmutableValue<T> implements INamed {
     }
 
     @Override
+    @NonNull
     public String getName() {
         return "(ImmutableValue, value=" + toString() + ")";
     }

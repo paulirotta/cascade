@@ -24,8 +24,12 @@ THE SOFTWARE.
 
 package com.futurice.cascade.functional;
 
-import java.util.concurrent.*;
-import static com.futurice.cascade.Async.*;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
@@ -50,17 +54,18 @@ import static com.futurice.cascade.Async.*;
  * @param <E>
  */
 public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
+    @NonNull
     final BlockingQueue<E> lowPriorityQueue;
+    private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
-    public DoubleQueue(BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull final BlockingQueue<E> lowPriorityQueue) {
         super();
 
-        if (DEBUG && lowPriorityQueue == null) {
-            throw new IllegalArgumentException("lowPriorityQueue must be non-null");
-        }
         this.lowPriorityQueue = lowPriorityQueue;
     }
 
+    @Nullable
+    @Override // LinkedBlockingQueue
     public E peek() {
         E e = super.peek();
 
@@ -71,6 +76,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
         return e;
     }
 
+    @Nullable
+    @Override // LinkedBlockingQueue
     public E poll() {
         E e = super.poll();
 
@@ -81,7 +88,9 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
         return e;
     }
 
-    public E poll(long timeout, TimeUnit unit) throws InterruptedException {
+    @Nullable
+    @Override // LinkedBlockingQueue
+    public E poll(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
         E e = super.poll(timeout, unit);
 
         if (e == null) {
@@ -91,18 +100,18 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
         return e;
     }
 
-    public boolean remove(Object o) {
+    @Override // LinkedBlockingQueue
+    public boolean remove(@Nullable final Object o) {
         return super.remove(o) || lowPriorityQueue.remove(o);
     }
 
-    public void put(E e) throws InterruptedException {
+    @Override // LinkedBlockingQueue
+    public void put(@NonNull final E e) throws InterruptedException {
         super.put(e);
         synchronized (this) { //TODO Refactor toKey get rid of mutex
             this.notifyAll();
         }
     }
-
-    private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
     /**
      * Poll both queues for work toKey do. This will wake up immediately if new work is added toKey this
@@ -115,6 +124,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
      * @return
      * @throws InterruptedException
      */
+    @Override // LinkedBlockingQueue
+    @NonNull
     public synchronized E take() throws InterruptedException {
         E e;
 
