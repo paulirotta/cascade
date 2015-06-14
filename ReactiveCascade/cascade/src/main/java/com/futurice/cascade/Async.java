@@ -870,18 +870,6 @@ public final class Async {
     }
 
     /**
-     * Check if currently running on one of the the main background thread pool threads
-     *
-     * @return <code>true</code> if this is part of the {@link #WORKER} thread pool
-     * including the {@link #SERIAL_WORKER} thread
-     */
-    public static boolean isWorkerThread() {
-        final Thread thread = Thread.currentThread();
-        //TODO Test. This may not be reliable if getAsect() is not reliable when the thread is part of multiple ThreadTypes
-        return thread instanceof TypedThread && ((TypedThread) thread).getThreadType() == WORKER;
-    }
-
-    /**
      * A runtime assertion you may use at the beginning of code to mark your contract for code
      * which must run on the main system thread.
      * <p>
@@ -903,18 +891,6 @@ public final class Async {
             throwIllegalStateException(Async.class.getSimpleName(), "assertUIThread() but actually running on " + Thread.currentThread().getName());
         }
     }
-
-    /**
-     * A runtime assertion you may use at the beginning of code to mark your contract for code
-     * which must run in the default background task thread pool.
-     *
-     * For performance, the assertion is not tested in production builds
-     */
-//    public static void assertWorkerThread() {
-//        if (DEBUG && !isWorkerThread()) {
-//            throwIllegalStateException(Async.class.getSimpleName(), "assertWorkerThread() but actually running on " + Thread.currentThread().getName());
-//        }
-//    }
 
     /**
      * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
