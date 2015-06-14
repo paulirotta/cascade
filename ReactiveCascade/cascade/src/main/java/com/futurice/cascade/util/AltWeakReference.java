@@ -45,7 +45,7 @@ public class AltWeakReference<T> extends WeakReference<T> {
      */
     @Override // Object
     public boolean equals(Object other) {
-        if (super.equals(other)) {
+        if (super.equals(other)) { //FIXME .equals() and .hashCode() should match responses in all cases
             return true;
         }
 
@@ -60,5 +60,15 @@ public class AltWeakReference<T> extends WeakReference<T> {
         }
 
         return false;
+    }
+
+    @Override // Object
+    public int hashCode() {
+        final T t = this.get();
+        if (t != null) {
+            return t.hashCode();
+        }
+
+        return super.hashCode();
     }
 }

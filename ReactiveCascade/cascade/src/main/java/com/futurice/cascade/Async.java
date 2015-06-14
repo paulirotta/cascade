@@ -129,7 +129,7 @@ public final class Async {
      * </pre></code>
      */
     public static final IThreadType UI = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getUiThreadType();
-    public static final IThreadType FILE = ASYNC_BUILDER.getFileThreadType();
+    public static final IThreadType FILE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getFileThreadType();
 
     /**
      * A group of background thread for concurrently reading from the network
@@ -153,7 +153,7 @@ public final class Async {
             @NonNull final String tag,
             @NonNull final String message,
             @NonNull final Throwable t) {
-        final int errorCode = -Math.abs(t.hashCode());
+        final int errorCode = 1;
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
         //TODO let the Activity or Service down slowly and gently with lifecycle callbacks if production build

@@ -59,6 +59,7 @@ public class StateMachine<IN> implements INamed {
 
     public void setSubscription(@NonNull final IReactiveSource<IN> subscription) {
         this.subscription = subscription;
+        //FIXME Continue here, not used
     }
 
     /**

@@ -61,7 +61,7 @@ public class AsyncBuilder {
     private static final String TAG = AsyncBuilder.class.getSimpleName();
     private static final AtomicInteger threadNumber = new AtomicInteger();
     private static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
-    public static Thread serialWorkerThread;
+    static Thread serialWorkerThread;
 
     public static volatile AsyncBuilder asyncBuilder = null;
     public Thread uiThread;
