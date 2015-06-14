@@ -34,7 +34,7 @@ android:
 
   licenses:
     - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+#    - 'google-gdk-license-.+'
 
 before_script:
     - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a --skin WVGA800
