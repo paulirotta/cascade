@@ -30,6 +30,11 @@ android:
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-22
     - extra
+    - add-on
+
+  licenses:
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 before_script:
     - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a --skin WVGA800
