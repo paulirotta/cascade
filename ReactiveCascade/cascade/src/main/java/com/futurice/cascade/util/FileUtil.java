@@ -24,6 +24,7 @@
 package com.futurice.cascade.util;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.functional.ImmutableValue;
@@ -31,22 +32,28 @@ import com.futurice.cascade.i.functional.IAltFuture;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import java.io.FileNotFoundException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import static com.futurice.cascade.Async.*;
 
 public final class FileUtil {
+    @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FileMode {}
+
     private static final int BUFFER_SIZE = 16384;
     private final Context context;
+    @FileMode
     private final int mode;
     private final ImmutableValue<String> origin;
 
     public FileUtil(
             @NonNull final Context context,
-            final int mode) {
+            @FileMode final int mode) {
         this.context = context;
         this.mode = mode;
         origin = originAsync();
