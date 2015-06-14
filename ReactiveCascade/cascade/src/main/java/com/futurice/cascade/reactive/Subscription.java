@@ -65,18 +65,28 @@ import static com.futurice.cascade.Async.*;
 public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSource<OUT> {
     //FIXME Replace these values with changing lastFireInIsFireNext to be volatile boolean needToQueue to simplify logic
     private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to queue on next fire
-    private static final Object FIRE_ACTION_EXECUTING = new Object(); // A marker state for fireAction to indicate that it is now running on a thread
 
+    @NonNull
     protected final IThreadType threadType;
+    @NonNull
     private final String name;
+    @NonNull
     protected final IOnErrorAction onError;
+    @NonNull
     private final CopyOnWriteArrayList<IReactiveSource<IN>> reactiveSources = new CopyOnWriteArrayList<>();
+    @NonNull
     protected final CopyOnWriteArrayList<AltWeakReference<IReactiveTarget<OUT>>> reactiveTargets = new CopyOnWriteArrayList<>(); // Holding a strong reference is optional, depending on the binding type
+    @NonNull
     protected final ImmutableValue<String> origin; // Helpful latestFireIn debugOrigin builds to display a log link to the lambda passed into this headFunctionalChainLink when it was created
+    @NonNull
     protected final IActionOneR<IN, OUT> onFireAction;
+    @NonNull
     private final AtomicReference<Object> latestFireIn = new AtomicReference<>(FIRE_ACTION_NOT_QUEUED); // If is FIRE_ACTION_NOT_QUEUED, re-queue fireAction on next fire()
+    @NonNull
     private final AtomicBoolean latestFireInIsFireNext = new AtomicBoolean(true); // Signals high priority re-execution if still processing the previous value
+    @NonNull
     private final Runnable fireRunnable;
+    @Nullable
     private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain from being garbage collected until the tail of the chain is de-referenced
 
     /**
@@ -91,11 +101,11 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 *                              threads, it is important that the onFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
      * @param onError
      */
-    public Subscription(@NonNull String name,
-                        @Nullable IReactiveSource<IN> upchainReactiveSource,
-                        @Nullable IThreadType threadType,
-                        @NonNull IActionOneR<IN, OUT> onFireAction,
-                        @Nullable IOnErrorAction onError) {
+    public Subscription(@NonNull final String name,
+                        @Nullable final IReactiveSource<IN> upchainReactiveSource,
+                        @Nullable final IThreadType threadType,
+                        @NonNull final IActionOneR<IN, OUT> onFireAction,
+                        @Nullable final IOnErrorAction onError) {
         this.origin = originAsync();
         this.name = name;
         this.upchainReactiveSource = upchainReactiveSource;
@@ -127,6 +137,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
         });
     }
 
+    @NonNull
     protected ImmutableValue<String> getOrigin() {
         return this.origin;
     }

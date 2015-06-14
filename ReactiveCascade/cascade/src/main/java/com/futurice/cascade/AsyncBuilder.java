@@ -210,7 +210,7 @@ public class AsyncBuilder {
     @NonNull
     public IThreadType getNetWriteThreadType() {
         if (netWriteThreadType == null) {
-            ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
+            final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetWriteThreadType(new DefaultThreadType("NetWriteThreadType",
                             getNetWriteExecutorService(threadTypeImmutableValue),
                             getNetWriteQueue()

@@ -19,7 +19,6 @@ import com.futurice.cascade.reactive.ReactiveValue;
 
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.assertNotNull;
-import static com.futurice.cascade.Async.assertUIThread;
 import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.vv;
 
@@ -152,7 +151,6 @@ public class ReactiveEditText extends EditText implements INamed {
     @UiThread
     public void onAttachedToWindow() {
         assertNotNull(origin);
-        assertUIThread();
         final String currentText = reactiveValue.get();
         setText(currentText);
 

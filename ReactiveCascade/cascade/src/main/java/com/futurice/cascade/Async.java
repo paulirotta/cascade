@@ -132,12 +132,18 @@ public final class Async {
     public static final IThreadType FILE = ASYNC_BUILDER.getFileThreadType();
 
     /**
-     * {@link com.futurice.cascade.rest.NetRESTService} singleton tuned to the currently available bandwidth
-     * <p>
-     * Use this instead of the more general purpose WORKER methods if you want to limit the resource
-     * contention of concurrent network operations for better average throughput
+     * A group of background thread for concurrently reading from the network
+     *
+     * TODO Automatically adjusted thread pool size based on current connection type
      */
     public static final IThreadType NET_READ = ASYNC_BUILDER.getNetReadThreadType();
+    /**
+     * A single thread for making writes to the network.
+     *
+     * Upstream bandwidth on mobile is generally quite limited, so one write at a time will tend to help
+     * tasks finish more quickly. This also simplifies cache invalidation on POST and PUT operations more
+     * coherent.
+     */
     public static final IThreadType NET_WRITE = ASYNC_BUILDER.getNetWriteThreadType();
 
     Async() {
@@ -719,18 +725,6 @@ public final class Async {
         return previousList;
     }
 
-//    @NonNull
-//    public static String addOriginToReason(
-//            @NonNull final String reason,
-//            @NonNull final ImmutableValue<String> origin) {
-//        //TODO Make it delay if the reason is not yet available
-//        if (!(Async.TRACE_ASYNC_ORIGIN) || origin.isSet() || reason.contains(".java")) {
-//            return reason; // A code path is already provided, or no new data available to add synchronously
-//        }
-//
-//        return origin + " - " + reason; //TODO Not fully async. Not critical, but can sometimes race to a non-set origin
-//    }
-
     @NonNull
     private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
@@ -867,29 +861,6 @@ public final class Async {
      */
     public static boolean isUiThread() {
         return Thread.currentThread() == UI_THREAD;
-    }
-
-    /**
-     * A runtime assertion you may use at the beginning of code to mark your contract for code
-     * which must run on the main system thread.
-     * <p>
-     * For performance, the assertion is not tested in production builds
-     */
-    public static void assertUIThread() {
-        if (DEBUG && !isUiThread()) {
-            throwIllegalStateException(Async.class.getSimpleName(), "assertUIThread() but actually running on " + Thread.currentThread().getName());
-        }
-    }
-
-    /**
-     * Throw a runtime exception if we are on the UI thread
-     * <p>
-     * For performance, the assertion is not tested in production builds
-     */
-    public static void assertNotUIThread() {
-        if (DEBUG && isUiThread()) {
-            throwIllegalStateException(Async.class.getSimpleName(), "assertUIThread() but actually running on " + Thread.currentThread().getName());
-        }
     }
 
     /**

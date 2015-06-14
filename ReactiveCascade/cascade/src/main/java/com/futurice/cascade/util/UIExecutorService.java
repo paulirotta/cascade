@@ -25,6 +25,7 @@ package com.futurice.cascade.util;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.ImmutableValue;
@@ -137,10 +138,10 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @Override // ExecutorService
+    @WorkerThread
     public <T> List<Future<T>> invokeAll(
             @NonNull final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
-        assertNotUIThread();
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() > 0) {
             for (Callable<T> callable : callables) {
@@ -158,12 +159,12 @@ public final class UIExecutorService implements ExecutorService {
 
     @NonNull
     @Override // ExecutorService
+    @WorkerThread
     public <T> List<Future<T>> invokeAll(
             @NonNull final Collection<? extends Callable<T>> callables,
             final long timeout,
             @NonNull final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
-        assertNotUIThread();
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() > 0) {
             for (Callable<T> callable : callables) {
@@ -182,10 +183,10 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @Override // ExecutorService
+    @WorkerThread
     public <T> T invokeAny(
             @NonNull final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException, ExecutionException {
-        assertNotUIThread();
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() == 0) {
             throw new NullPointerException("Empty list can not invokeAny() as there is no value to return");
@@ -199,12 +200,12 @@ public final class UIExecutorService implements ExecutorService {
 
     @NonNull
     @Override // ExecutorService
+    @WorkerThread
     public <T> T invokeAny(
             @NonNull final Collection<? extends Callable<T>> callables,
             final long timeout,
             @NonNull final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException, TimeoutException, ExecutionException {
-        assertNotUIThread();
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() == 0) {
             throw new NullPointerException("Empty list can not invokeAny() as there is no value to return");
