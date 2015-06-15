@@ -23,9 +23,11 @@
  */
 package com.futurice.cascade.util;
 
+import android.Manifest;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.functional.ImmutableValue;

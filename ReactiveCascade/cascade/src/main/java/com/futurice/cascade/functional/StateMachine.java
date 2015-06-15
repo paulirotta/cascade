@@ -23,7 +23,7 @@ import static com.futurice.cascade.Async.originAsync;
  * Created by Paul Houghton on 3/28/2015.
  */
 public class StateMachine<IN> implements INamed {
-    private final IN DEFAULT_KEY = null; // Represents the State for every State not explicitly added toKey the table
+    private final IN defaultKey = null; // Represents the State for every State not explicitly added toKey the table
     private final IThreadType threadType;
     private final ReactiveValue<IN> value;
     private final ConcurrentHashMap<IN, CopyOnWriteArrayList<State>> states;

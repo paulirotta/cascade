@@ -1,5 +1,6 @@
 package com.futurice.cascade.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.net.NetworkInfo;
@@ -8,6 +9,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
@@ -61,6 +63,9 @@ public final class NetUtil {
     private final IThreadType netReadThreadType;
     private final IThreadType netWriteThradType;
 
+    @RequiresPermission(allOf = {Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE})
     public NetUtil(@NonNull final Context context) {
         this(context, NET_READ, NET_WRITE);
     }

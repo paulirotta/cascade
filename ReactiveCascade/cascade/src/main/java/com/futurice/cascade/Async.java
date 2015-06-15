@@ -51,7 +51,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -145,6 +147,7 @@ public final class Async {
      * coherent.
      */
     public static final IThreadType NET_WRITE = ASYNC_BUILDER.getNetWriteThreadType();
+    public static final ScheduledExecutorService TIMER = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Timer"));
 
     Async() {
     }
