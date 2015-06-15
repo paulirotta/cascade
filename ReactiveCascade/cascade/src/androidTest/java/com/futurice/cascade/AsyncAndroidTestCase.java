@@ -8,10 +8,13 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.futurice.cascade.Async;
+import com.futurice.cascade.AsyncBuilder;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
+import com.futurice.cascade.util.test.TestUtil;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
