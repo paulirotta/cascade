@@ -35,6 +35,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     private long defaultTimeoutMillis = 1000;
     protected final Context context;
     protected ImmutableValue<String> origin;
+    protected Async async;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
@@ -54,7 +55,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
         super.setUp();
 
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-        new AsyncBuilder(context).build();
+        async = new AsyncBuilder(context).build();
         origin = originAsync();
     }
 
