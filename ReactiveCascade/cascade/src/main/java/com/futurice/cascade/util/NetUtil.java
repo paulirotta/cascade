@@ -8,6 +8,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
 import com.futurice.cascade.functional.ImmutableValue;
@@ -89,6 +90,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response get(@NonNull final String url) throws IOException {
         return get(url, null);
     }
@@ -99,6 +101,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response get(
             @NonNull final String url,
             @Nullable final Collection<Header> headers) throws IOException {
@@ -134,6 +137,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response put(
             @NonNull final String url,
             @NonNull final RequestBody body) throws IOException {
@@ -163,6 +167,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response put(
             @NonNull final String url,
             @Nullable final Collection<Header> headers,
@@ -177,6 +182,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response post(
             @NonNull final String url,
             @NonNull final RequestBody body) throws IOException {
@@ -203,6 +209,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response post(
             @NonNull final URL url,
             @NonNull final RequestBody body) throws IOException {
@@ -232,6 +239,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response post(
             @NonNull final String url,
             @Nullable final Collection<Header> headers,
@@ -256,6 +264,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response delete(@NonNull final String url) throws IOException {
         return delete(url, null);
     }
@@ -274,6 +283,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     public Response delete(
             @NonNull final String url,
             @Nullable final Collection<Header> headers) throws IOException {
@@ -312,6 +322,7 @@ public final class NetUtil {
     }
 
     @NonNull
+    @WorkerThread
     private Response execute(@NonNull final Call call) throws IOException {
         final Response response = call.execute();
 

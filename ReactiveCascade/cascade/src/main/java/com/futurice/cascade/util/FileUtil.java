@@ -26,6 +26,7 @@ package com.futurice.cascade.util;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
@@ -85,6 +86,7 @@ public final class FileUtil {
         });
     }
 
+    @WorkerThread
     public void write(
             @NonNull final String fileName,
             @NonNull final byte[] bytes) {
@@ -125,6 +127,7 @@ public final class FileUtil {
     }
 
     @NonNull
+    @WorkerThread
     public byte[] read(@NonNull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
@@ -162,6 +165,7 @@ public final class FileUtil {
         return bos.toByteArray();
     }
 
+    @WorkerThread
     public boolean delete(@NonNull final String fileName) {
         return context.deleteFile(fileName);
     }
