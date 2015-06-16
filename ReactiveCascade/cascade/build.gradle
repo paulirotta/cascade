@@ -35,7 +35,6 @@ android {
         warning 'InvalidPackage' // For Okio, https://github.com/square/okio/issues/58
         abortOnError false   // For RetroLambda, remove when possible
         checkReleaseBuilds false
-        disable 'TypographyFractions', 'TypographyQuotes'
     }
 
     packagingOptions {
