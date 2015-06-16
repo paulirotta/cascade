@@ -67,7 +67,7 @@ public class AsyncBuilder {
     public Thread uiThread;
     public final Context context;
     public ExecutorService uiExecutorService;
-    public boolean debug = true; //BuildConfig.DEBUG; // true in debugOrigin builds, false in production builds, determined at build time to help JAVAC and PROGUARD clean out debugOrigin-only support code for speed and size
+    public boolean debug = BuildConfig.DEBUG; // true in debugOrigin builds, false in production builds, determined at build time to help JAVAC and PROGUARD clean out debugOrigin-only support code for speed and size
     public boolean failFast = debug;
     public boolean showErrorStackTraces = debug;
     //TODO Periodically check if recent Android updates have fixed this gradle bug, https://code.google.com/p/android/issues/detail?id=52962

@@ -7,6 +7,7 @@ apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+    publishNonDefault true  // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
         minSdkVersion 15
