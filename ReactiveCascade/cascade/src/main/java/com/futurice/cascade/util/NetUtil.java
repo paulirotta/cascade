@@ -79,11 +79,6 @@ public final class NetUtil {
         wifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
     }
 
-//    @NonNull
-//    public <IN, OUT> IAltFuture<IN, IN> execAfterPendingReadsAsync(@NonNull final IAltFuture<IN, OUT> delayedAltFuture) {
-//        return new AltFuture<IN, IN>(netReadThreadType, delayedAltFuture::fork);
-//    }
-
     @NonNull
     public IAltFuture<?, Response> getAsync(@NonNull final String url) {
         return netReadThreadType.then(() -> get(url, null));
@@ -101,8 +96,9 @@ public final class NetUtil {
     }
 
     @NonNull
-    public Response get(@NonNull final IGettable<String> stringGettable) throws IOException {
-        return get(assertNotNull(stringGettable.get()), null);
+    @WorkerThread
+    public Response get(@NonNull final IGettable<String> urlGettable) throws IOException {
+        return get(urlGettable.get(), null);
     }
 
     @NonNull
@@ -114,6 +110,14 @@ public final class NetUtil {
         final Call call = setupCall(url, builder -> addHeaders(builder, headers));
 
         return execute(call);
+    }
+
+    @NonNull
+    @WorkerThread
+    public Response get(
+            @NonNull final IGettable<String> urlGettable,
+            @Nullable final Collection<Header> headers) throws IOException {
+        return get(urlGettable.get(), headers);
     }
 
     @NonNull
@@ -309,7 +313,7 @@ public final class NetUtil {
         }
 
         for (Header header : headers) {
-            builder.addHeader(header.name.toString(), header.value.toString());
+            builder.addHeader(header.name.utf8(), header.value.utf8());
         }
     }
 

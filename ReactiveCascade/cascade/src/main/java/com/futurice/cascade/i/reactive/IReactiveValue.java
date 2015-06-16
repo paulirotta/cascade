@@ -35,7 +35,7 @@ import com.futurice.cascade.i.IGettable;
  *
  * @param <T>
  */
-public interface IAtomicValue<T extends Object> extends IGettable<T> {
+public interface IReactiveValue<T extends Object> extends IGettable<T> {
     /**
      * Get the current valueAR.
      * <p>

@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 /**
  * Create the actual URL at the last minute, just before the request is processed.
@@ -47,6 +47,6 @@ public interface IGettable<T> {
      *
      * @return the current value, next value in the series, or <code>null</code> of the series has ended
      */
-    @Nullable
+    @NonNull
     public T get();
 }

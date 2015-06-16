@@ -31,7 +31,7 @@ import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.reactive.IAtomicValue;
+import com.futurice.cascade.i.reactive.IReactiveValue;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -59,7 +59,7 @@ import static com.futurice.cascade.Async.vv;
  * </p>
  */
 @NotCallOrigin
-public class ReactiveValue<T> extends Subscription<T, T> implements IAtomicValue<T> {
+public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveValue<T> {
     private final AtomicReference<T> valueAR = new AtomicReference<>();
 
     /**
