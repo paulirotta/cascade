@@ -4,6 +4,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.functional.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
@@ -15,7 +16,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.futurice.cascade.Async.WORKER;
+import static com.futurice.cascade.Async.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -80,10 +81,43 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testGetAsync2() throws Exception {
+    public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
-        headers.add(new Header("Test", "Value"));
-        assertThat(getNetUtil().get("http://httpbin.org/", headers).body().bytes().length).isGreaterThan(100);
+        headers.add(new Header("Test", "ValueZ"));
+        assertThat(getNetUtil().get("http://httpbin.org/headers", headers).body().string()).contains("ValueZ");
+    }
+
+    @Test
+    public void testGetAsyncFromWithHeaders() throws Exception {
+        Collection<Header> headers = new ArrayList<>();
+        headers.add(new Header("Te", "VaT"));
+        IAltFuture<?, Response> iaf = WORKER
+                .from("http://httpbin.org/get")
+                .then(getNetUtil().getAsync(headers))
+                .fork();
+        assertThat(awaitDone(iaf).body().string()).contains("VaT");
+    }
+
+    @Test
+    public void testGetAsyncFromWithIGettableWithHeaders() throws Exception {
+        Collection<Header> headers = new ArrayList<>();
+        headers.add(new Header("Blah", "VaGG"));
+        ImmutableValue<Collection<Header>> immutableValue = new ImmutableValue<>();
+        IAltFuture<?, Response> iaf = WORKER
+                .from("http://httpbin.org/get")
+                .then(getNetUtil().getAsync(immutableValue));
+        immutableValue.then(iaf::fork);
+        immutableValue.set(headers);
+        assertThat(awaitDone(iaf).body().string()).contains("VaGG");
+    }
+
+    @Test
+    public void testPut() throws Exception {
+
+    }
+
+    @Test
+    public void testPut1() throws Exception {
 
     }
 
@@ -103,11 +137,6 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testPut() throws Exception {
-
-    }
-
-    @Test
     public void testPutAsync3() throws Exception {
 
     }
@@ -119,11 +148,6 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testPutAsync5() throws Exception {
-
-    }
-
-    @Test
-    public void testPut1() throws Exception {
 
     }
 

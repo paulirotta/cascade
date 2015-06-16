@@ -27,6 +27,7 @@ package com.futurice.cascade.functional;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
@@ -63,7 +64,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  *
  * @param <T>
  */
-public class ImmutableValue<T> implements INamed {
+public class ImmutableValue<T> implements IGettable<T>, INamed {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;
 
     private final AtomicReference<Object> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null

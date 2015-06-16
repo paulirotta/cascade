@@ -127,6 +127,35 @@ public final class NetUtil {
     }
 
     @NonNull
+    public IAltFuture<String, Response> getAsync(
+            @Nullable final IGettable<Collection<Header>> headersGettable) {
+        return netReadThreadType.map(url -> get(url, headersGettable.get()));
+    }
+
+    @NonNull
+    @WorkerThread
+    public Response put(
+            @NonNull final String url,
+            @NonNull final RequestBody body) throws IOException {
+        return put(url, null, body);
+    }
+
+    @NonNull
+    @WorkerThread
+    public Response put(
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) throws IOException {
+        dd(origin, "put " + url);
+        final Call call = setupCall(url, builder -> {
+            addHeaders(builder, headers);
+            builder.put(body);
+        });
+
+        return execute(call);
+    }
+
+    @NonNull
     public IAltFuture<?, Response> putAsync(
             @NonNull final String url,
             @NonNull final RequestBody body) {
@@ -143,14 +172,6 @@ public final class NetUtil {
     public IAltFuture<String, Response> putAsync(
             @NonNull final RequestBody body) {
         return netWriteThradType.map(url -> put(url, body));
-    }
-
-    @NonNull
-    @WorkerThread
-    public Response put(
-            @NonNull final String url,
-            @NonNull final RequestBody body) throws IOException {
-        return put(url, null, body);
     }
 
     @NonNull
@@ -173,21 +194,6 @@ public final class NetUtil {
             @NonNull final String url,
             @Nullable final Collection<Header> headers) {
         return netWriteThradType.map(body -> put(url, headers, body));
-    }
-
-    @NonNull
-    @WorkerThread
-    public Response put(
-            @NonNull final String url,
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) throws IOException {
-        dd(origin, "put " + url);
-        final Call call = setupCall(url, builder -> {
-            addHeaders(builder, headers);
-            builder.put(body);
-        });
-
-        return execute(call);
     }
 
     @NonNull
