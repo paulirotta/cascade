@@ -366,6 +366,7 @@ public final class NetUtil {
     }
 
     //TODO Use max number of NET connections on startup split adapt as these change
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public int getMaxNumberOfNetConnections() {
         if (isWifi()) {
             return MAX_NUMBER_OF_WIFI_NET_CONNECTIONS;
@@ -390,14 +391,16 @@ public final class NetUtil {
      *
      * @return
      */
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
         SupplicantState s = wifiManager.getConnectionInfo().getSupplicantState();
         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
-        return state == NetworkInfo.DetailedState.CONNECTED;
+        return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
     }
 
     @NonNull
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public NetType getNetworkType() {
         switch (telephonyManager.getNetworkType()) {
             case NETWORK_TYPE_UNKNOWN:

@@ -1,5 +1,6 @@
 package com.futurice.cascade.util;
 
+import android.support.annotation.RequiresPermission;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -227,17 +228,19 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testGetMaxNumberOfNetConnections() throws Exception {
-
+        assertThat(getNetUtil().getMaxNumberOfNetConnections()).isGreaterThan(1);
     }
 
     @Test
+    @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testIsWifi() throws Exception {
-
+        assertThat(getNetUtil().isWifi()).isTrue();
     }
 
     @Test
     public void testGetNetworkType() throws Exception {
-
+        assertEquals(getNetUtil().getNetworkType(), NetUtil.NetType.NET_4G);
     }
 }
