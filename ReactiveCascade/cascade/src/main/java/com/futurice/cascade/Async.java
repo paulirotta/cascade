@@ -1053,14 +1053,14 @@ public final class Async {
 
     private static final class StackTaceLine {
 
-        final Class claz;
+        final Class<?> claz;
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;
 
         StackTaceLine(@NonNull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
             this.stackTraceElement = stackTraceElement;
             final String className = stackTraceElement.getClassName();
-            Class c = classNameMap.get(className);
+            Class<?> c = classNameMap.get(className);
 
             if (c == null) {
                 c = Class.forName(className);

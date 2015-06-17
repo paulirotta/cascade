@@ -165,6 +165,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked") // IN->OUT must be bent to match all cases but the context makes this safe
     private <IN, OUT> OUT call(
             @NonNull final IN in,
             @NonNull final IBaseAction<IN> action)
@@ -216,6 +217,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @throws IllegalStateException if the supplied lazy evaluation IAction throws an error during evaluation
      */
     @NonNull
+    @SuppressWarnings("unchecked") // The response must be cast because of internal atomic state is a non-T class
     public T get() {
         final Object value = valueAR.get();
 
