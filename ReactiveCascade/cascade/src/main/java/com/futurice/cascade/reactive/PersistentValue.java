@@ -96,6 +96,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     @Nullable
+    @SuppressWarnings("unchecked")
     private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(
             @NonNull String name,
             @NonNull Context context,
@@ -181,6 +182,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void onSharedPreferenceChanged() {
         vv(this, origin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
         if (classOfPersistentValue == String.class) {
