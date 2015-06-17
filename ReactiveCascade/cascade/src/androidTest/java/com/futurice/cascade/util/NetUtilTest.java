@@ -241,6 +241,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testGetNetworkType() throws Exception {
-        assertEquals(getNetUtil().getNetworkType(), NetUtil.NetType.NET_4G);
+        NetUtil.NetType netType = getNetUtil().getNetworkType();
+        assertTrue(netType == NetUtil.NetType.NET_4G || netType == NetUtil.NetType.NET_3G || netType == NetUtil.NetType.NET_2_5G || netType == NetUtil.NetType.NET_2G);
     }
 }
