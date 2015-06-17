@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.functional;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -65,6 +66,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
+    @CallSuper
     @Override // LinkedBlockingQueue
     public E peek() {
         E e = super.peek();
@@ -77,6 +79,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
+    @CallSuper
     @Override // LinkedBlockingQueue
     public E poll() {
         E e = super.poll();
@@ -89,6 +92,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
+    @CallSuper
     @Override // LinkedBlockingQueue
     public E poll(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
         E e = super.poll(timeout, unit);
@@ -100,11 +104,13 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
         return e;
     }
 
+    @CallSuper
     @Override // LinkedBlockingQueue
     public boolean remove(@Nullable final Object o) {
         return super.remove(o) || lowPriorityQueue.remove(o);
     }
 
+    @CallSuper
     @Override // LinkedBlockingQueue
     public void put(@NonNull final E e) throws InterruptedException {
         super.put(e);
@@ -125,6 +131,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
      * @throws InterruptedException
      */
     @Override // LinkedBlockingQueue
+    @CallSuper
     @NonNull
     public synchronized E take() throws InterruptedException {
         E e;

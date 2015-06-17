@@ -27,6 +27,7 @@ package com.futurice.cascade.reactive;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -182,6 +183,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         }
     }
 
+    @CallSuper
     @SuppressWarnings("unchecked")
     protected void onSharedPreferenceChanged() {
         vv(this, origin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
@@ -346,6 +348,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     @NotCallOrigin
+    @CallSuper
     @Override
     public boolean set(@NonNull final T value) {
         final boolean valueChanged = super.set(value);

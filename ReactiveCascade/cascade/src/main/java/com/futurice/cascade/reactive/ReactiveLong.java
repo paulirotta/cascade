@@ -1,5 +1,6 @@
 package com.futurice.cascade.reactive;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -52,6 +53,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @param l
      * @return
      */
+    @CallSuper
     public long addAndGet(final long l) {
         long currentValue;
 
@@ -70,6 +72,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @param l the second operand
      * @return the updated value
      */
+    @CallSuper
     public long multiplyAndGet(final long l) {
         long currentValue;
 
@@ -87,6 +90,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      *
      * @return the updated value
      */
+    @CallSuper
     public long incrementAndGet() {
         return addAndGet(1);
     }
@@ -96,6 +100,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      *
      * @return the updated value
      */
+    @CallSuper
     public long decrementAndGet() {
         return addAndGet(-1);
     }

@@ -1,5 +1,6 @@
 package com.futurice.cascade.reactive;
 
+import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 public class PersistentValueTest extends AsyncAndroidTestCase {
 
     @Before
+    @CallSuper
     public void setUp() throws Exception {
         super.setUp();
     }

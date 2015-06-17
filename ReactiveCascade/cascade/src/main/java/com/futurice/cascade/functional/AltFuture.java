@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.functional;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IThreadType;
@@ -106,6 +107,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool toKey run this command on
      * @param action a function that receives one input and no return value
      */
+    @SuppressWarnings("unchecked")
     public AltFuture(
             @NonNull final IThreadType threadType,
             @NonNull final IAction<IN> action) {
@@ -113,7 +115,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
-            OUT out = null;
+            OUT out = null;            //TODO do not init to null, define a marker value instead
             if (paf != null) {
                 assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
                 out = (OUT) paf.get();
@@ -129,6 +131,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param threadType the thread pool toKey run this command on
      * @param action a function that receives one input and no return value
      */
+    @SuppressWarnings("unchecked")
     public AltFuture(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOne<IN> action) {
@@ -197,6 +200,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
      */
+    @CallSuper
     public boolean cancel(@NonNull final String reason) {
         final Object state = stateAR.get();
 
@@ -223,7 +227,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      */
     @Override
     @NotCallOrigin
-    public void run() {
+    public final void run() {
         try {
             if (isCancelled()) {
                 dd(this, origin, "AltFuture was cancelled before execution. state=" + stateAR.get());
@@ -254,6 +258,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * <p>
      * Non-atomic check-do race conditions must still guard fromKey this point on against concurrent fork()
      */
+    @CallSuper
     protected void doFork() {
         this.threadType.fork(this);
     }

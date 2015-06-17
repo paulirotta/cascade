@@ -1,5 +1,6 @@
 package com.futurice.cascade;
 
+import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 public class AsyncTest extends AsyncAndroidTestCase {
 
     @Before
+    @CallSuper
     public void setUp() throws Exception {
         super.setUp();
     }

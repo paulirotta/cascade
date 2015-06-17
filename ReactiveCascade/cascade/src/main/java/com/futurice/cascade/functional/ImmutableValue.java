@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.functional;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -201,7 +202,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      *
      * @return
      */
-    public boolean isSet() {
+    public final boolean isSet() {
         return valueAR.get() != SettableAltFuture.ZEN;
     }
 
@@ -216,6 +217,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @return
      * @throws IllegalStateException if the supplied lazy evaluation IAction throws an error during evaluation
      */
+    @CallSuper
     @NonNull
     @SuppressWarnings("unchecked") // The response must be cast because of internal atomic state is a non-T class
     public T get() {
@@ -246,6 +248,8 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      *
      * @return the value, or <code>null</code> if the value has not yet been determined
      */
+    @CallSuper
+    @SuppressWarnings("unchecked")
     @Nullable
     public T safeGet() {
         final Object value = valueAR.get();
@@ -267,6 +271,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @param value
      * @return
      */
+    @CallSuper
     @NonNull
     public T set(@NonNull final T value) {
         if (!compareAndSet(ZEN, value)) {
@@ -285,6 +290,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      *
      * @return
      */
+    @CallSuper
     @NonNull
     public String toString() {
         T t = safeGet();

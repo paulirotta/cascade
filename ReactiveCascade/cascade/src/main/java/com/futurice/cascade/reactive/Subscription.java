@@ -101,6 +101,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 *                              threads, it is important that the onFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
      * @param onError
      */
+    @SuppressWarnings("unchecked")
     public Subscription(@NonNull final String name,
                         @Nullable final IReactiveSource<IN> upchainReactiveSource,
                         @Nullable final IThreadType threadType,

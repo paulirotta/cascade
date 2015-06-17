@@ -1,5 +1,6 @@
 package com.futurice.cascade.functional;
 
+import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Before
+    @CallSuper
     public void setUp() throws Exception {
         super.setUp();
     }

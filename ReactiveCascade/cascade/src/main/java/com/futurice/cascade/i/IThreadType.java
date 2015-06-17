@@ -211,6 +211,7 @@ public interface IThreadType extends INamed {
      * @param <IN>    the type of input argument expected by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
+    @SuppressWarnings("unchecked")
     @NonNull
     <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions);
 
@@ -247,6 +248,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
+    @SuppressWarnings("unchecked")
     @NonNull
     <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions);
 
@@ -270,6 +272,7 @@ public interface IThreadType extends INamed {
      * @param <OUT>   the type of output returned by the action
      * @return a list of chainable handles to track completion of each unit of work
      */
+    @SuppressWarnings("unchecked")
     @NonNull
     <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 

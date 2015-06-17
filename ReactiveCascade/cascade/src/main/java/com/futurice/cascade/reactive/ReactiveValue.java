@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.reactive;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -121,16 +122,19 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * case of requesting data multiple times from a server. You have been warned.
      */
     @NotCallOrigin
+    @CallSuper
     public void fire() {
         fire(valueAR.get());
     }
 
-    @Override // IAtomicValue, IGettable
+    @CallSuper
     @NonNull
+    @Override // IAtomicValue, IGettable
     public T get() {
         return valueAR.get();
     }
 
+    @CallSuper
     @Override // IAtomicValue
     public boolean set(@NonNull final T value) {
         final T previousValue = valueAR.getAndSet(value);
@@ -146,6 +150,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         return valueChanged;
     }
 
+    @CallSuper
     @Override // IAtomicValue
     public boolean compareAndSet(@NonNull final T expected, @NonNull final T update) {
         final boolean success = this.valueAR.compareAndSet(expected, update);
@@ -160,8 +165,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         return success;
     }
 
-    @Override // Object
     @NonNull
+    @Override // Object
     public String toString() {
         return get().toString();
     }
