@@ -4,6 +4,10 @@ notifications:
   email:
     -  moses@futurice-nonda.flowdock.com
 
+env:
+  global:
+  - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
+
 jdk:
   - oraclejdk8
 
