@@ -39,6 +39,8 @@ android:
     - sys-img-$ANDROID_ABI-android-$ANDROID_API_LEVEL
     - extra
     - add-on
+  licenses:
+    - 'android-sdk-license-.+
 
 before_script:
 #    - android update sdk -u -a
