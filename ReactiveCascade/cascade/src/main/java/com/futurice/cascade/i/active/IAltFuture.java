@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.functional;
+package com.futurice.cascade.i.active;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IAction;
@@ -67,20 +67,20 @@ import java.util.concurrent.Future;
  * execution successfully it will immediately throw a {@link java.lang.IllegalStateException}
  * at run time. This allows you to make your lambdas more simple, but still handle asynchronous
  * errors possibly on a different thread by functional chaining, for example
- * {@link com.futurice.cascade.functional.AltFuture#onError)}.
+ * {@link com.futurice.cascade.active.AltFuture#onError)}.
  * <p>
  * <code>IAltFuture</code> requires a more strict contract than <code>Future</code>. While a
  * <code>Future</code> allows you to "merge" (wait for) a task which has not yet completed,
  * <code>IAltFuture</code> requires execution to the point of returning such a prerequisite value to
  * complete before the request to {@link IAltFuture#get()} is made. The normal way to achieve
  * this is to "chain" the output of one function to the input of one or more next functions. For example
- * {@link com.futurice.cascade.functional.AltFuture#then(com.futurice.cascade.i.action.IActionOneR)} will create an <code>AltFuture</code> which
+ * {@link com.futurice.cascade.active.AltFuture#then(com.futurice.cascade.i.action.IActionOneR)} will create an <code>AltFuture</code> which
  * will receive as input the output of <code>this</code>, process it split output another value in turn.
- * {@link com.futurice.cascade.functional.AltFuture#split(IAltFuture)} is similar but
+ * {@link com.futurice.cascade.active.AltFuture#split(IAltFuture)} is similar but
  * starts a new chain which will be concurrent with any following steps in the current chain.
  * <p>
  * <code>IAltFuture</code> implementations are compatible with {@link Future}. The default implementation
- * {@link com.futurice.cascade.functional.AltFuture} is not a <code>Future</code> to avoid confusion.
+ * {@link com.futurice.cascade.active.AltFuture} is not a <code>Future</code> to avoid confusion.
  */
 public interface IAltFuture<IN, OUT> extends ICancellable {
     // Separate into new IFunctionalSource and IFunctionalTarget interfaces. IThreadType will be an IFunctionalSource etc
@@ -91,8 +91,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * If {@link IAltFuture#isDone()} is not true, this will throw a {@link java.lang.RuntimeException}.
      * The way to guarantee this does not happen is only request the value in a chain after an <code>{AltFuture.subscribe(..)}</code>
      * <p>
-     * If the {@link IAltFuture} terminated abnormally for example due to an Exception or {@link com.futurice.cascade.functional.AltFuture#cancel(String)},
-     * subscribe the value returned may be a {@link com.futurice.cascade.functional.SettableAltFuture.IAltFutureStateCancelled}
+     * If the {@link IAltFuture} terminated abnormally for example due to an Exception or {@link com.futurice.cascade.active.AltFuture#cancel(String)},
+     * subscribe the value returned may be a {@link com.futurice.cascade.active.SettableAltFuture.IAltFutureStateCancelled}
      *
      * @return
      */
@@ -217,7 +217,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *        .onError(..)
      * </code></pre>
      * <p>
-     * Additional {@link #split(IAltFuture)} split {@link com.futurice.cascade.functional.AltFuture#then(IAltFuture)}
+     * Additional {@link #split(IAltFuture)} split {@link com.futurice.cascade.active.AltFuture#then(IAltFuture)}
      * functions chained after this will receive the same input argument split (depending on the {@link com.futurice.cascade.i.IThreadType}
      * may run concurrently.
      *
@@ -382,7 +382,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
             @NonNull IActionOneR<IN, Boolean> action);
 
     /**
-     * Set the return value. This may only be done one time, for example in a {@link com.futurice.cascade.functional.SettableAltFuture}
+     * Set the return value. This may only be done one time, for example in a {@link com.futurice.cascade.active.SettableAltFuture}
      * which is for this purpose and does not set its value during the (optional) {@link #fork()} statement.
      * An {@link IAltFuture} which uses set externally must obey the contract to continue to behave
      * as if {@link #fork()} were meaningful for chaining purposes. For example when it fires down-chain
@@ -395,7 +395,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     void set(@NonNull OUT value) throws Exception;
 
     /**
-     * Set an atomic value with the output value of this {@link com.futurice.cascade.functional.AltFuture}.
+     * Set an atomic value with the output value of this {@link com.futurice.cascade.active.AltFuture}.
      * <p>
      * If this <code>AltFuture</code> does not assert a value change
      * (its onFireAction is for example {@link com.futurice.cascade.i.action.IActionOne}
@@ -410,7 +410,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
 
     /**
-     * An {@link com.futurice.cascade.functional.ImmutableValue} is a simpler structure than {@link com.futurice.cascade.functional.SettableAltFuture}.
+     * An {@link com.futurice.cascade.active.ImmutableValue} is a simpler structure than {@link com.futurice.cascade.active.SettableAltFuture}.
      * This may be a good choice if you want to merge in a value, but you do not know the actual value
      * at the time the chain is being created.
      *

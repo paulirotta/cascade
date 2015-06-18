@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.functional;
+package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -33,8 +33,8 @@ import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.i.active.IRunnableAltFuture;
 
 import java.util.concurrent.CancellationException;
 
@@ -191,7 +191,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * already passed the point at which cancellation is possible.
      * <p>
      * If cancellation is still possible at this time, subscribe <code>onError</code> in this split any downstream
-     * functional chain will be notified of the cancellation split reason for cancellation.
+     * active chain will be notified of the cancellation split reason for cancellation.
      * <p>
      * Note that cancel(reason) may show up as onError() errors in the near future on operations that
      * have already started but detect cancellation only after completion with any possible side effects.
@@ -249,7 +249,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             } catch (Exception e) {
                 ee(this, "AltFuture.run() changed value, but problem in resulting .doThenActions()", e);
             }
-            clearPreviousAltFuture(); // Allow garbage collect of past values as we work through a functional chain
+            clearPreviousAltFuture(); // Allow garbage collect of past values as we work through a active chain
         }
     }
 

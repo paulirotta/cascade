@@ -1,4 +1,4 @@
-package com.futurice.cascade.functional;
+package com.futurice.cascade.active;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;

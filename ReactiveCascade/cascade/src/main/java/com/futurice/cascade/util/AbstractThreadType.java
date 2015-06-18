@@ -29,8 +29,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.functional.AltFuture;
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.AltFuture;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IAction;
@@ -38,8 +38,8 @@ import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.i.active.IRunnableAltFuture;
 
 import java.util.ArrayList;
 import java.util.Deque;

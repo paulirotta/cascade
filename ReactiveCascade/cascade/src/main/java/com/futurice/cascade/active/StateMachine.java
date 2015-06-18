@@ -1,4 +1,4 @@
-package com.futurice.cascade.functional;
+package com.futurice.cascade.active;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

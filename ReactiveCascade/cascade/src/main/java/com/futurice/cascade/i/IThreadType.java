@@ -32,8 +32,8 @@ import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.i.active.IRunnableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
@@ -109,7 +109,7 @@ public interface IThreadType extends INamed {
      * Generally out of order execution is supported on multi-thread pools such as
      * {@link com.futurice.cascade.Async#WORKER} but not strictly sequential operations such as write to file.
      *
-     * This is called for you when it is time to add the {@link com.futurice.cascade.functional.AltFuture} to the
+     * This is called for you when it is time to add the {@link com.futurice.cascade.active.AltFuture} to the
      * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
      * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
      * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
@@ -277,10 +277,10 @@ public interface IThreadType extends INamed {
     <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
     /**
-     * Place this the {@link com.futurice.cascade.i.functional.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.functional.AltFuture}
+     * Place this the {@link com.futurice.cascade.i.active.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
      * in to an execution queue associated with this {@link IThreadType}.
      * <p>
-     * You generally do not call this directly, but rather call {@link com.futurice.cascade.i.functional.IAltFuture#fork()} so that it
+     * You generally do not call this directly, but rather call {@link com.futurice.cascade.i.active.IAltFuture#fork()} so that it
      * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
      *
      * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
@@ -330,7 +330,7 @@ public interface IThreadType extends INamed {
     /**
      * Halt execution of all functional and reactive subscriptions in this threadType.
      *
-     * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all functional chain elements
+     * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all active chain elements
      *                                                                and unbinding all reactive chain elements which have not otherwise expired.
      * @param actionOnDedicatedThreadAfterAlreadyStartedTasksComplete optional callback once current tasks completely finished
      * @param actionOnDedicatedThreadIfTimeout                        optional what to do if an already started task blocks for too long

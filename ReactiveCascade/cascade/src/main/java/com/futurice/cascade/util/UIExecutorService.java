@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +49,7 @@ import static com.futurice.cascade.Async.*;
  * Treat the system UI thread as an ExecutorService
  * <p>
  * This is done to allow UI codes to be part of UI {@link com.futurice.cascade.i.IThreadType}
- * so that {@link com.futurice.cascade.i.functional.IAltFuture} objects can be easily defined to
+ * so that {@link com.futurice.cascade.i.active.IAltFuture} objects can be easily defined to
  * run on the UI thread in {@link Async#UI} vs background worker threads.
  * <p>
  * Since the system UI thread runs forever, not all {@link java.util.concurrent.ExecutorService}

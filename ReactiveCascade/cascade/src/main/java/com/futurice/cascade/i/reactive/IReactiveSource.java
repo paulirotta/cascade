@@ -40,7 +40,7 @@ import com.futurice.cascade.i.action.IActionR;
  * <p>
  * See also {@link IReactiveTarget}
  * <p>
- * Unlike the single-use objects in {@link com.futurice.cascade.i.functional}, the chain created is
+ * Unlike the single-use objects in {@link com.futurice.cascade.i.active}, the chain created is
  * suitable for multiple firings. Chains of {@link com.futurice.cascade.i.reactive.IReactiveSource}
  * functions are usually held with a weak reference at their head. They will automatically collapse
  * and clean up the binding at the same time the leaf node is garbage collected. Any firing which started

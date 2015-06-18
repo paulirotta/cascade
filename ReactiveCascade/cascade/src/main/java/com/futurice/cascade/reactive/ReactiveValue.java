@@ -104,7 +104,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * down-chain {@link com.futurice.cascade.i.reactive.IReactiveSource#subscribe(com.futurice.cascade.i.action.IActionOne)}
      * to receive and store reactive values.
      * <p>
-     * You can also link into a functional chain to receive individually constructed and fired updates using
+     * You can also link into a active chain to receive individually constructed and fired updates using
      * <code>
      * <pre>
      *         myAltFuture.subscribe(value -> myAtomicValue.set(value))

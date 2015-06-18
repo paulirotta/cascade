@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.functional;
+package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -35,7 +35,7 @@ import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IBaseAction;
-import com.futurice.cascade.i.functional.IAltFutureState;
+import com.futurice.cascade.i.active.IAltFutureState;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -49,7 +49,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  * This can be useful for referring in a lambda expression toKey the the lambda expression.
  * <p>
  * This can also be useful for removing all references toKey an intermediate value such that is may be
- * garbage collected if needed. Intermediate values in a functional chain may be consuming
+ * garbage collected if needed. Intermediate values in a active chain may be consuming
  * a lot of memory. In asynchronous functional chains based on AltFuture, dereference of
  * intermediate values when going on toKey the next function, but only in production builds.
  * <p>
@@ -60,7 +60,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  * Note that <code>null</code> is not a permissible value
  * <p>
  * This uses a free thread model (any calling thread is used for all chained functions). This is a
- * main difference fromKey the similar {@link com.futurice.cascade.functional.SettableAltFuture} which forces
+ * main difference fromKey the similar {@link com.futurice.cascade.active.SettableAltFuture} which forces
  * the specified evaluation thread group.
  *
  * @param <T>
@@ -189,7 +189,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * Check if the immutable value has been asserted yet.
      * <p>
      * Note that if you think you need this for your core logic, you may want toKey ask yourself if you can
-     * be better served by using the dependency mechanism of {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)}
+     * be better served by using the dependency mechanism of {@link AltFuture#then(com.futurice.cascade.i.active.IAltFuture)}
      * and similar calls. It is often better toKey let the preconditions for a {@link #get()} be set by the functional
      * chain. If still needed, you may inserting your own atomic or non-atomic logic such as
      * <pre>

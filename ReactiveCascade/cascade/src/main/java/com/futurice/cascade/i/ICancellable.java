@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Stop an ongoing activity early if it has not already completed.
- * Long running tasks such as {@link com.futurice.cascade.i.functional.IAltFuture} must
+ * Long running tasks such as {@link com.futurice.cascade.i.active.IAltFuture} must
  * periodically check {@link #isCancelled()} and terminate early.
  *
  * This is a cooperative onFireAction replacing more agressive techniques such as
@@ -39,7 +39,7 @@ import android.support.annotation.NonNull;
 public interface ICancellable {
     /**
      * A plain text reason must always be provided for debugOrigin purposes. This is carried forward through whay
-     * may be non-obvious asynchronous and functional chain results.
+     * may be non-obvious asynchronous and active chain results.
      *
      * If the operation has already completed normally, this call may be ignored. A warning may be
      * given to help clean up redundant cancellation.

@@ -5,8 +5,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
-import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.active.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.spdy.Header;

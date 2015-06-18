@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
@@ -39,8 +39,8 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IActionTwo;
 import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.i.functional.IRunnableAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.i.active.IRunnableAltFuture;
 import com.futurice.cascade.util.AbstractThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
@@ -654,7 +654,7 @@ public final class Async {
      * <p>
      * This is used to make it easy to debugOrigin when cause and effect are likely separated. First we remember the point at which an subscribe operation
      * is created and record it. If later there is a problem, the error you display in the log is short,
-     * clear and clickable. Most importantly, it shows you not a vomit of call stack but only where the errant functional chain
+     * clear and clickable. Most importantly, it shows you not a vomit of call stack but only where the errant active chain
      * started such as in your user or library code.
      * <p>
      * This information is frequently displayed along with the full stack trace at the point the error
@@ -893,7 +893,7 @@ public final class Async {
 
     /**
      * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * functional chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage pr
+     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage pr
      *
      * @param errorMessage a message to display when the assertion fails. It should indicate the
      *                     reason which was not true and, if possible, the likely corrective action

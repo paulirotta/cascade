@@ -22,13 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.functional;
+package com.futurice.cascade.i.active;
+
+import android.support.annotation.NonNull;
 
 /**
- * Some implementations such as {@link com.futurice.cascade.functional.SettableAltFuture} are not themselves
- * runnable in their {@link com.futurice.cascade.i.IThreadType}'s {@link java.util.concurrent.ExecutorService}.
- *
- * Other, such as {@link com.futurice.cascade.functional.AltFuture} are, and they are marked with this interface.
+ * This is a marker interface. If you return state information, the atomic inner state of your
+ * implementation should implement this interface.
  */
-public interface IRunnableAltFuture<IN, OUT>  extends IAltFuture<IN, OUT>, Runnable {
+public interface IAltFutureState {
+    /**
+     * Get the exception which triggered this state change
+     * @return
+     */
+    @NonNull
+    public Exception getException();
 }

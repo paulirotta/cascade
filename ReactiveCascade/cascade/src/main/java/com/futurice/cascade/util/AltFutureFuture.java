@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -39,7 +39,7 @@ import static com.futurice.cascade.Async.*;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results
- * from an {@link com.futurice.cascade.i.functional.IAltFuture}.
+ * from an {@link com.futurice.cascade.i.active.IAltFuture}.
  * <p>
  * Normally we don't like to hold one thread waiting for the result of another thread. Doing this
  * on a routine basis causes lots of context switching and can backlog into either many threads

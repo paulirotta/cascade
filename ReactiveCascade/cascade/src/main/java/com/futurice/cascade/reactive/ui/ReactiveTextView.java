@@ -10,7 +10,7 @@ import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.reactive.IReactiveSource;

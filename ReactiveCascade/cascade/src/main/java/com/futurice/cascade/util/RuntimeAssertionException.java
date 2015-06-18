@@ -27,7 +27,7 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 
 /**
- * This is a message indicating a functional chain or other assert statement has failed at
+ * This is a message indicating a active chain or other assert statement has failed at
  * runtime. This is for debugOrigin build assert statements which fail based on actual values split states
  * observed in the running application.
  *

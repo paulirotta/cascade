@@ -26,7 +26,7 @@ package com.futurice.cascade.reactive;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IAction;
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.futurice.cascade.Async.*;
 
 /**
- * This is the default implementation for a reactive functional chain link.
+ * This is the default implementation for a reactive active chain link.
  * <p>
  * NOTE: Because there _may_ exist a possibility of multiple fire events racing each other on different
  * threads, it is important that the functions in the reactive chain are idempotent and stateless.
@@ -59,7 +59,7 @@ import static com.futurice.cascade.Async.*;
  * TODO Add setFireEveryValue(true) option to queue up and fire all states one by one. If inOrderExecutor, this fire will be FIFO sequential, otherwise concurrent
  *
  * @param <OUT>
- * @param <IN>  the type of the second link in the functional chain
+ * @param <IN>  the type of the second link in the active chain
  */
 @NotCallOrigin
 public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSource<OUT> {
@@ -90,7 +90,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain from being garbage collected until the tail of the chain is de-referenced
 
     /**
-     * Create a new default implementation of a reactive functional chain link
+     * Create a new default implementation of a reactive active chain link
      * <p>
      * If there are multiple down-chain targets attached to this node, it will concurrently fire
      * all down-chain branches.

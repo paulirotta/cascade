@@ -12,7 +12,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;

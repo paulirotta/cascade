@@ -13,10 +13,10 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
-import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

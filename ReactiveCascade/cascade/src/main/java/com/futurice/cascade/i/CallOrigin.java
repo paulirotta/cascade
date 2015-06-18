@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * call stack only shows the synchronous call history and includes a lot of garbage.
  * An attempt is made to store the most interesting "originAsync" of the asynchronous call
  * history in debugOrigin builds. The is the top of the call stack at the point where
- * an {@link com.futurice.cascade.i.functional.IAltFuture} is created.
+ * an {@link com.futurice.cascade.i.active.IAltFuture} is created.
  *
  * You can influence this call stack selection process by adding this annotation to
  * highlight sections of your own code such as primary business logic that are

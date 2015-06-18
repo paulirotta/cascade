@@ -31,8 +31,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
-import com.futurice.cascade.functional.AltFuture;
-import com.futurice.cascade.i.functional.IAltFuture;
+import com.futurice.cascade.active.AltFuture;
+import com.futurice.cascade.i.active.IAltFuture;
 
 import org.junit.After;
 import org.junit.Before;

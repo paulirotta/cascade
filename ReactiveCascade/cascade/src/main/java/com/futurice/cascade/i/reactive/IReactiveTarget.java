@@ -26,7 +26,7 @@ package com.futurice.cascade.i.reactive;
 import com.futurice.cascade.i.*;
 
 /**
- * An object which can receive repeated value assertions from a reactive functional chain.
+ * An object which can receive repeated value assertions from a reactive active chain.
  * <p>
  * Commonly used default implementations are {@link com.futurice.cascade.reactive.Subscription} and
  * {@link com.futurice.cascade.reactive.ReactiveValue}.
@@ -34,7 +34,7 @@ import com.futurice.cascade.i.*;
  * Note that classes which are functional but not reactive only receive a value one time before
  * becoming immutable value object. These are thus _not_ <code>IReactiveTarget</code>s because the
  * 2nd etc firing would not be meaningful. You will see example of these in the package
- * {@link com.futurice.cascade.i.functional}
+ * {@link com.futurice.cascade.i.active}
  *
  * @param <IN>     the type of value expected as input to this node. If this is the head of the reactive chain,
  *                 it is the same type as <code>SOURCE</code>.
