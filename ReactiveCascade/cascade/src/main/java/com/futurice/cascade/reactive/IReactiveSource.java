@@ -21,17 +21,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.i.reactive;
+package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.nonnull;
 
 /**
  * An object you can bind _from_ to receive updates each time this object decides to emit them.
@@ -42,7 +42,7 @@ import com.futurice.cascade.util.nonnull;
  * See also {@link IReactiveTarget}
  * <p>
  * Unlike the single-use objects in {@link com.futurice.cascade.i.active}, the chain created is
- * suitable for multiple firings. Chains of {@link com.futurice.cascade.i.reactive.IReactiveSource}
+ * suitable for multiple firings. Chains of {@link IReactiveSource}
  * functions are usually held with a weak reference at their head. They will automatically collapse
  * and clean up the binding at the same time the leaf node is garbage collected. Any firing which started
  * before garbage collection may lead to a value which is discarded. The same is true even if you manually
@@ -84,7 +84,7 @@ public interface IReactiveSource<OUT> extends INamed {
 //         * Default behaviour
 //         * <p>
 //         * <p>
-//         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}s
+//         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.reactive.IReactiveTarget}s
 //         * <p>
 //         * If there is only one down-chain target and the {@link com.futurice.cascade.i.IThreadType} is the
 //         * same, this will continue on the same worker without context switching overhead. In such as case,
@@ -144,7 +144,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}
+     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action
@@ -161,7 +161,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}
+     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action
@@ -178,7 +178,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * <p>
      * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
      * context, subscribe the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}
+     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action

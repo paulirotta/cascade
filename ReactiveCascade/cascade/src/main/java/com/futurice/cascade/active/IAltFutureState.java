@@ -22,25 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.action;
+package com.futurice.cascade.active;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.i.nonnull;
 
 /**
- * A function to run in the event of an {@link java.lang.Exception} or similar irregular termination
- * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
+ * This is a marker interface. If you return state information, the atomic inner state of your
+ * implementation should implement this interface.
  */
-public interface IOnErrorAction extends IBaseAction<Exception> {
+public interface IAltFutureState {
     /**
-     * Perform some cleanup or notification onFireAction to bring this object into a rest state after
-     * irregular termination.
+     * Get the exception which triggered this state change
      *
-     * @param e
-     * @return <code>true</code> if the error is consumed and should not propagate further down-chain.
-     * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
-     * @throws Exception
+     * @return
      */
-    boolean call(@NonNull @nonnull Exception e) throws Exception;
+    @NonNull
+    @nonnull
+    public Exception getException();
 }

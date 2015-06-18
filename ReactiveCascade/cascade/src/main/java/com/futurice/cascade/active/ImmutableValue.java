@@ -28,17 +28,15 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.action.IBaseAction;
-import com.futurice.cascade.i.active.IAltFutureState;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -82,8 +80,8 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * <p>
      * You can use this object as a placeholder until an asynchronous function result is finally set.
      * <p>
-     * You can also attach code which will run when the value is set. See {@link #then(com.futurice.cascade.i.action.IAction)}
-     * and {@link #then(com.futurice.cascade.i.action.IActionOne)}
+     * You can also attach code which will run when the value is set. See {@link #then(IAction)}
+     * and {@link #then(IActionOne)}
      */
     public ImmutableValue() {
         action = null;
@@ -197,7 +195,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * Check if the immutable value has been asserted yet.
      * <p>
      * Note that if you think you need this for your core logic, you may want toKey ask yourself if you can
-     * be better served by using the dependency mechanism of {@link AltFuture#then(com.futurice.cascade.i.active.IAltFuture)}
+     * be better served by using the dependency mechanism of {@link AltFuture#then(IAltFuture)}
      * and similar calls. It is often better toKey let the preconditions for a {@link #get()} be set by the functional
      * chain. If still needed, you may inserting your own atomic or non-atomic logic such as
      * <pre>
@@ -275,7 +273,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     /**
      * Set the value.
      * <p>
-     * If this atomic onFireAction succeeds, any {@link #then(com.futurice.cascade.i.action.IActionOne)} actions
+     * If this atomic onFireAction succeeds, any {@link #then(IActionOne)} actions
      * will also be run synchronously. This is a fairly low-level class which is used by other classes
      * and for practical reasons it violates the "always asynchronous" assumption. Traditional. Sorry. :)
      *
@@ -297,7 +295,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * Return the current value of the immutable value if possible
      * <p>
      * In other cases marker text "(ImmutableValue not yet set)" will be returned. If you see
-     * this text, consider using a {@link #then(com.futurice.cascade.i.action.IActionOne)} onFireAction
+     * this text, consider using a {@link #then(IActionOne)} onFireAction
      * toKey make your logic run when this value is set.
      *
      * @return

@@ -22,23 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.active;
+package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
-
 /**
- * This is a marker interface. If you return state information, the atomic inner state of your
- * implementation should implement this interface.
+ * A lambda-friendly onFireAction which receives two values split returns a getValue
+ *
+ * @param <IN>
+ * @param <OUT>
  */
-public interface IAltFutureState {
-    /**
-     * Get the exception which triggered this state change
-     *
-     * @return
-     */
-    @NonNull
-    @nonnull
-    public Exception getException();
+public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
+    @NonNull @nonnull
+    OUT call(@NonNull @nonnull IN value) throws Exception;
 }

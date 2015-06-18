@@ -21,12 +21,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.i.reactive;
+package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.i.nonnull;
 
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.
@@ -67,8 +67,8 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * Set the current value.
      * <p>
      * In the case of {@link com.futurice.cascade.reactive.ReactiveValue} which also implements
-     * {@link com.futurice.cascade.i.reactive.IReactiveSource}, which will also trigger all
-     * down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}s to receive the update.
+     * {@link IReactiveSource}, which will also trigger all
+     * down-chain {@link IReactiveTarget}s to receive the update.
      * <p>
      * Any associated chain will only fire if the value set is new, not a repeat of a previous value.
      *

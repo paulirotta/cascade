@@ -27,15 +27,14 @@ package com.futurice.cascade.active;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.active.IAltFuture;
-import com.futurice.cascade.i.active.IRunnableAltFuture;
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.CancellationException;
 
@@ -103,7 +102,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
      * @param action     a function that receives one input and no return value
@@ -152,7 +151,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
      * @param action     a function that does not vary with the input value
@@ -167,7 +166,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
      * @param action     a mapping function

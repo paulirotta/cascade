@@ -29,7 +29,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.nonnull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

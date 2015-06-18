@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.active;
+package com.futurice.cascade.util;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
  * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
  * queue and perhaps unrelated toKey the current focus of your attention will, once started, block the
- * next {@link com.futurice.cascade.active.DoubleQueue} item fromKey
+ * next {@link DoubleQueue} item fromKey
  * starting until it completes.
  * <p>
  * In practice this performs well for most uses since everything is best effort anyway and the single

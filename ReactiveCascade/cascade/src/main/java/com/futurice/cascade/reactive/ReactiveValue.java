@@ -28,13 +28,13 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.reactive.IReactiveValue;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,7 +42,7 @@ import static com.futurice.cascade.Async.dd;
 import static com.futurice.cascade.Async.vv;
 
 /**
- * Thread-safe reactive display of a variable getValue. Add one or more {@link com.futurice.cascade.i.action.IActionOne}
+ * Thread-safe reactive display of a variable getValue. Add one or more {@link IActionOne}
  * actions to update the display when the variable fires. Usually these can be added as Lambda expressions
  * referencing the UI element you would like to track the variable's getValue in an eventually-consistent
  * manner.
@@ -104,7 +104,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * {@link #set(Object)} to assert a new value.
      * <p>
      * You can also link this to receive multiple reactive updates as a
-     * down-chain {@link com.futurice.cascade.i.reactive.IReactiveSource#subscribe(com.futurice.cascade.i.action.IActionOne)}
+     * down-chain {@link IReactiveSource#subscribe(IActionOne)}
      * to receive and store reactive values.
      * <p>
      * You can also link into a active chain to receive individually constructed and fired updates using

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
-import com.futurice.cascade.i.active.IAltFuture;
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
 import java.util.Arrays;

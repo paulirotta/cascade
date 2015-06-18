@@ -6,12 +6,11 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.spdy.Header;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

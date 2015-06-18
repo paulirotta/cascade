@@ -7,6 +7,7 @@ import android.test.mock.MockContext;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.i.nonnull;
 
 import org.junit.Before;
 import org.junit.Test;

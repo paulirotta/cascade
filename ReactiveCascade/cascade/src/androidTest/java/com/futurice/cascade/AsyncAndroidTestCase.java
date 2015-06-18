@@ -10,11 +10,11 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.active.IAltFuture;
+import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.test.TestUtil;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.util.TestUtil;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;

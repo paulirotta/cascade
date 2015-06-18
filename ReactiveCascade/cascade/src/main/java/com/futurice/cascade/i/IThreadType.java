@@ -28,16 +28,9 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.active.IAltFuture;
-import com.futurice.cascade.i.active.IRunnableAltFuture;
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -293,10 +286,10 @@ public interface IThreadType extends INamed {
     <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT>... actions);
 
     /**
-     * Place this the {@link com.futurice.cascade.i.active.IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
+     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
      * in to an execution queue associated with this {@link IThreadType}.
      * <p>
-     * You generally do not call this directly, but rather call {@link com.futurice.cascade.i.active.IAltFuture#fork()} so that it
+     * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
      * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
      *
      * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner

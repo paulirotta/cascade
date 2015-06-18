@@ -32,16 +32,14 @@ import com.futurice.cascade.Async;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.active.IAltFuture;
-import com.futurice.cascade.i.active.IAltFutureState;
-import com.futurice.cascade.i.reactive.IReactiveTarget;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,12 +56,12 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
 import static com.futurice.cascade.Async.vv;
 
 /**
- * An {@link com.futurice.cascade.i.active.IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
+ * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
  * one time toKey change state
  * <p>
  * Note that a <code>SettableAltFuture</code> is not itself {@link java.lang.Runnable}. You explicity {@link #set(Object)}
- * when the value is determined, and this changes the state toKey done. Therefore concepts like {@link com.futurice.cascade.i.active.IAltFuture#fork()}
- * and {@link com.futurice.cascade.i.active.IAltFuture#isForked()} do not have their traditional meanings.
+ * when the value is determined, and this changes the state toKey done. Therefore concepts like {@link IAltFuture#fork()}
+ * and {@link IAltFuture#isForked()} do not have their traditional meanings.
  * <p>
  * {@link AltFuture} overrides this class.
  * TODO You may also use a {@link SettableAltFuture} toKey inject data where the value is determined fromKey entirely outside of the current chain hierarchy.
@@ -247,7 +245,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * Implementations of {@link #fork()} must call this when completed. It reduces the window of time
      * in which past intermediate calculation values in a active chain are held in memory. It is
      * the equivalent of the (illegal) statement:
-     * <code>{@link #setPreviousAltFuture(com.futurice.cascade.i.active.IAltFuture)}</code> toKey null.
+     * <code>{@link #setPreviousAltFuture(IAltFuture)}</code> toKey null.
      * <p>
      * This may not be done until {@link #isDone()} == true, such as when the {@link #fork()} has completed.
      */

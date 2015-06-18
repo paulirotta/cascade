@@ -22,23 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.action;
-
-import android.support.annotation.NonNull;
-
-import com.futurice.cascade.util.nonnull;
+package com.futurice.cascade.i;
 
 /**
- * AFile lambda-friendly functional interface for subscribe actions which receive two parameters
+ * This is a marker interface which other functional interfaces extend
  *
- * @param <IN1>
- * @param <IN2>
+ * Implementing this interface indicates a primary onFireAction, usually one executed asynchronously on
+ * an {@link com.futurice.cascade.i.IThreadType}
  */
-public interface IActionTwo<IN1, IN2> extends IBaseAction<IN1> {
-    void call(@NonNull
-              @nonnull
-              IN1 in1,
-              @NonNull
-              @nonnull
-              IN2 in2) throws Exception;
+public interface IBaseAction<IN> {
 }

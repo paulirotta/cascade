@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.active;
+package com.futurice.cascade.active;
 
 /**
  * Some implementations such as {@link com.futurice.cascade.active.SettableAltFuture} are not themselves

@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import static com.futurice.cascade.Async.*;
 

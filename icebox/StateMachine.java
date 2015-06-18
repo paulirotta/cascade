@@ -5,13 +5,13 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.action.IActionTwo;
-import com.futurice.cascade.i.action.IBaseAction;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.reactive.IReactiveSource;
+import com.futurice.cascade.i.IActionTwo;
+import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.ReactiveValue;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;

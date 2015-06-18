@@ -22,13 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.action;
+package com.futurice.cascade.i;
 
 /**
- * This is a marker interface which other functional interfaces extend
+ * AFile lambda-friendly continuation onFireAction which may be run in the future or on a different thread
+ * similar to {@link java.lang.Runnable}. The differences is that an explicit <code>Exception</code>
+ * may be thrown which helps facilitate asynchronous exception handling in a lambda-friendly manner.
  *
- * Implementing this interface indicates a primary onFireAction, usually one executed asynchronously on
- * an {@link com.futurice.cascade.i.IThreadType}
  */
-public interface IBaseAction<IN> {
+public interface IAction<PHANTOM_IN> extends IBaseAction<PHANTOM_IN> {
+    /**
+     * Execute the onFireAction
+     * <p>
+     * If parameters need to be passed in, see for example {@link IActionOne}
+     *
+     * @throws Exception
+     */
+    void call() throws Exception;
 }

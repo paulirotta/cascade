@@ -35,10 +35,10 @@ import android.widget.ImageView;
 
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.reactive.IReactiveSource;
-import com.futurice.cascade.i.reactive.IReactiveTarget;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.reactive.IReactiveSource;
+import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

@@ -22,21 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.action;
+package com.futurice.cascade.i;
+
+import android.support.annotation.NonNull;
+
+import java.util.concurrent.Callable;
 
 /**
- * AFile lambda-friendly continuation onFireAction which may be run in the future or on a different thread
- * similar to {@link java.lang.Runnable}. The differences is that an explicit <code>Exception</code>
- * may be thrown which helps facilitate asynchronous exception handling in a lambda-friendly manner.
- *
+ * A lambda-friendly functional interface for continuation actions that receive no parameters
+ * split return one result.
  */
-public interface IAction<PHANTOM_IN> extends IBaseAction<PHANTOM_IN> {
-    /**
-     * Execute the onFireAction
-     * <p>
-     * If parameters need to be passed in, see for example {@link IActionOne}
-     *
-     * @throws Exception
-     */
-    void call() throws Exception;
+public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
+    @Override // Callable
+    @NonNull
+    @nonnull
+    OUT call() throws Exception;
 }

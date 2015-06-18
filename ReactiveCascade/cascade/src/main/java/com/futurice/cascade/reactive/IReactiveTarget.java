@@ -21,7 +21,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.i.reactive;
+package com.futurice.cascade.reactive;
 
 import com.futurice.cascade.i.*;
 
@@ -41,7 +41,7 @@ import com.futurice.cascade.i.*;
  */
 public interface IReactiveTarget<IN> extends INamed {
     /**
-     * An upchain {@link com.futurice.cascade.i.reactive.IReactiveSource} is notifying us
+     * An upchain {@link IReactiveSource} is notifying us
      * of a new input value to process.
      *
      * You don't usually call the fire methods directly. They are
@@ -82,7 +82,7 @@ public interface IReactiveTarget<IN> extends INamed {
     void fireNext(IN in);
 
     /**
-     * Notification that an {@link com.futurice.cascade.i.reactive.IReactiveSource}  will start sending updates
+     * Notification that an {@link IReactiveSource}  will start sending updates
      *
      * This allows the target which is responsible for holding a strong reference to the source to
      * prevent it from being garbage collected until all targets of a given source go out of scope and
@@ -96,7 +96,7 @@ public interface IReactiveTarget<IN> extends INamed {
     void subscribeSource(String reason, IReactiveSource<IN> reactiveSource);
 
     /**
-     * Notification that an {@link com.futurice.cascade.i.reactive.IReactiveSource}  will no longer send updates
+     * Notification that an {@link IReactiveSource}  will no longer send updates
      *
      * Since this target is responsible for holding a reference to the source to keep it from
      * being garbage collected, this target can not forget the source and, if not used elsewhere, it can be garbage collected.

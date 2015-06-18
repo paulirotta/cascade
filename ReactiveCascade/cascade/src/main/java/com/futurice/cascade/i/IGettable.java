@@ -26,8 +26,6 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
-
 /**
  * Create the actual URL at the last minute, just before the request is processed.
  * <p>

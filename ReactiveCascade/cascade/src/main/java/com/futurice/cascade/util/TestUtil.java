@@ -1,10 +1,9 @@
-package com.futurice.cascade.util.test;
+package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.active.IAltFuture;
-import com.futurice.cascade.util.AltFutureFuture;
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.TimeUnit;
 

@@ -22,26 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.util;
+package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.nonnull;
-
 /**
- * This is a message indicating a active chain or other assert statement has failed at
- * runtime. This is for debugOrigin build assert statements which fail based on actual values split states
- * observed in the running application.
+ * AFile lambda-friendly functional interface for subscribe actions which receive two parameters
  *
- * The contract is that these exceptions should not be thrown in production builds.
- *
+ * @param <IN1>
+ * @param <IN2>
  */
-public class RuntimeAssertionException extends RuntimeException {
-    public RuntimeAssertionException(@NonNull @nonnull final String message) {
-        super(message);
-    }
-
-    public RuntimeAssertionException(@NonNull @nonnull final String message, @NonNull @nonnull final Exception e) {
-        super(message, e);
-    }
+public interface IActionTwo<IN1, IN2> extends IBaseAction<IN1> {
+    void call(@NonNull
+              @nonnull
+              IN1 in1,
+              @NonNull
+              @nonnull
+              IN2 in2) throws Exception;
 }

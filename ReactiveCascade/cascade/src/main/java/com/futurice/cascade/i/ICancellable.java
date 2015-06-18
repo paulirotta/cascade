@@ -26,11 +26,11 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.active.IAltFuture;
 
 /**
  * Stop an ongoing activity early if it has not already completed.
- * Long running tasks such as {@link com.futurice.cascade.i.active.IAltFuture} must
+ * Long running tasks such as {@link IAltFuture} must
  * periodically check {@link #isCancelled()} and terminate early.
  *
  * This is a cooperative onFireAction replacing more agressive techniques such as

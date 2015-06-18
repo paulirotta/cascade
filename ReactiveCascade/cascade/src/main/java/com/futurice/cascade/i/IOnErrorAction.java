@@ -22,19 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.action;
+package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
-
 /**
- * A lambda-friendly onFireAction which receives two values split returns a getValue
- *
- * @param <IN>
- * @param <OUT>
+ * A function to run in the event of an {@link java.lang.Exception} or similar irregular termination
+ * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
  */
-public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
-    @NonNull @nonnull
-    OUT call(@NonNull @nonnull IN value) throws Exception;
+public interface IOnErrorAction extends IBaseAction<Exception> {
+    /**
+     * Perform some cleanup or notification onFireAction to bring this object into a rest state after
+     * irregular termination.
+     *
+     * @param e
+     * @return <code>true</code> if the error is consumed and should not propagate further down-chain.
+     * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
+     * @throws Exception
+     */
+    boolean call(@NonNull @nonnull Exception e) throws Exception;
 }

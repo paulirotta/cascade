@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
+import com.futurice.cascade.active.IAltFuture;
+
 import java.lang.annotation.*;
 
 /**
@@ -33,7 +35,7 @@ import java.lang.annotation.*;
  * and methods of interest.
  *
  * The library records a pointer to the "most interesting" method at the time an
- * {@link com.futurice.cascade.i.active.IAltFuture} is
+ * {@link IAltFuture} is
  * created. Mark your class and/or method with this annotation if that part of the code
  * is for example a utility
  * that is not particularly interesting to the business logic as the runtime "originAsync"

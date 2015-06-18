@@ -26,8 +26,6 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.util.nonnull;
-
 public interface INamed {
     /**
      * A descriptive name to assist the developer with debugging

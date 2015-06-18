@@ -1,4 +1,4 @@
-package com.futurice.cascade.util;
+package com.futurice.cascade.i;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

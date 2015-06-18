@@ -22,23 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.i.active;
+package com.futurice.cascade.active;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.reactive.IReactiveTarget;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -76,7 +75,7 @@ import java.util.concurrent.Future;
  * <code>IAltFuture</code> requires execution to the point of returning such a prerequisite value to
  * complete before the request to {@link IAltFuture#get()} is made. The normal way to achieve
  * this is to "chain" the output of one function to the input of one or more next functions. For example
- * {@link com.futurice.cascade.active.AltFuture#then(com.futurice.cascade.i.action.IActionOneR)} will create an <code>AltFuture</code> which
+ * {@link com.futurice.cascade.active.AltFuture#then(IActionOneR)} will create an <code>AltFuture</code> which
  * will receive as input the output of <code>this</code>, process it split output another value in turn.
  * {@link com.futurice.cascade.active.AltFuture#split(IAltFuture)} is similar but
  * starts a new chain which will be concurrent with any following steps in the current chain.
@@ -420,7 +419,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Set an atomic value with the output value of this {@link com.futurice.cascade.active.AltFuture}.
      * <p>
      * If this <code>AltFuture</code> does not assert a value change
-     * (its onFireAction is for example {@link com.futurice.cascade.i.action.IActionOne}
+     * (its onFireAction is for example {@link IActionOne}
      * which does not return a new value) subscribe the value assigned will be the up-chain value. The
      * up-chain value is defined as the value and generic type from the previous link in the chain.
      *

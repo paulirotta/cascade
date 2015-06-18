@@ -29,16 +29,14 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionOneR;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.i.reactive.IReactiveSource;
-import com.futurice.cascade.i.reactive.IReactiveTarget;
+import com.futurice.cascade.i.IAction;
+import com.futurice.cascade.i.IActionOne;
+import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.util.AltWeakReference;
-import com.futurice.cascade.util.nonnull;
-import com.futurice.cascade.util.nullable;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -54,8 +52,8 @@ import static com.futurice.cascade.Async.*;
  * NOTE: Because there _may_ exist a possibility of multiple fire events racing each other on different
  * threads, it is important that the functions in the reactive chain are idempotent and stateless.
  * <p>
- * <code>Subscription</code>s are both an {@link com.futurice.cascade.i.reactive.IReactiveTarget} and
- * {@link com.futurice.cascade.i.reactive.IReactiveSource}.
+ * <code>Subscription</code>s are both an {@link IReactiveTarget} and
+ * {@link IReactiveSource}.
  * <p>
  * <p>
  * TODO Add setFireEveryValue(true) option to queue up and fire all states one by one. If inOrderExecutor, this fire will be FIFO sequential, otherwise concurrent

@@ -32,9 +32,9 @@ import android.util.*;
 import com.futurice.cascade.active.*;
 import com.futurice.cascade.i.*;
 import com.futurice.cascade.util.DefaultThreadType;
+import com.futurice.cascade.util.DoubleQueue;
 import com.futurice.cascade.util.TypedThread;
 import com.futurice.cascade.util.UIExecutorService;
-import com.futurice.cascade.util.nonnull;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;

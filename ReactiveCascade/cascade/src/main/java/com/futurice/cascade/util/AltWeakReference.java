@@ -2,6 +2,8 @@ package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.i.nonnull;
+
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
