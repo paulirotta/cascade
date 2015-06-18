@@ -43,6 +43,7 @@ android:
 
   licenses:
     - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 before_script:
     - android update sdk -u -a
