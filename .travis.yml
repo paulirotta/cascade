@@ -40,7 +40,7 @@ android:
     - extra
     - add-on
   licenses:
-    - 'android-sdk-license-.+
+    - 'android-sdk-license-.+'
 
 before_script:
 #    - android update sdk -u -a
