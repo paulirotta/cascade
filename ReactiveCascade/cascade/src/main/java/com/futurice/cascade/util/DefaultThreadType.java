@@ -51,7 +51,7 @@ public class DefaultThreadType extends AbstractThreadType {
      * @param executorService
      * @param queue           may be null; may be {@link java.util.concurrent.BlockingDeque} in which case out-of-order execution is supported
      */
-    public DefaultThreadType(@NonNull final String name, @NonNull final ExecutorService executorService, @NonNull final BlockingQueue<Runnable> queue) {
+    public DefaultThreadType(@NonNull @nonnull final String name, @NonNull @nonnull final ExecutorService executorService, @NonNull @nonnull final BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
         this.inOrderExecution = queue instanceof BlockingDeque;
@@ -64,7 +64,7 @@ public class DefaultThreadType extends AbstractThreadType {
     };
 
     @Override // IThreadType
-    public void run(@NonNull final Runnable runnable) {
+    public void run(@NonNull @nonnull final Runnable runnable) {
         if (executorService.isShutdown()) {
             e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not run " + runnable);
         }
@@ -74,7 +74,7 @@ public class DefaultThreadType extends AbstractThreadType {
 
     @Override // IThreadType
     @SuppressWarnings("unchecked")
-    public void runNext(@NonNull final Runnable runnable) {
+    public void runNext(@NonNull @nonnull final Runnable runnable) {
         int n;
         if (inOrderExecution || (n = queue.size()) == 0) {
             run(runnable);

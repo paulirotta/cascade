@@ -28,6 +28,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.action.IAction;
@@ -36,6 +37,8 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.active.IAltFutureState;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -71,6 +74,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     private final AtomicReference<Object> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
     private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
     @Nullable
+    @nullable
     private final IActionR<?, T> action;
 
     /**
@@ -92,12 +96,12 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      *
      * @param value
      */
-    public ImmutableValue(@NonNull T value) {
+    public ImmutableValue(@NonNull @nonnull T value) {
         set(value);
         action = null;
     }
 
-    public ImmutableValue(@Nullable IActionR<?, T> action) {
+    public ImmutableValue(@Nullable @nullable IActionR<?, T> action) {
         this.action = action;
     }
 
@@ -112,7 +116,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @return if <code>false</code> is returned, you may try again as the value as needed since the
      * final value has not been set.
      */
-    private boolean compareAndSet(@NonNull final Object expected, @NonNull final T value) {
+    private boolean compareAndSet(@NonNull @nonnull final Object expected, @NonNull @nonnull final T value) {
         boolean success = valueAR.compareAndSet(expected, value);
 
         if (success) {
@@ -133,7 +137,8 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @return
      */
     @NonNull
-    public ImmutableValue<T> then(@NonNull final IActionOne<T> action) {
+    @nonnull
+    public ImmutableValue<T> then(@NonNull @nonnull final IActionOne<T> action) {
         thenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -142,7 +147,8 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     }
 
     @NonNull
-    public ImmutableValue<T> then(@NonNull final IAction<T> action) {
+    @nonnull
+    public ImmutableValue<T> then(@NonNull @nonnull final IAction<T> action) {
         thenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -150,7 +156,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
         return this;
     }
 
-    private void doThenActions(@NonNull final T value) {
+    private void doThenActions(@NonNull @nonnull final T value) {
         final Iterator<IBaseAction<T>> iterator = thenActions.iterator();
 
         while (iterator.hasNext()) {
@@ -166,10 +172,12 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     }
 
     @Nullable
-    @SuppressWarnings("unchecked") // IN->OUT must be bent to match all cases but the context makes this safe
+    @nullable
+    @SuppressWarnings("unchecked")
+    // IN->OUT must be bent to match all cases but the context makes this safe
     private <IN, OUT> OUT call(
-            @NonNull final IN in,
-            @NonNull final IBaseAction<IN> action)
+            @NonNull @nonnull final IN in,
+            @NonNull @nonnull final IBaseAction<IN> action)
             throws Exception {
         if (action instanceof IAction) {
             ((IAction) action).call();
@@ -219,7 +227,9 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      */
     @CallSuper
     @NonNull
-    @SuppressWarnings("unchecked") // The response must be cast because of internal atomic state is a non-T class
+    @nonnull
+    @SuppressWarnings("unchecked")
+    // The response must be cast because of internal atomic state is a non-T class
     public T get() {
         final Object value = valueAR.get();
 
@@ -251,6 +261,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     @CallSuper
     @SuppressWarnings("unchecked")
     @Nullable
+    @nullable
     public T safeGet() {
         final Object value = valueAR.get();
 
@@ -273,7 +284,8 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      */
     @CallSuper
     @NonNull
-    public T set(@NonNull final T value) {
+    @nonnull
+    public T set(@NonNull @nonnull final T value) {
         if (!compareAndSet(ZEN, value)) {
             throwIllegalStateException(this, "ImmutableReference can not be set multiple times. It is already set toKey " + safeGet() + " so we can not assert new value=" + value);
         }
@@ -292,6 +304,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      */
     @CallSuper
     @NonNull
+    @nonnull
     public String toString() {
         T t = safeGet();
 
@@ -304,6 +317,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
 
     @Override
     @NonNull
+    @nonnull
     public String getName() {
         return "(ImmutableValue, value=" + toString() + ")";
     }

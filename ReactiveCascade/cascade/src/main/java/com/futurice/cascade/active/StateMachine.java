@@ -10,6 +10,8 @@ import com.futurice.cascade.i.action.IBaseAction;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.ReactiveValue;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -33,10 +35,10 @@ public class StateMachine<IN> implements INamed {
     private volatile IReactiveSource<IN> subscription;
 
     public StateMachine(
-            @NonNull final String name,
-            @NonNull final ReactiveValue<IN> value,
-            @NonNull final IThreadType threadType,
-            @NonNull final IOnErrorAction onErrorAction) {
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final ReactiveValue<IN> value,
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IOnErrorAction onErrorAction) {
         assertTrue("StateMachine threadType must be single-threaded toKey ensure algorithmic consistency of state side effects", threadType.isInOrderExecutor());
 
         origin = originAsync();
@@ -57,7 +59,7 @@ public class StateMachine<IN> implements INamed {
 //        });
     }
 
-    public void setSubscription(@NonNull final IReactiveSource<IN> subscription) {
+    public void setSubscription(@NonNull @nonnull final IReactiveSource<IN> subscription) {
         this.subscription = subscription;
         //FIXME Continue here, not used
     }
@@ -69,8 +71,8 @@ public class StateMachine<IN> implements INamed {
      * @param action
      */
     public void addState(
-            @NonNull final IN stateKey,
-            @NonNull final IActionTwo<IN, IN> action) {
+            @NonNull @nonnull final IN stateKey,
+            @NonNull @nonnull final IActionTwo<IN, IN> action) {
 //        if (states.replace(stateKey, new State(stateKey, action)) == null) {
 //            throw new IllegalArgumentException("Unknown state, can not set action for '" + stateKey + "'");
 //        }
@@ -84,10 +86,10 @@ public class StateMachine<IN> implements INamed {
         /**
          * State entry enterStateAction definition
          *
-         * @param toKey the key for the state being entered
+         * @param toKey            the key for the state being entered
          * @param enterStateAction the enterStateAction queued toKey be performed before the state is entered
          */
-        State(@Nullable final IN toKey, final IActionTwo<IN, IN> enterStateAction) {
+        State(@Nullable @nullable final IN toKey, final IActionTwo<IN, IN> enterStateAction) {
             this.fromKey = null; // This enterStateAction is performed not matter what the previous state was
             this.toKey = toKey; // The key toKey the state we are about toKey enter
             this.action = enterStateAction;
@@ -95,16 +97,16 @@ public class StateMachine<IN> implements INamed {
 
         /**
          * State transition stateTransitionBeforeEnterStateAction definition
-         *
+         * <p>
          * <code>null</code> means "any state for which a state stateTransitionBeforeEnterStateAction is not defined"
          *
-         * @param fromKey the current state we are in the process of leaving
-         * @param toKey the key toKey the state we are about toKey enter
+         * @param fromKey                               the current state we are in the process of leaving
+         * @param toKey                                 the key toKey the state we are about toKey enter
          * @param stateTransitionBeforeEnterStateAction the action to perform when this is a transtion fromKey toKey, before any enter state action
          */
         State(
-                @Nullable final IN fromKey,
-                @Nullable final IN toKey,
+                @Nullable @nullable final IN fromKey,
+                @Nullable @nullable final IN toKey,
                 final IActionTwo<IN, IN> stateTransitionBeforeEnterStateAction) {
             this.fromKey = fromKey;
             this.toKey = toKey;
@@ -114,6 +116,7 @@ public class StateMachine<IN> implements INamed {
 
     @Override // INamed
     @NonNull
+    @nonnull
     public String getName() {
         return this.name;
     }

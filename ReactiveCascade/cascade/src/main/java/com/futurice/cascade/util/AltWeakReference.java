@@ -18,7 +18,7 @@ public class AltWeakReference<T> extends WeakReference<T> {
      *
      * @param r
      */
-    public AltWeakReference(@NonNull final T r) {
+    public AltWeakReference(@NonNull @nonnull final T r) {
         super(r);
     }
 
@@ -29,8 +29,8 @@ public class AltWeakReference<T> extends WeakReference<T> {
      * @param q
      */
     public AltWeakReference(
-            @NonNull final T r,
-            @NonNull final ReferenceQueue<? super T> q) {
+            @NonNull @nonnull final T r,
+            @NonNull @nonnull final ReferenceQueue<? super T> q) {
         super(r, q);
     }
 

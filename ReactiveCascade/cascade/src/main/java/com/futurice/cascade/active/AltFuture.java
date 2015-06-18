@@ -35,6 +35,7 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.active.IAltFuture;
 import com.futurice.cascade.i.active.IRunnableAltFuture;
+import com.futurice.cascade.util.nonnull;
 
 import java.util.concurrent.CancellationException;
 
@@ -105,12 +106,12 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
-     * @param action a function that receives one input and no return value
+     * @param action     a function that receives one input and no return value
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IAction<IN> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IAction<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -129,12 +130,12 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Constructor
      *
      * @param threadType the thread pool toKey run this command on
-     * @param action a function that receives one input and no return value
+     * @param action     a function that receives one input and no return value
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOne<IN> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOne<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -154,11 +155,11 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
-     * @param action a function that does not vary with the input value
+     * @param action     a function that does not vary with the input value
      */
     public AltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionR<IN, OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionR<IN, OUT> action) {
         super(threadType);
 
         this.action = action;
@@ -169,11 +170,11 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link com.futurice.cascade.i.action.IBaseAction}
      *
      * @param threadType the thread pool toKey run this command on
-     * @param action a mapping function
+     * @param action     a mapping function
      */
     public AltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<IN, OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOneR<IN, OUT> action) {
         super(threadType);
 
         this.action = () -> {
@@ -201,7 +202,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
      */
     @CallSuper
-    public boolean cancel(@NonNull final String reason) {
+    public boolean cancel(@NonNull @nonnull final String reason) {
         final Object state = stateAR.get();
 
         if (state instanceof AltFutureStateCancelled) {
@@ -222,7 +223,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
      * toKey <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
      * chain, subscribe it will be forked for you when the prerequisites have finished.
-     *
+     * <p>
      * This is called fromKey the executor as part of IRunnableAltFuture
      */
     @Override

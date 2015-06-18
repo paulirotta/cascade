@@ -35,11 +35,11 @@ import android.support.annotation.NonNull;
  *
  */
 public class RuntimeAssertionException extends RuntimeException {
-    public RuntimeAssertionException(@NonNull final String message) {
+    public RuntimeAssertionException(@NonNull @nonnull final String message) {
         super(message);
     }
 
-    public RuntimeAssertionException(@NonNull final String message, @NonNull final Exception e) {
+    public RuntimeAssertionException(@NonNull @nonnull final String message, @NonNull @nonnull final Exception e) {
         super(message, e);
     }
 }

@@ -31,6 +31,7 @@ import com.futurice.cascade.i.action.IAction;
 import com.futurice.cascade.i.action.IActionOne;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
+import com.futurice.cascade.util.nonnull;
 
 /**
  * An object you can bind _from_ to receive updates each time this object decides to emit them.
@@ -150,7 +151,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IAction<OUT> action);
+    @nonnull
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IAction<OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -166,7 +168,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IActionOne<OUT> action);
+    @nonnull
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IActionOne<OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -183,7 +186,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -193,7 +197,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType, @NonNull IAction<OUT> action);
+    @nonnull
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IAction<OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -203,7 +208,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType, @NonNull IActionOne<OUT> action);
+    @nonnull
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionOne<OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -213,7 +219,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -224,18 +231,20 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IThreadType threadType, @NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
      *
-     * @param threadType          The onFireAction will be called asynchronously unless the this is same {@link com.futurice.cascade.i.IThreadType} as this (upchain) node in the reactive function tree.
+     * @param threadType      The onFireAction will be called asynchronously unless the this is same {@link com.futurice.cascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
      * @param <DOWNCHAIN_OUT>
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull IThreadType threadType, @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an onFireAction as a new branch down-chain from this node.
@@ -246,5 +255,6 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IReactiveTarget<OUT> reactiveTarget);
+    @nonnull
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
 }

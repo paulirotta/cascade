@@ -13,6 +13,7 @@ import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.active.IAltFuture;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
+import com.futurice.cascade.util.nonnull;
 import com.futurice.cascade.util.test.TestUtil;
 
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     public final long getDefaultTimeoutMillis() {
-        return  this.defaultTimeoutMillis;
+        return this.defaultTimeoutMillis;
     }
 
     /**
@@ -78,6 +79,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @return the test util implementation
      */
     @NonNull
+    @nonnull
     public final TestUtil getTestUtil() {
         if (testUtil == null) {
             setTestUtil(new TestUtil());
@@ -87,16 +89,17 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
     /**
      * Change from the default {@link TestUtil} implementation.
-     *
+     * <p>
      * It is usually not needed to call this method.
      *
      * @param testUtil the test util implementation
      */
-    public final void setTestUtil(@NonNull final TestUtil testUtil) {
+    public final void setTestUtil(@NonNull @nonnull final TestUtil testUtil) {
         this.testUtil = testUtil;
     }
 
     @NonNull
+    @nonnull
     public final FileUtil getFileUtil() {
         if (fileUtil == null) {
             setFileUtil(new FileUtil(context, Context.MODE_PRIVATE));
@@ -106,16 +109,17 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
     /**
      * Change from the default {@link FileUtil} implementation.
-     *
+     * <p>
      * It is usually not needed to call this method.
      *
      * @param fileUtil the file util implementation
      */
-    public final void setFileUtil(@NonNull final FileUtil fileUtil) {
+    public final void setFileUtil(@NonNull @nonnull final FileUtil fileUtil) {
         this.fileUtil = fileUtil;
     }
 
     @NonNull
+    @nonnull
     public final NetUtil getNetUtil() {
         if (netUtil == null) {
             setNetUtil(new NetUtil(context));
@@ -125,31 +129,32 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
     /**
      * Change from the default {@link NetUtil} implementation.
-     *
+     * <p>
      * It is usually not needed to call this method.
      *
      * @param netUtil the network utilities implementation
      */
-    public final void setNetUtil(@NonNull final NetUtil netUtil) {
+    public final void setNetUtil(@NonNull @nonnull final NetUtil netUtil) {
         this.netUtil = netUtil;
     }
 
     /**
      * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces from the logs to
      * avoid confusion.
-     *
+     * <p>
      * The default timeout of 1 second will be used unless this has been overridden by
      * {@link #setDefaultTimeoutMillis(long)}
      *
      * @param altFuture the action to be performed
-     * @param <IN> the type passed into the altFuture
-     * @param <OUT> the type returned from the altFuture
+     * @param <IN>      the type passed into the altFuture
+     * @param <OUT>     the type returned from the altFuture
      * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull
+    @nonnull
     protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture)
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture)
             throws Exception {
         return awaitDoneNoErrorStackTraces(altFuture, defaultTimeoutMillis);
     }
@@ -158,16 +163,17 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces from the logs to
      * avoid confusion.
      *
-     * @param altFuture the action to be performed
+     * @param altFuture     the action to be performed
      * @param timeoutMillis maximum time to wait for the action to complete before throwing a {@link java.util.concurrent.TimeoutException}
-     * @param <IN> the type passed into the altFuture
-     * @param <OUT> the type returned from the altFuture
+     * @param <IN>          the type passed into the altFuture
+     * @param <OUT>         the type returned from the altFuture
      * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull
+    @nonnull
     protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return getTestUtil().awaitDoneNoErrorStackTraces(altFuture, timeoutMillis);
@@ -175,20 +181,21 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
     /**
      * Perform an action, holding the calling thread until execution completes on another thread
-     *
+     * <p>
      * The default timeout of 1 second will be used unless this has been overridden by
      * {@link #setDefaultTimeoutMillis(long)}
      *
      * @param altFuture the action to be performed
-     * @param <IN> the type passed into the altFuture
-     * @param <OUT> the type returned from the altFuture
+     * @param <IN>      the type passed into the altFuture
+     * @param <OUT>     the type returned from the altFuture
      * @return output from execution of altFuture
      * @throws Exception
      */
 
     @NonNull
+    @nonnull
     protected final <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture)
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture)
             throws Exception {
         return awaitDone(altFuture, defaultTimeoutMillis);
     }
@@ -196,16 +203,17 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     /**
      * Perform an action, holding the calling thread until execution completes on another thread
      *
-     * @param altFuture the action to be performed
+     * @param altFuture     the action to be performed
      * @param timeoutMillis maximum time to wait for the action to complete before throwing a {@link java.util.concurrent.TimeoutException}
-     * @param <IN> the type passed into the altFuture
-     * @param <OUT> the type returned from the altFuture
+     * @param <IN>          the type passed into the altFuture
+     * @param <OUT>         the type returned from the altFuture
      * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull
+    @nonnull
     protected final <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return getTestUtil().awaitDone(altFuture, timeoutMillis);

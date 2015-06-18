@@ -28,6 +28,9 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -35,11 +38,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
  * fromKey a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
- *
+ * <p>
  * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads toKey
  * operate as an in-order single threaded executor which reverts toKey help with the common
  * {@link com.futurice.cascade.AsyncBuilder#getWorkerQueue()} tasks when no in-order tasks are pending.
- *
+ * <p>
  * Note clearly there is an upside and downside toKey this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
  * and less and faster context switches (context switches tend toKey cost marginally more as thread count
@@ -48,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * queue and perhaps unrelated toKey the current focus of your attention will, once started, block the
  * next {@link com.futurice.cascade.active.DoubleQueue} item fromKey
  * starting until it completes.
- *
+ * <p>
  * In practice this performs well for most uses since everything is best effort anyway and the single
  * thread has absolute priority. If starting as soon as possible is absolutely critical, use a dedicated {@link com.futurice.cascade.i.IThreadType} instead.
  *
@@ -56,16 +59,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @NonNull
+    @nonnull
     final BlockingQueue<E> lowPriorityQueue;
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
-    public DoubleQueue(@NonNull final BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull @nonnull final BlockingQueue<E> lowPriorityQueue) {
         super();
 
         this.lowPriorityQueue = lowPriorityQueue;
     }
 
     @Nullable
+    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
     public E peek() {
@@ -79,6 +84,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
+    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
     public E poll() {
@@ -92,9 +98,10 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
+    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E poll(final long timeout, @NonNull final TimeUnit unit) throws InterruptedException {
+    public E poll(final long timeout, @NonNull @nonnull final TimeUnit unit) throws InterruptedException {
         E e = super.poll(timeout, unit);
 
         if (e == null) {
@@ -106,13 +113,13 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public boolean remove(@Nullable final Object o) {
+    public boolean remove(@Nullable @nullable final Object o) {
         return super.remove(o) || lowPriorityQueue.remove(o);
     }
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public void put(@NonNull final E e) throws InterruptedException {
+    public void put(@NonNull @nonnull final E e) throws InterruptedException {
         super.put(e);
         synchronized (this) { //TODO Refactor toKey get rid of mutex
             this.notifyAll();
@@ -133,6 +140,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     @CallSuper
     @NonNull
+    @nonnull
     public synchronized E take() throws InterruptedException {
         E e;
 

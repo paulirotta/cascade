@@ -26,6 +26,8 @@ package com.futurice.cascade.i.action;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.util.nonnull;
+
 /**
  * A lambda-friendly onFireAction which receives two values split returns a getValue
  *
@@ -33,6 +35,6 @@ import android.support.annotation.NonNull;
  * @param <OUT>
  */
 public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
-    @NonNull
-    OUT call(@NonNull IN value) throws Exception;
+    @NonNull @nonnull
+    OUT call(@NonNull @nonnull IN value) throws Exception;
 }

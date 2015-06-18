@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import static com.futurice.cascade.Async.*;
 
@@ -26,7 +28,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param initialValue
      */
     public ReactiveInteger(
-            @NonNull final String name,
+            @NonNull @nonnull final String name,
             final int initialValue) {
         super(name, initialValue);
     }
@@ -41,11 +43,11 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param onError
      */
     public ReactiveInteger(
-            @NonNull final IThreadType threadType,
-            @NonNull final String name,
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final String name,
             final int initialValue,
-            @Nullable final IActionOneR<Integer, Integer> onFireAction,
-            @NonNull final IOnErrorAction onError) {
+            @Nullable @nullable final IActionOneR<Integer, Integer> onFireAction,
+            @NonNull @nonnull final IOnErrorAction onError) {
         super(name, initialValue, threadType, onFireAction, onError);
     }
 
@@ -59,7 +61,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     public int addAndGet(final int i) {
         int currentValue;
 
-        for (;;) {
+        for (; ; ) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue + i)) {
                 return currentValue;
@@ -78,7 +80,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     public int multiplyAndGet(final int i) {
         int currentValue;
 
-        for (;;) {
+        for (; ; ) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue * i)) {
                 return currentValue;

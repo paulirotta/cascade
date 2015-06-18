@@ -53,76 +53,76 @@ public class TypedThread extends Thread {
 
     public static final ThreadGroup THREAD_GROUP = new ThreadGroup("ThreadTypeThreadGroup") {
         @Override
-        public void uncaughtException(@NonNull final Thread t, @NonNull final Throwable throwable) {
+        public void uncaughtException(@NonNull @nonnull final Thread t, @NonNull @nonnull final Throwable throwable) {
             e(TAG, "uncaughtException in " + t, throwable);
         }
     };
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final Runnable runnable) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final Runnable runnable) {
         super(THREAD_GROUP, runnable);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final Runnable runnable,
-            @NonNull final String threadName) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final Runnable runnable,
+            @NonNull @nonnull final String threadName) {
         super(THREAD_GROUP, runnable, threadName);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final String threadName) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final String threadName) {
         super(THREAD_GROUP, threadName);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final ThreadGroup group,
-            @NonNull final Runnable runnable) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final ThreadGroup group,
+            @NonNull @nonnull final Runnable runnable) {
         super(group, runnable);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final ThreadGroup group,
-            @NonNull final Runnable runnable,
-            @NonNull final String threadName) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final ThreadGroup group,
+            @NonNull @nonnull final Runnable runnable,
+            @NonNull @nonnull final String threadName) {
         super(group, runnable, threadName);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final ThreadGroup group,
-            @NonNull final String threadName) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final ThreadGroup group,
+            @NonNull @nonnull final String threadName) {
         super(group, threadName);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
     public TypedThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final ThreadGroup group,
-            @NonNull final Runnable runnable,
-            @NonNull final String threadName,
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final ThreadGroup group,
+            @NonNull @nonnull final Runnable runnable,
+            @NonNull @nonnull final String threadName,
             final long stackSize) {
         super(group, runnable, threadName, stackSize);
 
         this.threadTypes.add(new AltWeakReference<>(threadType));
     }
 
-    @NonNull
+    @NonNull @nonnull
     public List<IThreadType> getThreadTypes() {
         Iterator<AltWeakReference<IThreadType>> iterator = threadTypes.iterator();
         ArrayList<IThreadType> currenThreadTypes = new ArrayList<>(threadTypes.size());
@@ -141,7 +141,7 @@ public class TypedThread extends Thread {
         return currenThreadTypes;
     }
 
-    @NonNull
+    @NonNull @nonnull
     public IThreadType getThreadType() {
         final List<IThreadType> currentThreadTypes = getThreadTypes();
         IThreadType currentThreadType = null;

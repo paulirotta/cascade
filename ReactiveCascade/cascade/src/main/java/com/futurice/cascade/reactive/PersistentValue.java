@@ -38,6 +38,8 @@ import com.futurice.cascade.util.AltFutureFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IOnErrorAction;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
@@ -97,11 +99,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     @Nullable
+    @nullable
     @SuppressWarnings("unchecked")
     private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(
-            @NonNull String name,
-            @NonNull Context context,
-            @NonNull IOnErrorAction onErrorAction) {
+            @NonNull @nonnull String name,
+            @NonNull @nonnull Context context,
+            @NonNull @nonnull IOnErrorAction onErrorAction) {
         final AltWeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(getKey(context, name));
         if (wr == null) {
             return null;
@@ -137,12 +140,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
      * @return
      */
     public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-            @NonNull final String name,
-            @NonNull final TT defaultValueIfNoPersistedValue,
-            @NonNull final IThreadType threadType,
-            @Nullable final IActionOneR<TT, TT> inputMapping,
-            @Nullable final IOnErrorAction onError,
-            @NonNull final Context context) {
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final TT defaultValueIfNoPersistedValue,
+            @NonNull @nonnull final IThreadType threadType,
+            @Nullable @nullable final IActionOneR<TT, TT> inputMapping,
+            @Nullable @nullable final IOnErrorAction onError,
+            @NonNull @nonnull final Context context) {
         final IOnErrorAction errorAction = onError != null ? onError : defaultOnErrorAction;
 
         PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(name, context, errorAction);
@@ -158,12 +161,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     protected PersistentValue(
-            @NonNull String name,
-            @NonNull T defaultValueIfNoPersistedValue,
-            @NonNull IThreadType threadType,
-            @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable IOnErrorAction onError,
-            @NonNull Context context) {
+            @NonNull @nonnull String name,
+            @NonNull @nonnull T defaultValueIfNoPersistedValue,
+            @NonNull @nonnull IThreadType threadType,
+            @Nullable @nullable final IActionOneR<T, T> inputMapping,
+            @Nullable @nullable IOnErrorAction onError,
+            @NonNull @nonnull Context context) {
         super(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError);
 
         this.defaultValue = defaultValueIfNoPersistedValue;
@@ -350,7 +353,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @NotCallOrigin
     @CallSuper
     @Override
-    public boolean set(@NonNull final T value) {
+    public boolean set(@NonNull @nonnull final T value) {
         final boolean valueChanged = super.set(value);
 
         vv(this, origin, "PersistentValue persist soon, value=" + value);

@@ -15,6 +15,8 @@ import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.ReactiveValue;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import static com.futurice.cascade.Async.*;
 
@@ -44,8 +46,9 @@ public class ReactiveTextView extends TextView implements INamed {
 //    }
 
 
-//    private final CopyOnWriteArrayList<IReactiveSource<String>> reactiveSources = new CopyOnWriteArrayList<>();
+    //    private final CopyOnWriteArrayList<IReactiveSource<String>> reactiveSources = new CopyOnWriteArrayList<>();
     @Nullable
+    @nullable
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     private IReactiveSource<String> reactiveSource; // Access only from UI thread
     private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
@@ -74,7 +77,7 @@ public class ReactiveTextView extends TextView implements INamed {
 //        return sb.toString();
 //    }
 
-    public ReactiveTextView(@NonNull final Context context) {
+    public ReactiveTextView(@NonNull @nonnull final Context context) {
         super(context);
 
 //        if (INSTANCE_ORIGINS != null) {
@@ -84,8 +87,8 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs) {
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs) {
         super(context, attrs);
 
 ///        if (INSTANCE_ORIGINS != null) {
@@ -95,8 +98,8 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @StyleRes final int defStyle) {
         super(context, attrs, defStyle);
 
@@ -108,8 +111,8 @@ public class ReactiveTextView extends TextView implements INamed {
 
     @TargetApi(21)
     public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @AttrRes final int defStyleAttr,
             @StyleRes final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -118,6 +121,7 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     @NonNull
+    @nonnull
     public String getName() {
         return "ReactiveEditText" + getId();
     }
@@ -150,7 +154,7 @@ public class ReactiveTextView extends TextView implements INamed {
      * @param reactiveValue the new view model
      * @param fire          push the current value of the view model to the screen after this action completes on the UI thread
      */
-    public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
+    public void setReactiveValue(@NonNull @nonnull final ReactiveValue<String> reactiveValue, final boolean fire) {
         assertNotNull(origin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
@@ -168,6 +172,7 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     @NonNull
+    @nonnull
     public ReactiveValue<String> getReactiveValue() {
         return this.reactiveValue;
     }

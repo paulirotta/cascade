@@ -26,6 +26,8 @@ package com.futurice.cascade.i.active;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.util.nonnull;
+
 /**
  * This is a marker interface. If you return state information, the atomic inner state of your
  * implementation should implement this interface.
@@ -33,8 +35,10 @@ import android.support.annotation.NonNull;
 public interface IAltFutureState {
     /**
      * Get the exception which triggered this state change
+     *
      * @return
      */
     @NonNull
+    @nonnull
     public Exception getException();
 }

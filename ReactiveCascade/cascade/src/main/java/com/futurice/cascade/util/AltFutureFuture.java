@@ -66,7 +66,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      *
      * @param altFuture
      */
-    public AltFutureFuture(@NonNull final IAltFuture<IN, OUT> altFuture) {
+    public AltFutureFuture(@NonNull @nonnull final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
     }
 
@@ -86,7 +86,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     }
 
     @Override // Future
-    @NonNull
+    @NonNull @nonnull
     public OUT get() throws InterruptedException, ExecutionException {
         final OUT out;
 
@@ -110,10 +110,10 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     }
 
     @Override // Future
-    @NonNull
+    @NonNull @nonnull
     public OUT get(
             final long timeout,
-            @NonNull final TimeUnit unit)
+            @NonNull @nonnull final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();

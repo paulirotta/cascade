@@ -26,6 +26,7 @@ package com.futurice.cascade.i.reactive;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IGettable;
+import com.futurice.cascade.util.nonnull;
 
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.
@@ -42,13 +43,14 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * The value returned may change at any time. Therefore if you need to use it several times, keep
      * your algorithm internally consistent by keeping an unchanging copy in a local variable for the
      * duration of the function.
-     *
+     * <p>
      * Your function should also re-start either directly or indirectly the next time the value changes.
      *
      * @return
      */
     @Override // IGettable
     @NonNull
+    @nonnull
     T get();
 
     /**
@@ -58,6 +60,7 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      */
     @Override // Object
     @NonNull
+    @nonnull
     String toString();
 
     /**
@@ -66,13 +69,13 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * In the case of {@link com.futurice.cascade.reactive.ReactiveValue} which also implements
      * {@link com.futurice.cascade.i.reactive.IReactiveSource}, which will also trigger all
      * down-chain {@link com.futurice.cascade.i.reactive.IReactiveTarget}s to receive the update.
-     *
+     * <p>
      * Any associated chain will only fire if the value set is new, not a repeat of a previous value.
      *
      * @param value the new value asserted
      * @return <code>true</code> if this is a change from the previous value
      */
-    boolean set(@NonNull T value);
+    boolean set(@NonNull @nonnull T value);
 
     /**
      * Replace the current valueAR with an update, but only if the valueAR is the expected valueAR.
@@ -86,5 +89,5 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * @return true of the expected value was the current value and the change of state completed
      * successfully
      */
-    boolean compareAndSet(@NonNull T expected, @NonNull T update);
+    boolean compareAndSet(@NonNull @nonnull T expected, @NonNull @nonnull T update);
 }

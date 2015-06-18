@@ -26,15 +26,17 @@ package com.futurice.cascade.i.action;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.util.nonnull;
+
 import java.util.concurrent.Callable;
 
 /**
  * A lambda-friendly functional interface for continuation actions that receive no parameters
  * split return one result.
- *
  */
 public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
     @Override // Callable
     @NonNull
+    @nonnull
     OUT call() throws Exception;
 }

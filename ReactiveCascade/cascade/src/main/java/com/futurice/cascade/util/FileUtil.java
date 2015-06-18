@@ -53,34 +53,34 @@ public final class FileUtil {
     private final ImmutableValue<String> origin;
 
     public FileUtil(
-            @NonNull final Context context,
+            @NonNull @nonnull final Context context,
             @FileMode final int mode) {
         this.context = context;
         this.mode = mode;
         origin = originAsync();
     }
 
-    @NonNull
+    @NonNull @nonnull
     public <IN> IAltFuture<IN, IN> writeAsync(
-            @NonNull final String fileName,
-            @NonNull final byte[] bytes) {
+            @NonNull @nonnull final String fileName,
+            @NonNull @nonnull final byte[] bytes) {
         return FILE.then(() -> {
             write(fileName, bytes);
         });
     }
 
-    @NonNull
+    @NonNull @nonnull
     public IAltFuture<String, byte[]> writeAsync(
-            @NonNull final byte[] bytes) {
+            @NonNull @nonnull final byte[] bytes) {
         return FILE.map(fileName -> {
             write(fileName, bytes);
             return bytes;
         });
     }
 
-    @NonNull
+    @NonNull @nonnull
     public IAltFuture<byte[], byte[]> writeAsync(
-            @NonNull final String fileName) {
+            @NonNull @nonnull final String fileName) {
         return FILE.then(bytes -> {
             write(fileName, bytes);
         });
@@ -88,8 +88,8 @@ public final class FileUtil {
 
     @WorkerThread
     public void write(
-            @NonNull final String fileName,
-            @NonNull final byte[] bytes) {
+            @NonNull @nonnull final String fileName,
+            @NonNull @nonnull final byte[] bytes) {
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -114,21 +114,21 @@ public final class FileUtil {
         }
     }
 
-    @NonNull
+    @NonNull @nonnull
     public IAltFuture<String, byte[]> readAsync() {
         return FILE.map(this::read);
     }
 
-    @NonNull
-    public IAltFuture<?, byte[]> readAsync(@NonNull final String fileName) {
+    @NonNull @nonnull
+    public IAltFuture<?, byte[]> readAsync(@NonNull @nonnull final String fileName) {
         return FILE.then(() -> {
             return read(fileName);
         });
     }
 
-    @NonNull
+    @NonNull @nonnull
     @WorkerThread
-    public byte[] read(@NonNull final String fileName) {
+    public byte[] read(@NonNull @nonnull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -166,18 +166,18 @@ public final class FileUtil {
     }
 
     @WorkerThread
-    public boolean delete(@NonNull final String fileName) {
+    public boolean delete(@NonNull @nonnull final String fileName) {
         return context.deleteFile(fileName);
     }
 
-    @NonNull
-    public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
+    @NonNull @nonnull
+    public IAltFuture<?, Boolean> deleteAsync(@NonNull @nonnull final String fileName) {
         return FILE.then(() -> {
             return delete(fileName);
         });
     }
 
-    @NonNull
+    @NonNull @nonnull
     public IAltFuture<String, Boolean> deleteAsync() {
         return FILE.map(this::delete);
     }

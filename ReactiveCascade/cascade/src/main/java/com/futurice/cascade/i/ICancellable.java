@@ -26,6 +26,8 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
+import com.futurice.cascade.util.nonnull;
+
 /**
  * Stop an ongoing activity early if it has not already completed.
  * Long running tasks such as {@link com.futurice.cascade.i.active.IAltFuture} must
@@ -47,7 +49,7 @@ public interface ICancellable {
      * @param reason
      * @return
      */
-    boolean cancel(@NonNull String reason);
+    boolean cancel(@NonNull @nonnull String reason);
 
     /**
      * A plain text reason and an exception that originally caused the cancellation. This exception
@@ -58,7 +60,7 @@ public interface ICancellable {
      * @param e
      * @return
      */
-    boolean cancel(@NonNull String reason, @NonNull Exception e);
+    boolean cancel(@NonNull @nonnull String reason, @NonNull @nonnull Exception e);
 
     /**
      * Check if {@link #cancel(String)} or a similar occurrence such as a {@link java.lang.Exception}

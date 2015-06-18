@@ -40,6 +40,8 @@ import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.active.IAltFuture;
 import com.futurice.cascade.i.active.IAltFutureState;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -80,18 +82,20 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected final IThreadType threadType;
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this onFireAction completes
     @Nullable
+    @nullable
     private volatile IOnErrorAction onError;
     @Nullable
+    @nullable
     private volatile IAltFuture<?, IN> previousAltFuture = null;
 
-    public SettableAltFuture(@NonNull final IThreadType threadType) {
+    public SettableAltFuture(@NonNull @nonnull final IThreadType threadType) {
         this.threadType = threadType;
         this.origin = Async.originAsync();
     }
 
     public SettableAltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final OUT value)
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final OUT value)
             throws Exception {
         this(threadType);
 
@@ -105,7 +109,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @NonNull
-    private IAltFuture<IN, OUT> setOnError(@NonNull final IOnErrorAction action) {
+    @nonnull
+    private IAltFuture<IN, OUT> setOnError(@NonNull @nonnull final IOnErrorAction action) {
         assertNotForked();
         Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .onError() which you think is upchain but is actually concurrent?", this.onError == null);
 
@@ -116,7 +121,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(@NonNull final String reason) {
+    public boolean cancel(@NonNull @nonnull final String reason) {
         assertNotDone();
         if (stateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
             dd(this, origin, "Cancelled: reason=" + reason);
@@ -134,7 +139,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(@NonNull final String reason, @NonNull final Exception e) {
+    public boolean cancel(@NonNull @nonnull final String reason, @NonNull @nonnull final Exception e) {
         assertNotDone();
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
@@ -162,7 +167,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isCancelled(stateAR.get());
     }
 
-    protected final boolean isCancelled(@NonNull final Object objectThatMayBeAState) {
+    protected final boolean isCancelled(@NonNull @nonnull final Object objectThatMayBeAState) {
         return objectThatMayBeAState instanceof IAltFutureStateCancelled;
     }
 
@@ -171,7 +176,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isDone(stateAR.get());
     }
 
-    protected boolean isDone(@NonNull final Object state) {
+    protected boolean isDone(@NonNull @nonnull final Object state) {
         return state != ZEN && state != FORKED && !(state instanceof AltFutureStateSetButNotYetForked);
     }
 
@@ -182,7 +187,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isConsumed(stateAR.get());
     }
 
-    protected boolean isConsumed(@NonNull final Object state) {
+    protected boolean isConsumed(@NonNull @nonnull final Object state) {
         return state instanceof AltFutureStateError && ((AltFutureStateError) state).isConsumed();
     }
 
@@ -191,12 +196,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return isForked(stateAR.get());
     }
 
-    protected boolean isForked(@NonNull final Object state) {
+    protected boolean isForked(@NonNull @nonnull final Object state) {
         return state != ZEN && !(state instanceof AltFutureStateSetButNotYetForked);
     }
 
     @Override // IAltFuture
     @NonNull
+    @nonnull
     public IAltFuture<IN, OUT> fork() {
         final IAltFuture<?, IN> previousAltFuture = getPreviousAltFuture();
         final Object state;
@@ -229,7 +235,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull final IAltFuture<P, IN> altFuture) {
+    @nonnull
+    public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull final IAltFuture<P, IN> altFuture) {
         Async.assertTrue("previousAltFuture must be null", previousAltFuture == null);
         this.previousAltFuture = altFuture;
 
@@ -252,6 +259,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @Nullable
+    @nullable
     @SuppressWarnings("unchecked")
     public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture() {
         return (IAltFuture<UPCHAIN_IN, IN>) this.previousAltFuture;
@@ -263,6 +271,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
+    @nonnull
     @SuppressWarnings("unchecked")
     public OUT get() {
         final Object state = stateAR.get();
@@ -279,6 +288,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @Nullable
+    @nullable
     @SuppressWarnings("unchecked")
     public OUT safeGet() {
         final Object state = stateAR.get();
@@ -293,6 +303,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
+    @nonnull
     public final IThreadType getThreadType() {
         return this.threadType;
     }
@@ -313,6 +324,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         @NonNull
+        @nonnull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateSetButNotYetForked.class.getSimpleName());
@@ -326,7 +338,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public void set(@NonNull final OUT value) throws Exception {
+    public void set(@NonNull @nonnull final OUT value) throws Exception {
         if (stateAR.compareAndSet(ZEN, new AltFutureStateSetButNotYetForked(value))) {
             // Previous state was ZEN, so accept it but do not enter isDone() and complete .subscribe() onFireAction until after .fork() is called
             if (DEBUG) {
@@ -359,7 +371,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     @Override // IAltFuture
-    public void doThenOnCancelled(@NonNull final CancellationException cancellationException) throws Exception {
+    public void doThenOnCancelled(@NonNull @nonnull final CancellationException cancellationException) throws Exception {
         vv(this, origin, "Handling doThenOnCancelled " + origin + " for reason=" + cancellationException);
         this.stateAR.set(cancellationException);
         final IOnErrorAction oe = this.onError;
@@ -370,7 +382,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         cancelAllDownchainActions(cancellationException);
     }
 
-    private void cancelAllDownchainActions(@NonNull final CancellationException cancellationException) throws Exception {
+    private void cancelAllDownchainActions(@NonNull @nonnull final CancellationException cancellationException) throws Exception {
         forEachThen(altFuture -> {
             altFuture.doThenOnCancelled(cancellationException);
         });
@@ -382,7 +394,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @param action
      * @throws Exception
      */
-    private void forEachThen(@NonNull final IActionOne<IAltFuture<OUT, ?>> action) throws Exception {
+    private void forEachThen(@NonNull @nonnull final IActionOne<IAltFuture<OUT, ?>> action) throws Exception {
         final Iterator<IAltFuture<OUT, ?>> iterator = thenAltFutureList.iterator();
 
         while (iterator.hasNext()) {
@@ -392,7 +404,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doThenOnError(@NonNull final IAltFutureState state) throws Exception {
+    public void doThenOnError(@NonNull @nonnull final IAltFutureState state) throws Exception {
         vv(this, origin, "Handling doThenOnError(): " + state);
         this.stateAR.set(state);
         final IOnErrorAction oe = onError;
@@ -415,8 +427,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<OUT, OUT> onError(@NonNull final IOnErrorAction action) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<OUT, OUT> onError(@NonNull @nonnull final IOnErrorAction action) {
         setOnError(action);
 
         //NOTE: onError must return a new object toKey allow proper chaining of onError actions
@@ -437,7 +450,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     //----------------------------------- .then() actions ---------------------------------------------
     @NonNull
-    private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull final IAltFuture<OUT, N> altFuture) {
+    @nonnull
+    private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull @nonnull final IAltFuture<OUT, N> altFuture) {
         altFuture.setPreviousAltFuture(this);
         this.thenAltFutureList.add(altFuture);
         if (isDone()) {
@@ -490,9 +504,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     @SuppressWarnings("unchecked")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         assertNotDone();
 
         then(altFuture);
@@ -502,9 +517,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+            @NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
             dd(this, origin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
@@ -516,83 +532,93 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public IAltFuture<OUT, OUT> then(
-            @NonNull final IActionOne<OUT> action) {
+            @NonNull @nonnull final IActionOne<OUT> action) {
         return then(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public IAltFuture<OUT, OUT> then(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOne<OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOne<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+            @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<OUT, OUT> then(@NonNull final IAction<OUT> action) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IAction<OUT> action) {
         return then(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public IAltFuture<OUT, OUT> then(
-            @NonNull final IThreadType threadType,
-            @NonNull final IAction<OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IAction<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<List<IN>, List<OUT>> map(@NonNull final IActionOneR<IN, OUT> action) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
         return map(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<IN, OUT> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOneR<IN, OUT> action) {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     //TODO Mapping is single-threaded even for long lists or complex transforms
@@ -608,17 +634,19 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<List<IN>, List<IN>> filter(@NonNull final IActionOneR<IN, Boolean> action) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull final IActionOneR<IN, Boolean> action) {
         return filter(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<IN, Boolean> action) {
+            @NonNull @nonnull final IThreadType threadType,
+            @NonNull @nonnull final IActionOneR<IN, Boolean> action) {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     final List<IN> outputList = new ArrayList<>(listIN.size());
@@ -634,15 +662,17 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<OUT, OUT> set(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<OUT, OUT> set(@NonNull @nonnull final IReactiveTarget<OUT> reactiveTarget) {
         return then(reactiveTarget::fire);
     }
 
     @Override // IAltFuture
     @NonNull
-    @CheckResult(suggest="#fork()")
-    public IAltFuture<OUT, OUT> set(@NonNull final ImmutableValue<OUT> immutableValue) {
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    public IAltFuture<OUT, OUT> set(@NonNull @nonnull final ImmutableValue<OUT> immutableValue) {
         return then(immutableValue::set);
     }
 
@@ -674,6 +704,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     protected static final IAltFutureState ZEN = new IAltFutureState() {
         @NonNull
+        @nonnull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state ZEN");
@@ -687,6 +718,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     protected static final IAltFutureState FORKED = new IAltFutureState() {
         @NonNull
+        @nonnull
         @Override
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state FORKED");
@@ -710,7 +742,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected static final class AltFutureStateCancelled implements IAltFutureStateCancelled {
         final String reason;
 
-        AltFutureStateCancelled(@NonNull String reason) {
+        AltFutureStateCancelled(@NonNull @nonnull String reason) {
             if (DEBUG && reason.length() == 0) {
                 throwIllegalArgumentException(this, "You must specify the cancellation reason toKey keep debugging sane");
             }
@@ -720,12 +752,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         @Override // IAltFutureStateCancelled
         @NonNull
+        @nonnull
         public Exception getException() {
             throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateCancelled.class.getSimpleName());
         }
 
         @Override // Object
         @NonNull
+        @nonnull
         public String toString() {
             return "CANCELLED: reason=" + reason;
         }
@@ -740,7 +774,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         final Exception e;
         private volatile boolean consumed = false; // Set true toKey indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
 
-        AltFutureStateError(@NonNull String reason, @NonNull Exception e) {
+        AltFutureStateError(@NonNull @nonnull String reason, @NonNull @nonnull Exception e) {
             this.reason = reason;
             this.e = e;
             ee(this, "Moving toKey StateError:\n" + this.reason, e);
@@ -760,12 +794,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         @Override // IAltFutureStateCancelled
         @NonNull
+        @nonnull
         public Exception getException() {
             return e;
         }
 
         @Override // Object
         @NonNull
+        @nonnull
         public String toString() {
             return "ERROR: reason=" + reason + " error=" + e + " consumed=" + consumed;
         }

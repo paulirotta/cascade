@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.active.IAltFuture;
 import com.futurice.cascade.util.AltFutureFuture;
+import com.futurice.cascade.util.nonnull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +35,7 @@ public class TestUtil {
      * @throws Exception
      */
     public <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
@@ -53,7 +54,7 @@ public class TestUtil {
      * @throws Exception
      */
     public <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
+            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         SHOW_ERROR_STACK_TRACES = false;

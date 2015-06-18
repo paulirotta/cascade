@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import static com.futurice.cascade.Async.*;
 
@@ -21,29 +23,31 @@ import static com.futurice.cascade.Async.*;
 public class ReactiveLong extends ReactiveValue<Long> {
     /**
      * Create a new atomic long
-     *  @param name
+     *
+     * @param name
      * @param initialValue
      */
     public ReactiveLong(
-            @NonNull final String name,
+            @NonNull @nonnull final String name,
             final long initialValue) {
         super(name, initialValue);
     }
 
     /**
      * Create a new atomic long
-     *  @param name
+     *
+     * @param name
      * @param initialValue
      * @param threadType
-     * @param inputMapping a mapping for incoming values, for example <code>l -> Math.max(0, l)</code>
+     * @param inputMapping  a mapping for incoming values, for example <code>l -> Math.max(0, l)</code>
      * @param onErrorAction
      */
     public ReactiveLong(
-            @NonNull final String name,
+            @NonNull @nonnull final String name,
             final long initialValue,
-            @NonNull final IThreadType threadType,
-            @Nullable final IActionOneR<Long, Long> inputMapping,
-            @NonNull final IOnErrorAction onErrorAction) {
+            @NonNull @nonnull final IThreadType threadType,
+            @Nullable @nullable final IActionOneR<Long, Long> inputMapping,
+            @NonNull @nonnull final IOnErrorAction onErrorAction) {
         super(name, initialValue, threadType, inputMapping, onErrorAction);
     }
 
@@ -57,7 +61,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
     public long addAndGet(final long l) {
         long currentValue;
 
-        for (;;) {
+        for (; ; ) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
@@ -76,7 +80,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
     public long multiplyAndGet(final long l) {
         long currentValue;
 
-        for (;;) {
+        for (; ; ) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue * l)) {
                 return currentValue;

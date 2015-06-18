@@ -37,6 +37,8 @@ import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IActionR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveTarget;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -97,6 +99,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
+    @nonnull
     OUT get();
 
     /**
@@ -107,6 +110,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * not yet determined.
      */
     @Nullable
+    @nullable
     OUT safeGet();
 
     /**
@@ -115,6 +119,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
+    @nonnull
     IThreadType getThreadType();
 
     /**
@@ -149,6 +154,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
+    @nonnull
     IAltFuture<IN, OUT> fork();
 
     /**
@@ -162,7 +168,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<UPCHAIN_OUT, IN> altFuture);
+    @nonnull
+    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull IAltFuture<UPCHAIN_OUT, IN> altFuture);
 
     /**
      * Find the previous step in the chain.
@@ -175,6 +182,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @Nullable
+    @nullable
     <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture();
 
     /**
@@ -189,7 +197,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param state
      * @throws Exception
      */
-    void doThenOnError(@NonNull IAltFutureState state) throws Exception;
+    void doThenOnError(@NonNull @nonnull IAltFutureState state) throws Exception;
 
     /**
      * Notification indicates an up-chain {@link IAltFuture} has been cancelled.
@@ -199,7 +207,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param cancellationException
      * @throws Exception
      */
-    void doThenOnCancelled(@NonNull CancellationException cancellationException) throws Exception;
+    void doThenOnCancelled(@NonNull @nonnull CancellationException cancellationException) throws Exception;
 
     /**
      * Complete an onFireAction after this <code>AltFuture</code>
@@ -225,8 +233,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return the alt future which was passed in
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -235,8 +244,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<OUT, OUT> then(@NonNull IAction<OUT> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<OUT, OUT> then(@NonNull @nonnull IAction<OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -246,10 +256,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     IAltFuture<OUT, OUT> then(
-            @NonNull IThreadType threadType,
-            @NonNull IAction<OUT> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IAction<OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -259,10 +270,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     IAltFuture<OUT, OUT> then(
-            @NonNull IThreadType threadType,
-            @NonNull IActionOne<OUT> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IActionOne<OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -271,8 +283,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<OUT, OUT> then(@NonNull IActionOne<OUT> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<OUT, OUT> then(@NonNull @nonnull IActionOne<OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -281,8 +294,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -292,10 +306,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull IThreadType threadType,
-            @NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -305,8 +320,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -317,10 +333,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull IThreadType threadType,
-            @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Complete an onFireAction after this <code>AltFuture</code>
@@ -330,8 +347,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
      * A list of values is transformed using the mapping function provided
@@ -340,8 +358,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<List<IN>, List<OUT>> map(@NonNull IActionOneR<IN, OUT> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT> action);
 
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
@@ -353,10 +372,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     IAltFuture<List<IN>, List<OUT>> map(
-            @NonNull IThreadType threadType,
-            @NonNull IActionOneR<IN, OUT> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IActionOneR<IN, OUT> action);
 
     /**
      * Pass through to the next function only elements of the list which meet a logic test
@@ -365,8 +385,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<List<IN>, List<IN>> filter(@NonNull IActionOneR<IN, Boolean> action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull IActionOneR<IN, Boolean> action);
 
     /**
      * Pass through to the next function only elements of the list which meet a logic test
@@ -376,10 +397,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
+    @nonnull
+    @CheckResult(suggest = "#fork()")
     IAltFuture<List<IN>, List<IN>> filter(
-            @NonNull IThreadType threadType,
-            @NonNull IActionOneR<IN, Boolean> action);
+            @NonNull @nonnull IThreadType threadType,
+            @NonNull @nonnull IActionOneR<IN, Boolean> action);
 
     /**
      * Set the return value. This may only be done one time, for example in a {@link com.futurice.cascade.active.SettableAltFuture}
@@ -392,7 +414,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @throws Exception if the current state does not permit the change or if downstream error and cancellation
      *                   as part of this set triggers a synchronous onError() method which throws an exception based on this value.
      */
-    void set(@NonNull OUT value) throws Exception;
+    void set(@NonNull @nonnull OUT value) throws Exception;
 
     /**
      * Set an atomic value with the output value of this {@link com.futurice.cascade.active.AltFuture}.
@@ -406,8 +428,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<OUT, OUT> set(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
 
     /**
      * An {@link com.futurice.cascade.active.ImmutableValue} is a simpler structure than {@link com.futurice.cascade.active.SettableAltFuture}.
@@ -418,8 +441,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<OUT, OUT> set(@NonNull ImmutableValue<OUT> immutableValue);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<OUT, OUT> set(@NonNull @nonnull ImmutableValue<OUT> immutableValue);
 
     /**
      * Add an onFireAction which will be performed if this AltFuture or any AltFuture up-chain either has
@@ -432,6 +456,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @CheckResult(suggest="#fork()")
-    IAltFuture<OUT, OUT> onError(@NonNull IOnErrorAction action);
+    @nonnull
+    @CheckResult(suggest = "#fork()")
+    IAltFuture<OUT, OUT> onError(@NonNull @nonnull IOnErrorAction action);
 }

@@ -36,7 +36,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         public int fileOpens = 0;
 
         @Override // Context
-        public FileOutputStream openFileOutput(@NonNull String name, int mode) throws FileNotFoundException {
+        public FileOutputStream openFileOutput(@NonNull @nonnull String name, int mode) throws FileNotFoundException {
             if (!name.equals("someFile")) {
                 throw new FileNotFoundException("No such file");
             }
@@ -46,7 +46,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         }
 
         @Override // Context
-        public FileInputStream openFileInput(@NonNull String name) throws FileNotFoundException {
+        public FileInputStream openFileInput(@NonNull @nonnull String name) throws FileNotFoundException {
             if (!name.equals("someFile")) {
                 throw new FileNotFoundException("No such file");
             }
@@ -56,7 +56,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         }
 
         @Override // Context
-        public boolean deleteFile(@NonNull String name) {
+        public boolean deleteFile(@NonNull @nonnull String name) {
             if (!name.equals("someFile")) {
                 return false;
             }
@@ -72,7 +72,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
 
             // count number of calls, don't bother to really write something
             @Override // OutputStream
-            public void write(@NonNull byte[] buffer) throws IOException {
+            public void write(@NonNull @nonnull byte[] buffer) throws IOException {
                 fileWrites++;
             }
         }
@@ -95,7 +95,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
 
             // count number of calls, don't bother to really write something
             @Override // InputStream
-            public int read(@NonNull byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
+            public int read(@NonNull @nonnull byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
                 fileReads++;
                 int bytesRead = -1;
 
@@ -108,7 +108,9 @@ public class FileUtilTest extends AsyncAndroidTestCase {
                 return bytesRead;
             }
         }
-    };
+    }
+
+    ;
 
     private FileUtil mockFileUtil;
 

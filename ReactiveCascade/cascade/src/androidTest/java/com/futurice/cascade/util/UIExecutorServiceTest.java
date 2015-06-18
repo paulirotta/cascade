@@ -67,7 +67,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
             protected void onLooperPrepared() {
                 uiExecutorService = new UIExecutorService(new Handler() {
-                    public void handleMessage(@NonNull Message msg) {
+                    public void handleMessage(@NonNull @nonnull Message msg) {
                         super.handleMessage(msg);
                         handleMessageCount++;
                     }
@@ -75,12 +75,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
                     /**
                      * Handle system messages here.
                      */
-                    public void dispatchMessage(@NonNull Message msg) {
+                    public void dispatchMessage(@NonNull @nonnull Message msg) {
                         super.dispatchMessage(msg);
                         dispatchMessageCount++;
                     }
 
-                    public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
+                    public boolean sendMessageAtTime(@NonNull @nonnull Message msg, long uptimeMillis) {
                         sendCount++;
                         return super.sendMessageAtTime(msg, uptimeMillis);
                     }

@@ -33,6 +33,8 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.action.IActionOneR;
 import com.futurice.cascade.i.action.IOnErrorAction;
 import com.futurice.cascade.i.reactive.IReactiveValue;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -70,25 +72,26 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param initialValue
      */
     public ReactiveValue(
-            @NonNull final String name,
-            @NonNull final T initialValue) {
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final T initialValue) {
         this(name, initialValue, null, null, null);
     }
 
     /**
      * Create a new AtomicValue
-     *  @param name
+     *
+     * @param name
      * @param initialValue
      * @param threadType
      * @param inputMapping
      * @param onError
      */
     public ReactiveValue(
-            @NonNull final String name,
-            @NonNull final T initialValue,
-            @Nullable final IThreadType threadType,
-            @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable final IOnErrorAction onError) {
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final T initialValue,
+            @Nullable @nullable final IThreadType threadType,
+            @Nullable @nullable final IActionOneR<T, T> inputMapping,
+            @Nullable @nullable final IOnErrorAction onError) {
         super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
         set(initialValue);
@@ -129,6 +132,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @NonNull
+    @nonnull
     @Override // IAtomicValue, IGettable
     public T get() {
         return valueAR.get();
@@ -136,7 +140,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean set(@NonNull final T value) {
+    public boolean set(@NonNull @nonnull final T value) {
         final T previousValue = valueAR.getAndSet(value);
         final boolean valueChanged = !(value == previousValue || value.equals(previousValue) || (previousValue != null && previousValue.equals(value)));
 
@@ -152,7 +156,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean compareAndSet(@NonNull final T expected, @NonNull final T update) {
+    public boolean compareAndSet(@NonNull @nonnull final T expected, @NonNull @nonnull final T update) {
         final boolean success = this.valueAR.compareAndSet(expected, update);
 
         if (success) {
@@ -166,6 +170,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     }
 
     @NonNull
+    @nonnull
     @Override // Object
     public String toString() {
         return get().toString();

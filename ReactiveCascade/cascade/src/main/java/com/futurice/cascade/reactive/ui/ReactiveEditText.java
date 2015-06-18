@@ -16,6 +16,8 @@ import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
+import com.futurice.cascade.util.nonnull;
+import com.futurice.cascade.util.nullable;
 
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.assertNotNull;
@@ -25,54 +27,55 @@ import static com.futurice.cascade.Async.vv;
 /**
  * An {@link EditText} which can be manipulated and which in turn manipulates a supporting
  * {@link ReactiveValue<String>} which reflects the current on-screen value
- *
+ * <p>
  * FIXME The cursor position on screen is not maintained nicely when values update
- *
+ * <p>
  * Created by Paul Houghton on 12-03-2015.
  */
 @NotCallOrigin
 public class ReactiveEditText extends EditText implements INamed {
     @Nullable
+    @nullable
     private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
     public volatile ReactiveValue<String> reactiveValue;
     private TextWatcher textWatcher;
 
 //TODO Constructors which support a string validator (example: trim whitespace or fix capitalization as you type)
 
-    public ReactiveEditText(@NonNull final Context context) {
+    public ReactiveEditText(@NonNull @nonnull final Context context) {
         super(context);
 
         reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
-            @NonNull final Context context,
-            @NonNull final ReactiveValue<String> reactiveValue) {
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context);
 
         this.reactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs) {
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs) {
         super(context, attrs);
 
         reactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
-            @NonNull final ReactiveValue<String> reactiveValue) {
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
+            @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs);
 
         this.reactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -81,11 +84,11 @@ public class ReactiveEditText extends EditText implements INamed {
     }
 
     public ReactiveEditText(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
-            @NonNull final ReactiveValue<String> reactiveValue) {
+            @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
 
         this.reactiveValue = reactiveValue;
@@ -93,9 +96,9 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @TargetApi(21)
     public ReactiveEditText(
-            @NonNull final String name,
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
             @StyleRes
@@ -107,14 +110,14 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @TargetApi(21)
     public ReactiveEditText(
-            @NonNull final String name,
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
             @StyleRes
             final int defStyleRes,
-            @NonNull final ReactiveValue<String> reactiveValue) {
+            @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         this.reactiveValue = reactiveValue;
@@ -128,8 +131,9 @@ public class ReactiveEditText extends EditText implements INamed {
      * @return
      */
     @NonNull
+    @nonnull
     public ReactiveValue<String> setReactiveValue(
-            @NonNull final ReactiveValue<String> reactiveValue,
+            @NonNull @nonnull final ReactiveValue<String> reactiveValue,
             final boolean fire) {
         UI.run(() -> {
             this.reactiveValue = reactiveValue;
@@ -143,6 +147,7 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @Override // INamed
     @NonNull
+    @nonnull
     public String getName() {
         return "ReactiveEditText" + getId();
     }
