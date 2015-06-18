@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -663,6 +664,7 @@ public final class Async {
      * @return a string holder that will be populated in the background on a WORKER thread (only in {@link #DEBUG} builds)
      */
     @NonNull
+    @CheckResult(suggest="<local variable> origin =")
     public static ImmutableValue<String> originAsync() {
         if (!TRACE_ASYNC_ORIGIN) {
             return DEFAULT_ORIGIN;

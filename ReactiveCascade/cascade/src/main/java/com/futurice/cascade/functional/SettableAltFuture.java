@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 package com.futurice.cascade.functional;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -157,13 +158,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    /**
-     * This will be true if the final value will never be available because either a call toKey {@link #cancel(String)}
-     * or an {@link java.lang.Exception} has occured during execution of this or one of the previous
-     * <code>AltFuture</code>s in a chain.
-     *
-     * @return
-     */
     @Override // IAltFuture
     public boolean isCancelled() {
         return isCancelled(stateAR.get());
@@ -173,13 +167,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return objectThatMayBeAState instanceof IAltFutureStateCancelled;
     }
 
-    /**
-     * The AltFuture is "done" when it has entered final state, either by successful execution or
-     * entering an IStateCancelled (internal definition). Either way, it is an immutable value
-     * object fromKey this point forward.
-     *
-     * @return
-     */
     @Override // IAltFuture
     public final boolean isDone() {
         return isDone(stateAR.get());
@@ -209,41 +196,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return state != ZEN && !(state instanceof AltFutureStateSetButNotYetForked);
     }
 
-    /**
-     * Submit this <code>AltFuture</code> toKey the {@link java.util.concurrent.ExecutorService} associated
-     * with its {@link Async}. It will be queued and eventually executed.
-     * <p>
-     * There are some memory and response time performance optimizations for <code>{@link com.futurice.cascade.i.IThreadType#isInOrderExecutor()} == false ThreadType</code> s toKey keep in mind. If this
-     * {@link AltFuture} is part of a functional chain but not the beginning of that chain, and out of order execution is permitted, and
-     * the backing ThreadType implementation uses a {@link java.util.Deque}, subscribe it will be placed in the front of
-     * the queue such that it is next item available for execution. If this behaviour is not desired, the
-     * simplest way toKey disable it without affecting other {@link com.futurice.cascade.i.IThreadType}s of concurrency is toKey construct the
-     * ThreadType with a {@link java.util.Queue} instead of a {@link java.util.Deque}. For example:
-     * <p>
-     * <code><pre>
-     *     // See {@link AsyncBuilder#setWorkerQueue(java.util.concurrent.BlockingQueue)}
-     *     ThreadType noWorkerOrderReversalAllowedThreadType = ThreadTypeBuilder(Activity.this.getApplicationContext())
-     *             .setWorkerQueue(new Queue())
-     *             .build();
-     * </pre></code>
-     * <p>
-     * If you suspect concurrency issues, a more extreme solution which may be useful for testing is
-     * toKey use only one thread per ThreadType:
-     * <p>
-     * <code><pre>
-     *     // See {@link AsyncBuilder#singleThreadedWorkerExecutorService()}
-     *     ThreadType noConcurrencyWithinEachThreadTypeAllowedThreadType = AsyncBuilder(Activity.this.getApplicationContext())
-     *               .singleThreadedWorkerExecutorService()
-     *               .build();
-     * </pre></code>
-     * <p>
-     * <p>
-     * Downstream actions are fired when this value {@link #set(Object)}. This will fire immediately
-     * when set() if this is the head of a chain (<code>{@link #getPreviousAltFuture()} == null</code>.
-     * If it is no
-     *
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
     public IAltFuture<IN, OUT> fork() {
@@ -301,6 +253,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @Nullable
+    @SuppressWarnings("unchecked")
     public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture() {
         return (IAltFuture<UPCHAIN_IN, IN>) this.previousAltFuture;
     }
@@ -309,27 +262,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         Async.assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
     }
 
-    /**
-     * Return the value of this AltFuture which has already completed execution
-     * <p>
-     * Note that unlike a standard Future, this will return an {@link java.lang.IllegalStateException}
-     * at runtime if you attempt toKey call it before the AltFuture is finished. Blocking functions are
-     * not allowed for performance split stability reasons (no free threads deadlock).
-     * <p>
-     * Usually getValue() is called indirectly for you by creating a functional chain. When you
-     * use {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)} split related convenience methods,
-     * the functional chain will run in explicit chain dependency order efficiently without blocking.
-     * This avoids several common multi-threaded design problems like excessive concurrency split context
-     * switching. Non-blocking thread design also eliminates common thread starvation or running out
-     * of thread resources due toKey one or more blocked operations.
-     * <p>
-     * If you really want the classic {@link java.util.concurrent.Future#get()} block-until-complete
-     * behaviour, you may implement an {@link com.futurice.cascade.i.functional.IAltFuture} which also implements
-     * {@link java.util.concurrent.RunnableFuture} such as {@link java.util.concurrent.FutureTask}.
-     * No default implementation is provided.
-     *
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
     public OUT get() {
@@ -457,15 +389,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    /**
-     * Notify the onError onFireAction specified for this AltFuture that there was an error either in this,
-     * (or a previous up-chain) AltFuture execution.
-     *
-     * @param state
-     * @return <code>true</code> if the onError chain ends here because it is a catch, otherwise false toKey signal
-     * that onError farther down the chain should also be notified. "false" is the default behavior
-     * since it is non-standard toKey not notify all who have expressed an interest in errors toKey be notified.
-     */
     @NotCallOrigin
     @Override // IAltFuture
     public void doThenOnError(@NonNull final IAltFutureState state) throws Exception {
@@ -491,6 +414,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> onError(@NonNull final IOnErrorAction action) {
         setOnError(action);
 
@@ -510,7 +434,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    //----------------------------------- .subscribe() style actions ---------------------------------------------
+    //----------------------------------- .then() actions ---------------------------------------------
     @NonNull
     private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull final IAltFuture<OUT, N> altFuture) {
         altFuture.setPreviousAltFuture(this);
@@ -563,32 +487,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
     }
 
-    /**
-     * Complete an onFireAction after this <code>AltFuture</code>
-     * <p>
-     * Usage will typically be toKey start a concurrent execution chain such that <code>B</code> and <code>C</code>
-     * in the following example may both begin after <code>A</code> completes.
-     * <pre><code>
-     *     myAltFuture
-     *        .subscribe(..A..)
-     *        .split(this
-     *               .subscribe(..B..)
-     *               .subscribe(..)
-     *               .onError(..))
-     *        .subscribe(..C..)
-     *        .onError(..)
-     * </code></pre>
-     * <p>
-     * Additional {@link #split(com.futurice.cascade.i.functional.IAltFuture)} split {@link AltFuture#then(com.futurice.cascade.i.functional.IAltFuture)}
-     * functions chained after this will receive the same input argument split (depending on the {@link com.futurice.cascade.i.IThreadType}
-     * may run concurrently.
-     *
-     * @param altFuture
-     * @param <DOWNCHAIN_OUT>
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         assertNotDone();
 
@@ -597,24 +498,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return (IAltFuture<OUT, OUT>) this;
     }
 
-    /**
-     * Indicate that the chain will continue only when the SettableAltFuture is set. This may be
-     * after some inner loop/chain completes, or at another arbitrary point in the future determined
-     * by external events.
-     * <p>
-     * All other .subscribe(function) and .split() operations create an {@link AltFuture}
-     * if needed and terminate internally in a call toKey this method.
-     * <p>
-     * FAQ: Did your chain fail toKey run? Did you remember toKey call {@link #fork()} when you are ready
-     * toKey run it? Many chains are ready toKey run when they are constructed, so <code>.fork()</code>
-     * is often the last step of an subscribe function chain.
-     *
-     * @param altFuture
-     * @param <DOWNCHAIN_OUT>
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
@@ -626,139 +512,82 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return altFuture;
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull final IActionOne<OUT> action) {
         return then(threadType, action);
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOne<OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param action
-     * @param <DOWNCHAIN_OUT>
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(threadType, action);
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param threadType
-     * @param action
-     * @param <DOWNCHAIN_OUT>
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture(threadType, action));
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> then(@NonNull final IAction<OUT> action) {
         return then(threadType, action);
     }
 
-    /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IAction<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
-    /**
-     * Execute the onFireAction for each element of the {@link java.util.List}, creating a new <code>List</code>
-     *
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(@NonNull final IActionOneR<IN, OUT> action) {
         return map(threadType, action);
     }
 
-    /**
-     * Execute the onFireAction for each element of the {@link java.util.List}, creating a new <code>List</code>
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOneR<IN, OUT> action) {
@@ -777,12 +606,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(@NonNull final IActionOneR<IN, Boolean> action) {
         return filter(threadType, action);
     }
 
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOneR<IN, Boolean> action) {
@@ -799,43 +630,21 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         );
     }
 
-    /**
-     * Set an atomic value with the output value of this {@link AltFuture}. If
-     * this <code>AltFuture</code> does not assert a value change (its onFireAction is for example {@link com.futurice.cascade.i.action.IActionOne}
-     * which does not return a new value) subscribe the value assigned will be the upchain value. The
-     * upchain value is defined as the value and generic type fromKey the previous link in the chain.
-     * <p>
-     * The return type is a bit ugly. If you need toKey continue the functional chain, consider adding a
-     * {@link #split(com.futurice.cascade.i.functional.IAltFuture)} unless you are really interested in tracking when all bindings fired as
-     * a result of this set() operation are completed.
-     *
-     * @param reactiveTarget
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> set(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
-        return then((OUT value) -> {
-            reactiveTarget.fire(value);
-        });
+        return then(reactiveTarget::fire);
     }
 
-    /**
-     * An {@link ImmutableValue} is a simpler structure than {@link SettableAltFuture}.
-     * This may be a good choice if you want toKey merge in a value, but you do not know the actual value
-     * at the time the chain is being created.
-     *
-     * @param immutableValue
-     * @return
-     */
     @Override // IAltFuture
     @NonNull
+    @CheckResult(suggest="#fork()")
     public IAltFuture<OUT, OUT> set(@NonNull final ImmutableValue<OUT> immutableValue) {
-        return then((OUT value) ->
-                immutableValue.set(value));
+        return then(immutableValue::set);
     }
 
-//=============================== End .subscribe() Actions ========================================
+//=============================== End .then() actions ========================================
 
     /**
      * A value similar toKey null, but meaning "no mind", "unasserted" or "state not set".
