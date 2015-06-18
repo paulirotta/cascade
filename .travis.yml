@@ -41,6 +41,7 @@ android:
     - add-on
 
 before_script:
+    - android update sdk -u -a
     - echo no | android create avd -n test -t android-$ANDROID_API_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
     - android-wait-for-emulator
