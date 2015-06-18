@@ -264,6 +264,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @NonNull
+    @SuppressWarnings("unchecked")
     public OUT get() {
         final Object state = stateAR.get();
 
@@ -279,6 +280,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @Nullable
+    @SuppressWarnings("unchecked")
     public OUT safeGet() {
         final Object state = stateAR.get();
 
@@ -490,6 +492,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest="#fork()")
+    @SuppressWarnings("unchecked")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         assertNotDone();
 
@@ -526,7 +529,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public IAltFuture<OUT, OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOne<OUT> action) {
-        return then(new AltFuture(threadType, action));
+        return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
@@ -543,7 +546,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
-        return then(new AltFuture(threadType, action));
+        return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
@@ -559,7 +562,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull final IThreadType threadType,
             @NonNull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        return then(new AltFuture(threadType, action));
+        return then(new AltFuture<>(threadType, action));
     }
 
     @Override // IAltFuture
