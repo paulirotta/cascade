@@ -71,9 +71,7 @@ public class AsyncBuilder {
     public boolean failFast = debug;
     public boolean showErrorStackTraces = debug;
     //TODO Periodically check if recent Android updates have fixed this gradle bug, https://code.google.com/p/android/issues/detail?id=52962
-    //TODO Manual gradle work-around, https://gist.github.com/almozavr/d59e770d2a6386061fcb
-    //TODO Add a flag for independently enabling or disable runtime assertions and tests at Gradle level. Currently many optimistic assumptions that can make the error show up only later are made when DEBUG==false, but this aggressive optimization might need to be switched off independently to verify if the code path difference is the problem or help when the problem is speed sensitive
-    public boolean strictMode = false; //TODO turn back on with "debug" to test this
+    public boolean strictMode = debug; //TODO turn back on with "debug" to test this
 
     private IThreadType workerThreadType;
     private IThreadType serialWorkerThreadType;
@@ -648,7 +646,6 @@ public class AsyncBuilder {
         Log.v(TAG, "AsyncBuilder complete");
 
         asyncBuilder = this;
-//        return new Async();
-        return null;
+        return new Async(); //TODO Pass the builder as an argument to the constructor
     }
 }
