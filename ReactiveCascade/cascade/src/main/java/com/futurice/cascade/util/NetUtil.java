@@ -83,6 +83,13 @@ public final class NetUtil {
 
     @NonNull
     @nonnull
+    @WorkerThread
+    public Response get(@NonNull @nonnull final String url) throws IOException {
+        return get(url, null);
+    }
+
+    @NonNull
+    @nonnull
     public IAltFuture<?, Response> getAsync(@NonNull @nonnull final String url) {
         return netReadThreadType.then(() -> get(url, null));
     }
@@ -91,13 +98,6 @@ public final class NetUtil {
     @nonnull
     public <T extends Object> IAltFuture<T, Response> getAsync() {
         return netReadThreadType.map(url -> get(url.toString(), null));
-    }
-
-    @NonNull
-    @nonnull
-    @WorkerThread
-    public Response get(@NonNull @nonnull final String url) throws IOException {
-        return get(url, null);
     }
 
     @NonNull
@@ -138,7 +138,31 @@ public final class NetUtil {
     @NonNull
     @nonnull
     public IAltFuture<String, Response> getAsync(
-            @Nullable @nullable final IGettable<Collection<Header>> headersGettable) {
+            @NonNull @nonnull final String url,
+            final IGettable<Collection<Header>> headersGettable) {
+        return netReadThreadType.then(() -> get(url, headersGettable.get()));
+    }
+
+    @NonNull
+    @nonnull
+    public IAltFuture<String, Response> getAsync(
+            @NonNull @nonnull final String url,
+            @Nullable @nullable final Collection<Header> headers) {
+        return netReadThreadType.then(() -> get(url, headers));
+    }
+
+    @NonNull
+    @nonnull
+    public IAltFuture<String, Response> getAsync(
+            @NonNull @nonnull final IGettable<String> urlGettable,
+            final IGettable<Collection<Header>> headersGettable) {
+        return netReadThreadType.then(() -> get(urlGettable.get(), headersGettable.get()));
+    }
+
+    @NonNull
+    @nonnull
+    public IAltFuture<String, Response> getAsync(
+            final IGettable<Collection<Header>> headersGettable) {
         return netReadThreadType.map(url -> get(url, headersGettable.get()));
     }
 

@@ -140,7 +140,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
 
-            assertNotNull(paf);
+//            assertNotNull(paf);
             assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
 
             final IN in = paf.get();

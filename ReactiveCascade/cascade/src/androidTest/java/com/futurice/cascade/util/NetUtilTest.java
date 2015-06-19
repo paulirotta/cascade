@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for the NetUtil class
- *
+ * <p>
  * Created by phou on 6/2/2015.
  */
 @LargeTest
@@ -85,7 +85,9 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
-        assertThat(getNetUtil().get("http://httpbin.org/headers", headers).body().string()).contains("ValueZ");
+        assertThat(awaitDone(
+                        getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string()
+        ).contains("ValueZ");
     }
 
     @Test
