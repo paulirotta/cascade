@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
  *
  * @param <IN>
  * @param <OUT>
+ * @throws Exception
  */
 public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
     @NonNull @nonnull

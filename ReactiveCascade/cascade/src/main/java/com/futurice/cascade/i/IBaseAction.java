@@ -30,5 +30,5 @@ package com.futurice.cascade.i;
  * Implementing this interface indicates a primary onFireAction, usually one executed asynchronously on
  * an {@link com.futurice.cascade.i.IThreadType}
  */
-public interface IBaseAction<IN> {
+public interface IBaseAction<PHANTOM_IN> {
 }

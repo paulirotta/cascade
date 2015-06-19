@@ -20,13 +20,8 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  * <p>
  * When decorating a method, this denotes the method might legitimately return
  * null.
- * <p>
- * This is strictly to add a notation to JavaDoc and should thus only be used in conjunction with the standard
- * Android annotation <em><code>@Nullable @nullable</code></em>. See <link http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#annotations>
- *
- * Created by phou on 6/18/2015.
  */
-@Documented
+@Documented // Nullable http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html#annotations
 @Retention(CLASS)
 @Target({METHOD, PARAMETER, FIELD})
 public @interface nullable {

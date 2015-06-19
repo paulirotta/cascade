@@ -29,16 +29,14 @@ import android.support.annotation.NonNull;
 /**
  * A function to run in the event of an {@link java.lang.Exception} or similar irregular termination
  * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
+ *
+ * Perform some cleanup or notification onFireAction to bring this object into a rest state after
+ * irregular termination.
+ *
+ * @return <code>true</code> if the error is consumed and should not propagate further down-chain.
+ * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
+ * @throws Exception
  */
 public interface IOnErrorAction extends IBaseAction<Exception> {
-    /**
-     * Perform some cleanup or notification onFireAction to bring this object into a rest state after
-     * irregular termination.
-     *
-     * @param e
-     * @return <code>true</code> if the error is consumed and should not propagate further down-chain.
-     * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
-     * @throws Exception
-     */
     boolean call(@NonNull @nonnull Exception e) throws Exception;
 }

@@ -39,6 +39,8 @@ import android.support.annotation.NonNull;
  * involve a second thread if needed, however note that with idiomatic usage <code>RunnableResult</code>
  * is a tail function. The first thread is free at this point split the result can call synchronously on
  * the current thread.
+ *
+ * @throws Exception
  */
 public interface IActionOne<IN> extends IBaseAction<IN> {
     void call(@NonNull @nonnull IN value) throws Exception;
