@@ -44,8 +44,7 @@ android:
   licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
-    - 'android-googletv-license-.+'
-    - 'android-googletv-license-99eda7fb'
+    - '*'
 
 before_script:
     - android update sdk -u -a
