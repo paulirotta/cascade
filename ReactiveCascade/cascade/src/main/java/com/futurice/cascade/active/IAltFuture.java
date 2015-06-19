@@ -233,7 +233,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
@@ -244,7 +244,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> then(@NonNull @nonnull IAction<OUT> action);
 
     /**
@@ -256,7 +256,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> then(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IAction<OUT> action);
@@ -270,7 +270,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> then(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IActionOne<OUT> action);
@@ -283,7 +283,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> then(@NonNull @nonnull IActionOne<OUT> action);
 
     /**
@@ -294,7 +294,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
@@ -306,7 +306,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
@@ -320,7 +320,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
@@ -333,7 +333,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
@@ -347,7 +347,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
@@ -358,7 +358,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT> action);
 
     /**
@@ -372,7 +372,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<List<IN>, List<OUT>> map(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IActionOneR<IN, OUT> action);
@@ -385,7 +385,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull IActionOneR<IN, Boolean> action);
 
     /**
@@ -397,7 +397,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<List<IN>, List<IN>> filter(
             @NonNull @nonnull IThreadType threadType,
             @NonNull @nonnull IActionOneR<IN, Boolean> action);
@@ -428,7 +428,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> set(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
 
     /**
@@ -441,7 +441,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> set(@NonNull @nonnull ImmutableValue<OUT> immutableValue);
 
     /**
@@ -456,6 +456,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     IAltFuture<OUT, OUT> onError(@NonNull @nonnull IOnErrorAction action);
 }

@@ -188,7 +188,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action);
 
     /**

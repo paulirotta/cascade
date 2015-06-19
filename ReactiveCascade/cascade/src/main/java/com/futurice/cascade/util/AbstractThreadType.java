@@ -177,30 +177,29 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override // IThreadType
     @NonNull @nonnull
-    @CheckResult(suggest = "#fork()")
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IAction<IN> action) {
-        vv(this, origin, "map()");
         return new AltFuture<>(this, action);
     }
 
     @Override // IThreadType
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IActionOne<IN> action) {
-        vv(this, origin, "map()");
         return new AltFuture<>(this, action);
     }
 
     @Override // IThreadType
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
-        vv(this, origin, "map()");
         return new AltFuture<>(this, action);
     }
 
     @Override // IThreadType
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull final IActionR<IN, OUT> action) {
-        vv(this, origin, "map()");
         return new AltFuture<IN, OUT>(this, action);
     }
 
@@ -208,6 +207,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override // IThreadType
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <IN> IAltFuture<?, IN> from(@NonNull @nonnull final IN value) {
         return then(() -> value);
     }
@@ -215,6 +215,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @Override // IThreadType
     @SafeVarargs
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public final <IN> List<IAltFuture<IN, IN>> then(@NonNull @nonnull final IAction<IN>... actions) {
         final List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
         vv(this, origin, "map(List[" + actions.length + "])");
@@ -227,6 +228,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @Override // IThreadType
     @SafeVarargs
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull @nonnull final IActionR<IN, OUT>... actions) {
         vv(this, origin, "map(List[" + actions.length + "])");
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
@@ -239,8 +241,8 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @Override // IThreadType
     @SafeVarargs
     @NonNull @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull final IActionOneR<IN, OUT>... actions) {
-        vv(this, origin, "map(List[" + actions.length + "])");
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
         for (IActionOneR<IN, OUT> action : actions) {
             altFutures.add(map(action));

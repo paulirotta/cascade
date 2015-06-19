@@ -1,1 +1,1 @@
-./gradlew build connectedCheck
+./gradlew connectedCheck

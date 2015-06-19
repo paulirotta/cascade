@@ -2,6 +2,7 @@ package com.futurice.cascade.reactive.ui;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
+import android.support.annotation.CheckResult;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
 import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
@@ -50,11 +52,14 @@ import static com.futurice.cascade.Async.*;
  * </pre>
  */
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
+    protected final ImmutableValue<String> origin;
+
     //TODO Add full coverage and remove trivial implementations that are thread safe
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource) {
         super(context, resource, 0, new ArrayList<>());
+        origin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -62,6 +67,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @LayoutRes final int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<>());
+        origin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -69,6 +75,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @NonNull @nonnull final T[] objects) {
         super(context, resource, 0, Arrays.asList(objects));
+        origin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -77,6 +84,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int textViewResourceId,
             @NonNull @nonnull final T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
+        origin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -84,6 +92,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @NonNull @nonnull final List<T> objects) {
         super(context, resource, 0, objects);
+        origin = originAsync();
     }
 
     //FIXME Is this really both @LayoutRes ?
@@ -93,6 +102,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int textViewResourceId,
             @NonNull @nonnull final List<T> objects) {
         super(context, resource, textViewResourceId, objects);
+        origin = originAsync();
     }
 
     @NonNull
@@ -115,6 +125,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, T> addAsync(@NonNull @nonnull final T value) {
         return UI.then(
                 () -> {
@@ -132,6 +143,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, T> removeAsync(@NonNull @nonnull final T object) {
         return UI.then(() -> {
             remove(object);
@@ -149,6 +161,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> sortAsync(@NonNull @nonnull final Comparator<? super T> comparator) {
         return UI.then(() -> sort(comparator));
     }
@@ -163,6 +176,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> notifyDataSetChangedAsync() {
         return UI.then(this::notifyDataSetChanged);
     }
@@ -177,6 +191,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> notifyDataSetInvalidatedAsync() {
         return UI.then(this::notifyDataSetInvalidated);
     }
@@ -184,6 +199,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> setNotifyOnChangeAsync(final boolean notifyOnChange) {
         return UI.then(() -> setNotifyOnChange(notifyOnChange));
     }
@@ -191,6 +207,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<T> collection) {
         return UI.then(() -> addAll(collection));
     }
@@ -199,6 +216,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public final IAltFuture<?, T[]> addAllAsync(@NonNull @nonnull final T... items) {
         //TODO Not an atomic add operation
         return UI.then(() -> {
@@ -212,6 +230,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> clearAsync() {
         return UI.then(this::clear);
     }
@@ -219,6 +238,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, Integer> getCountAsync() {
         return UI.then(this::getCount);
     }
@@ -226,6 +246,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, T> getItemAsync(final int position) {
         return UI.then(() -> getItem(position));
     }
@@ -240,6 +261,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, Integer> getPositionAsync(@NonNull @nonnull final T item) {
         return UI.then(() -> getPosition(item));
     }
@@ -247,6 +269,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, Filter> getFilterAsync(@NonNull @nonnull final T item) {
         return UI.then(this::getFilter);
     }
@@ -261,6 +284,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, Long> getItemIdAsync(final int position) {
         return UI.then(() -> getItemId(position));
     }
@@ -268,6 +292,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, A> setDropDownViewResourceAsync(@LayoutRes final int resource) {
         return UI.then(() -> setDropDownViewResource(resource));
     }
@@ -285,6 +310,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public <A> IAltFuture<A, View> getViewAsync(
             final int position,
             @NonNull @nonnull final View convertView,
@@ -295,6 +321,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, View> getDropDownViewAsync(
             final int position,
             @NonNull @nonnull final View convertView,
@@ -305,6 +332,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
+    @CheckResult(suggest = "IAltFuture.fork()")
     public IAltFuture<?, Boolean> isEmptyAsync() {
         return UI.then(this::isEmpty);
     }
