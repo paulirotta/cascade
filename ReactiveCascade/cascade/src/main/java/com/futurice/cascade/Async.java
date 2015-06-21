@@ -668,6 +668,7 @@ public final class Async {
     @NonNull @nonnull
     @CheckResult(suggest="<local variable> origin =")
     public static ImmutableValue<String> originAsync() {
+        //FIXME Example static iniailiazer object is not a clickable link: .<init>(ServiceSingleton.java:59))  DO STRING REPLACE on <init>
         if (!TRACE_ASYNC_ORIGIN) {
             return DEFAULT_ORIGIN;
         }

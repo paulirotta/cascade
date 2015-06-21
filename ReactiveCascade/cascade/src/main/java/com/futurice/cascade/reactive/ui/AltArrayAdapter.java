@@ -3,6 +3,7 @@ package com.futurice.cascade.reactive.ui;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
+import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -247,7 +248,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, T> getItemAsync(final int position) {
+    public IAltFuture<?, T> getItemAsync(@IntRange(from=0,to=Integer.MAX_VALUE) final int position) {
         return UI.then(() -> getItem(position));
     }
 
@@ -285,7 +286,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Long> getItemIdAsync(final int position) {
+    public IAltFuture<?, Long> getItemIdAsync(@IntRange(from=0,to=Integer.MAX_VALUE) final int position) {
         return UI.then(() -> getItemId(position));
     }
 
@@ -312,10 +313,22 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, View> getViewAsync(
-            final int position,
+            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
             @NonNull @nonnull final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getView(position, convertView, parent));
+    }
+
+    //TODO Is there a benefit to creating annotated versions of all system classes like this? If not, delete this one example. If yes, copy the pattern for all methods.
+    @CallSuper
+    @NonNull
+    @nonnull
+    @Override
+    public View getDropDownView(
+            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
+            @NonNull @nonnull final View convertView,
+            @NonNull @nonnull final ViewGroup parent) {
+        return super.getDropDownView(position, convertView, parent);
     }
 
     @CallSuper
@@ -323,7 +336,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, View> getDropDownViewAsync(
-            final int position,
+            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
             @NonNull @nonnull final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getDropDownView(position, convertView, parent));
