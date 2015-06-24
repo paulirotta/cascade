@@ -262,7 +262,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
         }
 
-        vv(this, origin, "fork()");
+//        vv(this, origin, "fork()");
         run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
     }
 

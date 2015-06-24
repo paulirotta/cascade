@@ -355,7 +355,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             if (DEBUG) {
                 final int n = thenAltFutureList.size();
                 if (n == 0) {
-                    vv(this, origin, "SettableAltFuture set, value= " + value + "\nNo down-chain actions");
+                    vv(this, origin, "SettableAltFuture set, value= " + value);
                 } else {
                     vv(this, origin, "SettableAltFuture set, value= " + value + "\nWe now fork() the " + thenAltFutureList.size() + " down-chain actions because this.fork() was called previously");
                 }

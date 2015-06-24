@@ -141,7 +141,7 @@ public final class Async {
      *
      * TODO Automatically adjusted thread pool size based on current connection type
      */
-    public static final IThreadType NET_READ = ASYNC_BUILDER.getNetReadThreadType();
+    public static final IThreadType NET_READ = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetReadThreadType();
     /**
      * A single thread for making writes to the network.
      *
@@ -149,7 +149,7 @@ public final class Async {
      * tasks finish more quickly. This also simplifies cache invalidation on POST and PUT operations more
      * coherent.
      */
-    public static final IThreadType NET_WRITE = ASYNC_BUILDER.getNetWriteThreadType();
+    public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
     public static final ScheduledExecutorService TIMER = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Timer"));
 
     Async() {
@@ -896,7 +896,7 @@ public final class Async {
 
     /**
      * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage pr
+     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage.
      *
      * @param errorMessage a message to display when the assertion fails. It should indicate the
      *                     reason which was not true and, if possible, the likely corrective action
@@ -907,6 +907,22 @@ public final class Async {
             final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
+        }
+    }
+
+    /**
+     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
+     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     *
+     * @param expected
+     * @param actual
+     * @param <T>
+     */
+    public static <T> void assertEqual(
+            @NonNull @nonnull final T expected,
+            @NonNull @nonnull final T actual) {
+        if (DEBUG && !expected.equals(actual)) {
+            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
         }
     }
 

@@ -123,6 +123,7 @@ public class AsyncBuilder {
     }
 
     @NonNull
+    @NotCallOrigin
     public IThreadType getWorkerThreadType() {
         if (workerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -138,6 +139,7 @@ public class AsyncBuilder {
     }
 
     @NonNull
+    @NotCallOrigin
     public IThreadType getSerialWorkerThreadType() {
         if (serialWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -620,6 +622,7 @@ public class AsyncBuilder {
 //    }
 
     @NonNull
+    @NotCallOrigin
     public Async build() {
         if (uiThread == null) {
             Thread thread = Thread.currentThread();
