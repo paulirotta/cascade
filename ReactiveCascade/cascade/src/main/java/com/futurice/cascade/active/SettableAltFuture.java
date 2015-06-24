@@ -466,7 +466,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected void doThenActions() throws Exception {
         //vv(mOrigin, TAG, "Start doThenActions, count=" + this.thenAltFutureList.size() + ", state=" + stateAR.get());
         if (DEBUG && !isDone()) {
-            vv(this, origin, "This AltFuture is not yet done, so can't doNextActions() yet");
+//            vv(this, origin, "This AltFuture is not yet done, so can't doNextActions() yet");
             return;
         }
 

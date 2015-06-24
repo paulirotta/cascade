@@ -30,6 +30,7 @@ import android.support.annotation.WorkerThread;
 import com.futurice.cascade.Async;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
@@ -123,6 +124,7 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull @nonnull
+    @NotCallOrigin
     @Override // ExecutorService
     public Future submit(@NonNull @nonnull final Runnable runnable) {
         if (runnable instanceof RunnableFuture) {
