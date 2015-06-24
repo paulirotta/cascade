@@ -27,6 +27,7 @@ package com.futurice.cascade;
 import android.content.*;
 import android.os.*;
 import android.support.annotation.NonNull;
+import android.support.v7.appcompat.BuildConfig;
 import android.util.*;
 
 import com.futurice.cascade.active.*;
@@ -58,7 +59,7 @@ import java.util.concurrent.atomic.*;
 public class AsyncBuilder {
     public static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     public static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
-    static final String NOT_INITIALIZED = "Please initialize the following in for example Activity.onCreate() before the classloader directly or indirectly invokes ThreadType.class:  new AsyncBuilder(this).build();";
+    static final String NOT_INITIALIZED = "Please init with new AsyncBuilder(this).build() in for example Activity.onCreate() _before_ the classloader touches Async.class";
     private static final String TAG = AsyncBuilder.class.getSimpleName();
     private static final AtomicInteger threadNumber = new AtomicInteger();
     private static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
