@@ -27,7 +27,6 @@ package com.futurice.cascade;
 import android.content.*;
 import android.os.*;
 import android.support.annotation.NonNull;
-import android.support.v7.appcompat.BuildConfig;
 import android.util.*;
 
 import com.futurice.cascade.active.*;
