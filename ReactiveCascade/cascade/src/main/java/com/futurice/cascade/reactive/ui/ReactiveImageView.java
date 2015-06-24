@@ -67,7 +67,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         super(context);
 
 //        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
     }
 
@@ -77,7 +77,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         super(context, attrs);
 
 //        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
     }
 
@@ -88,7 +88,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         super(context, attrs, defStyleAttr);
 
 //        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
     }
 

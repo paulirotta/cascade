@@ -356,7 +356,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     public boolean set(@NonNull @nonnull final T value) {
         final boolean valueChanged = super.set(value);
 
-        vv(this, origin, "PersistentValue persist soon, value=" + value);
+        vv(this, origin, "PersistentValue \"" + getName() + "\" persist soon, value=" + value);
         persistentValueThreadType.then(() -> {
             final SharedPreferences.Editor editor = sharedPreferences.edit();
 

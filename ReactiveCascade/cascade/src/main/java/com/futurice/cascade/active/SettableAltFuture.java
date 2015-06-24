@@ -455,7 +455,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         if (isDone()) {
             vv(this, origin, "Warning: an AltFuture was added as a .subscribe() onFireAction toKey an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
 //            altFuture.map((IActionOne) v -> {
-//                visualize(origin.getName(), v.toString(), "AltFuture");
+//                visualize(mOrigin.getName(), v.toString(), "AltFuture");
 //            });
             altFuture.fork();
         }
@@ -464,7 +464,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     protected void doThenActions() throws Exception {
-        //vv(origin, TAG, "Start doThenActions, count=" + this.thenAltFutureList.size() + ", state=" + stateAR.get());
+        //vv(mOrigin, TAG, "Start doThenActions, count=" + this.thenAltFutureList.size() + ", state=" + stateAR.get());
         if (DEBUG && !isDone()) {
             vv(this, origin, "This AltFuture is not yet done, so can't doNextActions() yet");
             return;

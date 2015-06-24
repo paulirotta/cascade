@@ -53,14 +53,14 @@ import static com.futurice.cascade.Async.*;
  * </pre>
  */
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
-    protected final ImmutableValue<String> origin;
+    protected final ImmutableValue<String> mOrigin;
 
     //TODO Add full coverage and remove trivial implementations that are thread safe
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource) {
         super(context, resource, 0, new ArrayList<>());
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -68,7 +68,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @LayoutRes final int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<>());
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -76,7 +76,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @NonNull @nonnull final T[] objects) {
         super(context, resource, 0, Arrays.asList(objects));
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -85,7 +85,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int textViewResourceId,
             @NonNull @nonnull final T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     public AltArrayAdapter(
@@ -93,7 +93,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int resource,
             @NonNull @nonnull final List<T> objects) {
         super(context, resource, 0, objects);
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     //FIXME Is this really both @LayoutRes ?
@@ -103,7 +103,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
             @LayoutRes final int textViewResourceId,
             @NonNull @nonnull final List<T> objects) {
         super(context, resource, textViewResourceId, objects);
-        origin = originAsync();
+        mOrigin = originAsync();
     }
 
     @NonNull
@@ -118,6 +118,15 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @Override
+    public void add(@NonNull @nonnull final T value) {
+        super.add(value);
+    }
+
+    /**
      * Add the value to the end of the list
      *
      * @param value
@@ -127,12 +136,23 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, T> addAsync(@NonNull @nonnull final T value) {
+    public IAltFuture<?, T> addAsync(@NonNull @nonnull final T value, final boolean ifAbsent) {
         return UI.then(
                 () -> {
+                    if (ifAbsent) {
+                        remove(value);
+                    }
                     add(value);
                     return value;
                 });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    public void remove(@NonNull @nonnull final T object) {
+        super.remove(object);
     }
 
     /**
@@ -209,7 +229,15 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <A> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<T> collection) {
+    public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<TT> collection, final boolean addIfUnique) {
+        if (addIfUnique) {
+            return UI.then(() -> {
+                for (TT t : collection) {
+                    remove(t);
+                    add(t);
+                }
+            });
+        }
         return UI.then(() -> addAll(collection));
     }
 
@@ -218,14 +246,12 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public final IAltFuture<?, T[]> addAllAsync(@NonNull @nonnull final T... items) {
-        //TODO Not an atomic add operation
-        return UI.then(() -> {
-            for (T item : items) {
-                add(item);
-            }
-            return items;
-        });
+    public final <TT extends T> IAltFuture<?, List<TT>> addAllAsync(@NonNull @nonnull final TT... items) {
+        final ArrayList<TT> list = new ArrayList<>(items.length);
+        for (TT item : items) {
+            add(item);
+        }
+        return addAllAsync(list, false);
     }
 
     @CallSuper
@@ -234,6 +260,15 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, A> clearAsync() {
         return UI.then(this::clear);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @IntRange(from = 0, to = Integer.MAX_VALUE)
+    public int getCount() {
+        return super.getCount();
     }
 
     @CallSuper
@@ -248,8 +283,43 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, T> getItemAsync(@IntRange(from=0,to=Integer.MAX_VALUE) final int position) {
+    public IAltFuture<?, List<T>> getAllAsync() {
+        return UI.then(() -> {
+            final int n = getCount();
+            final List<T> list = new ArrayList<>(n);
+            for (int i = 0; i < n; i++) {
+                list.add(getItem(i));
+            }
+
+            return list;
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @NonNull
+    @nonnull
+    public T getItem(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+        return super.getItem(position);
+    }
+
+    @CallSuper
+    @NonNull
+    @nonnull
+    @CheckResult(suggest = "IAltFuture#fork()")
+    public IAltFuture<?, T> getItemAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
         return UI.then(() -> getItem(position));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @IntRange(from = -1, to = Integer.MAX_VALUE)
+    public int getPosition(@NonNull @nonnull final T item) {
+        return super.getPosition(item);
     }
 
     /**
@@ -267,12 +337,30 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> getPosition(item));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @NonNull
+    @nonnull
+    public Filter getFilter() {
+        return super.getFilter();
+    }
+
     @CallSuper
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Filter> getFilterAsync(@NonNull @nonnull final T item) {
+    public IAltFuture<?, Filter> getFilterAsync() {
         return UI.then(this::getFilter);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    public long getItemId(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+        return super.getItemId(position);
     }
 
     /**
@@ -286,8 +374,18 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Long> getItemIdAsync(@IntRange(from=0,to=Integer.MAX_VALUE) final int position) {
+    public IAltFuture<?, Long> getItemIdAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
         return UI.then(() -> getItemId(position));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @CheckResult(suggest = "IAltFuture#fork()")
+    @Override
+    public void setDropDownViewResource(@LayoutRes final int resource) {
+        super.setDropDownViewResource(resource);
     }
 
     @CallSuper
@@ -296,6 +394,20 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, A> setDropDownViewResourceAsync(@LayoutRes final int resource) {
         return UI.then(() -> setDropDownViewResource(resource));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CallSuper
+    @NonNull
+    @nonnull
+    @Override
+    public View getView(
+            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
+            @NonNull @nonnull final View convertView,
+            @NonNull @nonnull final ViewGroup parent) {
+        return super.getView(position, convertView, parent);
     }
 
     /**
@@ -313,19 +425,21 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, View> getViewAsync(
-            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
             @NonNull @nonnull final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getView(position, convertView, parent));
     }
 
-    //TODO Is there a benefit to creating annotated versions of all system classes like this? If not, delete this one example. If yes, copy the pattern for all methods.
+    /**
+     * {@inheritDoc}
+     */
     @CallSuper
     @NonNull
     @nonnull
     @Override
     public View getDropDownView(
-            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
             @NonNull @nonnull final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return super.getDropDownView(position, convertView, parent);
@@ -336,7 +450,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, View> getDropDownViewAsync(
-            @IntRange(from=0,to=Integer.MAX_VALUE) final int position,
+            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
             @NonNull @nonnull final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getDropDownView(position, convertView, parent));

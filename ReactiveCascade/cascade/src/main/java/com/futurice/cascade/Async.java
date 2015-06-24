@@ -81,8 +81,8 @@ import java.util.concurrent.TimeoutException;
  * {@link DefaultThreadType} for managing tasks in one section of your architecture.
  */
 public final class Async {
-    private static final ConcurrentHashMap<String, Class> classNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace origin of a log message back into your code
-    private static final ConcurrentHashMap<String, Method> methodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace origin of a log message back into your code
+    private static final ConcurrentHashMap<String, Class> classNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
+    private static final ConcurrentHashMap<String, Method> methodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
     private static volatile boolean exitWithErrorCodeStarted = false;
 
     static {
@@ -105,7 +105,7 @@ public final class Async {
     public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
 
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
-    private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No origin provided in production builds");
+    private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No mOrigin provided in production builds");
 
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
@@ -214,7 +214,7 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -242,7 +242,7 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -264,7 +264,7 @@ public final class Async {
     /**
      * Log a verbose message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -278,7 +278,7 @@ public final class Async {
     /**
      * Log a debugOrigin message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -292,7 +292,7 @@ public final class Async {
     /**
      * Log an information message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -502,7 +502,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -518,7 +518,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin a link to the point from which the object throwing the exception was called in the application code
@@ -536,7 +536,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -552,7 +552,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin the point from which the object throwing the exception was called
@@ -570,7 +570,7 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -612,7 +612,7 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag a log line to aid with filtering such as the origin from which the object throwing
+     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
      *            the exception was created. This may be a {@link String}, {@link INamed},
      *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin  a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
@@ -666,7 +666,7 @@ public final class Async {
      * @return a string holder that will be populated in the background on a WORKER thread (only in {@link #DEBUG} builds)
      */
     @NonNull @nonnull
-    @CheckResult(suggest="<local variable> origin =")
+    @CheckResult(suggest="<local variable> mOrigin =")
     public static ImmutableValue<String> originAsync() {
         //FIXME Example static iniailiazer object is not a clickable link: .<init>(ServiceSingleton.java:59))  DO STRING REPLACE on <init>
         if (!TRACE_ASYNC_ORIGIN) {
@@ -688,7 +688,7 @@ public final class Async {
     }
 
     /**
-     * Extract from the current stack trace the most interesting "origin" line from which this was
+     * Extract from the current stack trace the most interesting "mOrigin" line from which this was
      * called. Once this is done on a background thread, pass this short text to action
      *
      * @param action to be performed when the current stack trace is resolved asynchronously
@@ -706,8 +706,8 @@ public final class Async {
     }
 
     /**
-     * Perform an action once both the async-resolved object creation call stack origin and
-     * async current call stack origin are settled
+     * Perform an action once both the async-resolved object creation call stack mOrigin and
+     * async current call stack mOrigin are settled
      *
      * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
      * @param action to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)

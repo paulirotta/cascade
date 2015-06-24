@@ -279,7 +279,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         }
         final ImmutableValue<String> originImmutableValue = originAsync()
                 .then(o -> {
-                    i(this, "shutdown " + timeout + " origin=" + o + " ThreadType creationOrigin=" + origin.safeGet());
+                    i(this, "shutdown " + timeout + " mOrigin=" + o + " ThreadType creationOrigin=" + origin.safeGet());
                     executorService.shutdown();
                 });
         final FutureTask<Boolean> futureTask = new FutureTask<>(() -> {

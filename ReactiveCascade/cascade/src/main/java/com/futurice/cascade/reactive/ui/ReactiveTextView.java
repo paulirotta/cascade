@@ -62,8 +62,8 @@ public class ReactiveTextView extends TextView implements INamed {
 //        final StringBuffer sb = new StringBuffer();
 //        int i = 0;
 //
-//        for (ImmutableValue<String> origin : INSTANCE_ORIGINS) {
-//            final String s = "Found instance of " + TAG + " created at " + origin;
+//        for (ImmutableValue<String> mOrigin : INSTANCE_ORIGINS) {
+//            final String s = "Found instance of " + TAG + " created at " + mOrigin;
 //            sb.append(s);
 //            sb.append('\n');
 //            dd(TAG, s);
@@ -81,7 +81,7 @@ public class ReactiveTextView extends TextView implements INamed {
         super(context);
 
 //        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
         reactiveValue.set(getText().toString());
     }
@@ -92,7 +92,7 @@ public class ReactiveTextView extends TextView implements INamed {
         super(context, attrs);
 
 ///        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
         reactiveValue.set(getText().toString());
     }
@@ -104,7 +104,7 @@ public class ReactiveTextView extends TextView implements INamed {
         super(context, attrs, defStyle);
 
 //        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(origin);
+//            INSTANCE_ORIGINS.add(mOrigin);
 //        }
         reactiveValue.set(getText().toString());
     }

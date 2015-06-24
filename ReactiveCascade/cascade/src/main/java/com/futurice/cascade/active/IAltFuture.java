@@ -286,6 +286,12 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     @CheckResult(suggest = "IAltFuture#fork()")
     IAltFuture<OUT, OUT> then(@NonNull @nonnull IActionOne<OUT> action);
 
+    //TODO Add .thenForEach(IActionOne<OUT>) action such that it does not have same erasure as the above
+//    @NonNull
+//    @nonnull
+//    @CheckResult(suggest = "IAltFuture#fork()")
+//    IAltFuture<List<OUT>, List<OUT>> thenForEach(@NonNull @nonnull IActionOne<OUT> action);
+
     /**
      * Execute the onFireAction after this <code>AltFuture</code> finishes.
      *
