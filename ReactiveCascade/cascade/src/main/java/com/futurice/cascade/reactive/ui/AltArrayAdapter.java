@@ -6,6 +6,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -284,15 +285,20 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, List<T>> getAllAsync() {
-        return UI.then(() -> {
-            final int n = getCount();
-            final List<T> list = new ArrayList<>(n);
-            for (int i = 0; i < n; i++) {
-                list.add(getItem(i));
-            }
+        return UI.then(() -> getAll());
+    }
 
-            return list;
-        });
+    @NonNull
+    @nonnull
+    @UiThread
+    public List<T> getAll() {
+        final int n = getCount();
+        final List<T> list = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            list.add(getItem(i));
+        }
+
+        return list;
     }
 
     /**
