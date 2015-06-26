@@ -29,7 +29,7 @@ proguard/
 Thumbs.db
 
 # IntelliJ Files
-.idea
+.idea/
 *.iml
 
 # Coverity files
