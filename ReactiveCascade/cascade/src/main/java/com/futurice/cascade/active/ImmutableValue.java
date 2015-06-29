@@ -29,7 +29,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
@@ -66,11 +65,11 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  *
  * @param <T>
  */
-public class ImmutableValue<T> implements IGettable<T>, INamed {
+public class ImmutableValue<T> implements IGettable<T> {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;
 
-    private final AtomicReference<Object> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
-    private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
+    private final AtomicReference<Object> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
+    private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
     @Nullable
     @nullable
     private final IActionR<?, T> action;
@@ -115,7 +114,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * final value has not been set.
      */
     private boolean compareAndSet(@NonNull @nonnull final Object expected, @NonNull @nonnull final T value) {
-        boolean success = valueAR.compareAndSet(expected, value);
+        boolean success = mValueAR.compareAndSet(expected, value);
 
         if (success) {
             doThenActions(value);
@@ -137,7 +136,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     @NonNull
     @nonnull
     public ImmutableValue<T> then(@NonNull @nonnull final IActionOne<T> action) {
-        thenActions.add(action);
+        mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
         }
@@ -147,7 +146,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     @NonNull
     @nonnull
     public ImmutableValue<T> then(@NonNull @nonnull final IAction<T> action) {
-        thenActions.add(action);
+        mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
         }
@@ -155,11 +154,11 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     }
 
     private void doThenActions(@NonNull @nonnull final T value) {
-        final Iterator<IBaseAction<T>> iterator = thenActions.iterator();
+        final Iterator<IBaseAction<T>> iterator = mThenActions.iterator();
 
         while (iterator.hasNext()) {
             final IBaseAction<T> action = iterator.next();
-            if (thenActions.remove(action)) {
+            if (mThenActions.remove(action)) {
                 try {
                     call(value, action);
                 } catch (Exception e) {
@@ -209,7 +208,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
      * @return
      */
     public final boolean isSet() {
-        return valueAR.get() != SettableAltFuture.ZEN;
+        return mValueAR.get() != SettableAltFuture.ZEN;
     }
 
     /**
@@ -229,7 +228,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     @SuppressWarnings("unchecked")
     // The response must be cast because of internal atomic state is a non-T class
     public T get() {
-        final Object value = valueAR.get();
+        final Object value = mValueAR.get();
 
         if (value == ZEN) {
             if (action == null) {
@@ -261,7 +260,7 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
     @Nullable
     @nullable
     public T safeGet() {
-        final Object value = valueAR.get();
+        final Object value = mValueAR.get();
 
         if (value == ZEN) {
             return null;
@@ -313,10 +312,10 @@ public class ImmutableValue<T> implements IGettable<T>, INamed {
         return t.toString();
     }
 
-    @Override
-    @NonNull
-    @nonnull
-    public String getName() {
-        return "(ImmutableValue, value=" + toString() + ")";
-    }
+//    @Override
+//    @NonNull
+//    @nonnull
+//    public String getName() {
+//        return "(ImmutableValue, value=" + toString() + ")";
+//    }
 }

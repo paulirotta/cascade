@@ -81,9 +81,9 @@ import java.util.concurrent.TimeoutException;
  * {@link DefaultThreadType} for managing tasks in one section of your architecture.
  */
 public final class Async {
-    private static final ConcurrentHashMap<String, Class> classNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
-    private static final ConcurrentHashMap<String, Method> methodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
-    private static volatile boolean exitWithErrorCodeStarted = false;
+    private static final ConcurrentHashMap<String, Class> sClassNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
+    private static final ConcurrentHashMap<String, Method> sMethodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
+    private static volatile boolean sExitWithErrorCodeStarted = false;
 
     static {
         if (!AsyncBuilder.isInitialized()) {
@@ -163,11 +163,11 @@ public final class Async {
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
         //TODO let the Activity or Service down slowly and gently with lifecycle callbacks if production build
-        if (exitWithErrorCodeStarted) {
+        if (sExitWithErrorCodeStarted) {
             Log.v(tag, "Already existing, ignoring exit with error code (" + errorCode + "): " + message + "-" + t);
         } else {
             Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
-            exitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
+            sExitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NET_READ.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NET_WRITE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
@@ -1081,23 +1081,23 @@ public final class Async {
         StackTaceLine(@NonNull @nonnull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
             this.stackTraceElement = stackTraceElement;
             final String className = stackTraceElement.getClassName();
-            Class<?> c = classNameMap.get(className);
+            Class<?> c = sClassNameMap.get(className);
 
             if (c == null) {
                 c = Class.forName(className);
-                classNameMap.putIfAbsent(className, c);
+                sClassNameMap.putIfAbsent(className, c);
             }
             this.claz = c;
             final String methodName = stackTraceElement.getMethodName();
             final String key = className + methodName;
             this.method = new ImmutableValue<>(
                     () -> {
-                        Method meth = methodNameMap.get(key);
+                        Method meth = sMethodNameMap.get(key);
 
                         if (meth == null) {
                             final Method[] methods = claz.getMethods();
                             for (final Method m : methods) {
-                                methodNameMap.putIfAbsent(key, m);
+                                sMethodNameMap.putIfAbsent(key, m);
                                 if (m.getName().equals(methodName)) {
                                     meth = m;
                                     break;
