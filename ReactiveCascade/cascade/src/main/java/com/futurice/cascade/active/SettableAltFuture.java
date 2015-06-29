@@ -348,14 +348,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         if (mStateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
-            if (DEBUG) {
-                final int n = mThenAltFutureList.size();
-                if (n == 0) {
-                    vv(this, mOrigin, "SettableAltFuture set, value= " + value);
-                } else {
-                    vv(this, mOrigin, "SettableAltFuture set, value= " + value + "\nWe now fork() the " + mThenAltFutureList.size() + " down-chain actions because this.fork() was called previously");
-                }
-            }
+            vv(this, mOrigin, "SettableAltFuture set, value= " + value);
             doThenActions();
             return;
         }
