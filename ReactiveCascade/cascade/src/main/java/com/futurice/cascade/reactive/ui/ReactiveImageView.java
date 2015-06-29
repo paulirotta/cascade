@@ -48,37 +48,19 @@ import static com.futurice.cascade.Async.*;
  * An ImageView which can be directly bound to change the screen when an up-chain value changes
  */
 public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitmap> {
-//    private static ConcurrentLinkedQueue<ImmutableValue<String>> INSTANCE_ORIGINS;
-
-//    static {
-//        try {
-//            INSTANCE_ORIGINS = DEBUG ? new ConcurrentLinkedQueue<>() : null;
-//        } catch (Throwable e) {
-//            // Ignore in visual editor which lacks the path. No good way to check isInEditMode() at static level but we want this code removed by Proguard
-//        }
-//    }
-
     @Nullable
     @nullable
-    private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
-    private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> reactiveSources = new CopyOnWriteArrayList<>();
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
+    private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> mReactiveSources = new CopyOnWriteArrayList<>();
 
     public ReactiveImageView(@NonNull @nonnull final Context context) {
         super(context);
-
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
     }
 
     public ReactiveImageView(
             @NonNull @nonnull final Context context,
             @NonNull @nonnull final AttributeSet attrs) {
         super(context, attrs);
-
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
     }
 
     public ReactiveImageView(
@@ -86,17 +68,13 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
             @NonNull @nonnull final AttributeSet attrs,
             @StyleRes final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
     }
 
     @Override // IReactiveTarget
     @NotCallOrigin
     public void fire(@NonNull @nonnull final Bitmap bitmap) {
-        assertNotNull(origin);
-        dd(this, origin, "fire bitmap=");
+        assertNotNull(mOrigin);
+        dd(this, mOrigin, "fire bitmap=");
 
         if (isUiThread()) {
             setImageBitmap(bitmap);
@@ -123,13 +101,13 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void subscribeSource(
             @NonNull @nonnull final String reason,
             @NonNull @nonnull final IReactiveSource<Bitmap> reactiveSource) {
-        assertNotNull(origin);
-        vv(this, origin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
+        assertNotNull(mOrigin);
+        vv(this, mOrigin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
 
-        if (reactiveSources.addIfAbsent(reactiveSource)) {
-            vv(this, origin, reactiveSource.getName() + " says hello: reason=" + reason);
+        if (mReactiveSources.addIfAbsent(reactiveSource)) {
+            vv(this, mOrigin, reactiveSource.getName() + " says hello: reason=" + reason);
         } else {
-            dd(this, origin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            dd(this, mOrigin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         }
     }
 
@@ -138,19 +116,19 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void unsubscribeSource(
             @NonNull @nonnull final String reason,
             @NonNull @nonnull final IReactiveSource<Bitmap> reactiveSource) {
-        assertNotNull(origin);
-        if (reactiveSources.remove(reactiveSource)) {
-            vv(this, origin, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
+        assertNotNull(mOrigin);
+        if (mReactiveSources.remove(reactiveSource)) {
+            vv(this, mOrigin, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
             reactiveSource.unsubscribe(reason, this);
         } else {
-            throwIllegalStateException(this, origin, "Upchain says goodbye, reason=" + reason + ", but upchain \"" + reactiveSource.getName() + "\" is not currently subscribed to \"" + getName() + "\"");
+            throwIllegalStateException(this, mOrigin, "Upchain says goodbye, reason=" + reason + ", but upchain \"" + reactiveSource.getName() + "\" is not currently subscribed to \"" + getName() + "\"");
         }
     }
 
     @Override // IReactiveTarget
     public void unsubscribeAllSources(@NonNull @nonnull final String reason) {
 
-        for (IReactiveSource<Bitmap> reactiveSource : reactiveSources) {
+        for (IReactiveSource<Bitmap> reactiveSource : mReactiveSources) {
             reactiveSource.unsubscribeAll(reason);
         }
     }
@@ -168,11 +146,4 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         unsubscribeAllSources("onDetachedFromWindow");
         super.onDetachedFromWindow();
     }
-
-//    @Override // Object
-//    public void finalize() {
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.remove(this);
-//        }
-//    }
 }

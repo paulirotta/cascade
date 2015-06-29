@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * and less and faster context switches (context switches tend toKey cost marginally more as thread count
  * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
  * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
- * queue and perhaps unrelated toKey the current focus of your attention will, once started, block the
+ * mQueue and perhaps unrelated toKey the current focus of your attention will, once started, block the
  * next {@link DoubleQueue} item fromKey
  * starting until it completes.
  * <p>
@@ -128,10 +128,10 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     /**
      * Poll both queues for work toKey do. This will wake up immediately if new work is added toKey this
-     * queue, and within the next polling time window for the lowPriorityQueue. Since other threads
-     * which may be taking work fromKey the low priority queue are probably waking up immediately this
-     * is OK. It keeps any dual-use thread associated with this queue relatively free for immediate
-     * response toKey the single use queue until such time as all other threads are busy, subscribe it pitches
+     * mQueue, and within the next polling time window for the lowPriorityQueue. Since other threads
+     * which may be taking work fromKey the low priority mQueue are probably waking up immediately this
+     * is OK. It keeps any dual-use thread associated with this mQueue relatively free for immediate
+     * response toKey the single use mQueue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.
      *
      * @return

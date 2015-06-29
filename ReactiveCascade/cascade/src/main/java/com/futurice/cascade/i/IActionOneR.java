@@ -27,7 +27,7 @@ package com.futurice.cascade.i;
 import android.support.annotation.NonNull;
 
 /**
- * A lambda-friendly onFireAction which receives two values split returns a getValue
+ * A lambda-friendly mOnFireAction which receives two values split returns a getValue
  *
  * @param <IN>
  * @param <OUT>

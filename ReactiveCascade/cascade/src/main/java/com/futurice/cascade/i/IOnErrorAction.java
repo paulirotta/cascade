@@ -30,7 +30,7 @@ import android.support.annotation.NonNull;
  * A function to run in the event of an {@link java.lang.Exception} or similar irregular termination
  * such as {@link com.futurice.cascade.i.ICancellable#cancel(String)}
  *
- * Perform some cleanup or notification onFireAction to bring this object into a rest state after
+ * Perform some cleanup or notification mOnFireAction to bring this object into a rest state after
  * irregular termination.
  *
  * @return <code>true</code> if the error is consumed and should not propagate further down-chain.

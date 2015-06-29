@@ -35,55 +35,16 @@ import static com.futurice.cascade.Async.*;
  */
 @NotCallOrigin
 public class ReactiveTextView extends TextView implements INamed {
-//    private static ConcurrentLinkedQueue<ImmutableValue<String>> INSTANCE_ORIGINS;
-
-//    static {
-//        try {
-//            INSTANCE_ORIGINS = DEBUG ? new ConcurrentLinkedQueue<>() : null;
-//        } catch (Throwable e) {
-//            // Ignore in visual editor which lacks the path. No good way to check isInEditMode() at static level but we want this code removed by Proguard
-//        }
-//    }
-
-
-    //    private final CopyOnWriteArrayList<IReactiveSource<String>> reactiveSources = new CopyOnWriteArrayList<>();
     @Nullable
     @nullable
-    private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
-    private IReactiveSource<String> reactiveSource; // Access only from UI thread
-    private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
-
-    //TODO Memory test, see that everything is cleaned up after multiple app cycles and bad real world events
-//    public static String getInstanceOrigins() {
-//        if (!DEBUG) {
-//            return "(instances not tracked in production builds)";
-//        }
-//
-//        final StringBuffer sb = new StringBuffer();
-//        int i = 0;
-//
-//        for (ImmutableValue<String> mOrigin : INSTANCE_ORIGINS) {
-//            final String s = "Found instance of " + TAG + " created at " + mOrigin;
-//            sb.append(s);
-//            sb.append('\n');
-//            dd(TAG, s);
-//            i++;
-//        }
-//        final String s = "Found " + i + " instance(s) of " + TAG;
-//        sb.append('\n');
-//        sb.append(s);
-//        dd(TAG, s);
-//
-//        return sb.toString();
-//    }
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
+    private IReactiveSource<String> mReactiveSource; // Access only from UI thread
+    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
 
     public ReactiveTextView(@NonNull @nonnull final Context context) {
         super(context);
 
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
-        reactiveValue.set(getText().toString());
+        mReactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(
@@ -91,10 +52,7 @@ public class ReactiveTextView extends TextView implements INamed {
             @NonNull @nonnull final AttributeSet attrs) {
         super(context, attrs);
 
-///        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
-        reactiveValue.set(getText().toString());
+        mReactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(
@@ -103,10 +61,7 @@ public class ReactiveTextView extends TextView implements INamed {
             @StyleRes final int defStyle) {
         super(context, attrs, defStyle);
 
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.add(mOrigin);
-//        }
-        reactiveValue.set(getText().toString());
+        mReactiveValue.set(getText().toString());
     }
 
     @TargetApi(21)
@@ -117,7 +72,7 @@ public class ReactiveTextView extends TextView implements INamed {
             @StyleRes final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        reactiveValue.set(getText().toString());
+        mReactiveValue.set(getText().toString());
     }
 
     @NonNull
@@ -129,9 +84,9 @@ public class ReactiveTextView extends TextView implements INamed {
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        if (reactiveSource != null) {
-            reactiveValue.unsubscribeSource("onDetachedFromWindow", reactiveSource);
-            reactiveSource = null;
+        if (mReactiveSource != null) {
+            mReactiveValue.unsubscribeSource("onDetachedFromWindow", mReactiveSource);
+            mReactiveSource = null;
         }
         super.onDetachedFromWindow();
     }
@@ -145,7 +100,7 @@ public class ReactiveTextView extends TextView implements INamed {
     }
 
     private void subscribe() {
-        reactiveSource = reactiveValue.subscribe(UI, this::setText);
+        mReactiveSource = mReactiveValue.subscribe(UI, this::setText);
     }
 
     /**
@@ -155,15 +110,15 @@ public class ReactiveTextView extends TextView implements INamed {
      * @param fire          push the current value of the view model to the screen after this action completes on the UI thread
      */
     public void setReactiveValue(@NonNull @nonnull final ReactiveValue<String> reactiveValue, final boolean fire) {
-        assertNotNull(origin);
+        assertNotNull(mOrigin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute(() -> {
-            if (reactiveSource != null) {
-                reactiveValue.unsubscribeSource(s, reactiveSource);
+            if (mReactiveSource != null) {
+                reactiveValue.unsubscribeSource(s, mReactiveSource);
             }
-            vv(this, origin, s);
-            this.reactiveValue = reactiveValue;
+            vv(this, mOrigin, s);
+            this.mReactiveValue = reactiveValue;
             subscribe();
             if (fire) {
                 reactiveValue.fire();
@@ -174,13 +129,6 @@ public class ReactiveTextView extends TextView implements INamed {
     @NonNull
     @nonnull
     public ReactiveValue<String> getReactiveValue() {
-        return this.reactiveValue;
+        return this.mReactiveValue;
     }
-
-//    @Override // Object
-//    public void finalize() {
-//        if (INSTANCE_ORIGINS != null) {
-//            INSTANCE_ORIGINS.remove(this);
-//        }
-//    }
 }

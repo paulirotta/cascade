@@ -60,7 +60,7 @@ public class DefaultThreadType extends AbstractThreadType {
 
     private volatile boolean wakeUpIsPending = false; // Efficiency filter to wake the ServiceExecutor only once TODO Is there a simpler way with AtomicBoolean?
     private final Runnable wakeUpRunnable = () -> {
-        // Do nothing, this is just used for insurance fast flushing the ServiceExecutor queue when items are added out-of-order to the associated BlockingQueue
+        // Do nothing, this is just used for insurance fast flushing the ServiceExecutor mQueue when items are added out-of-order to the associated BlockingQueue
         wakeUpIsPending = false;
     };
 
@@ -77,7 +77,7 @@ public class DefaultThreadType extends AbstractThreadType {
     @SuppressWarnings("unchecked")
     public void runNext(@NonNull @nonnull final Runnable runnable) {
         int n;
-        if (inOrderExecution || (n = queue.size()) == 0) {
+        if (inOrderExecution || (n = mQueue.size()) == 0) {
             run(runnable);
             return;
         }
@@ -88,13 +88,13 @@ public class DefaultThreadType extends AbstractThreadType {
 
         // Out of order execution is permitted and desirable to finish functional chains we have started before clouding memory and execution queues by starting more
         if (isInOrderExecutor()) {
-            vv(origin, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
-            queue.add(runnable);
+            vv(mOrigin, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
+            mQueue.add(runnable);
         } else {
-            ((BlockingDeque) queue).addFirst(runnable);
+            ((BlockingDeque) mQueue).addFirst(runnable);
         }
-        if (!wakeUpIsPending && ++n != queue.size()) {
-            // The queue changed during submit- just be sure something is submitted to wake the executor right now to pull from the queue
+        if (!wakeUpIsPending && ++n != mQueue.size()) {
+            // The mQueue changed during submit- just be sure something is submitted to wake the executor right now to pull from the mQueue
             wakeUpIsPending = true;
             executorService.execute(wakeUpRunnable);
         }

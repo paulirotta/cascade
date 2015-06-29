@@ -36,16 +36,16 @@ import static com.futurice.cascade.Async.vv;
 public class ReactiveEditText extends EditText implements INamed {
     @Nullable
     @nullable
-    private final ImmutableValue<String> origin = isInEditMode() ? null : originAsync();
-    public volatile ReactiveValue<String> reactiveValue;
-    private TextWatcher textWatcher;
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
+    public volatile ReactiveValue<String> mReactiveValue;
+    private TextWatcher mTextWatcher;
 
 //TODO Constructors which support a string validator (example: trim whitespace or fix capitalization as you type)
 
     public ReactiveEditText(@NonNull @nonnull final Context context) {
         super(context);
 
-        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -53,7 +53,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context);
 
-        this.reactiveValue = reactiveValue;
+        this.mReactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
@@ -61,7 +61,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final AttributeSet attrs) {
         super(context, attrs);
 
-        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -70,7 +70,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs);
 
-        this.reactiveValue = reactiveValue;
+        this.mReactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
@@ -80,7 +80,7 @@ public class ReactiveEditText extends EditText implements INamed {
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
@@ -91,7 +91,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
 
-        this.reactiveValue = reactiveValue;
+        this.mReactiveValue = reactiveValue;
     }
 
     @TargetApi(21)
@@ -105,7 +105,7 @@ public class ReactiveEditText extends EditText implements INamed {
             final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        reactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     @TargetApi(21)
@@ -120,7 +120,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        this.reactiveValue = reactiveValue;
+        this.mReactiveValue = reactiveValue;
     }
 
     /**
@@ -136,7 +136,7 @@ public class ReactiveEditText extends EditText implements INamed {
             @NonNull @nonnull final ReactiveValue<String> reactiveValue,
             final boolean fire) {
         UI.run(() -> {
-            this.reactiveValue = reactiveValue;
+            this.mReactiveValue = reactiveValue;
             if (fire) {
                 reactiveValue.fire();
             }
@@ -155,16 +155,16 @@ public class ReactiveEditText extends EditText implements INamed {
     @Override // View
     @UiThread
     public void onAttachedToWindow() {
-        assertNotNull(origin);
-        final String currentText = reactiveValue.get();
+        assertNotNull(mOrigin);
+        final String currentText = mReactiveValue.get();
         setText(currentText);
 
-        vv(this, origin, "onAttachedToWindow " + getName() + ", value=" + currentText);
+        vv(this, mOrigin, "onAttachedToWindow " + getName() + ", value=" + currentText);
 
-        reactiveValue.subscribe(UI, this::setText);
+        mReactiveValue.subscribe(UI, this::setText);
 
-        if (textWatcher == null) {
-            textWatcher = new TextWatcher() {
+        if (mTextWatcher == null) {
+            mTextWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -175,10 +175,10 @@ public class ReactiveEditText extends EditText implements INamed {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    reactiveValue.set(s.toString());
+                    mReactiveValue.set(s.toString());
                 }
             };
-            this.addTextChangedListener(textWatcher);
+            this.addTextChangedListener(mTextWatcher);
         }
 
         super.onAttachedToWindow();
@@ -187,9 +187,9 @@ public class ReactiveEditText extends EditText implements INamed {
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        assertNotNull(origin);
-        vv(this, origin, "onDetachedFromWindow " + getName() + ", current value=" + getText());
-        reactiveValue.unsubscribeAll("onDetachedFromWindow");
+        assertNotNull(mOrigin);
+        vv(this, mOrigin, "onDetachedFromWindow " + getName() + ", current value=" + getText());
+        mReactiveValue.unsubscribeAll("onDetachedFromWindow");
 
         super.onDetachedFromWindow();
     }

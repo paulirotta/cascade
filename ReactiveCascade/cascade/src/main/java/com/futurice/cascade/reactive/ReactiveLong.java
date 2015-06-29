@@ -66,7 +66,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
             }
-            ii(this, origin, "Collision in concurrent add, will try again: " + currentValue);
+            ii(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -85,7 +85,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
             if (compareAndSet(currentValue, currentValue * l)) {
                 return currentValue;
             }
-            ii(this, origin, "Collision in concurrent add, will try again: " + currentValue);
+            ii(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 

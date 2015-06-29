@@ -71,24 +71,24 @@ import static com.futurice.cascade.Async.vv;
  * You may prefer toKey use {@link ImmutableValue} that a similar need in some cases. That is a
  * slightly faster, simpler implementation than {@link SettableAltFuture}.
  * <p>
- * TODO Would it be helpful for debugging toKey store and pass forward a reference toKey the object which originally detected the problem? It might help with filtering what onFireAction you want toKey do onError
+ * TODO Would it be helpful for debugging toKey store and pass forward a reference toKey the object which originally detected the problem? It might help with filtering what mOnFireAction you want toKey do mOnError
  */
 @NotCallOrigin
 public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
-    protected final AtomicReference<Object> stateAR = new AtomicReference<>(ZEN);
-    protected final ImmutableValue<String> origin;
-    protected final IThreadType threadType;
-    protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> thenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this onFireAction completes
+    protected final AtomicReference<Object> mStateAR = new AtomicReference<>(ZEN);
+    protected final ImmutableValue<String> mOrigin;
+    protected final IThreadType mThreadType;
+    protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> mThenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this mOnFireAction completes
     @Nullable
     @nullable
-    private volatile IOnErrorAction onError;
+    private volatile IOnErrorAction mOnError;
     @Nullable
     @nullable
-    private volatile IAltFuture<?, IN> previousAltFuture = null;
+    private volatile IAltFuture<?, IN> mPreviousAltFuture = null;
 
     public SettableAltFuture(@NonNull @nonnull final IThreadType threadType) {
-        this.threadType = threadType;
-        this.origin = Async.originAsync();
+        this.mThreadType = threadType;
+        this.mOrigin = Async.originAsync();
     }
 
     public SettableAltFuture(
@@ -102,7 +102,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     private void assertNotForked() {
         if (Async.DEBUG && isForked()) {
-            throwIllegalStateException(this, origin, "You attempted toKey set AltFuture.onError() after fork() or cancel(). That is not meaningful (except as a race condition..:)");
+            throwIllegalStateException(this, mOrigin, "You attempted toKey set AltFuture.mOnError() after fork() or cancel(). That is not meaningful (except as a race condition..:)");
         }
     }
 
@@ -110,9 +110,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     private IAltFuture<IN, OUT> setOnError(@NonNull @nonnull final IOnErrorAction action) {
         assertNotForked();
-        Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .onError() which you think is upchain but is actually concurrent?", this.onError == null);
+        Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .mOnError() which you think is upchain but is actually concurrent?", this.mOnError == null);
 
-        this.onError = action;
+        this.mOnError = action;
 
         return this;
     }
@@ -121,15 +121,15 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @CallOrigin
     public boolean cancel(@NonNull @nonnull final String reason) {
         assertNotDone();
-        if (stateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
-            dd(this, origin, "Cancelled: reason=" + reason);
+        if (mStateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
+            dd(this, mOrigin, "Cancelled: reason=" + reason);
             return true;
         } else {
-            final Object state = stateAR.get();
+            final Object state = mStateAR.get();
             if (state instanceof AltFutureStateCancelled) {
-                dd(this, origin, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted cancellation reason=" + state);
+                dd(this, mOrigin, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted cancellation reason=" + state);
             } else {
-                dd(this, origin, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted successful completion value=" + state);
+                dd(this, mOrigin, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted successful completion value=" + state);
             }
             return false;
         }
@@ -141,19 +141,19 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         assertNotDone();
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
-        if (stateAR.compareAndSet(ZEN, errorState)) {
-            dd(this, origin, "Cancelled fromKey ZEN state: reason=" + reason);
+        if (mStateAR.compareAndSet(ZEN, errorState)) {
+            dd(this, mOrigin, "Cancelled fromKey ZEN state: reason=" + reason);
             return true;
         } else {
-            if (stateAR.compareAndSet(FORKED, errorState)) {
-                dd(this, origin, "Cancelled fromKey FORKED state: reason=" + reason);
+            if (mStateAR.compareAndSet(FORKED, errorState)) {
+                dd(this, mOrigin, "Cancelled fromKey FORKED state: reason=" + reason);
                 return true;
             } else {
-                final Object state = stateAR.get();
+                final Object state = mStateAR.get();
                 if (state instanceof IAltFutureStateCancelled) {
-                    dd(this, origin, "Ignoring duplicate cancel. The ignored reason=" + reason + " e=" + e + ". The previously accepted cancellation reason=" + state);
+                    dd(this, mOrigin, "Ignoring duplicate cancel. The ignored reason=" + reason + " e=" + e + ". The previously accepted cancellation reason=" + state);
                 } else {
-                    dd(this, origin, "Ignoring duplicate cancel. The ignored reason=" + reason + " e=" + e + ". The previously accepted successful completion value=" + state);
+                    dd(this, mOrigin, "Ignoring duplicate cancel. The ignored reason=" + reason + " e=" + e + ". The previously accepted successful completion value=" + state);
                 }
                 return false;
             }
@@ -162,7 +162,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     public boolean isCancelled() {
-        return isCancelled(stateAR.get());
+        return isCancelled(mStateAR.get());
     }
 
     protected final boolean isCancelled(@NonNull @nonnull final Object objectThatMayBeAState) {
@@ -171,7 +171,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     public final boolean isDone() {
-        return isDone(stateAR.get());
+        return isDone(mStateAR.get());
     }
 
     protected boolean isDone(@NonNull @nonnull final Object state) {
@@ -182,7 +182,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public boolean isConsumed() {
         assertErrorState();
 
-        return isConsumed(stateAR.get());
+        return isConsumed(mStateAR.get());
     }
 
     protected boolean isConsumed(@NonNull @nonnull final Object state) {
@@ -191,7 +191,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     public final boolean isForked() {
-        return isForked(stateAR.get());
+        return isForked(mStateAR.get());
     }
 
     protected boolean isForked(@NonNull @nonnull final Object state) {
@@ -209,15 +209,15 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             previousAltFuture.fork();
             return this;
         } else {
-            if (stateAR.compareAndSet(ZEN, FORKED) ||
-                    ((state = stateAR.get()) instanceof AltFutureStateSetButNotYetForked) &&
-                            stateAR.compareAndSet(state, ((AltFutureStateSetButNotYetForked) state).value)) {
+            if (mStateAR.compareAndSet(ZEN, FORKED) ||
+                    ((state = mStateAR.get()) instanceof AltFutureStateSetButNotYetForked) &&
+                            mStateAR.compareAndSet(state, ((AltFutureStateSetButNotYetForked) state).value)) {
                 // You are here because you were in ZEN or StateSetButNotYetForked (which is now successfully atomically changed toKey a final isDone() state)
                 doFork();
                 return this;
             }
         }
-        dd(this, origin, "Warning: Ignoring attempt toKey fork() forked/completed/cancelled/error-state AltFuture. This may be a normal race condition, or maybe you fork() multiple times. state= " + stateAR.get());
+        dd(this, mOrigin, "Warning: Ignoring attempt toKey fork() forked/completed/cancelled/error-state AltFuture. This may be a normal race condition, or maybe you fork() multiple times. state= " + mStateAR.get());
 
         return this;
     }
@@ -235,8 +235,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull final IAltFuture<P, IN> altFuture) {
-        Async.assertTrue("previousAltFuture must be null", previousAltFuture == null);
-        this.previousAltFuture = altFuture;
+        Async.assertTrue("mPreviousAltFuture must be null", mPreviousAltFuture == null);
+        this.mPreviousAltFuture = altFuture;
 
         return this;
     }
@@ -251,7 +251,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     protected final void clearPreviousAltFuture() {
         if (isDone()) {
-            this.previousAltFuture = null;
+            this.mPreviousAltFuture = null;
         }
     }
 
@@ -260,7 +260,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nullable
     @SuppressWarnings("unchecked")
     public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture() {
-        return (IAltFuture<UPCHAIN_IN, IN>) this.previousAltFuture;
+        return (IAltFuture<UPCHAIN_IN, IN>) this.mPreviousAltFuture;
     }
 
     protected void assertNotDone() {
@@ -272,13 +272,13 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @SuppressWarnings("unchecked")
     public OUT get() {
-        final Object state = stateAR.get();
+        final Object state = mStateAR.get();
 
         if (!isDone(state)) {
-            throwIllegalStateException(this, origin, "Attempt toKey get() AltFuture that is not yet finished. state=" + state);
+            throwIllegalStateException(this, mOrigin, "Attempt toKey get() AltFuture that is not yet finished. state=" + state);
         }
         if (isCancelled(state)) {
-            throwIllegalStateException(this, origin, "Attempt toKey get() AltFuture that is cancelled: state=" + state);
+            throwIllegalStateException(this, mOrigin, "Attempt toKey get() AltFuture that is cancelled: state=" + state);
         }
 
         return (OUT) state;
@@ -289,7 +289,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nullable
     @SuppressWarnings("unchecked")
     public OUT safeGet() {
-        final Object state = stateAR.get();
+        final Object state = mStateAR.get();
 
         if (!isDone(state) || isCancelled(state)) {
             return null;
@@ -303,7 +303,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     public final IThreadType getThreadType() {
-        return this.threadType;
+        return this.mThreadType;
     }
 
     /**
@@ -337,27 +337,23 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     public void set(@NonNull @nonnull final OUT value) throws Exception {
-        if (stateAR.compareAndSet(ZEN, new AltFutureStateSetButNotYetForked(value))) {
-            // Previous state was ZEN, so accept it but do not enter isDone() and complete .subscribe() onFireAction until after .fork() is called
+        if (mStateAR.compareAndSet(ZEN, new AltFutureStateSetButNotYetForked(value))) {
+            // Previous state was ZEN, so accept it but do not enter isDone() and complete .subscribe() mOnFireAction until after .fork() is called
             if (DEBUG) {
-                final int n = thenAltFutureList.size();
-                if (n != 0) {
-                    dd(this, origin, "Set value= " + value);
-                } else {
-                    dd(this, origin, "Set value= " + value + "\nWe can not do the " + n + " down-chain actions because .fork() has not been called yet");
-                }
+                final int n = mThenAltFutureList.size();
+                vv(this, mOrigin, "Set value= " + value);
             }
             return;
         }
 
-        if (stateAR.compareAndSet(FORKED, value)) {
-            // Previous state was FORKED, so set completes the onFireAction and continues the chain
+        if (mStateAR.compareAndSet(FORKED, value)) {
+            // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
             if (DEBUG) {
-                final int n = thenAltFutureList.size();
+                final int n = mThenAltFutureList.size();
                 if (n == 0) {
-                    vv(this, origin, "SettableAltFuture set, value= " + value);
+                    vv(this, mOrigin, "SettableAltFuture set, value= " + value);
                 } else {
-                    vv(this, origin, "SettableAltFuture set, value= " + value + "\nWe now fork() the " + thenAltFutureList.size() + " down-chain actions because this.fork() was called previously");
+                    vv(this, mOrigin, "SettableAltFuture set, value= " + value + "\nWe now fork() the " + mThenAltFutureList.size() + " down-chain actions because this.fork() was called previously");
                 }
             }
             doThenActions();
@@ -365,14 +361,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         // Already set, cancelled or error state
-        throwIllegalStateException(this, origin, "Attempted toKey set " + this + " toKey value=" + value + ", but the value can only be set once");
+        throwIllegalStateException(this, mOrigin, "Attempted toKey set " + this + " toKey value=" + value + ", but the value can only be set once");
     }
 
     @Override // IAltFuture
     public void doThenOnCancelled(@NonNull @nonnull final CancellationException cancellationException) throws Exception {
-        vv(this, origin, "Handling doThenOnCancelled " + origin + " for reason=" + cancellationException);
-        this.stateAR.set(cancellationException);
-        final IOnErrorAction oe = this.onError;
+        vv(this, mOrigin, "Handling doThenOnCancelled " + mOrigin + " for reason=" + cancellationException);
+        this.mStateAR.set(cancellationException);
+        final IOnErrorAction oe = this.mOnError;
 
         if (oe != null && oe.call(cancellationException)) {
             return; // Error chain was consumed
@@ -393,7 +389,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      * @throws Exception
      */
     private void forEachThen(@NonNull @nonnull final IActionOne<IAltFuture<OUT, ?>> action) throws Exception {
-        final Iterator<IAltFuture<OUT, ?>> iterator = thenAltFutureList.iterator();
+        final Iterator<IAltFuture<OUT, ?>> iterator = mThenAltFutureList.iterator();
 
         while (iterator.hasNext()) {
             action.call(iterator.next());
@@ -403,9 +399,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NotCallOrigin
     @Override // IAltFuture
     public void doThenOnError(@NonNull @nonnull final IAltFutureState state) throws Exception {
-        vv(this, origin, "Handling doThenOnError(): " + state);
-        this.stateAR.set(state);
-        final IOnErrorAction oe = onError;
+        vv(this, mOrigin, "Handling doThenOnError(): " + state);
+        this.mStateAR.set(state);
+        final IOnErrorAction oe = mOnError;
         boolean consumed = false;
 
         if (oe != null) {
@@ -430,19 +426,19 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public IAltFuture<OUT, OUT> onError(@NonNull @nonnull final IOnErrorAction action) {
         setOnError(action);
 
-        //NOTE: onError must return a new object toKey allow proper chaining of onError actions
-        if (previousAltFuture != null) {
-            return new AltFuture<>(threadType, out -> out);
+        //NOTE: mOnError must return a new object toKey allow proper chaining of mOnError actions
+        if (mPreviousAltFuture != null) {
+            return new AltFuture<>(mThreadType, out -> out);
         }
 
         // No input argument, head of chain
-        return new AltFuture<>(threadType, () -> {
+        return new AltFuture<>(mThreadType, () -> {
         });
     }
 
     private void assertErrorState() {
-        if (DEBUG && !(stateAR.get() instanceof AltFutureStateError)) {
-            throwIllegalStateException(this, origin, "Do not call doThenOnError() directly. It can only be called when we are already in an error state and this is done for you when the AltFuture enters an error state by running code which throws an Exception");
+        if (DEBUG && !(mStateAR.get() instanceof AltFutureStateError)) {
+            throwIllegalStateException(this, mOrigin, "Do not call doThenOnError() directly. It can only be called when we are already in an error state and this is done for you when the AltFuture enters an error state by running code which throws an Exception");
         }
     }
 
@@ -451,9 +447,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     private <N> IAltFuture<OUT, N> addToThenQueue(@NonNull @nonnull final IAltFuture<OUT, N> altFuture) {
         altFuture.setPreviousAltFuture(this);
-        this.thenAltFutureList.add(altFuture);
+        this.mThenAltFutureList.add(altFuture);
         if (isDone()) {
-            vv(this, origin, "Warning: an AltFuture was added as a .subscribe() onFireAction toKey an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
+            vv(this, mOrigin, "Warning: an AltFuture was added as a .subscribe() mOnFireAction toKey an already completed AltFuture. Being aggressive, are you? It is supported but in most cases you probably want top setup your entire chain before you fork any part of it");
 //            altFuture.map((IActionOne) v -> {
 //                visualize(mOrigin.getName(), v.toString(), "AltFuture");
 //            });
@@ -464,17 +460,17 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     protected void doThenActions() throws Exception {
-        //vv(mOrigin, TAG, "Start doThenActions, count=" + this.thenAltFutureList.size() + ", state=" + stateAR.get());
+        //vv(mOrigin, TAG, "Start doThenActions, count=" + this.mThenAltFutureList.size() + ", state=" + mStateAR.get());
         if (DEBUG && !isDone()) {
-//            vv(this, origin, "This AltFuture is not yet done, so can't doNextActions() yet");
+//            vv(this, mOrigin, "This AltFuture is not yet done, so can't doNextActions() yet");
             return;
         }
 
-        if (thenAltFutureList.isEmpty()) {
+        if (mThenAltFutureList.isEmpty()) {
             return;
         }
 
-        final Object state = this.stateAR.get();
+        final Object state = this.mStateAR.get();
         if (state instanceof IAltFutureStateCancelled) {
             if (state instanceof AltFutureStateCancelled || isConsumed(state)) {
                 final String reason = ((AltFutureStateCancelled) state).reason;
@@ -492,7 +488,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         } else {
             forEachThen(af -> {
                 if (af.isForked()) {
-                    vv(this, origin, "Potential race such as adding .subscribe() after .fork(): This is acceptable but aggressive. doThenActions() finds one of the actions chained after the current AltFuture has already been forked: " + af);
+                    vv(this, mOrigin, "Potential race such as adding .subscribe() after .fork(): This is acceptable but aggressive. doThenActions() finds one of the actions chained after the current AltFuture has already been forked: " + af);
                 } else {
                     af.fork();
                 }
@@ -521,7 +517,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             @NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
-            dd(this, origin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
+            dd(this, mOrigin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
             altFuture.fork();
         }
 
@@ -534,7 +530,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull @nonnull final IActionOne<OUT> action) {
-        return then(threadType, action);
+        return then(mThreadType, action);
     }
 
     @Override // IAltFuture
@@ -553,7 +549,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
-        return then(threadType, action);
+        return then(mThreadType, action);
     }
 
     @Override // IAltFuture
@@ -571,7 +567,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        return then(threadType, action);
+        return then(mThreadType, action);
     }
 
     @Override // IAltFuture
@@ -589,7 +585,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IAction<OUT> action) {
-        return then(threadType, action);
+        return then(mThreadType, action);
     }
 
     @Override // IAltFuture
@@ -607,7 +603,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
-        return map(threadType, action);
+        return map(mThreadType, action);
     }
 
     @Override // IAltFuture
@@ -635,7 +631,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull final IActionOneR<IN, Boolean> action) {
-        return filter(threadType, action);
+        return filter(mThreadType, action);
     }
 
     @Override // IAltFuture

@@ -68,7 +68,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static final int INIT_READ_TIMEOUT_SECONDS = 10;
 
     private static final ConcurrentHashMap<String, AltWeakReference<PersistentValue<?>>> PERSISTENT_VALUES = new ConcurrentHashMap<>();
-    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered queue so we can read and write things as quickly as possible.
+    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
     private static final IThreadType persistentValueThreadType = new DefaultThreadType("PersistentValueThreadType", Executors.newSingleThreadExecutor(), new LinkedBlockingQueue<>());
     private static final SharedPreferences.OnSharedPreferenceChangeListener sharedPreferencesListener = (sharedPreference, key) -> {
         final WeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(key);
@@ -115,8 +115,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             return null;
         }
 
-        if (!pv.onError.equals(onErrorAction)) {
-            ii(pv, pv.origin, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first onError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
+        if (!pv.mOnError.equals(onErrorAction)) {
+            ii(pv, pv.mOrigin, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first mOnError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
         }
 
         return pv;
@@ -154,7 +154,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             persistentValue = new PersistentValue<>(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError, context);
         } else {
             final TT tt = persistentValue.get();
-            vv(TAG, persistentValue.origin, "Found existing PersistentValue name=" + name + " with existing value: " + tt);
+            vv(TAG, persistentValue.mOrigin, "Found existing PersistentValue name=" + name + " with existing value: " + tt);
         }
 
         return persistentValue;
@@ -177,11 +177,11 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         try {
             init(context);
         } catch (Exception e) {
-            ee(this, origin, "Can not initialize", e);
+            ee(this, mOrigin, "Can not initialize", e);
             try {
-                threadType.then(() -> this.onError.call(e));
+                threadType.then(() -> this.mOnError.call(e));
             } catch (Exception e2) {
-                ee(this, origin, "Can not call onError after failure to initialize: " + e, e2);
+                ee(this, mOrigin, "Can not call mOnError after failure to initialize: " + e, e2);
             }
         }
     }
@@ -189,7 +189,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @CallSuper
     @SuppressWarnings("unchecked")
     protected void onSharedPreferenceChanged() {
-        vv(this, origin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
+        vv(this, mOrigin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
         if (classOfPersistentValue == String.class) {
             super.set((T) sharedPreferences.getString(key, (String) defaultValue));
         } else if (classOfPersistentValue == Integer.class) {
@@ -219,16 +219,16 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         new AltFutureFuture<>(persistentValueThreadType.then(() -> {
             final AltWeakReference<PersistentValue<?>> previouslyInitializedPersistentValue = PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), new AltWeakReference<>(this));
             if (previouslyInitializedPersistentValue != null) {
-                ii(this, origin, "WARNING: PersistentValue has already been initialized, a possible race condition resulting in indeterminate initial value may exist");
+                ii(this, mOrigin, "WARNING: PersistentValue has already been initialized, a possible race condition resulting in indeterminate initial value may exist");
             }
             sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
             if (sharedPreferences.contains(key)) {
-                vv(this, origin, "PersistentValue value loadedd from flash memory");
+                vv(this, mOrigin, "PersistentValue value loadedd from flash memory");
                 onSharedPreferenceChanged();
             }
         })
-                .onError(onError)
+                .onError(mOnError)
                 .fork()
         )
                 .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS); // Wait for initialization on the other thread
@@ -356,7 +356,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     public boolean set(@NonNull @nonnull final T value) {
         final boolean valueChanged = super.set(value);
 
-        vv(this, origin, "PersistentValue \"" + getName() + "\" persist soon, value=" + value);
+        vv(this, mOrigin, "PersistentValue \"" + getName() + "\" persist soon, value=" + value);
         persistentValueThreadType.then(() -> {
             final SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -384,9 +384,9 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             if (!editor.commit()) {
                 throw new RuntimeException("Failed to commit PersistentValue value=" + value + ". Probably some other thread besides Async.Net.NET_WRITE is concurrently updating SharedPreferences for this Context");
             }
-            vv(this, origin, "Successful PersistentValue persist, value=" + value);
+            vv(this, mOrigin, "Successful PersistentValue persist, value=" + value);
         })
-                .onError(onError)
+                .onError(mOnError)
                 .fork();
 
         return valueChanged;

@@ -27,7 +27,7 @@ package com.futurice.cascade.i;
 /**
  * This is a marker interface which other functional interfaces extend
  *
- * Implementing this interface indicates a primary onFireAction, usually one executed asynchronously on
+ * Implementing this interface indicates a primary mOnFireAction, usually one executed asynchronously on
  * an {@link com.futurice.cascade.i.IThreadType}
  */
 public interface IBaseAction<PHANTOM_IN> {

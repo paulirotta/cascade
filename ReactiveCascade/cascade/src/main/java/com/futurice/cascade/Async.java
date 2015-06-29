@@ -109,7 +109,7 @@ public final class Async {
 
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
-     * guaranteed asynchronous operations that will cooperate (queue) when all device cores are busy.
+     * guaranteed asynchronous operations that will cooperate (mQueue) when all device cores are busy.
      * Special configurations with {@link AsyncBuilder} may choose to modify this behaviour.
      * <p>
      * <code><pre>

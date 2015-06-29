@@ -33,7 +33,7 @@ import com.futurice.cascade.active.IAltFuture;
  * Long running tasks such as {@link IAltFuture} must
  * periodically check {@link #isCancelled()} and terminate early.
  *
- * This is a cooperative onFireAction replacing more agressive techniques such as
+ * This is a cooperative mOnFireAction replacing more agressive techniques such as
  * {@link java.util.concurrent.Future#cancel(boolean)} and {@link java.lang.InterruptedException}
  * which lead to erratic results due to real world limitations such as underlying stateful code
  * which may not clean itself up properly.

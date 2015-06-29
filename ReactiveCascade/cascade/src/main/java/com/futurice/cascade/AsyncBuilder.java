@@ -41,10 +41,10 @@ import java.util.concurrent.atomic.*;
 
 /**
  * <code><pre>
- *     public static IThreadType threadType;
+ *     public static IThreadType mThreadType;
  * .. onCreate ..
- * if (threadType == null) {
- *    threadType = new ThreadTypeBuilder(this.getApplicationContext()).build();
+ * if (mThreadType == null) {
+ *    mThreadType = new ThreadTypeBuilder(this.getApplicationContext()).build();
  * } *
  * </pre></code>
  * <p>
@@ -341,7 +341,7 @@ public class AsyncBuilder {
 
     public static BlockingQueue<Runnable> getWorkerQueue() {
         if (workerQueue == null) {
-            Log.d(TAG, "Creating default worker queue");
+            Log.d(TAG, "Creating default worker mQueue");
             setWorkerQueue(new LinkedBlockingDeque<>());
         }
 
@@ -357,7 +357,7 @@ public class AsyncBuilder {
     @NonNull
     public static BlockingQueue<Runnable> getSerialWorkerQueue() {
         if (serialWorkerQueue == null) {
-            Log.d(TAG, "Creating default in-order worker queue");
+            Log.d(TAG, "Creating default in-order worker mQueue");
             setSerialWorkerQueue(new DoubleQueue<>(getWorkerQueue()));
         }
 
@@ -372,7 +372,7 @@ public class AsyncBuilder {
     @NonNull
     public BlockingQueue<Runnable> getFileQueue() {
         if (fileQueue == null) {
-            Log.d(TAG, "Creating default file read queue");
+            Log.d(TAG, "Creating default file read mQueue");
             setFileQueue(new LinkedBlockingDeque<>());
         }
 
@@ -392,7 +392,7 @@ public class AsyncBuilder {
     @NonNull
     public BlockingQueue<Runnable> getNetReadQueue() {
         if (netReadQueue == null) {
-            Log.d(TAG, "Creating default net read queue");
+            Log.d(TAG, "Creating default net read mQueue");
             setNetReadQueue(new LinkedBlockingDeque<>());
         }
 
@@ -402,7 +402,7 @@ public class AsyncBuilder {
     @NonNull
     public BlockingQueue<Runnable> getNetWriteQueue() {
         if (netWriteQueue == null) {
-            Log.d(TAG, "Creating default worker net write queue");
+            Log.d(TAG, "Creating default worker net write mQueue");
             setNetWriteQueue(new LinkedBlockingDeque<>());
         }
 
@@ -420,7 +420,7 @@ public class AsyncBuilder {
                             runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "FileThread" + threadNumber.getAndIncrement()))
             );
         }
-        //TODO else Warn if threadType does match the previously created IThreadType parameter
+        //TODO else Warn if mThreadType does match the previously created IThreadType parameter
 
         return fileReadExecutorService;
     }

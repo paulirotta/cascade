@@ -66,7 +66,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
             if (compareAndSet(currentValue, currentValue + i)) {
                 return currentValue;
             }
-            ii(this, origin, "Collision concurrent add, will try again: " + currentValue);
+            ii(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -85,7 +85,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
             if (compareAndSet(currentValue, currentValue * i)) {
                 return currentValue;
             }
-            ii(this, origin, "Collision concurrent add, will try again: " + currentValue);
+            ii(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 

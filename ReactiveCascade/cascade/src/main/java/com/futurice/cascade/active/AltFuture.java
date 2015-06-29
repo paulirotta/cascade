@@ -54,15 +54,15 @@ import static com.futurice.cascade.Async.*;
  * of excessive concurrent resource allocations.
  * <p>
  * <p>
- * This is a {@link java.util.concurrent.Future} which will always call <code>onError</code> in case the
+ * This is a {@link java.util.concurrent.Future} which will always call <code>mOnError</code> in case the
  * task is canceled or has an execution error.
  * <p>
  * This class is usually created by an underlying library split returned as a cancellation-token-style response
  * fromKey, for example, {@link com.futurice.cascade.i.IThreadType} methods which receive <code>onSuccess</code> split
- * <code>onError</code> arguments.
+ * <code>mOnError</code> arguments.
  * <p>
  * The recommended use is: provide <code>onSuccess</code> split
- * <code>onError</code> as a lambda expression toKey {@link com.futurice.cascade.i.IThreadType} or
+ * <code>mOnError</code> as a lambda expression toKey {@link com.futurice.cascade.i.IThreadType} or
  * {@link com.futurice.cascade.Async}. Only use this token toKey call <code>cancel(String reason)</code> toKey cancel
  * on expensive operations such as networking if you are no longer interested in receiving the result.
  * <p>
@@ -78,7 +78,7 @@ import static com.futurice.cascade.Async.*;
  * <p>
  * fail fast - check for problems as they are created split halt debugOrigin build runs immediately
  * <p>
- * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no onFireAction is taken
+ * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no mOnFireAction is taken
  * <p>
  * fail here - directly at the point in the code where the mistake is most likely toKey be
  * <p>
@@ -121,7 +121,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
                 out = (OUT) paf.get();
             }
             action.call();
-            return out; // T and A are the same when there is no return type fromKey the onFireAction
+            return out; // T and A are the same when there is no return type fromKey the mOnFireAction
         };
     }
 
@@ -145,7 +145,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
             final IN in = paf.get();
             action.call(in);
-            return (OUT) in; // T and A are the same when there is no return type fromKey the onFireAction
+            return (OUT) in; // T and A are the same when there is no return type fromKey the mOnFireAction
         };
     }
 
@@ -190,28 +190,28 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Stop this task if possible. This is a cooperative cancel. It will be ignored if execution has
      * already passed the point at which cancellation is possible.
      * <p>
-     * If cancellation is still possible at this time, subscribe <code>onError</code> in this split any downstream
+     * If cancellation is still possible at this time, subscribe <code>mOnError</code> in this split any downstream
      * active chain will be notified of the cancellation split reason for cancellation.
      * <p>
-     * Note that cancel(reason) may show up as onError() errors in the near future on operations that
+     * Note that cancel(reason) may show up as mOnError() errors in the near future on operations that
      * have already started but detect cancellation only after completion with any possible side effects.
-     * If needed, it is the responsibility of the onError onFireAction toKey possibly unwind the side effects.
+     * If needed, it is the responsibility of the mOnError mOnFireAction toKey possibly unwind the side effects.
      *
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
      */
     @CallSuper
     public boolean cancel(@NonNull @nonnull final String reason) {
-        final Object state = stateAR.get();
+        final Object state = mStateAR.get();
 
         if (state instanceof AltFutureStateCancelled) {
-            dd(this, origin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
+            dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
         } else {
-            if (stateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
-                dd(this, origin, "Cancelled, reason=" + reason);
+            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
+                dd(this, mOrigin, "Cancelled, reason=" + reason);
                 return true;
             } else {
-                dd(this, origin, "Ignoring cancel (reason=" + reason + ") due toKey a concurrent state change during cancellation\nstate=" + state);
+                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due toKey a concurrent state change during cancellation\nstate=" + state);
             }
         }
         return false;
@@ -229,18 +229,18 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     public final void run() {
         try {
             if (isCancelled()) {
-                dd(this, origin, "AltFuture was cancelled before execution. state=" + stateAR.get());
-                throw new CancellationException("Cancelled before execution started: " + stateAR.get().toString());
+                dd(this, mOrigin, "AltFuture was cancelled before execution. state=" + mStateAR.get());
+                throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
             }
-            if (!stateAR.compareAndSet(FORKED, action.call())) {
-                dd(this, origin, "AltFuture was cancelled() or otherwise changed during execution. Returned value of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in onError()/onCatch() are still in effect. state=" + stateAR.get());
-                throw new CancellationException(stateAR.get().toString());
+            if (!mStateAR.compareAndSet(FORKED, action.call())) {
+                dd(this, mOrigin, "AltFuture was cancelled() or otherwise changed during execution. Returned value of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
+                throw new CancellationException(mStateAR.get().toString());
             }
         } catch (Exception e) {
             if (e instanceof CancellationException || e instanceof InterruptedException) {
                 this.cancel("AltFuture had a problem (may be normal, will not fail fast)", e);
             } else {
-                this.stateAR.set(new AltFutureStateError("AltFuture run problem:\n" + origin, e));
+                this.mStateAR.set(new AltFutureStateError("AltFuture run problem:\n" + mOrigin, e));
             }
         } finally {
             try {
@@ -260,6 +260,6 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     @CallSuper
     @NotCallOrigin
     protected void doFork() {
-        this.threadType.fork(this);
+        this.mThreadType.fork(this);
     }
 }

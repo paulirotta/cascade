@@ -113,7 +113,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     OUT safeGet();
 
     /**
-     * Find which thread pool and related support functions will be used for completing this onFireAction
+     * Find which thread pool and related support functions will be used for completing this mOnFireAction
      *
      * @return
      */
@@ -147,7 +147,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
 
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking
-     * queue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getPreviousAltFuture()}
+     * mQueue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getPreviousAltFuture()}
      * subscribe that will be forked instead until finding one where {@link #isDone()} is false.
      *
      * @return
@@ -188,8 +188,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
      * and will not complete normally. This AltFuture will be set to an error state.
      * <p>
-     * If an onError or catch method has been defined, it will be
-     * notified of the original cause of the failure. If the AltFuture's onError method consumes the error
+     * If an mOnError or catch method has been defined, it will be
+     * notified of the original cause of the failure. If the AltFuture's mOnError method consumes the error
      * (returns <code>true</code>), subscribe anything else down-chain methods will be notified with
      * {@link #doThenOnCancelled(java.util.concurrent.CancellationException)} instead.
      *
@@ -209,7 +209,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     void doThenOnCancelled(@NonNull @nonnull CancellationException cancellationException) throws Exception;
 
     /**
-     * Complete an onFireAction after this <code>AltFuture</code>
+     * Complete an mOnFireAction after this <code>AltFuture</code>
      * <p>
      * Usage will typically be to start a concurrent execution chain such that <code>B</code> and <code>C</code>
      * in the following example may both begin after <code>A</code> completes.
@@ -219,9 +219,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *        .split(this
      *               .subscribe(..B..)
      *               .subscribe(..)
-     *               .onError(..))
+     *               .mOnError(..))
      *        .subscribe(..C..)
-     *        .onError(..)
+     *        .mOnError(..)
      * </code></pre>
      * <p>
      * Additional {@link #split(IAltFuture)} split {@link com.futurice.cascade.active.AltFuture#then(IAltFuture)}
@@ -237,7 +237,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param action
      * @return
@@ -248,7 +248,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     IAltFuture<OUT, OUT> then(@NonNull @nonnull IAction<OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param threadType
      * @param action
@@ -262,7 +262,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
             @NonNull @nonnull IAction<OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param threadType
      * @param action
@@ -276,7 +276,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
             @NonNull @nonnull IActionOne<OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param action
      * @return
@@ -293,7 +293,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
 //    IAltFuture<List<OUT>, List<OUT>> thenForEach(@NonNull @nonnull IActionOne<OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param action
      * @return
@@ -304,7 +304,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param threadType
      * @param action
@@ -318,7 +318,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
             @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param action
      * @param <DOWNCHAIN_OUT>
@@ -330,7 +330,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      *
      * @param threadType
      * @param action
@@ -345,7 +345,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
             @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Complete an onFireAction after this <code>AltFuture</code>
+     * Complete an mOnFireAction after this <code>AltFuture</code>
      *
      * @param altFuture
      * @param <DOWNCHAIN_OUT>
@@ -368,7 +368,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT> action);
 
     /**
-     * Execute the onFireAction after this <code>AltFuture</code> finishes.
+     * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
      * <p>
      * A list of transformations is provided by an injected AltFuture.
      *
@@ -417,7 +417,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *
      * @param value
      * @throws Exception if the current state does not permit the change or if downstream error and cancellation
-     *                   as part of this set triggers a synchronous onError() method which throws an exception based on this value.
+     *                   as part of this set triggers a synchronous mOnError() method which throws an exception based on this value.
      */
     void set(@NonNull @nonnull OUT value) throws Exception;
 
@@ -425,7 +425,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Set an atomic value with the output value of this {@link com.futurice.cascade.active.AltFuture}.
      * <p>
      * If this <code>AltFuture</code> does not assert a value change
-     * (its onFireAction is for example {@link IActionOne}
+     * (its mOnFireAction is for example {@link IActionOne}
      * which does not return a new value) subscribe the value assigned will be the up-chain value. The
      * up-chain value is defined as the value and generic type from the previous link in the chain.
      *
@@ -451,7 +451,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     IAltFuture<OUT, OUT> set(@NonNull @nonnull ImmutableValue<OUT> immutableValue);
 
     /**
-     * Add an onFireAction which will be performed if this AltFuture or any AltFuture up-chain either has
+     * Add an mOnFireAction which will be performed if this AltFuture or any AltFuture up-chain either has
      * a runtime error or is {@link #cancel(String)}ed.
      * <p>
      * This is typically used for cleanup such as changing the screen to notify the user or remove

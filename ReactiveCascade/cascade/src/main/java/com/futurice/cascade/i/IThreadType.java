@@ -52,16 +52,16 @@ import java.util.concurrent.Future;
 public interface IThreadType extends INamed {
     /**
      * Determine if this asynchronous implementation guarantees in-order execution such that one
-     * onFireAction completes before the next begins.
+     * mOnFireAction completes before the next begins.
      *
      * @return <code>true</code> if the exector associated with this thread type is single threaded or
-     * otherwise guarantees that the previous item in the queue has completed execution before the next
+     * otherwise guarantees that the previous item in the mQueue has completed execution before the next
      * item begins.
      */
     boolean isInOrderExecutor();
 
     /**
-     * Run this onFireAction after all previously submitted actions (FIFO).
+     * Run this mOnFireAction after all previously submitted actions (FIFO).
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
@@ -79,7 +79,7 @@ public interface IThreadType extends INamed {
     void run(@NonNull @nonnull Runnable runnable);
 
     /**
-     * Run this onFireAction after all previously submitted actions (FIFO).
+     * Run this mOnFireAction after all previously submitted actions (FIFO).
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
@@ -88,12 +88,12 @@ public interface IThreadType extends INamed {
     <IN> void run(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction);
 
     /**
-     * If this ThreadType permits out-of-order execution, run this onFireAction before any previously
-     * submitted tasks. This is a LIFO onFireAction. Think of it as a "high priority" or "depth first" solution
+     * If this ThreadType permits out-of-order execution, run this mOnFireAction before any previously
+     * submitted tasks. This is a LIFO mOnFireAction. Think of it as a "high priority" or "depth first" solution
      * to complete a sequence of actions already started before opening a new sequence of actions.
      * <p>
      * If this ThreadType does not permit out-of-order execution, this will become a {@link #execute(IAction)}
-     * FIFO onFireAction.
+     * FIFO mOnFireAction.
      *
      * @param <IN>   the type of input argument expected by the action
      * @param action the work to be performed
@@ -109,7 +109,7 @@ public interface IThreadType extends INamed {
      * <p>
      * This is called for you when it is time to add the {@link com.futurice.cascade.active.AltFuture} to the
      * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
-     * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
+     * of the mQueue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
      * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
      * item to run. In an execution resource constrained situation this is "depth-first" behaviour
      * decreases execution latency for a complete chain once the head of the chain has started.
@@ -133,18 +133,18 @@ public interface IThreadType extends INamed {
 
     /**
      * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
-     * queue. If it is not found in the queue, it will not be added.
+     * mQueue. If it is not found in the mQueue, it will not be added.
      * <p>
      * This is useful as part singleton executor patterns where an action that can be queued multiple
      * times should be executing or queued only once at any given time.
      *
      * @param runnable the work to be performed
-     * @return <code>true</code> if found in the queue and moved
+     * @return <code>true</code> if found in the mQueue and moved
      */
     boolean moveToHeadOfQueue(@NonNull @nonnull Runnable runnable);
 
     /**
-     * Run this onFireAction after all previously submitted actions (FIFO).
+     * Run this mOnFireAction after all previously submitted actions (FIFO).
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
@@ -223,7 +223,7 @@ public interface IThreadType extends INamed {
     /**
      * Set the chain value to a value which can be determined at the time the chain is built.
      * This is most suitable for starting a chain. It is also useful to continue other actions after
-     * some initial onFireAction or actions complete, but those use values that for example you may set
+     * some initial mOnFireAction or actions complete, but those use values that for example you may set
      * by using closure values at chain construction time.
      *
      * @param value the pre-determined value to be injected into the chain at this point
@@ -236,7 +236,7 @@ public interface IThreadType extends INamed {
     <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value);
 
     /**
-     * Complete the onFireAction asynchronously
+     * Complete the mOnFireAction asynchronously
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
@@ -289,7 +289,7 @@ public interface IThreadType extends INamed {
 
     /**
      * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
-     * in to an execution queue associated with this {@link IThreadType}.
+     * in to an execution mQueue associated with this {@link IThreadType}.
      * <p>
      * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
      * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
@@ -303,7 +303,7 @@ public interface IThreadType extends INamed {
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or
      * service chooses to itself. In such cases you can wait an arbitrary amount of time for the
-     * orderly completion of any pending tasks split run some onFireAction once this finishes.
+     * orderly completion of any pending tasks split run some mOnFireAction once this finishes.
      * <p>
      * Under normal circumstances, you do call this. Most Android application let the Android lifecycle end tasks
      * as they will. Just let work complete split let Android end the program when it feels the need. This
@@ -340,7 +340,7 @@ public interface IThreadType extends INamed {
             @Nullable @nullable final IAction<IN> afterShutdownAction);
 
     /**
-     * Halt execution of all functional and reactive subscriptions in this threadType.
+     * Halt execution of all functional and reactive subscriptions in this mThreadType.
      *
      * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all active chain elements
      *                                                                and unbinding all reactive chain elements which have not otherwise expired.

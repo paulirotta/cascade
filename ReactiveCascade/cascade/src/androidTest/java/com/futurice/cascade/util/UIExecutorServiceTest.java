@@ -112,7 +112,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         synchronized (looperFlushMutex) {
             uiExecutorService.execute(() -> {
                 synchronized (looperFlushMutex) {
-                    vv(origin, "Looper flushed");
+                    vv(mOrigin, "Looper flushed");
                     looperFlushMutex.notifyAll();
                 }
             });

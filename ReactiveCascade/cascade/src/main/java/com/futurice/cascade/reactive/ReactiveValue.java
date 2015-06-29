@@ -51,8 +51,8 @@ import static com.futurice.cascade.Async.vv;
  * calls may not result in all values
  * </p>
  * <p>
- * Bindings are thread safe. All reactiveTargets will refire concurrently if the {@link com.futurice.cascade.i.IThreadType}
- * allows, but individual reactiveTargets will never be called concurrently or out-of-sequence. Multiple
+ * Bindings are thread safe. All mReactiveTargets will refire concurrently if the {@link com.futurice.cascade.i.IThreadType}
+ * allows, but individual mReactiveTargets will never be called concurrently or out-of-sequence. Multiple
  * changes to the bound getValue within a short time relative to the current speed of the
  * {@link com.futurice.cascade.i.IThreadType} may coalesce into a single headFunctionalChainLink refire of only
  * the most recent getValue. Bound functions must be idempotent. Repeat firing of the same getValue
@@ -145,11 +145,11 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         final boolean valueChanged = !(value == previousValue || value.equals(previousValue) || (previousValue != null && previousValue.equals(value)));
 
         if (valueChanged) {
-            vv(this, origin, "Successful set(" + value + "), about to fire()");
+            vv(this, mOrigin, "Successful set(" + value + "), about to fire()");
             fire(value);
         } else {
             // The value has not changed
-            vv(this, origin, "set() value=" + value + " was already the value, so no change");
+            vv(this, mOrigin, "set() value=" + value + " was already the value, so no change");
         }
         return valueChanged;
     }
@@ -160,10 +160,10 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         final boolean success = this.valueAR.compareAndSet(expected, update);
 
         if (success) {
-            vv(this, origin, "Successful compareAndSet(" + expected + ", " + update + ")");
+            vv(this, mOrigin, "Successful compareAndSet(" + expected + ", " + update + ")");
             fire(update);
         } else {
-            dd(this, origin, "Failed compareAndSet(" + expected + ", " + update + "). The current value is " + get());
+            dd(this, mOrigin, "Failed compareAndSet(" + expected + ", " + update + "). The current value is " + get());
         }
 
         return success;
