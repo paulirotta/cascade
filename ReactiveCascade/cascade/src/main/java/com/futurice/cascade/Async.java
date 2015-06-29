@@ -138,13 +138,13 @@ public final class Async {
 
     /**
      * A group of background thread for concurrently reading from the network
-     *
+     * <p>
      * TODO Automatically adjusted thread pool size based on current connection type
      */
     public static final IThreadType NET_READ = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetReadThreadType();
     /**
      * A single thread for making writes to the network.
-     *
+     * <p>
      * Upstream bandwidth on mobile is generally quite limited, so one write at a time will tend to help
      * tasks finish more quickly. This also simplifies cache invalidation on POST and PUT operations more
      * coherent.
@@ -181,8 +181,7 @@ public final class Async {
                     Log.d(tag, "Problem while pausing before failfast system exit due to " + t, e2);
                 }
                 System.exit(errorCode);
-            }
-                    , "FailFastDelayThread")
+            }, "FailFastDelayThread")
                     .start();
         }
     }
@@ -214,11 +213,11 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
-     * @param t the {@link Throwable} which triggered this error message
+     * @param t       the {@link Throwable} which triggered this error message
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     public static boolean e(
@@ -242,9 +241,9 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
@@ -264,9 +263,9 @@ public final class Async {
     /**
      * Log a verbose message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
     public static void v(
@@ -278,9 +277,9 @@ public final class Async {
     /**
      * Log a debugOrigin message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
     public static void d(
@@ -292,9 +291,9 @@ public final class Async {
     /**
      * Log an information message including the thread name
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
     public static void i(
@@ -428,12 +427,15 @@ public final class Async {
      * @param message a message to display in the info log
      */
     public static void ii(
-            @NonNull @nonnull Object tag,
-            @NonNull @nonnull String message) {
+            @NonNull @nonnull final Object tag,
+            @NonNull @nonnull final String message) {
         debugOriginThen(origin -> i(tag, message + origin));
     }
 
-    private static String combineOriginStringsRemoveDuplicates(@NonNull @nonnull String origin1, @NonNull @nonnull String origin2, @NonNull @nonnull String message) {
+    private static String combineOriginStringsRemoveDuplicates(
+            @NonNull @nonnull final String origin1,
+            @NonNull @nonnull final String origin2,
+            @NonNull @nonnull final String message) {
         if (origin1.equals(origin2)) {
             return message + origin1;
         }
@@ -447,7 +449,8 @@ public final class Async {
      * @param tag a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
      */
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static String getTag(@NonNull @nonnull final Object tag) {
         if (tag instanceof String) {
             return (String) tag;
@@ -502,9 +505,9 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -518,10 +521,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
-     * @param origin a link to the point from which the object throwing the exception was called in the application code
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param origin  a link to the point from which the object throwing the exception was called in the application code
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -536,9 +539,9 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -552,10 +555,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
-     * @param origin the point from which the object throwing the exception was called
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param origin  the point from which the object throwing the exception was called
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -570,11 +573,11 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
-     * @param t the throwable which triggered this new {@link RuntimeException}
+     * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(
@@ -612,12 +615,12 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag a log line to aid with filtering such as the mOrigin from which the object throwing
-     *            the exception was created. This may be a {@link String}, {@link INamed},
-     *            {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
+     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     *                the exception was created. This may be a {@link String}, {@link INamed},
+     *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin  a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
-     * @param t the throwable which triggered this new {@link RuntimeException}
+     * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(
@@ -665,8 +668,9 @@ public final class Async {
      *
      * @return a string holder that will be populated in the background on a WORKER thread (only in {@link #DEBUG} builds)
      */
-    @NonNull @nonnull
-    @CheckResult(suggest="<local variable> mOrigin =")
+    @NonNull
+    @nonnull
+    @CheckResult(suggest = "<local variable> mOrigin =")
     public static ImmutableValue<String> originAsync() {
         //FIXME Example static iniailiazer object is not a clickable link: .<init>(ServiceSingleton.java:59))  DO STRING REPLACE on <init>
         if (!TRACE_ASYNC_ORIGIN) {
@@ -710,7 +714,7 @@ public final class Async {
      * async current call stack mOrigin are settled
      *
      * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
-     * @param action to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
+     * @param action               to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
      */
     private static void debugOriginThen(
             @NonNull @nonnull final ImmutableValue<String> objectCreationOrigin,
@@ -731,7 +735,8 @@ public final class Async {
         }
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> origin(@NonNull @nonnull final StackTraceElement[] traceElementsArray) {
         final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
 
@@ -756,7 +761,8 @@ public final class Async {
         return previousList;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> findClassAndMethod(@NonNull @nonnull final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
@@ -774,7 +780,8 @@ public final class Async {
         return lines;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> filterListByClass(
             @NonNull @nonnull final List<StackTaceLine> list,
             @NonNull @nonnull final IActionOneR<Class, Boolean> classFilter) throws
@@ -793,7 +800,8 @@ public final class Async {
         return list;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> filterListByClassAnnotation(
             @NonNull @nonnull final List<StackTaceLine> list,
             @NonNull @nonnull final Class<? extends Annotation> annotation,
@@ -813,7 +821,8 @@ public final class Async {
         return list;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> filterListByMethod(
             @NonNull @nonnull final List<StackTaceLine> list,
             @NonNull @nonnull final IActionOneR<Method, Boolean> methodFilter)
@@ -833,7 +842,8 @@ public final class Async {
         return list;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static List<StackTaceLine> filterListByPackage(
             @NonNull @nonnull final List<StackTaceLine> list,
             @NonNull @nonnull final IActionOneR<String, Boolean> packageFilter)
@@ -852,7 +862,8 @@ public final class Async {
         return list;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     private static String prettyFormat(@NonNull @nonnull final StackTraceElement stackTraceElement) {
         final String s = stackTraceElement.toString();
         final int i = stackTraceElement.getClassName().length();
@@ -871,7 +882,8 @@ public final class Async {
      *
      * @return the current ThreadType or {@link #NON_CASCADE_THREAD} if the type can be determined
      */
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     public static IThreadType currentThreadType() {
         final Thread thread = Thread.currentThread();
         IThreadType threadType = NON_CASCADE_THREAD;
@@ -933,7 +945,8 @@ public final class Async {
      * @param <T> the type
      * @return the value, guaranteed to be non-null and annotated at <code>@NonNull @nonnull</code> for rapidly catching errors in the IDE
      */
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     public static <T> T assertNotNull(@Nullable @nullable final T t) {
         if (t == null) {
             throw new NullPointerException();
@@ -985,63 +998,73 @@ public final class Async {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IActionOne<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         @SafeVarargs
         public final <IN> List<IAltFuture<IN, IN>> then(@NonNull @nonnull IAction<IN>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull IActionR<IN, OUT> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         @SafeVarargs
         public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull @nonnull IActionR<IN, OUT>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull IActionOneR<IN, OUT> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         @SafeVarargs
         public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT>... actions) {
@@ -1053,19 +1076,22 @@ public final class Async {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable @nullable IAction<IN> afterShutdownAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final <IN> List<Runnable> shutdownNow(@NonNull @nonnull String reason, @Nullable @nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable @nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
-        @NonNull @nonnull
+        @NonNull
+        @nonnull
         @Override
         public final String getName() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
