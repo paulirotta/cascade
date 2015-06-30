@@ -52,18 +52,24 @@ import static com.futurice.cascade.Async.*;
  * OkHttp convenience wrapper methods
  */
 public final class NetUtil {
-    final OkHttpClient client;
-    final ImmutableValue<String> origin;
+    @NonNull
+    final OkHttpClient mOkHttpClient;
+    @NonNull
+    final ImmutableValue<String> mOrigin;
     private static final int MAX_NUMBER_OF_WIFI_NET_CONNECTIONS = 6;
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
 
     public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G}
 
-    private final TelephonyManager telephonyManager;
-    private final WifiManager wifiManager;
-    private final IThreadType netReadThreadType;
-    private final IThreadType netWriteThradType;
+    @NonNull
+    private final TelephonyManager mTelephonyManager;
+    @NonNull
+    private final WifiManager mWifiManager;
+    @NonNull
+    private final IThreadType mNetReadThreadType;
+    @NonNull
+    private final IThreadType mNetWriteThradType;
 
     @RequiresPermission(allOf = {Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_NETWORK_STATE,
@@ -72,13 +78,16 @@ public final class NetUtil {
         this(context, NET_READ, NET_WRITE);
     }
 
-    public NetUtil(@NonNull @nonnull final Context context, @NonNull @nonnull final IThreadType netReadThreadType, @NonNull @nonnull final IThreadType netWriteThreadType) {
-        origin = originAsync();
-        this.netReadThreadType = netReadThreadType;
-        this.netWriteThradType = netWriteThreadType;
-        client = new OkHttpClient();
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
+    public NetUtil(
+            @NonNull @nonnull final Context context,
+            @NonNull @nonnull final IThreadType netReadThreadType,
+            @NonNull @nonnull final IThreadType netWriteThreadType) {
+        mOrigin = originAsync();
+        this.mNetReadThreadType = netReadThreadType;
+        this.mNetWriteThradType = netWriteThreadType;
+        mOkHttpClient = new OkHttpClient();
+        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        mWifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
     }
 
     @NonNull
@@ -91,13 +100,13 @@ public final class NetUtil {
     @NonNull
     @nonnull
     public IAltFuture<?, Response> getAsync(@NonNull @nonnull final String url) {
-        return netReadThreadType.then(() -> get(url, null));
+        return mNetReadThreadType.then(() -> get(url, null));
     }
 
     @NonNull
     @nonnull
     public <T extends Object> IAltFuture<T, Response> getAsync() {
-        return netReadThreadType.map(url -> get(url.toString(), null));
+        return mNetReadThreadType.map(url -> get(url.toString(), null));
     }
 
     @NonNull
@@ -113,7 +122,7 @@ public final class NetUtil {
     public Response get(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) throws IOException {
-        dd(origin, "get " + url);
+        dd(mOrigin, "get " + url);
         final Call call = setupCall(url, builder -> addHeaders(builder, headers));
 
         return execute(call);
@@ -132,7 +141,7 @@ public final class NetUtil {
     @nonnull
     public IAltFuture<String, Response> getAsync(
             @Nullable @nullable final Collection<Header> headers) {
-        return netReadThreadType.map(url -> get(url, headers));
+        return mNetReadThreadType.map(url -> get(url, headers));
     }
 
     @NonNull
@@ -140,7 +149,7 @@ public final class NetUtil {
     public IAltFuture<String, Response> getAsync(
             @NonNull @nonnull final String url,
             final IGettable<Collection<Header>> headersGettable) {
-        return netReadThreadType.then(() -> get(url, headersGettable.get()));
+        return mNetReadThreadType.then(() -> get(url, headersGettable.get()));
     }
 
     @NonNull
@@ -148,7 +157,7 @@ public final class NetUtil {
     public IAltFuture<String, Response> getAsync(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) {
-        return netReadThreadType.then(() -> get(url, headers));
+        return mNetReadThreadType.then(() -> get(url, headers));
     }
 
     @NonNull
@@ -156,14 +165,14 @@ public final class NetUtil {
     public IAltFuture<String, Response> getAsync(
             @NonNull @nonnull final IGettable<String> urlGettable,
             final IGettable<Collection<Header>> headersGettable) {
-        return netReadThreadType.then(() -> get(urlGettable.get(), headersGettable.get()));
+        return mNetReadThreadType.then(() -> get(urlGettable.get(), headersGettable.get()));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<String, Response> getAsync(
             final IGettable<Collection<Header>> headersGettable) {
-        return netReadThreadType.map(url -> get(url, headersGettable.get()));
+        return mNetReadThreadType.map(url -> get(url, headersGettable.get()));
     }
 
     @NonNull
@@ -182,7 +191,7 @@ public final class NetUtil {
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) throws IOException {
-        dd(origin, "put " + url);
+        dd(mOrigin, "put " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.put(body);
@@ -196,21 +205,21 @@ public final class NetUtil {
     public IAltFuture<?, Response> putAsync(
             @NonNull @nonnull final String url,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.then(() -> put(url, body));
+        return mNetWriteThradType.then(() -> put(url, body));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<RequestBody, Response> putAsync(
             @NonNull @nonnull final String url) {
-        return netWriteThradType.map(body -> put(url, body));
+        return mNetWriteThradType.map(body -> put(url, body));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<String, Response> putAsync(
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.map(url -> put(url, body));
+        return mNetWriteThradType.map(url -> put(url, body));
     }
 
     @NonNull
@@ -219,7 +228,7 @@ public final class NetUtil {
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.then(() -> put(url, headers, body));
+        return mNetWriteThradType.then(() -> put(url, headers, body));
     }
 
     @NonNull
@@ -227,7 +236,7 @@ public final class NetUtil {
     public IAltFuture<String, Response> putAsync(
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.map(url -> put(url, headers, body));
+        return mNetWriteThradType.map(url -> put(url, headers, body));
     }
 
     @NonNull
@@ -235,7 +244,7 @@ public final class NetUtil {
     public IAltFuture<RequestBody, Response> putAsync(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) {
-        return netWriteThradType.map(body -> put(url, headers, body));
+        return mNetWriteThradType.map(body -> put(url, headers, body));
     }
 
     @NonNull
@@ -252,21 +261,21 @@ public final class NetUtil {
     public IAltFuture<?, Response> postAsync(
             @NonNull @nonnull final String url,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.then(() -> post(url, null, body));
+        return mNetWriteThradType.then(() -> post(url, null, body));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<String, Response> postAsync(
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.map(url -> post(url, null, body));
+        return mNetWriteThradType.map(url -> post(url, null, body));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<RequestBody, Response> postAsync(
             @NonNull @nonnull final String url) {
-        return netWriteThradType.map(body -> post(url, null, body));
+        return mNetWriteThradType.map(body -> post(url, null, body));
     }
 
     @NonNull
@@ -284,7 +293,7 @@ public final class NetUtil {
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.then(() -> post(url, headers, body));
+        return mNetWriteThradType.then(() -> post(url, headers, body));
     }
 
     @NonNull
@@ -292,7 +301,7 @@ public final class NetUtil {
     public IAltFuture<String, Response> postAsync(
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) {
-        return netWriteThradType.map(url -> post(url, headers, body));
+        return mNetWriteThradType.map(url -> post(url, headers, body));
     }
 
     @NonNull
@@ -300,7 +309,7 @@ public final class NetUtil {
     public IAltFuture<RequestBody, Response> postAsync(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) {
-        return netWriteThradType.map(body -> post(url, headers, body));
+        return mNetWriteThradType.map(body -> post(url, headers, body));
     }
 
     @NonNull
@@ -310,7 +319,7 @@ public final class NetUtil {
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers,
             @NonNull @nonnull final RequestBody body) throws IOException {
-        dd(origin, "post " + url);
+        dd(mOrigin, "post " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.post(body);
@@ -322,13 +331,13 @@ public final class NetUtil {
     @NonNull
     @nonnull
     public IAltFuture<?, Response> deleteAsync(@NonNull @nonnull final String url) {
-        return netWriteThradType.then(() -> delete(url, null));
+        return mNetWriteThradType.then(() -> delete(url, null));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<String, Response> deleteAsync() {
-        return netWriteThradType.map(url -> delete(url, null));
+        return mNetWriteThradType.map(url -> delete(url, null));
     }
 
     @NonNull
@@ -343,14 +352,14 @@ public final class NetUtil {
     public IAltFuture<?, Response> deleteAsync(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) {
-        return netWriteThradType.then(() -> delete(url, headers));
+        return mNetWriteThradType.then(() -> delete(url, headers));
     }
 
     @NonNull
     @nonnull
     public IAltFuture<String, Response> deleteAsync(
             @Nullable @nullable final Collection<Header> headers) {
-        return netWriteThradType.map(url -> delete(url, headers));
+        return mNetWriteThradType.map(url -> delete(url, headers));
     }
 
     @NonNull
@@ -359,7 +368,7 @@ public final class NetUtil {
     public Response delete(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) throws IOException {
-        dd(origin, "delete " + url);
+        dd(mOrigin, "delete " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();
@@ -391,7 +400,7 @@ public final class NetUtil {
             builderModifier.modify(builder);
         }
 
-        return client.newCall(builder.build());
+        return mOkHttpClient.newCall(builder.build());
     }
 
     @NonNull
@@ -403,14 +412,14 @@ public final class NetUtil {
         if (response.isRedirect()) {
             final String location = response.headers().get("Location");
 
-            dd(origin, "Following HTTP redirect to " + location);
+            dd(mOrigin, "Following HTTP redirect to " + location);
             return get(location);
         }
         if (!response.isSuccessful()) {
             final String s = "Unexpected response code " + response;
             final IOException e = new IOException(s);
 
-            ee(origin, s, e);
+            ee(mOrigin, s, e);
             throw e;
         }
 
@@ -452,7 +461,7 @@ public final class NetUtil {
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-        SupplicantState s = wifiManager.getConnectionInfo().getSupplicantState();
+        SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
         return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
@@ -462,7 +471,7 @@ public final class NetUtil {
     @nonnull
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public NetType getNetworkType() {
-        switch (telephonyManager.getNetworkType()) {
+        switch (mTelephonyManager.getNetworkType()) {
             case NETWORK_TYPE_UNKNOWN:
             case NETWORK_TYPE_CDMA:
             case NETWORK_TYPE_GPRS:

@@ -52,7 +52,10 @@ public class DefaultThreadType extends AbstractThreadType {
      * @param executorService
      * @param queue           may be null; may be {@link java.util.concurrent.BlockingDeque} in which case out-of-order execution is supported
      */
-    public DefaultThreadType(@NonNull @nonnull final String name, @NonNull @nonnull final ExecutorService executorService, @NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public DefaultThreadType(
+            @NonNull @nonnull final String name,
+            @NonNull @nonnull final ExecutorService executorService,
+            @NonNull @nonnull final BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
         this.inOrderExecution = queue instanceof BlockingDeque;

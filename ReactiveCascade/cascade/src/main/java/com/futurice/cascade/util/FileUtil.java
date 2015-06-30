@@ -48,17 +48,18 @@ public final class FileUtil {
     public @interface FileMode {}
 
     private static final int BUFFER_SIZE = 16384;
-    private final Context context;
+    @NonNull
+    private final Context mContext;
     @FileMode
-    private final int mode;
-    private final ImmutableValue<String> origin;
+    private final int mMode;
+    private final ImmutableValue<String> mOrigin;
 
     public FileUtil(
             @NonNull @nonnull final Context context,
             @FileMode final int mode) {
-        this.context = context;
-        this.mode = mode;
-        origin = originAsync();
+        this.mContext = context;
+        this.mMode = mode;
+        this.mOrigin = originAsync();
     }
 
     @NonNull @nonnull
@@ -94,22 +95,22 @@ public final class FileUtil {
         FileOutputStream fileOutputStream = null;
 
         try {
-            fileOutputStream = context.openFileOutput(fileName, mode);
+            fileOutputStream = mContext.openFileOutput(fileName, mMode);
             fileOutputStream.write(bytes);
         } catch (FileNotFoundException e) {
             final String s = "Can not locate FILE: " + fileName;
-            dd(origin, s);
-            throwRuntimeException(origin, s, e);
+            dd(mOrigin, s);
+            throwRuntimeException(mOrigin, s, e);
         } catch (IOException e) {
             final String s = "Can not write FILE: " + fileName;
-            dd(origin, s);
-            throwRuntimeException(origin, s, e);
+            dd(mOrigin, s);
+            throwRuntimeException(mOrigin, s, e);
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    ee(origin, "Can not close FILE output stream", e);
+                    ee(mOrigin, "Can not close FILE output stream", e);
                 }
             }
         }
@@ -134,7 +135,7 @@ public final class FileUtil {
         FileInputStream fileInputStream = null;
 
         try {
-            fileInputStream = context.openFileInput(fileName);
+            fileInputStream = mContext.openFileInput(fileName);
 
             final byte[] buffer = new byte[BUFFER_SIZE];
             int count;
@@ -147,18 +148,18 @@ public final class FileUtil {
             }
         } catch (FileNotFoundException e) {
             final String s = "Can not locate FILE: " + fileName;
-            dd(origin, s);
-            throwRuntimeException(origin, s, e);
+            dd(mOrigin, s);
+            throwRuntimeException(mOrigin, s, e);
         } catch (IOException e) {
             final String s = "Can not read FILE: " + fileName;
-            dd(origin, s);
-            throwRuntimeException(origin, s, e);
+            dd(mOrigin, s);
+            throwRuntimeException(mOrigin, s, e);
         } finally {
             if (fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    ee(origin, "Can not close FILE input stream: " + fileName, e);
+                    ee(mOrigin, "Can not close FILE input stream: " + fileName, e);
                 }
             }
         }
@@ -168,7 +169,7 @@ public final class FileUtil {
 
     @WorkerThread
     public boolean delete(@NonNull @nonnull final String fileName) {
-        return context.deleteFile(fileName);
+        return mContext.deleteFile(fileName);
     }
 
     @NonNull @nonnull

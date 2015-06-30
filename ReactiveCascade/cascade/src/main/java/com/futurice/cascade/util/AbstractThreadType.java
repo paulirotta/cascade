@@ -277,7 +277,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         if (timeout == 0 && afterShutdownAction != null) {
             Async.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
         }
-        final ImmutableValue<String> originImmutableValue = originAsync()
+        final ImmutableValue<String> origin = originAsync()
                 .then(o -> {
                     i(this, "shutdown " + timeout + " mOrigin=" + o + " ThreadType creationOrigin=" + mOrigin.safeGet());
                     executorService.shutdown();
@@ -289,17 +289,17 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
                     terminated = executorService.awaitTermination(timeout, TimeUnit.MILLISECONDS);
                 }
             } catch (InterruptedException e) {
-                Log.e(AbstractThreadType.class.getSimpleName(), "Could not shutdown. afterShutdownAction will not be called: " + originImmutableValue, e);
+                Log.e(AbstractThreadType.class.getSimpleName(), "Could not shutdown. afterShutdownAction will not be called: " + origin, e);
                 terminated = false;
             } catch (Exception e) {
-                e(this, "Could not shutdown. afterShutdownAction will not be called: " + originImmutableValue, e);
+                e(this, "Could not shutdown. afterShutdownAction will not be called: " + origin, e);
                 terminated = false;
             } finally {
                 if (terminated && afterShutdownAction != null) {
                     try {
                         afterShutdownAction.call();
                     } catch (Exception e) {
-                        ee(this, mOrigin, "Problem during afterShutdownAction after successful workerExecutorService.shutdown: " + originImmutableValue, e);
+                        ee(this, mOrigin, "Problem during afterShutdownAction after successful workerExecutorService.shutdown: " + origin, e);
                         terminated = false;
                     }
                 }

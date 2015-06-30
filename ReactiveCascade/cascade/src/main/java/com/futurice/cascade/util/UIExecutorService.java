@@ -59,25 +59,27 @@ import static com.futurice.cascade.Async.*;
  * items, for example related to lifecycle. make sense to implement.
  */
 public final class UIExecutorService implements ExecutorService {
-    private static final String TAG = UIExecutorService.class.getSimpleName();
-    private final Handler handler;
-    private final ImmutableValue<String> origin;
+    @NonNull
+    private final Handler mHandler;
+    @NonNull
+    private final ImmutableValue<String> mOrigin;
 
     public UIExecutorService(@NonNull @nonnull final Handler handler) {
-        this.handler = handler;
-        this.origin = originAsync();
+        this.mHandler = handler;
+        this.mOrigin = originAsync();
     }
 
     @Override // ExecutorService
     public void shutdown() {
-        ii(TAG, "shutdown() called on UiAsync default ExecutorService");
+        ii(mOrigin, "shutdown() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("Shutdown() called on UiAsync default ExecutorService");
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @Override // ExecutorService
     public List<Runnable> shutdownNow() {
-        ii(TAG, "shutdownNow() called on UiAsync default ExecutorService");
+        ii(mOrigin, "shutdownNow() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("ShutdownNow() called on UiAsync default ExecutorService");
     }
 
@@ -96,11 +98,12 @@ public final class UIExecutorService implements ExecutorService {
             final long timeout,
             @NonNull @nonnull final TimeUnit unit)
             throws InterruptedException {
-        ii(TAG, "awaitTermination() called on UiAsync default ExecutorService");
+        ii(mOrigin, "awaitTermination() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("awaitTermination() called on UiAsync default ExecutorService");
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @Override // ExecutorService
     public <T> Future<T> submit(@NonNull @nonnull final Callable<T> callable) {
         final FutureTask<T> future = new FutureTask<>(callable);
@@ -109,7 +112,8 @@ public final class UIExecutorService implements ExecutorService {
         return future;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @Override // ExecutorService
     public <T> Future<T> submit(
             @NonNull @nonnull final Runnable runnable,
@@ -123,12 +127,13 @@ public final class UIExecutorService implements ExecutorService {
         return future;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @NotCallOrigin
     @Override // ExecutorService
     public Future submit(@NonNull @nonnull final Runnable runnable) {
         if (runnable instanceof RunnableFuture) {
-            handler.post(runnable);
+            mHandler.post(runnable);
             return (Future) runnable;
         }
 
@@ -136,7 +141,7 @@ public final class UIExecutorService implements ExecutorService {
             runnable.run();
             return null;
         });
-        handler.post(future);
+        mHandler.post(future);
 
         return future;
     }
@@ -154,14 +159,15 @@ public final class UIExecutorService implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get();
             } catch (ExecutionException e) {
-                throwRuntimeException(origin, "Can not get() last element of invokeAll()", e);
+                throwRuntimeException(mOrigin, "Can not get() last element of invokeAll()", e);
             }
         }
 
         return futures;
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @Override // ExecutorService
     @WorkerThread
     public <T> List<Future<T>> invokeAll(
@@ -177,9 +183,9 @@ public final class UIExecutorService implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get(timeout, unit);
             } catch (ExecutionException e) {
-                throwRuntimeException(origin, "Can not get() last element of invokeAll()", e);
+                throwRuntimeException(mOrigin, "Can not get() last element of invokeAll()", e);
             } catch (TimeoutException e) {
-                throwRuntimeException(origin, "Timeout waiting to get() last element of invokeAll()", e);
+                throwRuntimeException(mOrigin, "Timeout waiting to get() last element of invokeAll()", e);
             }
         }
 
@@ -202,7 +208,8 @@ public final class UIExecutorService implements ExecutorService {
         return futures.get(0).get();
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     @Override // ExecutorService
     @WorkerThread
     public <T> T invokeAny(
@@ -223,8 +230,8 @@ public final class UIExecutorService implements ExecutorService {
 
     @Override // ExecutorService
     public void execute(@NonNull @nonnull final Runnable command) {
-        if (!handler.post(command)) {
-            throwIllegalStateException(TAG, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
+        if (!mHandler.post(command)) {
+            throwIllegalStateException(mOrigin, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }
     }
 }

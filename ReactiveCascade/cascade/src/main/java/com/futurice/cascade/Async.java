@@ -450,7 +450,6 @@ public final class Async {
      * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
      */
     @NonNull
-    @nonnull
     private static String getTag(@NonNull @nonnull final Object tag) {
         if (tag instanceof String) {
             return (String) tag;
