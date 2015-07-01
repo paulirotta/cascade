@@ -14,6 +14,7 @@ import android.widget.Filter;
 
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import static com.futurice.cascade.Async.*;
  *     </code>
  * </pre>
  */
+@NotCallOrigin
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     protected final ImmutableValue<String> mOrigin;
 
@@ -118,12 +120,10 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return new AltArrayAdapter<>(context, textViewResId, strings);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @Override
     public void add(@NonNull @nonnull final T value) {
+        vv(mOrigin, "Add to AltArrayAdapter: " + value);
         super.add(value);
     }
 
@@ -148,12 +148,10 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
                 });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
-    public void remove(@NonNull @nonnull final T object) {
-        super.remove(object);
+    public void remove(@NonNull @nonnull final T value) {
+        vv(mOrigin, "Remove from AltArrayAdapter: " + value);
+        super.remove(value);
     }
 
     /**
@@ -185,6 +183,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, A> sortAsync(@NonNull @nonnull final Comparator<? super T> comparator) {
+        vv(mOrigin, "Sort AltArrayAdapter: " + comparator);
         return UI.then(() -> sort(comparator));
     }
 
@@ -231,6 +230,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<TT> collection, final boolean addIfUnique) {
+        vv(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
         if (addIfUnique) {
             return UI.then(() -> {
                 for (TT t : collection) {
@@ -263,9 +263,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(this::clear);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @IntRange(from = 0, to = Integer.MAX_VALUE)
     public int getCount() {
@@ -285,7 +282,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, List<T>> getAllAsync() {
-        return UI.then(() -> getAll());
+        return UI.then(this::getAll);
     }
 
     @NonNull
@@ -301,9 +298,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @NonNull
     @nonnull
@@ -319,9 +313,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> getItem(position));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @IntRange(from = -1, to = Integer.MAX_VALUE)
     public int getPosition(@NonNull @nonnull final T item) {
@@ -343,9 +334,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> getPosition(item));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @NonNull
     @nonnull
@@ -361,9 +349,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(this::getFilter);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     public long getItemId(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
         return super.getItemId(position);
@@ -384,9 +369,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> getItemId(position));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @CheckResult(suggest = "IAltFuture#fork()")
     @Override
@@ -402,9 +384,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> setDropDownViewResource(resource));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @NonNull
     @nonnull
@@ -437,9 +416,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         return UI.then(() -> getView(position, convertView, parent));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @CallSuper
     @NonNull
     @nonnull

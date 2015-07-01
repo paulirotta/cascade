@@ -41,6 +41,7 @@ import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.IRunnableAltFuture;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 
@@ -62,8 +63,8 @@ import static com.futurice.cascade.Async.*;
  * <p>
  * For more specialized behaviour a class may choose to replace this.
  * <p>
- * TODO Add a DEBUG build timer which notifies you of dangling forks (.subscribe() which you forget to call .fork() on after some time period)
  */
+// TODO Add a DEBUG build timer which notifies you of dangling forks (.subscribe() which you forget to call .fork() on after some time period)
 public abstract class AbstractThreadType implements IThreadType, INamed {
     protected final ExecutorService executorService;
     private final String name;
@@ -96,11 +97,15 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @Override
     @NonNull @nonnull
     public <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull final IAction<IN> action) {
-        return () -> {
-            try {
-                action.call();
-            } catch (Exception e) {
-                ee(this, mOrigin, "run(IAction) problem", e);
+        return new Runnable() {
+            @Override
+            @NotCallOrigin
+            public void run() {
+                try {
+                    action.call();
+                } catch (Exception e) {
+                    ee(this, mOrigin, "run(IAction) problem", e);
+                }
             }
         };
     }
@@ -110,21 +115,25 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     public <IN> Runnable wrapRunnableAsErrorProtection(
             @NonNull @nonnull final IAction<IN> action,
             @NonNull @nonnull final IOnErrorAction onErrorAction) {
-        return () -> {
-            try {
-                action.call();
-            } catch (Exception e) {
-                ee(this, mOrigin, "run(Runnable) problem", e);
+        return new Runnable() {
+            @Override
+            @NotCallOrigin
+            public void run() {
                 try {
-                    onErrorAction.call(e);
-                } catch (Exception e1) {
-                    ee(this, mOrigin, "run(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
+                    action.call();
+                } catch (Exception e) {
+                    ee(this, mOrigin, "run(Runnable) problem", e);
+                    try {
+                        onErrorAction.call(e);
+                    } catch (Exception e1) {
+                        ee(this, mOrigin, "run(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
+                    }
                 }
             }
         };
     }
 
-    private boolean isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary() {
+    private static boolean isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary() {
         //TODO This check doesn't really allow 3rd party implementations. Not testing would mean unsafe/less obvious problems can come later. Package hiding would disallow replacement implementations that follow the interface contracts. What we have here is a half measure to guide people since currently there are no alternate implementations.
         final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         assertTrue("Stack trace[3] is AbstractThreadType.fork(IRunnableAltFuture)", ste[3].getMethodName().contains("fork"));
@@ -250,10 +259,12 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
         return altFutures;
     }
 
+    //TODO add mapEach(IActionOneR) from list to list
+    //TODO add thenEach(IActionOne) from list
+
 //=============================== Public Utility Methods ======================================
 
-    //TODO public <A> AltFuture<A> flush()  - current thread type
-    //TODO public <A> AltFuture<A> flush(IThreadType mThreadType)   - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
+    //TODO public <A> AltFuture<A> flush()  - current thread type - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
 
     @Override // IThreadType
     public <IN, OUT> void fork(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
@@ -262,7 +273,6 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
         }
 
-//        vv(this, mOrigin, "fork()");
         run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
     }
 
