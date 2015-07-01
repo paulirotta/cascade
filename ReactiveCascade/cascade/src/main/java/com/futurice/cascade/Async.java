@@ -1000,14 +1000,14 @@ public final class Async {
         @NonNull
         @nonnull
         @Override
-        public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull IAction<IN> action) {
+        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
         @NonNull
         @nonnull
         @Override
-        public final <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
+        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 

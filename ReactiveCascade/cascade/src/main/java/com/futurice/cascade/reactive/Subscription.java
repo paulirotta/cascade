@@ -139,14 +139,18 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
           *
           * Re-mQueue if the input value changes before exiting
          */
-        mFireRunnable = this.mThreadType.wrapRunnableAsErrorProtection(() -> {
-            final Object latestValueFired = mLatestFireIn.get();
-            doReceiveFire((IN) latestValueFired); // This step may take some time
-            if (!mLatestFireIn.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
-                if (mLatestFireInIsFireNext.getAndSet(true)) {
-                    this.mThreadType.runNext(getFireRunnable()); // Input was set again while processing this value- re-mQueue to fire again after other pending work
-                } else {
-                    this.mThreadType.run(getFireRunnable()); // Input was set again while processing this value- re-mQueue to fire again after other pending work
+        mFireRunnable = this.mThreadType.wrapActionWithErrorProtection(new IAction<Object>() {
+            @Override
+            @NotCallOrigin
+            public void call() throws Exception {
+                final Object latestValueFired = mLatestFireIn.get();
+                doReceiveFire((IN) latestValueFired); // This step may take some time
+                if (!mLatestFireIn.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
+                    if (mLatestFireInIsFireNext.getAndSet(true)) {
+                        mThreadType.runNext(getFireRunnable()); // Input was set again while processing this value- re-mQueue to fire again after other pending work
+                    } else {
+                        mThreadType.run(getFireRunnable()); // Input was set again while processing this value- re-mQueue to fire again after other pending work
+                    }
                 }
             }
         });

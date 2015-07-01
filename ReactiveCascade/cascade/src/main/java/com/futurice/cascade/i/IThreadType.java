@@ -72,7 +72,7 @@ public interface IThreadType extends INamed {
 
     /**
      * Execute a runnable. Generally this is an action that has already been error-catch wrapped using for example
-     * {@link #wrapRunnableAsErrorProtection(IAction)}
+     * {@link #wrapActionWithErrorProtection(IAction)}
      *
      * @param runnable
      */
@@ -161,7 +161,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @nonnull
-    <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull IAction<IN> action);
+    <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action);
 
     /**
      * Convert this action into a runnable
@@ -173,7 +173,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @nonnull
-    <IN> Runnable wrapRunnableAsErrorProtection(
+    <IN> Runnable wrapActionWithErrorProtection(
             @NonNull @nonnull IAction<IN> action,
             @NonNull @nonnull IOnErrorAction onErrorAction);
 

@@ -96,7 +96,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override
     @NonNull @nonnull
-    public <IN> Runnable wrapRunnableAsErrorProtection(@NonNull @nonnull final IAction<IN> action) {
+    public <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull final IAction<IN> action) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -112,7 +112,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override
     @NonNull @nonnull
-    public <IN> Runnable wrapRunnableAsErrorProtection(
+    public <IN> Runnable wrapActionWithErrorProtection(
             @NonNull @nonnull final IAction<IN> action,
             @NonNull @nonnull final IOnErrorAction onErrorAction) {
         return new Runnable() {
@@ -144,19 +144,19 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override // IThreadType
     public <IN> void execute(@NonNull @nonnull final IAction<IN> action) {
-        run(wrapRunnableAsErrorProtection(action));
+        run(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
     public <IN> void run(
             @NonNull @nonnull final IAction<IN> action,
             @NonNull @nonnull final IOnErrorAction onErrorAction) {
-        run(wrapRunnableAsErrorProtection(action, onErrorAction));
+        run(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
     public <IN> void runNext(@NonNull @nonnull final IAction<IN> action) {
-        runNext(wrapRunnableAsErrorProtection(action));
+        runNext(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
@@ -181,7 +181,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
             @NonNull @nonnull final IAction<IN> action,
             @NonNull @nonnull final IOnErrorAction onErrorAction) {
         vv(this, mOrigin, "runNext()");
-        runNext(wrapRunnableAsErrorProtection(action, onErrorAction));
+        runNext(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
