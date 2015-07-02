@@ -122,6 +122,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
 
     @CallSuper
     @Override
+    @NotCallOrigin
     public void add(@NonNull @nonnull final T value) {
         vv(mOrigin, "Add to AltArrayAdapter: " + value);
         super.add(value);

@@ -224,13 +224,22 @@ public final class Async {
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message,
             @NonNull @nonnull final Throwable t) {
-        if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
-            Log.d(getTag(tag), tagWithAspectAndThreadName(message) + " : " + t);
-        } else {
-            Log.e(getTag(tag), tagWithAspectAndThreadName(message), t);
-        }
-        if (FAIL_FAST && !((t instanceof InterruptedException) || (t instanceof CancellationException))) {
-            exitWithErrorCode(getTag(tag), message, t);
+        if (DEBUG) {
+            if (SHOW_ERROR_STACK_TRACES) {
+                log(tag, message, (ta, m) -> {
+                    Log.e(getTag(ta), tagWithAspectAndThreadName(m), t);
+                    if (FAIL_FAST && !((t instanceof InterruptedException) || (t instanceof CancellationException))) {
+                        exitWithErrorCode(getTag(ta), m, t);
+                    }
+                });
+            } else {
+                log(tag, message, (ta, m) -> {
+                    Log.d(getTag(ta), tagWithAspectAndThreadName(m) + " : " + t);
+                    if (FAIL_FAST && !((t instanceof InterruptedException) || (t instanceof CancellationException))) {
+                        exitWithErrorCode(getTag(ta), m, t);
+                    }
+                });
+            }
         }
 
         return false;
@@ -251,10 +260,12 @@ public final class Async {
     public static boolean e(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
-            d(getTag(tag), message + " !SHOW_ERROR_STACK_TRACES (Exception created to generate a stack trace)");
-        } else {
-            e(getTag(tag), message, new Exception("(Exception created to generate a stack trace)"));
+        if (DEBUG) {
+            if (SHOW_ERROR_STACK_TRACES) {
+                e(tag, message, new Exception("(Exception created to generate a stack trace)"));
+            } else {
+                d(tag, message + " !SHOW_ERROR_STACK_TRACES (Exception created to generate a stack trace)");
+            }
         }
 
         return false;
@@ -271,7 +282,9 @@ public final class Async {
     public static void v(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        Log.v(getTag(tag), tagWithAspectAndThreadName(message));
+        log(tag, message, (ta, m) -> {
+            Log.v("", tagWithAspectAndThreadName(m + getTag(ta)));
+        });
     }
 
     /**
@@ -285,7 +298,9 @@ public final class Async {
     public static void d(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        Log.d(getTag(tag), tagWithAspectAndThreadName(message));
+        log(tag, message, (ta, m) -> {
+            Log.d("", tagWithAspectAndThreadName(m + getTag(ta)));
+        });
     }
 
     /**
@@ -299,22 +314,47 @@ public final class Async {
     public static void i(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        Log.i(getTag(tag), tagWithAspectAndThreadName(message));
+        log(tag, message, (ta, m) -> {
+            Log.i("", tagWithAspectAndThreadName(m + getTag(ta)));
+        });
+    }
+
+    private static void log(@NonNull @nonnull final Object tag,
+                            @NonNull @nonnull final String message,
+                            @NonNull final IActionTwo<String, String> action) {
+        if (DEBUG) {
+            if (tag instanceof ImmutableValue) {
+                ((ImmutableValue<String>) tag).then(resolvedTag -> {
+                    action.call(resolvedTag, message);
+                });
+            } else {
+                try {
+                    action.call(getTag(tag), message);
+                } catch (Exception e) {
+                    Log.e("Async", "Problem with logging: " + tag + " : " + message, e);
+                }
+            }
+        }
     }
 
     /**
      * Log at the debug level, including where in your code this line was called from.
      *
-     * @param tag        a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param callOrigin where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
-     * @param message    a message to display in the debug log
+     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
+     * @param origin  where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
+     * @param message a message to display in the debug log
      */
     public static void dd(
             @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> callOrigin,
+            @NonNull @nonnull final ImmutableValue<String> origin,
             @NonNull @nonnull final String message) {
-        debugOriginThen(callOrigin, (objectCreationOrigin, ccOrigin) ->
-                d(tag, combineOriginStringsRemoveDuplicates(objectCreationOrigin, ccOrigin, message)));
+        if (DEBUG) {
+            debugOriginThen(ccOrigin -> {
+                origin.then(o -> {
+                    d(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message));
+                });
+            });
+        }
     }
 
     /**
@@ -326,7 +366,9 @@ public final class Async {
     public static void dd(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        debugOriginThen(origin -> d(tag, message + origin));
+        if (DEBUG) {
+            debugOriginThen(origin -> d(tag, message + origin));
+        }
     }
 
     //TODO If the object requesting this debug line implements INamed and (create) IOrigin and (create) IReasonCancelled, add these decorations automatically
@@ -343,8 +385,13 @@ public final class Async {
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final ImmutableValue<String> origin,
             @NonNull @nonnull final String message) {
-        debugOriginThen(origin, (origin1, origin2) ->
-                v(tag, combineOriginStringsRemoveDuplicates(origin1, origin2, message)));
+        if (DEBUG) {
+            debugOriginThen(ccOrigin -> {
+                origin.then(o -> {
+                    v(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message));
+                });
+            });
+        }
     }
 
     /**
@@ -356,29 +403,39 @@ public final class Async {
     public static void vv(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        debugOriginThen(origin -> v(tag, message + origin));
+        if (DEBUG) {
+            debugOriginThen(origin -> v(tag, message + origin));
+        }
     }
 
     /**
      * Log at the error level, including where in your code this line was called from.
      *
-     * @param tag               a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @param currentCallOrigin Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
-     * @param message           a message to display in the error log
-     * @param t                 the throwable which triggered this error
+     * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
+     * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
+     * @param message a message to display in the error log
+     * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
     public static boolean ee(
             @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> currentCallOrigin,
+            @NonNull @nonnull final ImmutableValue<String> origin,
             @NonNull @nonnull final String message,
             @NonNull @nonnull final Throwable t) {
-        if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
-            debugOriginThen(currentCallOrigin, (objectCreationOrigin, ccOrigin) ->
-                    d(tag, combineOriginStringsRemoveDuplicates(objectCreationOrigin, ccOrigin, message + " " + t)));
-        } else {
-            debugOriginThen(currentCallOrigin, (objectCreationOrigin, ccOrigin) ->
-                    e(tag, combineOriginStringsRemoveDuplicates(objectCreationOrigin, ccOrigin, message), t));
+        if (DEBUG) {
+            if (SHOW_ERROR_STACK_TRACES) {
+                debugOriginThen(ccOrigin -> {
+                    origin.then(o -> {
+                        e(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), t);
+                    });
+                });
+            } else {
+                debugOriginThen(ccOrigin -> {
+                    origin.then(o -> {
+                        d(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message + " " + t));
+                    });
+                });
+            }
         }
 
         return false;
@@ -396,10 +453,12 @@ public final class Async {
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message,
             @NonNull @nonnull final Throwable t) {
-        if (DEBUG && !SHOW_ERROR_STACK_TRACES) {
-            debugOriginThen(origin -> d(tag, message + " " + t + origin));
-        } else {
-            debugOriginThen(origin -> e(tag, message + origin, t));
+        if (DEBUG) {
+            if (SHOW_ERROR_STACK_TRACES) {
+                debugOriginThen(origin -> e(tag, message + origin, t));
+            } else {
+                debugOriginThen(origin -> d(tag, message + " " + t + origin));
+            }
         }
 
         return false;
@@ -416,8 +475,13 @@ public final class Async {
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final ImmutableValue<String> origin,
             @NonNull @nonnull final String message) {
-        debugOriginThen(origin, (objectCreationOrigin, ccOrigin) ->
-                i(tag, combineOriginStringsRemoveDuplicates(objectCreationOrigin, ccOrigin, message)));
+        if (DEBUG) {
+            debugOriginThen(ccOrigin -> {
+                origin.then(o -> {
+                    i(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message));
+                });
+            });
+        }
     }
 
     /**
@@ -429,7 +493,9 @@ public final class Async {
     public static void ii(
             @NonNull @nonnull final Object tag,
             @NonNull @nonnull final String message) {
-        debugOriginThen(origin -> i(tag, message + origin));
+        if (DEBUG) {
+            debugOriginThen(origin -> i(tag, message + origin));
+        }
     }
 
     private static String combineOriginStringsRemoveDuplicates(
@@ -457,6 +523,9 @@ public final class Async {
         if (tag instanceof INamed) {
             return tag.getClass().getSimpleName() + '-' + ((INamed) tag).getName();
         }
+//        if (tag instanceof ImmutableValue) {
+//            return ((ImmutableValue) tag).get().toString();
+//        }
 
         return tag.getClass().getSimpleName();
     }
@@ -697,42 +766,42 @@ public final class Async {
      * @param action to be performed when the current stack trace is resolved asynchronously
      */
     private static void debugOriginThen(@NonNull @nonnull final IActionOne<String> action) {
-        if (TRACE_ASYNC_ORIGIN && WORKER != null) {
-            originAsync().then(action);
-        } else if (DEBUG) {
-            try {
+        try {
+            if (TRACE_ASYNC_ORIGIN && WORKER != null) {
+                originAsync().then(action);
+            } else {
                 action.call("");
-            } catch (Exception e) {
-                Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
             }
+        } catch (Exception e) {
+            Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
         }
     }
 
-    /**
-     * Perform an action once both the async-resolved object creation call stack mOrigin and
-     * async current call stack mOrigin are settled
-     *
-     * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
-     * @param action               to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
-     */
-    private static void debugOriginThen(
-            @NonNull @nonnull final ImmutableValue<String> objectCreationOrigin,
-            @NonNull @nonnull final IActionTwo<String, String> action) {
-        if (TRACE_ASYNC_ORIGIN) {
-            final ImmutableValue<String> currentCallOrigin = originAsync();
-            objectCreationOrigin.then(
-                    creationOrigin -> {
-                        currentCallOrigin.then(
-                                callOrigin -> action.call(creationOrigin, callOrigin));
-                    });
-        } else if (DEBUG) {
-            try {
-                action.call("", "");
-            } catch (Exception e) {
-                Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
-            }
-        }
-    }
+//    /**
+//     * Perform an action once both the async-resolved object creation call stack mOrigin and
+//     * async current call stack mOrigin are settled
+//     *
+//     * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
+//     * @param action               to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
+//     */
+//    private static void debugOriginThen(
+//            @NonNull @nonnull final ImmutableValue<String> objectCreationOrigin,
+//            @NonNull @nonnull final IActionTwo<String, String> action) {
+//        if (TRACE_ASYNC_ORIGIN) {
+//            final ImmutableValue<String> currentCallOrigin = originAsync();
+//            objectCreationOrigin.then(
+//                    creationOrigin -> {
+//                        currentCallOrigin.then(
+//                                callOrigin -> action.call(creationOrigin, callOrigin));
+//                    });
+//        } else if (DEBUG) {
+//            try {
+//                action.call("", "");
+//            } catch (Exception e) {
+//                Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
+//            }
+//        }
+//    }
 
     @NonNull
     @nonnull

@@ -96,6 +96,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override
     @NonNull @nonnull
+    @NotCallOrigin
     public <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull final IAction<IN> action) {
         return new Runnable() {
             @Override

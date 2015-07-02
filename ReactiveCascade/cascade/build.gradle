@@ -38,6 +38,8 @@ android {
     packagingOptions {
         exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
     }
+
+    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
 }
 
 allprojects {

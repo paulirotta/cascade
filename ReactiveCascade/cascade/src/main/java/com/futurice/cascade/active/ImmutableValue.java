@@ -65,7 +65,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  *
  * @param <T>
  */
-public class ImmutableValue<T> implements IGettable<T> {
+public class ImmutableValue<T extends Object> implements IGettable<T> {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;
 
     private final AtomicReference<Object> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
