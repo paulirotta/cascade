@@ -226,6 +226,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * This is called fromKey the executor as part of IRunnableAltFuture
      */
     @Override
+    @NotCallOrigin
     public final void run() {
         try {
             if (isCancelled()) {

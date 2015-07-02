@@ -58,7 +58,6 @@ import static com.futurice.cascade.Async.*;
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     protected final ImmutableValue<String> mOrigin;
 
-    //TODO Add full coverage and remove trivial implementations that are thread safe
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource) {
@@ -99,7 +98,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
         mOrigin = originAsync();
     }
 
-    //FIXME Is this really both @LayoutRes ?
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource,
@@ -122,7 +120,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
 
     @CallSuper
     @Override
-    @NotCallOrigin
+    @UiThread
     public void add(@NonNull @nonnull final T value) {
         vv(mOrigin, "Add to AltArrayAdapter: " + value);
         super.add(value);
@@ -230,7 +228,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<TT> collection, final boolean addIfUnique) {
+    public <A, TT extends T> IAltFuture<A, A> addAllAsync(
+            @NonNull @nonnull final Collection<TT> collection,
+            final boolean addIfUnique) {
         vv(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
         if (addIfUnique) {
             return UI.then(() -> {

@@ -78,6 +78,7 @@ public class DefaultThreadType extends AbstractThreadType {
 
     @Override // IThreadType
     @SuppressWarnings("unchecked")
+    @NotCallOrigin
     public void runNext(@NonNull @nonnull final Runnable runnable) {
         int n;
         if (inOrderExecution || (n = mQueue.size()) == 0) {

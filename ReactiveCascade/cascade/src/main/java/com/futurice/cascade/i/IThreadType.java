@@ -66,6 +66,7 @@ public interface IThreadType extends INamed {
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
      */
+    @NotCallOrigin
     <IN> void execute(@NonNull
                       @nonnull
                       IAction<IN> action);
@@ -76,6 +77,7 @@ public interface IThreadType extends INamed {
      *
      * @param runnable
      */
+    @NotCallOrigin
     void run(@NonNull @nonnull Runnable runnable);
 
     /**
@@ -85,6 +87,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
+    @NotCallOrigin
     <IN> void run(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction);
 
     /**
@@ -98,6 +101,7 @@ public interface IThreadType extends INamed {
      * @param <IN>   the type of input argument expected by the action
      * @param action the work to be performed
      */
+    @NotCallOrigin
     <IN> void runNext(@NonNull @nonnull IAction<IN> action);
 
     /**
@@ -129,6 +133,7 @@ public interface IThreadType extends INamed {
      *
      * @param runnable
      */
+    @NotCallOrigin
     void runNext(@NonNull @nonnull Runnable runnable);
 
     /**
