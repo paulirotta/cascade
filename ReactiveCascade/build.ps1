@@ -1,9 +1,9 @@
 param (
     [switch]$display = $false,
-    [switch]$check = $false
+    [switch]$test = $false
 )
 
-if ($check) {
+if ($test) {
 	./gradlew clean build connectedCheck
 } else {
 	./gradlew clean build
