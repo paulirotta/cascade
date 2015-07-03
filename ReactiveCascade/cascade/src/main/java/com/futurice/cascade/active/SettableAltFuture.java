@@ -30,16 +30,16 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.i.CallOrigin;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.IReactiveTarget;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,12 +48,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.DEBUG;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.throwIllegalArgumentException;
-import static com.futurice.cascade.Async.throwIllegalStateException;
-import static com.futurice.cascade.Async.vv;
+import static com.futurice.cascade.Async.*;
 
 /**
  * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
@@ -110,7 +105,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     private IAltFuture<IN, OUT> setOnError(@NonNull @nonnull final IOnErrorAction action) {
         assertNotForked();
-        Async.assertTrue("IOnErrorAction can be set only one time. Perhaps you previously defined a .mOnError() which you think is upchain but is actually concurrent?", this.mOnError == null);
+        assertEqual(null, this.mOnError);
 
         this.mOnError = action;
 
@@ -235,7 +230,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull final IAltFuture<P, IN> altFuture) {
-        Async.assertTrue("mPreviousAltFuture must be null", mPreviousAltFuture == null);
+        assertEqual(null, mPreviousAltFuture);
         this.mPreviousAltFuture = altFuture;
 
         return this;
@@ -264,7 +259,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     }
 
     protected void assertNotDone() {
-        Async.assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
+        assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
     }
 
     @Override // IAltFuture

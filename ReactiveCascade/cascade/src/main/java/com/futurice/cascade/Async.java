@@ -319,6 +319,7 @@ public final class Async {
         });
     }
 
+    @SuppressWarnings("unchecked")
     private static void log(@NonNull @nonnull final Object tag,
                             @NonNull @nonnull final String message,
                             @NonNull final IActionTwo<String, String> action) {
@@ -999,9 +1000,29 @@ public final class Async {
      * @param <T>
      */
     public static <T> void assertEqual(
-            @NonNull @nonnull final T expected,
-            @NonNull @nonnull final T actual) {
-        if (DEBUG && !expected.equals(actual)) {
+            @Nullable @nullable final T expected,
+            @Nullable @nullable final T actual) {
+        if (DEBUG
+                && actual != expected
+                && ((actual == null && !expected.equals(actual)) || !actual.equals(expected))) {
+            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+        }
+    }
+
+    /**
+     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
+     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     *
+     * @param expected
+     * @param actual
+     * @param <T>
+     */
+    public static <T> void assertNotEqual(
+            @Nullable @nullable final T expected,
+            @Nullable @nullable final T actual) {
+        if (DEBUG
+                && actual == expected
+                && ((actual == null && expected.equals(actual)) || actual.equals(expected))) {
             throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
         }
     }
