@@ -88,11 +88,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     public SettableAltFuture(
             @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final OUT value)
-            throws Exception {
+            @NonNull @nonnull final OUT value) {
         this(threadType);
 
-        set(value);
+        try {
+            set(value);
+        } catch (Exception e) {
+            throw new IllegalStateException("Problem initializing SettableAltFuture: " + value, e);
+        }
     }
 
     private void assertNotForked() {
@@ -336,7 +339,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             // Previous state was ZEN, so accept it but do not enter isDone() and complete .subscribe() mOnFireAction until after .fork() is called
             if (DEBUG) {
                 final int n = mThenAltFutureList.size();
-                vv(this, mOrigin, "Set value= " + value);
+                vv(this, mOrigin, "Set value= " + value + " with " + n + " downchain actions");
             }
             return;
         }

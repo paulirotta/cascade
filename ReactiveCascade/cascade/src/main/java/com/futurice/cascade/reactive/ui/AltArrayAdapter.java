@@ -148,6 +148,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     }
 
     @CallSuper
+    @NotCallOrigin
     public void remove(@NonNull @nonnull final T value) {
         vv(mOrigin, "Remove from AltArrayAdapter: " + value);
         super.remove(value);

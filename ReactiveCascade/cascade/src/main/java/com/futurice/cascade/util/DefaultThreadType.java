@@ -25,9 +25,11 @@ THE SOFTWARE.
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -50,15 +52,18 @@ public class DefaultThreadType extends AbstractThreadType {
      * Construct a new thread group
      * @param name
      * @param executorService
-     * @param queue           may be null; may be {@link java.util.concurrent.BlockingDeque} in which case out-of-order execution is supported
+     * @param queue           may be null in which
+     *                        case {@link #isInOrderExecutor()} will return <code>true</code>
+     *                        ; may be {@link java.util.concurrent.BlockingDeque} in which
+     *                        case {@link #isInOrderExecutor()} will return <code>false</code>
      */
     public DefaultThreadType(
             @NonNull @nonnull final String name,
             @NonNull @nonnull final ExecutorService executorService,
-            @NonNull @nonnull final BlockingQueue<Runnable> queue) {
+            @Nullable @nullable final BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
-        this.inOrderExecution = queue instanceof BlockingDeque;
+        this.inOrderExecution = queue == null || queue instanceof BlockingDeque;
     }
 
     private volatile boolean wakeUpIsPending = false; // Efficiency filter to wake the ServiceExecutor only once TODO Is there a simpler way with AtomicBoolean?

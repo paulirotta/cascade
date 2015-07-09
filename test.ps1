@@ -1,2 +1,0 @@
-cd ReactiveCascade
-./test
