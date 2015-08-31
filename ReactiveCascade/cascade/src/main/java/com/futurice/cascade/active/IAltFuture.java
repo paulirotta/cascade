@@ -152,6 +152,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *
      * @return
      */
+    //TODO Returning IAltFuture<IN, OUT>  does not match some cases which expect IAltFuture<IN, IN>
     @NonNull
     @nonnull
     IAltFuture<IN, OUT> fork();
