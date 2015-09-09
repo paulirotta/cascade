@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
 @LargeTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class FileUtilTest extends AsyncAndroidTestCase {
     final AsyncMockContext mockContext = new AsyncMockContext();
 

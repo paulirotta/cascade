@@ -11,6 +11,7 @@ import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.framed.Header;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by phou on 6/2/2015.
  */
 @LargeTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class NetUtilTest extends AsyncAndroidTestCase {
 
     public NetUtilTest() {

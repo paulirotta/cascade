@@ -34,6 +34,7 @@ import com.futurice.cascade.active.AltFuture;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
@@ -238,7 +239,14 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<?, IN> from(@NonNull @nonnull final IN value) {
-        return then(() -> value);
+        final SettableAltFuture<?, IN> iaf = new SettableAltFuture<>(this);
+        try {
+            iaf.set(value);
+        } catch (Exception e) {
+            throw new RuntimeException("Problem initializing SettableAltFuture in from()", e);
+        }
+
+        return iaf;
     }
 
     @Override // IThreadType

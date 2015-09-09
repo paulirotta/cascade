@@ -82,10 +82,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     protected final IThreadType mThreadType;
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> mThenAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions toKey start after this mOnFireAction completes
     @Nullable
-    @nullable
     private volatile IOnErrorAction mOnError;
     @Nullable
-    @nullable
     private volatile IAltFuture<?, IN> mPreviousAltFuture = null;
 
     public SettableAltFuture(@NonNull @nonnull final IThreadType threadType) {

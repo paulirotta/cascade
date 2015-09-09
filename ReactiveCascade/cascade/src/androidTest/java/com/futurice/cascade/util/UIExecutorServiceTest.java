@@ -50,7 +50,7 @@ import static com.futurice.cascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     final Object looperFlushMutex = new Object();
 

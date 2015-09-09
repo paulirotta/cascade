@@ -5,6 +5,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by phou on 04-06-2015.

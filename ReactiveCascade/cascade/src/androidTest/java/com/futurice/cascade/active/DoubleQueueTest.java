@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
  * Created by phou on 6/4/2015.
  */
 @SmallTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class DoubleQueueTest extends AsyncAndroidTestCase {
 
     @Before

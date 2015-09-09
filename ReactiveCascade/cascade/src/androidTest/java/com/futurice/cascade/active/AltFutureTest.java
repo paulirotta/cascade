@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
  * Created by phou on 6/4/2015.
  */
 @LargeTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class AltFutureTest extends AsyncAndroidTestCase {
 
     @Test
