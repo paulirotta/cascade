@@ -3,7 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23"
+    buildToolsVersion "23.0.1"
     publishNonDefault true  // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
@@ -11,7 +11,8 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "0.3.4"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
 
     buildTypes {
@@ -39,7 +40,7 @@ android {
         exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
     }
 
-    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
+//    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
 }
 
 allprojects {
@@ -64,8 +65,8 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:support-annotations:23.0.0'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-annotations:23.0.1'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     androidTestCompile 'com.android.support.test:runner:0.3'

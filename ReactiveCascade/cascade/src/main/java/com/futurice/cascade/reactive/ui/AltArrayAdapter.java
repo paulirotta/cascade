@@ -3,9 +3,11 @@ package com.futurice.cascade.reactive.ui;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +71,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource,
-            @LayoutRes final int textViewResourceId) {
+            @IdRes final int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<>());
         mOrigin = originAsync();
     }
@@ -84,7 +87,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource,
-            @LayoutRes final int textViewResourceId,
+            @IdRes final int textViewResourceId,
             @NonNull @nonnull final T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
         mOrigin = originAsync();
@@ -101,7 +104,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     public AltArrayAdapter(
             @NonNull @nonnull final Context context,
             @LayoutRes final int resource,
-            @LayoutRes final int textViewResourceId,
+            @IdRes final int textViewResourceId,
             @NonNull @nonnull final List<T> objects) {
         super(context, resource, textViewResourceId, objects);
         mOrigin = originAsync();
@@ -112,7 +115,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     public static AltArrayAdapter<CharSequence> createFromResource(
             @NonNull @nonnull final Context context,
             @LayoutRes final int textArrayResId,
-            @LayoutRes final int textViewResId) {
+            @IdRes final int textViewResId) {
         final CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
 
         return new AltArrayAdapter<>(context, textViewResId, strings);
@@ -392,7 +395,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @Override
     public View getView(
             @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-            @NonNull @nonnull final View convertView,
+            @Nullable @nullable final View convertView,
             @NonNull @nonnull final ViewGroup parent) {
         return super.getView(position, convertView, parent);
     }

@@ -493,9 +493,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @CheckResult(suggest = "IAltFuture#fork()")
     @SuppressWarnings("unchecked")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
-        assertNotDone();
-
-        then(altFuture);
+        then(altFuture).fork();
 
         return (IAltFuture<OUT, OUT>) this;
     }

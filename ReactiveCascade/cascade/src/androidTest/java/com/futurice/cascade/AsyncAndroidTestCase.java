@@ -4,22 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
-import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.util.TestUtil;
 
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.originAsync;
 
 /**
  * A connectedTest harness which bootstraps the Async class
@@ -27,7 +23,7 @@ import static com.futurice.cascade.Async.*;
  * Created by phou on 6/1/2015.
  */
 @LargeTest
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
@@ -40,7 +36,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public AsyncAndroidTestCase() {
         super(Activity.class);
 
-        mContext = InstrumentationRegistry.getContext();
+        mContext = getActivity(); //InstrumentationRegistry.getContext();
     }
 
     /**
@@ -55,7 +51,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public void setUp() throws Exception {
         super.setUp();
 
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+        injectInstrumentation(getInstrumentation());
+//        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         async = new AsyncBuilder(mContext).build();
         mOrigin = originAsync();
     }
@@ -79,7 +76,6 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @return the test util implementation
      */
     @NonNull
-    @nonnull
     public final TestUtil getTestUtil() {
         if (mTestUtil == null) {
             setTestUtil(new TestUtil());
@@ -94,12 +90,11 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param testUtil the test util implementation
      */
-    public final void setTestUtil(@NonNull @nonnull final TestUtil testUtil) {
+    public final void setTestUtil(@NonNull final TestUtil testUtil) {
         this.mTestUtil = testUtil;
     }
 
     @NonNull
-    @nonnull
     public final FileUtil getFileUtil() {
         if (mFileUtil == null) {
             setFileUtil(new FileUtil(mContext, Context.MODE_PRIVATE));
@@ -114,12 +109,11 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param fileUtil the file util implementation
      */
-    public final void setFileUtil(@NonNull @nonnull final FileUtil fileUtil) {
+    public final void setFileUtil(@NonNull final FileUtil fileUtil) {
         this.mFileUtil = fileUtil;
     }
 
     @NonNull
-    @nonnull
     public final NetUtil getNetUtil() {
         if (mNetUtil == null) {
             setNetUtil(new NetUtil(mContext));
@@ -134,7 +128,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param netUtil the network utilities implementation
      */
-    public final void setNetUtil(@NonNull @nonnull final NetUtil netUtil) {
+    public final void setNetUtil(@NonNull final NetUtil netUtil) {
         this.mNetUtil = netUtil;
     }
 
@@ -152,9 +146,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    @nonnull
     protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture)
+            @NonNull final IAltFuture<IN, OUT> altFuture)
             throws Exception {
         return awaitDoneNoErrorStackTraces(altFuture, mDefaultTimeoutMillis);
     }
@@ -171,9 +164,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    @nonnull
     protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
+            @NonNull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return getTestUtil().awaitDoneNoErrorStackTraces(altFuture, timeoutMillis);
@@ -193,9 +185,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      */
 
     @NonNull
-    @nonnull
     protected final <IN, OUT> OUT awaitDone(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture)
+            @NonNull final IAltFuture<IN, OUT> altFuture)
             throws Exception {
         return awaitDone(altFuture, mDefaultTimeoutMillis);
     }
@@ -211,9 +202,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    @nonnull
     protected final <IN, OUT> OUT awaitDone(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
+            @NonNull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return getTestUtil().awaitDone(altFuture, timeoutMillis);

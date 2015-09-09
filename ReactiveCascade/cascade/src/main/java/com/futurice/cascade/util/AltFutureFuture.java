@@ -124,14 +124,14 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
-            final IAction<OUT> action = () -> {
+            altFuture.then(() -> {
                 // Attach this to speed up and notify to continue the Future when the AltFuture finishes
                 // For speed, we don't normally notify after AltFuture end
                 synchronized (mutex) {
                     mutex.notifyAll();
                 }
-            };
-            altFuture.then(action);
+            })
+                    .fork();
         }
         while (!isDone()) {
             if (System.currentTimeMillis() >= endTime) {
