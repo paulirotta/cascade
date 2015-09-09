@@ -13,10 +13,10 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
+import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 import com.squareup.okhttp.Call;
@@ -24,14 +24,33 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.spdy.Header;
+import com.squareup.okhttp.internal.framed.Header;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 
-import static android.telephony.TelephonyManager.*;
-import static com.futurice.cascade.Async.*;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_1xRTT;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_CDMA;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_EDGE;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_EHRPD;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_0;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_A;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_EVDO_B;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_GPRS;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_HSDPA;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPA;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPAP;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_HSUPA;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_IDEN;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_LTE;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
+import static android.telephony.TelephonyManager.NETWORK_TYPE_UNKNOWN;
+import static com.futurice.cascade.Async.NET_READ;
+import static com.futurice.cascade.Async.NET_WRITE;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.originAsync;
 
 /**
  * OkHttp convenience wrapper methods

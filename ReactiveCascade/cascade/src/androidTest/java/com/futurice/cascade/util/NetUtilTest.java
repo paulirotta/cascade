@@ -9,7 +9,7 @@ import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.spdy.Header;
+import com.squareup.okhttp.internal.framed.Header;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
