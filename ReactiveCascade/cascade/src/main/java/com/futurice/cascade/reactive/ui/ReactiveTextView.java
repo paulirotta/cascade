@@ -13,12 +13,15 @@ import android.widget.TextView;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.IReactiveSource;
-import com.futurice.cascade.reactive.ReactiveValue;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.IReactiveSource;
+import com.futurice.cascade.reactive.ReactiveValue;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.assertNotNull;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * Change the displayed value from any thread by calling <code>view.bindable.set(String value)</code>

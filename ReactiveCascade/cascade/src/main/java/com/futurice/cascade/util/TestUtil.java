@@ -7,7 +7,7 @@ import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
 
 /**
  * Intergration test utilities.

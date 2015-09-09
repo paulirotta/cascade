@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
@@ -14,6 +17,8 @@ import com.futurice.cascade.util.NetUtil;
 import com.futurice.cascade.util.TestUtil;
 
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.futurice.cascade.Async.originAsync;
 
@@ -23,7 +28,7 @@ import static com.futurice.cascade.Async.originAsync;
  * Created by phou on 6/1/2015.
  */
 @LargeTest
-//@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
@@ -36,7 +41,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public AsyncAndroidTestCase() {
         super(Activity.class);
 
-        mContext = getActivity(); //InstrumentationRegistry.getContext();
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+        mContext = InstrumentationRegistry.getContext();
     }
 
     /**
@@ -51,10 +57,13 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public void setUp() throws Exception {
         super.setUp();
 
-        injectInstrumentation(getInstrumentation());
-//        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         async = new AsyncBuilder(mContext).build();
         mOrigin = originAsync();
+    }
+
+    @Test
+    @SmallTest
+    public void dummyTest() throws Exception {
     }
 
     /**

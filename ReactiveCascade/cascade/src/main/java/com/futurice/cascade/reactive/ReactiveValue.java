@@ -29,10 +29,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOne;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 

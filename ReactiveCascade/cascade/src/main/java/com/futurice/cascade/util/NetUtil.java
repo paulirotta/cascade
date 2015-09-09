@@ -127,9 +127,8 @@ public final class NetUtil {
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) throws IOException {
         dd(mOrigin, "get " + url);
-        final Call call = setupCall(url, builder -> addHeaders(builder, headers));
 
-        return execute(call);
+        return execute(setupCall(url, builder -> addHeaders(builder, headers)));
     }
 
     @NonNull
@@ -407,6 +406,16 @@ public final class NetUtil {
         return mOkHttpClient.newCall(builder.build());
     }
 
+    /**
+     * Complete the okhttp Call action synchronously on the current thread.
+     *
+     * We are explicitly using our own threading model for debuggability and concurrency management
+     * reasons rather than delegating that to the library
+     *
+     * @param call
+     * @return
+     * @throws IOException
+     */
     @NonNull
     @nonnull
     @WorkerThread

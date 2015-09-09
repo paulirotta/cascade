@@ -27,18 +27,21 @@ package com.futurice.cascade.active;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.IBaseAction;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.CancellationException;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.assertNotNull;
+import static com.futurice.cascade.Async.assertTrue;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
 
 /**
  * A present-time representation of one of many possible alternate future results
@@ -139,10 +142,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
-
-//            assertNotNull(paf);
+            assertNotNull(paf);
             assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
-
             final IN in = paf.get();
             action.call(in);
             return (OUT) in; // T and A are the same when there is no return type fromKey the mOnFireAction
@@ -178,10 +179,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
         this.action = () -> {
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
-
-            assertTrue("previous altFuture must be non-null", paf != null);
-            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
-
+            assertNotNull(paf);
+            assertTrue("The previous AltFuture in the chain is not finished:" + mOrigin, paf.isDone());
             return action.call(paf.get());
         };
     }

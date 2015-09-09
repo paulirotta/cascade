@@ -1,7 +1,5 @@
 package com.futurice.cascade.i;
 
-import android.support.annotation.Nullable;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

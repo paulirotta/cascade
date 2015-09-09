@@ -28,8 +28,8 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.nonnull;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +40,11 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.FILE;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.throwRuntimeException;
 
 public final class FileUtil {
     @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})

@@ -31,16 +31,16 @@ import android.util.Log;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.active.AltFuture;
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
@@ -54,7 +54,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.assertTrue;
+import static com.futurice.cascade.Async.e;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.i;
+import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * The baseline implementation of ThreadType convenience classes. It provides functional interfaces

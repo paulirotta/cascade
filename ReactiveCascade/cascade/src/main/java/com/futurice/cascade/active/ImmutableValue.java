@@ -28,12 +28,12 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 

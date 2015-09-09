@@ -45,7 +45,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.WORKER;
+import static com.futurice.cascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest

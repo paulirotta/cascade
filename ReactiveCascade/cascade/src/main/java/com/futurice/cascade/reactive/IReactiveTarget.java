@@ -23,7 +23,7 @@
  */
 package com.futurice.cascade.reactive;
 
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.i.INamed;
 
 /**
  * An object which can receive repeated value assertions from a reactive active chain.

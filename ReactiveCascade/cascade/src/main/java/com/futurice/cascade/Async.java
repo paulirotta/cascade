@@ -29,23 +29,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IActionTwo;
+import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.i.nonnull;
+import com.futurice.cascade.i.nullable;
 import com.futurice.cascade.util.AbstractThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -983,6 +983,7 @@ public final class Async {
      *                     reason which was not true and, if possible, the likely corrective action
      * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
      */
+    @NotCallOrigin
     public static void assertTrue(
             @NonNull @nonnull final String errorMessage,
             final boolean testResult) {
@@ -999,6 +1000,7 @@ public final class Async {
      * @param actual
      * @param <T>
      */
+    @NotCallOrigin
     public static <T> void assertEqual(
             @Nullable @nullable final T expected,
             @Nullable @nullable final T actual) {
@@ -1017,6 +1019,7 @@ public final class Async {
      * @param actual
      * @param <T>
      */
+    @NotCallOrigin
     public static <T> void assertNotEqual(
             @Nullable @nullable final T expected,
             @Nullable @nullable final T actual) {
@@ -1036,6 +1039,7 @@ public final class Async {
      */
     @NonNull
     @nonnull
+    @NotCallOrigin
     public static <T> T assertNotNull(@Nullable @nullable final T t) {
         if (t == null) {
             throw new NullPointerException();

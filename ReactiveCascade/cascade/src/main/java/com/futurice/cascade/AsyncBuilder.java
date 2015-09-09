@@ -24,21 +24,32 @@ THE SOFTWARE.
 
 package com.futurice.cascade;
 
-import android.content.*;
-import android.os.*;
+import android.content.Context;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.util.*;
+import android.util.Log;
 
-import com.futurice.cascade.active.*;
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.CallOrigin;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.DoubleQueue;
 import com.futurice.cascade.util.TypedThread;
 import com.futurice.cascade.util.UIExecutorService;
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <code><pre>

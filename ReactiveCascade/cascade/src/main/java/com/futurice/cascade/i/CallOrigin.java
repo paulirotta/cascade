@@ -26,7 +26,10 @@ package com.futurice.cascade.i;
 
 import com.futurice.cascade.active.IAltFuture;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Mark this class or method as being particularly interesting as the "originAsync"

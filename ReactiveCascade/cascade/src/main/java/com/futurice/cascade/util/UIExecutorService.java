@@ -23,7 +23,6 @@ THE SOFTWARE.
 */
 package com.futurice.cascade.util;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,7 +37,6 @@ import com.futurice.cascade.i.nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -49,7 +47,10 @@ import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.throwIllegalStateException;
+import static com.futurice.cascade.Async.throwRuntimeException;
 
 /**
  * Treat the system UI thread as an ExecutorService

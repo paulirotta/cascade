@@ -27,7 +27,6 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.i.nonnull;
 
@@ -36,7 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.currentThreadType;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results

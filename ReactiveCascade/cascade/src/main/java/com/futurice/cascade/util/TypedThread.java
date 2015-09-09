@@ -27,13 +27,16 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.i.*;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import static com.futurice.cascade.Async.*;
+
+import static com.futurice.cascade.Async.e;
 /**
  * This is a marker class to aid in runtime tests.
  */

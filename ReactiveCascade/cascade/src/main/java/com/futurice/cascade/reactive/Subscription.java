@@ -27,16 +27,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.i.IThreadType;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.util.AltWeakReference;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -44,7 +44,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * This is the default implementation for a reactive active chain link.

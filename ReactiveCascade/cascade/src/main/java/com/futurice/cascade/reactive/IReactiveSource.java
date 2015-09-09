@@ -25,12 +25,12 @@ package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.INamed;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.nonnull;
 
 /**

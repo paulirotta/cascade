@@ -32,14 +32,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.util.AltWeakReference;
-import com.futurice.cascade.util.DefaultThreadType;
-import com.futurice.cascade.util.AltFutureFuture;
+import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.util.AltFutureFuture;
+import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.util.DefaultThreadType;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +49,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * A {@link com.futurice.cascade.reactive.ReactiveValue} which retains state between stops and

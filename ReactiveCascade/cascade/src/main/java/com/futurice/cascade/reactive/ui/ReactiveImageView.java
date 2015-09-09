@@ -35,14 +35,20 @@ import android.widget.ImageView;
 
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.IReactiveSource;
-import com.futurice.cascade.reactive.IReactiveTarget;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.IReactiveSource;
+import com.futurice.cascade.reactive.IReactiveTarget;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.assertNotNull;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.isUiThread;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.throwIllegalStateException;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * An ImageView which can be directly bound to change the screen when an up-chain value changes

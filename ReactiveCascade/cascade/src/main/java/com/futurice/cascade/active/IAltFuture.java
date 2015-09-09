@@ -28,16 +28,16 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.ICancellable;
-import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.IReactiveTarget;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;

@@ -48,7 +48,14 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.DEBUG;
+import static com.futurice.cascade.Async.assertEqual;
+import static com.futurice.cascade.Async.assertTrue;
+import static com.futurice.cascade.Async.dd;
+import static com.futurice.cascade.Async.ee;
+import static com.futurice.cascade.Async.throwIllegalArgumentException;
+import static com.futurice.cascade.Async.throwIllegalStateException;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}

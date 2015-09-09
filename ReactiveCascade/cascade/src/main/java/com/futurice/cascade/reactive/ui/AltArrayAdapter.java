@@ -26,7 +26,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.UI;
+import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * Manipulate an {@link android.widget.ArrayAdapter} safely from any thread

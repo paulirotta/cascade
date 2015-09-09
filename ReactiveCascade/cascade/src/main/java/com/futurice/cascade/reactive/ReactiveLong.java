@@ -4,13 +4,13 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.ii;
 
 /**
  * A {@link Long} which can be updated in an atomic, thread-safe manner.

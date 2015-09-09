@@ -35,7 +35,8 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
-import static com.futurice.cascade.Async.*;
+import static com.futurice.cascade.Async.e;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * The default implementation of the subscribe executor

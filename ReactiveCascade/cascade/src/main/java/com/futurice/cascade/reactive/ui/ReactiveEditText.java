@@ -15,9 +15,9 @@ import android.widget.EditText;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.ReactiveValue;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.ReactiveValue;
 
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.assertNotNull;
