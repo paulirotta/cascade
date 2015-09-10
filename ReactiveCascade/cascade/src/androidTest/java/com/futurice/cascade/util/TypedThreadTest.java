@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
  * Created by phou on 04-06-2015.
  */
 @LargeTest
-//@RunWith(AndroidJUnit4.class)
 public class TypedThreadTest extends AsyncAndroidTestCase {
 
     @Before

@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
  * Created by phou on 04-06-2015.
  */
 @SmallTest
-//@RunWith(AndroidJUnit4.class)
 public class AltWeakReferenceTest extends AsyncAndroidTestCase {
 
     @Test

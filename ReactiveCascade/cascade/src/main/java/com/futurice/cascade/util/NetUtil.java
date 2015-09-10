@@ -126,9 +126,19 @@ public final class NetUtil {
     public Response get(
             @NonNull @nonnull final String url,
             @Nullable @nullable final Collection<Header> headers) throws IOException {
-        dd(mOrigin, "get " + url);
+        if (headers == null) {
+            dd(mOrigin, "get " + url);
+        } else {
+            dd(mOrigin, "get " + url + " with " + headers.size() + " custom headers");
+        }
 
-        return execute(setupCall(url, builder -> addHeaders(builder, headers)));
+        return execute(setupCall(url, builder -> {
+            if (headers != null) {
+                for (Header header : headers) {
+                    builder.addHeader(header.name.utf8(), header.value.utf8());
+                }
+            }
+        }));
     }
 
     @NonNull
@@ -408,7 +418,7 @@ public final class NetUtil {
 
     /**
      * Complete the okhttp Call action synchronously on the current thread.
-     *
+     * <p>
      * We are explicitly using our own threading model for debuggability and concurrency management
      * reasons rather than delegating that to the library
      *

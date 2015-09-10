@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Created by phou on 6/2/2015.
  */
 @LargeTest
-//@RunWith(AndroidJUnit4.class)
 public class NetUtilTest extends AsyncAndroidTestCase {
 
     public NetUtilTest() {
@@ -94,12 +93,12 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     @Test
     public void testGetAsyncFromWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
-        headers.add(new Header("Te", "VaT"));
+        headers.add(new Header("Test", "ValueT"));
         IAltFuture<?, Response> iaf = WORKER
-                .from("http://httpbin.org/get")
+                .from("http://httpbin.org/headers")
                 .then(getNetUtil().getAsync(headers))
                 .fork();
-        assertThat(awaitDone(iaf).body().string()).contains("VaT");
+        assertThat(awaitDone(iaf).body().string()).contains("ValueT");
     }
 
     @Test
