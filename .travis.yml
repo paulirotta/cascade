@@ -18,8 +18,13 @@ env:
 sudo: false
 
 jdk:
-  - oraclejdk7
-#  - oraclejdk8
+#  - oraclejdk7
+  - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
 android:
   components:
@@ -59,12 +64,12 @@ before-install:
 #    - sudo apt-get update -qq
 #    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
 #    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
-    - adb
+    - adb version
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
-    - adb wait-for-device
+#    - adb wait-for-device
     - android-wait-for-emulator
 #    - adb wait-for-device
 #    - while [[ `adb shell pm path android` == 'Error'* ]]; do sleep 2; done
@@ -73,6 +78,6 @@ before_script:
     - cd ./ReactiveCascade
 
 script:
-    - jdk_switcher use oraclejdk8
+#    - jdk_switcher use oraclejdk8
     - ./gradlew --info build connectedCheck
 
