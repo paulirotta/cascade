@@ -2,7 +2,7 @@ language: android
 
 notifications:
   email:
-    -  moses@futurice-nonda.flowdock.com
+    -  moses@futurice-nonda.flowdock.com 
 
 env:
   global:
