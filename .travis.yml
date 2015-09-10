@@ -7,15 +7,15 @@ notifications:
 env:
   global:
     - TERM=dumb
-    - ANDROID_API_LEVEL=22
-    - ANDROID_API_EMULATOR_LEVEL=22
-    - ANDROID_BUILD_TOOLS_VERSION=22.0.1
+    - ANDROID_API_LEVEL=23
+    - ANDROID_API_EMULATOR_LEVEL=23
+    - ANDROID_BUILD_TOOLS_VERSION=23.0.1
     - ANDROID_ABI=armeabi-v7a
     - ANDROID_SDK_HOME=${TRAVIS_BUILD_DIR}
     - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)         
-    - INSTALL_TIMEOUT=8 # minutes (does this matter?)         
+    - INSTALL_TIMEOUT=8 # minutes        
 
-sudo: required
+sudo: false
 
 jdk:
   - oraclejdk7
@@ -56,9 +56,9 @@ android:
 before-install:
 #    - android update sdk -u -a
 #    - jdk_switcher use oraclejdk7
-    - sudo apt-get update -qq
-    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
-    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
+#    - sudo apt-get update -qq
+#    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
+#    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
