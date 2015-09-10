@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.futurice.cascade.active;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -418,7 +417,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> onError(@NonNull @nonnull final IOnErrorAction action) {
         setOnError(action);
 
@@ -495,7 +494,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     @SuppressWarnings("unchecked")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         then(altFuture).fork();
@@ -506,7 +505,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
@@ -521,7 +520,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull @nonnull final IActionOne<OUT> action) {
         return then(mThreadType, action);
@@ -530,7 +529,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IActionOne<OUT> action) {
@@ -540,7 +539,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(mThreadType, action);
@@ -549,7 +548,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
@@ -559,7 +558,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(mThreadType, action);
     }
@@ -567,7 +566,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
@@ -577,7 +576,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IAction<OUT> action) {
         return then(mThreadType, action);
     }
@@ -585,7 +584,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> then(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IAction<OUT> action) {
@@ -595,7 +594,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
         return map(mThreadType, action);
     }
@@ -603,7 +602,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<OUT>> map(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IActionOneR<IN, OUT> action) {
@@ -623,7 +622,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull final IActionOneR<IN, Boolean> action) {
         return filter(mThreadType, action);
     }
@@ -631,7 +630,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<List<IN>, List<IN>> filter(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final IActionOneR<IN, Boolean> action) {
@@ -651,7 +650,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> set(@NonNull @nonnull final IReactiveTarget<OUT> reactiveTarget) {
         return then(reactiveTarget::fire);
     }
@@ -659,7 +658,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @Override // IAltFuture
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<OUT, OUT> set(@NonNull @nonnull final ImmutableValue<OUT> immutableValue) {
         return then(immutableValue::set);
     }

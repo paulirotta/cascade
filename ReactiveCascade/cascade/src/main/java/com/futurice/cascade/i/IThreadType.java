@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 package com.futurice.cascade.i;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -193,7 +192,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     //TODO CHECK CONTRACT- no automatic concurrency, sequential by default, let developers explicitly split() as they prefer
     <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action);
 
@@ -237,7 +236,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = "IAltFuture#fork()")
     <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value);
 
     /**
