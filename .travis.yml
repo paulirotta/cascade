@@ -26,7 +26,7 @@ android:
     - tools
 
     # The BuildTools version used by your project
-#    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
 
     # The SDK version used to compile your project
     - android-$ANDROID_API_LEVEL
@@ -51,6 +51,7 @@ android:
 before-install:
 #    - android update sdk -u -a
 #    - jdk_switcher use oraclejdk7
+    - sudo apt-get update -qq
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
