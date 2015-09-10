@@ -11,14 +11,13 @@ env:
     - ANDROID_API_EMULATOR_LEVEL=23
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
     - ANDROID_ABI=armeabi-v7a
-    - ANDROID_SDK_HOME=${TRAVIS_BUILD_DIR}
+#    - ANDROID_SDK_HOME=${TRAVIS_BUILD_DIR}
     - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)         
     - INSTALL_TIMEOUT=8 # minutes        
 
 sudo: false
 
 jdk:
-#  - oraclejdk7
   - oraclejdk8
 
 addons:
@@ -43,7 +42,7 @@ android:
 #    - extra-google-google_play_services
 #    - extra-google-m2repository
 #    - extra-android-m2repository
-#    - addon-google_apis-google-19
+    - addon-google_apis-google-23
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
@@ -56,16 +55,12 @@ android:
   licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
-#    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-preview-license-.+'
 
 before-install:
 #    - android update sdk -u -a
-#    - jdk_switcher use oraclejdk7
-#    - sudo apt-get update -qq
-#    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
-#    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
-    - adb version
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
+    - adb version
     - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
