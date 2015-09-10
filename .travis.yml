@@ -56,11 +56,14 @@ before-install:
     - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
-    - android-wait-for-emulator
+#    - android-wait-for-emulator
+    - adb wait-for-device
+    - while [[ `adb shell pm path android` == 'Error'* ]]; do sleep 2; done
+    - sleep 300 # wait an additional 5 minutes for emulator to finish startup
     - adb shell input keyevent 82 &
     - cd ./ReactiveCascade
 
 script:
     - jdk_switcher use oraclejdk8
-    - ./gradlew build connectedCheck
+    - ./gradlew --info build connectedCheck
 
