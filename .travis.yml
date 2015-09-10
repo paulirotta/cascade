@@ -7,6 +7,7 @@ notifications:
 env:
   global:
     - ANDROID_API_LEVEL=23
+    - ANDROID_API_EMULATOR_LEVEL=21
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
     - ANDROID_ABI=armeabi-v7a
     - ANDROID_SDK_HOME=${TRAVIS_BUILD_DIR}
@@ -46,14 +47,16 @@ android:
 #    - 'google-gdk-license-.+'
 #    - 'android-sdk-preview-license-.+'
 
-before_script:
+before-install:
 #    - android update sdk -u -a
-    - echo no | android create avd --force -n test -t android-$ANDROID_API_LEVEL --abi $ANDROID_ABI
-    - emulator -avd test -no-skin -no-audio -no-window -wipe-data &
+    - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
+    - emulator -avd test -no-skin -no-audio -no-window &
+
+before_script:
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
     - cd ./ReactiveCascade
 
 script:
-    - gradle clean build connectedCheck
+    - ./gradlew build connectedCheck
 
