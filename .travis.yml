@@ -40,11 +40,11 @@ android:
     - sys-img-$ANDROID_ABI-android-$ANDROID_API_LEVEL
     - extra
     - add-on
- 
+
   licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
-	- 'android-sdk-preview-license-.+'
+    - 'android-sdk-preview-license-.+'
 	
 before_script:
 #    - android update sdk -u -a
