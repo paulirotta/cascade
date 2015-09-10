@@ -25,8 +25,8 @@ android:
   components:
     # Uncomment the lines below if you want to
     # use the latest revision of Android SDK Tools
-    - platform-tools
-    - tools
+#    - platform-tools
+#    - tools
 
     # The BuildTools version used by your project
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
@@ -45,12 +45,12 @@ android:
     - sys-img-$ANDROID_ABI-android-$ANDROID_API_LEVEL
 #    - extra
 #    - add-on
-    - extra-android-support
-    - extra-android-m2repository
+#    - extra-android-support
+#    - extra-android-m2repository
 
   licenses:
     - 'android-sdk-license-.+'
-#    - 'google-gdk-license-.+'
+    - 'google-gdk-license-.+'
 #    - 'android-sdk-preview-license-.+'
 
 before-install:
@@ -59,10 +59,12 @@ before-install:
 #    - sudo apt-get update -qq
 #    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
 #    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
+    - adb
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
 before_script:
+    - adb wait-for-device
     - android-wait-for-emulator
 #    - adb wait-for-device
 #    - while [[ `adb shell pm path android` == 'Error'* ]]; do sleep 2; done
