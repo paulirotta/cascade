@@ -61,7 +61,7 @@ before-install:
 #    - android update sdk -u -a
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - adb version
-    - emulator -avd test -no-skin -no-audio -no-window &
+    - emulator -avd test -noskin -no-audio -no-window -verbose &
 
 before_script:
 #    - adb wait-for-device
