@@ -22,8 +22,8 @@ android:
   components:
     # Uncomment the lines below if you want to
     # use the latest revision of Android SDK Tools
-#    - platform-tools
-#    - tools
+    - platform-tools
+    - tools
 
     # The BuildTools version used by your project
 #    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
@@ -50,7 +50,7 @@ android:
 
 before-install:
 #    - android update sdk -u -a
-    - jdk_switcher use oraclejdk7
+#    - jdk_switcher use oraclejdk7
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
