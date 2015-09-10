@@ -57,6 +57,8 @@ before-install:
 #    - android update sdk -u -a
 #    - jdk_switcher use oraclejdk7
     - sudo apt-get update -qq
+    - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
+    - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
     - echo no | android create avd --force -n test -t android-$ANDROID_API_EMULATOR_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
 
