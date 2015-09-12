@@ -8,6 +8,7 @@ env:
   global:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
+    - ABI="default/armeabi-v7a"
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
     - ADB_INSTALL_TIMEOUT=8 # minutes         
     - INSTALL_TIMEOUT=8 # minutes        
@@ -47,7 +48,7 @@ android:
     - 'android-sdk-preview-license-.+'
 
 before_script:
-    - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi default/armeabi-v7a
+    - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi ${ABI}
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
