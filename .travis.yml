@@ -56,12 +56,10 @@ android:
     - 'google-gdk-license-.+'
     - 'android-sdk-preview-license-.+'
 
-before-install:
+before_script:
 #    - android update sdk -u -a
     - android create avd --force -n test -t android-$ANDROID_API_LEVEL --abi $ANDROID_ABI
     - emulator -avd test -no-skin -no-audio -no-window &
-
-before_script:
 #    - adb wait-for-device
     - android-wait-for-emulator
 #    - adb wait-for-device
