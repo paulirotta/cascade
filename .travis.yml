@@ -9,7 +9,7 @@ env:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
     - ABI="default/armeabi-v7a"
-    - ANDROID_BUILD_TOOLS_VERSION=23.0.1
+    - ANDROID_BUILD_TOOLS_VERSION=23.0.0
     - ADB_INSTALL_TIMEOUT=8 # minutes         
     - INSTALL_TIMEOUT=8 # minutes        
 
@@ -29,8 +29,8 @@ android:
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     # Uncomment the lines below if you want to use the latest revision of Android SDK Tools
-#    - platform-tools
-#    - tools
+    - platform-tools
+    - tools
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
