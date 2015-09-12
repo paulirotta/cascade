@@ -37,7 +37,7 @@ android:
 #    - extra-google-m2repository
 #    - extra-android-m2repository
 #    - addon-google_apis-google-$ANDROID_API_LEVEL
-#    - extra-android-support
+    - extra-android-support
 
   licenses:
     - 'android-sdk-license-.+'
