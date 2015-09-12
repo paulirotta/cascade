@@ -10,8 +10,8 @@ env:
     - ANDROID_API_LEVEL=23
     - ABI=armeabi-v7a
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
-    - ADB_INSTALL_TIMEOUT=10 # minutes         
-    - INSTALL_TIMEOUT=10 # minutes        
+    - ADB_INSTALL_TIMEOUT=12 # minutes         
+    - INSTALL_TIMEOUT=12 # minutes        
 
 sudo: false
 
@@ -54,5 +54,6 @@ before_script:
     - cd ./ReactiveCascade
 
 script:
-    - gradle build connectedCheck
+    - gradle build
+    - gradle connectedCheck
 
