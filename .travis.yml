@@ -6,7 +6,7 @@ notifications:
 
 env:
   global:
-    - TERM=dumb
+#    - TERM=dumb
     - ANDROID_API_LEVEL=23
     - ABI=armeabi-v7a
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
@@ -14,9 +14,8 @@ env:
     - INSTALL_TIMEOUT=12 # minutes        
 
 sudo: false
-
-jdk:
-  - oraclejdk8
+cache: false
+jdk: oraclejdk8
 
 # Update to the lastest JDK8
 addons:
@@ -26,6 +25,7 @@ addons:
 
 android:
   components:
+    - sys-img-armeabi-v7a-android-21
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     # Uncomment the lines below if you want to use the latest revision of Android SDK Tools
@@ -34,11 +34,10 @@ android:
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
+#    - extra-google-m2repository
+#    - extra-android-m2repository
 #    - addon-google_apis-google-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-android-23
-    - extra-android-support
+#    - extra-android-support
 
   licenses:
     - 'android-sdk-license-.+'
