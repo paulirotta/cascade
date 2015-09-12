@@ -24,8 +24,7 @@ addons:
       - oracle-java8-installer
 
 android:
-  components:
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+  components: build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     - sys-img-armeabi-v7a-android-23
     - platform-tools
