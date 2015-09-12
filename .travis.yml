@@ -30,7 +30,7 @@ android:
     - android-$ANDROID_API_LEVEL
     # Uncomment the lines below if you want to use the latest revision of Android SDK Tools
     - platform-tools
-    - tools
+#    - tools
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
