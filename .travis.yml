@@ -14,7 +14,6 @@ env:
     - INSTALL_TIMEOUT=12 # minutes        
 
 sudo: false
-cache: false
 jdk: oraclejdk8
 
 # Update to the lastest JDK8
@@ -24,16 +23,17 @@ addons:
       - oracle-java8-installer
 
 android:
-  components: build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
+  components:
+    - build-tools-${ANDROID_BUILD_TOOLS_VERSION}
+    - android-${ANDROID_API_LEVEL}
     - sys-img-armeabi-v7a-android-23
     - platform-tools
     - tools
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
-     - extra-google-m2repository
-     - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-android-m2repository
 #    - addon-google_apis-google-$ANDROID_API_LEVEL
     - extra-android-support
 
@@ -52,4 +52,3 @@ before_script:
 
 script:
     - gradle build connectedCheck
-
