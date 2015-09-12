@@ -49,7 +49,7 @@ android:
 
 before_script:
 #    - android update sdk --no-ui
-    - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi ${ABI}
+    - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi default/armeabi-v7a
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
