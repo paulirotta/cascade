@@ -29,8 +29,8 @@ android:
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     # Uncomment the lines below if you want to use the latest revision of Android SDK Tools
-    - platform-tools
-    - tools
+#    - platform-tools
+#    - tools
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
@@ -48,7 +48,7 @@ android:
     - 'android-sdk-preview-license-.+'
 
 before_script:
-    - android update sdk --no-ui
+#    - android update sdk --no-ui
     - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi ${ABI}
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - android-wait-for-emulator
