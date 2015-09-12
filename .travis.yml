@@ -51,4 +51,5 @@ before_script:
     - cd ./ReactiveCascade
 
 script:
-    - gradle build connectedCheck
+    - gradle build
+    - gradle connectedCheck
