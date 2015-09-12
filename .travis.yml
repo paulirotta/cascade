@@ -25,7 +25,7 @@ addons:
 
 android:
   components:
-    - sys-img-armeabi-v7a-android-23
+    - sys-img-armeabi-v7a-android-23 
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     - platform-tools
