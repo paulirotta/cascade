@@ -6,7 +6,7 @@ notifications:
 
 env:
   global:
-#    - TERM=dumb
+    - TERM=dumb
     - ANDROID_API_LEVEL=23
     - ABI=armeabi-v7a
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
@@ -28,14 +28,13 @@ android:
     - sys-img-armeabi-v7a-android-21
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
-    # Uncomment the lines below if you want to use the latest revision of Android SDK Tools
     - platform-tools
     - tools
 #    - extra
 #    - add-on
 #    - extra-google-google_play_services
-#    - extra-google-m2repository
-    - extra-android-m2repository
+     - extra-google-m2repository
+     - extra-android-m2repository
 #    - addon-google_apis-google-$ANDROID_API_LEVEL
     - extra-android-support
 
@@ -53,6 +52,6 @@ before_script:
     - cd ./ReactiveCascade
 
 script:
-    - gradle build
+    - gradle clean build
     - gradle connectedCheck
 
