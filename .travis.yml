@@ -27,7 +27,7 @@ android:
   components:
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-$EMULATOR
+    - sys-img-armeabi-v7a-android-20
     - platform-tools
     - tools
 #    - extra
