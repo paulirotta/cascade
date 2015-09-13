@@ -9,8 +9,8 @@ env:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
     - ANDROID_EMULATOR_LEVEL=20
-    - EMULATOR=android-${ANDROID_EMULATOR_LEVEL}
-    - ANDROID_BUILD_TOOLS_VERSION=${ANDROID_API_LEVEL}.+
+    - EMULATOR=android-{$ANDROID_EMULATOR_LEVEL}
+    - ANDROID_BUILD_TOOLS_VERSION={$ANDROID_API_LEVEL}.+
     - ABI=armeabi-v7a
     - ADB_INSTALL_TIMEOUT=8 # minutes         
     - INSTALL_TIMEOUT=8 # minutes        
@@ -26,9 +26,9 @@ addons:
 
 android:
   components:
-    - build-tools-${ANDROID_BUILD_TOOLS_VERSION}
-    - android-${ANDROID_API_LEVEL}
-    - sys-img-armeabi-v7a-android-${ANDROID_EMULATOR_LEVEL}
+    - build-tools-{$ANDROID_BUILD_TOOLS_VERSION}
+    - android-{$ANDROID_API_LEVEL}
+    - sys-img-armeabi-v7a-android-{$ANDROID_EMULATOR_LEVEL}
     - platform-tools
     - tools
 #    - extra
@@ -36,7 +36,7 @@ android:
 #    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-#    - addon-google_apis-google-${ANDROID_API_LEVEL}
+#    - addon-google_apis-google-{$ANDROID_API_LEVEL}
     - extra-android-support
 
   licenses:
