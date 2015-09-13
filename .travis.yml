@@ -8,8 +8,8 @@ env:
   global:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
-    - ANDROID_EMULATOR_LEVEL=19
-    - ANDROID_BUILD_TOOLS_VERSION=23.0.1
+    - ANDROID_EMULATOR_LEVEL=20
+    - ANDROID_BUILD_TOOLS_VERSION=${ANDROID_API_LEVEL}.+
     - ABI=armeabi-v7a
     - ADB_INSTALL_TIMEOUT=8 # minutes         
     - INSTALL_TIMEOUT=8 # minutes        
