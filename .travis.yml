@@ -8,10 +8,11 @@ env:
   global:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
-    - ABI=armeabi-v7a
+    - ANDROID_EMULATOR_LEVEL=19
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
-    - ADB_INSTALL_TIMEOUT=12 # minutes         
-    - INSTALL_TIMEOUT=12 # minutes        
+    - ABI=armeabi-v7a
+    - ADB_INSTALL_TIMEOUT=8 # minutes         
+    - INSTALL_TIMEOUT=8 # minutes        
 
 sudo: false
 jdk: oraclejdk8
@@ -26,7 +27,7 @@ android:
   components:
     - build-tools-${ANDROID_BUILD_TOOLS_VERSION}
     - android-${ANDROID_API_LEVEL}
-    - sys-img-armeabi-v7a-android-19
+    - sys-img-armeabi-v7a-android-${ANDROID_EMULATOR_LEVEL}
     - platform-tools
     - tools
 #    - extra
@@ -34,7 +35,7 @@ android:
 #    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-#    - addon-google_apis-google-$ANDROID_API_LEVEL
+#    - addon-google_apis-google-${ANDROID_API_LEVEL}
     - extra-android-support
 
   licenses:
@@ -44,7 +45,7 @@ android:
 
 before_script:
 #    - android update sdk --no-ui
-    - android create avd --force -n nexus -t android-19 -d "Nexus 6" --abi default/armeabi-v7a
+    - android create avd --force -n nexus -t android-${ANDROID_EMULATOR_LEVEL} -d "Nexus 6" --abi default/${ABI}
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - cd ./ReactiveCascade
 
