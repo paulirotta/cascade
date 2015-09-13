@@ -44,7 +44,6 @@ android:
     - 'android-sdk-preview-license-.+'
 
 before_script:
-#    - android update sdk --no-ui
     - android create avd --force -n nexus -t $EMULATOR -d "Nexus 6" --abi default/$ABI
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - cd ./ReactiveCascade
