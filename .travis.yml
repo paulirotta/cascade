@@ -26,7 +26,7 @@ android:
   components:
     - build-tools-${ANDROID_BUILD_TOOLS_VERSION}
     - android-${ANDROID_API_LEVEL}
-    - sys-img-armeabi-v7a-android-23
+    - sys-img-armeabi-v7a-android-19
     - platform-tools
     - tools
 #    - extra
@@ -44,12 +44,12 @@ android:
 
 before_script:
 #    - android update sdk --no-ui
-    - android create avd --force -n nexus -t android-$ANDROID_API_LEVEL -d "Nexus 6" --abi default/armeabi-v7a
+    - android create avd --force -n nexus -t android-19 -d "Nexus 6" --abi default/armeabi-v7a
     - emulator -avd nexus -no-skin -no-audio -no-window &
+    - cd ./ReactiveCascade
 
 script:
-    - cd ./ReactiveCascade
-    - gradle clean build connectedCheck
+    - gradle clean build
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
     - gradle connectedCheck
