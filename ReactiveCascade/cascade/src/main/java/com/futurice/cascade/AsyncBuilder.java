@@ -72,18 +72,18 @@ public class AsyncBuilder {
     public static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
     static final String NOT_INITIALIZED = "Please init with new AsyncBuilder(this).build() in for example Activity.onCreate() _before_ the classloader touches Async.class";
     private final String TAG = AsyncBuilder.class.getSimpleName();
-    private final AtomicInteger threadNumber = new AtomicInteger();
-    private final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
-    static Thread serialWorkerThread;
+    private final static AtomicInteger sThreadNumber = new AtomicInteger();
+    private final AtomicBoolean mWorkerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
+    static Thread sSerialWorkerThread;
 
-    public static volatile AsyncBuilder asyncBuilder = null;
-    public Thread uiThread;
-    public final Context context;
-    public ExecutorService uiExecutorService;
+    public static volatile AsyncBuilder sAsyncBuilder = null;
+    public Thread mUiThread;
+    public final Context mContext;
+    public ExecutorService mUiExecutorService;
     public boolean debug = BuildConfig.DEBUG;
-    public boolean failFast = debug;
-    public boolean showErrorStackTraces = debug;
-    public boolean strictMode = debug;
+    public boolean mFailFast = debug;
+    public boolean mShowErrorStackTraces = debug;
+    public final boolean mStrictMode = debug;
 
     private IThreadType workerThreadType;
     private IThreadType serialWorkerThreadType;
@@ -107,7 +107,7 @@ public class AsyncBuilder {
      * @return
      */
     public static boolean isInitialized() {
-        return asyncBuilder != null;
+        return sAsyncBuilder != null;
     }
 
     /**
@@ -130,7 +130,7 @@ public class AsyncBuilder {
         } catch (NullPointerException e) {
             // Needed for instrumentation setup with Android test runner
         }
-        this.context = c;
+        this.mContext = c;
     }
 
     /**
@@ -329,7 +329,7 @@ public class AsyncBuilder {
 //            setFileService(new FileMirrorService("Default FileMirrorService",
 //                    "FileMirrorService",
 //                    false,
-//                    context,
+//                    mContext,
 //                    Context.MODE_PRIVATE,
 //                    getFileThreadType()));
 //        }
@@ -348,8 +348,8 @@ public class AsyncBuilder {
     private Thread getWorkerThread(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final Runnable runnable) {
-        if (NUMBER_OF_CORES == 1 || workerPoolIncludesSerialWorkerThread.getAndSet(true)) {
-            return new TypedThread(threadType, runnable, "WorkerThread" + threadNumber.getAndIncrement());
+        if (NUMBER_OF_CORES == 1 || mWorkerPoolIncludesSerialWorkerThread.getAndSet(true)) {
+            return new TypedThread(threadType, runnable, "WorkerThread" + sThreadNumber.getAndIncrement());
         }
         return getSerialWorkerThread(threadType, runnable);
     }
@@ -385,11 +385,11 @@ public class AsyncBuilder {
     private synchronized Thread getSerialWorkerThread(
             @NonNull @nonnull final IThreadType threadType,
             @NonNull @nonnull final Runnable runnable) {
-        if (serialWorkerThread == null) {
-            serialWorkerThread = new TypedThread(threadType, runnable, "SerialWorkerThread" + threadNumber.getAndIncrement());
+        if (sSerialWorkerThread == null) {
+            sSerialWorkerThread = new TypedThread(threadType, runnable, "SerialWorkerThread" + sThreadNumber.getAndIncrement());
         }
 
-        return serialWorkerThread;
+        return sSerialWorkerThread;
     }
 
     /**
@@ -568,7 +568,7 @@ public class AsyncBuilder {
             setFileReadExecutorService(new ThreadPoolExecutor(1, 1,
                             0L, TimeUnit.MILLISECONDS,
                             getFileQueue(),
-                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "FileThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "FileThread" + sThreadNumber.getAndIncrement()))
             );
         }
         //TODO else Warn if mThreadType does match the previously created IThreadType parameter
@@ -589,7 +589,7 @@ public class AsyncBuilder {
             Log.d(TAG, "Creating default net read executor service");
             setNetReadExecutorService(new ThreadPoolExecutor(1, NUMBER_OF_CONCURRENT_NET_READS,
                             1000, TimeUnit.MILLISECONDS, getNetReadQueue(),
-                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetReadThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetReadThread" + sThreadNumber.getAndIncrement()))
             );
         }
 
@@ -608,7 +608,7 @@ public class AsyncBuilder {
         if (netWriteExecutorService == null) {
             Log.d(TAG, "Creating default net write executor service");
             setNetWriteExecutorService(Executors.newSingleThreadExecutor(
-                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetWriteThread" + threadNumber.getAndIncrement()))
+                            runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetWriteThread" + sThreadNumber.getAndIncrement()))
             );
         }
 
@@ -623,16 +623,16 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     ExecutorService getUiExecutorService() {
-        if (context == null) {
+        if (mContext == null) {
             Exception e = new IllegalStateException(NOT_INITIALIZED);
             Log.e(TAG, NOT_INITIALIZED, e);
             System.exit(-1);
         }
-        if (uiExecutorService == null) {
-            setUiExecutorService(new UIExecutorService(new Handler(context.getMainLooper())));
+        if (mUiExecutorService == null) {
+            setUiExecutorService(new UIExecutorService(new Handler(mContext.getMainLooper())));
         }
 
-        return uiExecutorService;
+        return mUiExecutorService;
     }
 
     /**
@@ -646,7 +646,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setUiExecutorService(@NonNull @nonnull final ExecutorService uiExecutorService) {
         Log.d(TAG, "setUiExecutorService(" + uiExecutorService + ")");
-        this.uiExecutorService = uiExecutorService;
+        this.mUiExecutorService = uiExecutorService;
         return this;
     }
 
@@ -693,7 +693,7 @@ public class AsyncBuilder {
         Log.v(TAG, "singleThreadedWorkerExecutorService()");
         final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
         this.workerExecutorService = Executors.newSingleThreadScheduledExecutor(
-                runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "SingleThreadedWorker" + threadNumber.getAndIncrement())
+                runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "SingleThreadedWorker" + sThreadNumber.getAndIncrement())
         );
         threadTypeImmutableValue.set(getWorkerThreadType());
         return this;
@@ -763,7 +763,7 @@ public class AsyncBuilder {
     public AsyncBuilder setUI_Thread(@NonNull @nonnull final Thread uiThread) {
         Log.v(TAG, "setUI_Thread(" + uiThread + ")");
         uiThread.setName("UIThread");
-        this.uiThread = uiThread;
+        this.mUiThread = uiThread;
 
         return this;
     }
@@ -783,7 +783,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setFailFast(final boolean failFast) {
         Log.v(TAG, "setFailFast(" + failFast + ")");
-        this.failFast = failFast;
+        this.mFailFast = failFast;
         return this;
     }
 
@@ -798,7 +798,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setShowErrorStackTraces(final boolean showErrorStackTraces) {
         Log.v(TAG, "setShowErrorStackTraces(" + showErrorStackTraces + ")");
-        this.showErrorStackTraces = showErrorStackTraces;
+        this.mShowErrorStackTraces = showErrorStackTraces;
         return this;
     }
 
@@ -833,16 +833,16 @@ public class AsyncBuilder {
     @nonnull
     @NotCallOrigin
     public Async build() {
-        if (uiThread == null) {
+        if (mUiThread == null) {
             Thread thread = Thread.currentThread();
             try {
-                context.getMainLooper().getThread();
+                mContext.getMainLooper().getThread();
             } catch (NullPointerException e) {
                 // Needed for Google instrumentation test runner
             }
             setUI_Thread(thread);
         }
-        if (strictMode) {
+        if (mStrictMode) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
                     .detectDiskWrites()
@@ -858,7 +858,7 @@ public class AsyncBuilder {
         }
         Log.v(TAG, "AsyncBuilder complete");
 
-        asyncBuilder = this;
+        sAsyncBuilder = this;
         return new Async(); //TODO Pass the builder as an argument to the constructor
     }
 }

@@ -175,7 +175,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             return 200;
         });
         WORKER.execute(() -> {
-            uiExecutorService.invokeAll(callableList, 1000, TimeUnit.DAYS.MILLISECONDS);
+            uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
         });
 
         awaitDone(done1);

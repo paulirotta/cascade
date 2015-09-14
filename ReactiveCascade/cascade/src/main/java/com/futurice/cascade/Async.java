@@ -92,17 +92,17 @@ public final class Async {
         }
     }
 
-    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.asyncBuilder; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
+    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.sAsyncBuilder; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
     public static final boolean DEBUG = (ASYNC_BUILDER == null) || ASYNC_BUILDER.debug; //BuildConfig.DEBUG; // true in debugOrigin builds, false in production builds, determined at build time to help JAVAC and PROGUARD clean out debugOrigin-only support code for speed and size
     //TODO Periodically check if recent Android updates have fixed this gradle bug, https://code.google.com/p/android/issues/detail?id=52962
     //TODO Manual gradle work-around, https://gist.github.com/almozavr/d59e770d2a6386061fcb
     //TODO Add a flag for independently enabling or disable runtime assertions and tests at Gradle level. Currently many optimistic assumptions that can make the error show up only later are made when DEBUG==false, but this aggressive optimization might need to be switched off independently to verify if the code path difference is the problem or help when the problem is speed sensitive
     //    public static final boolean VISUALIZE = false;
-    public static final boolean TRACE_ASYNC_ORIGIN = (ASYNC_BUILDER == null) || ASYNC_BUILDER.showErrorStackTraces; // This makes finding where in you code a given log line was directly or indirectly called, but slows running
+    public static final boolean TRACE_ASYNC_ORIGIN = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // This makes finding where in you code a given log line was directly or indirectly called, but slows running
     // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services from Async
-    public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.uiThread; // The main system thread for this Context
-    public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.failFast; // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
-    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
+    public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.mUiThread; // The main system thread for this Context
+    public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mFailFast; // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
+    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
 
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
     private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No mOrigin provided in production builds");
@@ -246,7 +246,7 @@ public final class Async {
     }
 
     /**
-     * Log an error. During debugOrigin builds, this will fail-fast end the current context
+     * Log an error. During debugOrigin builds, this will fail-fast end the current mContext
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *

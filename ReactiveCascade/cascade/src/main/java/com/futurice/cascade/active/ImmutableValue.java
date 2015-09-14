@@ -172,7 +172,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     @Nullable
     @nullable
     @SuppressWarnings("unchecked")
-    // IN->OUT must be bent to match all cases but the context makes this safe
+    // IN->OUT must be bent to match all cases but the mContext makes this safe
     private <IN, OUT> OUT call(
             @NonNull @nonnull final IN in,
             @NonNull @nonnull final IBaseAction<IN> action)

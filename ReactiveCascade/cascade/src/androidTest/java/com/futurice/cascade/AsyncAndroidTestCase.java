@@ -63,7 +63,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
     @Test
     @SmallTest
-    public void dummyTest() throws Exception {
+    public void dummyTest() {
     }
 
     /**

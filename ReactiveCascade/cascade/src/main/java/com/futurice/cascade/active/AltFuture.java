@@ -85,7 +85,7 @@ import static com.futurice.cascade.Async.ee;
  * <p>
  * fail here - directly at the point in the code where the mistake is most likely toKey be
  * <p>
- * fail why - with full context information such as the subscribe call stack so that you need toKey resolve track the
+ * fail why - with full mContext information such as the subscribe call stack so that you need toKey resolve track the
  * problem toKey a remote source quickly
  * <p>
  * fail next - with an instructive message of what is the most likely solution rather than a

@@ -4,7 +4,7 @@ param (
 )
 
 if ($test) {
-	./gradlew clean build connectedCheck
+	./gradlew clean build connectedCheck --stacktrace 
 	ii ./cascade/build/reports/androidTests/connected/index.html
 } else {
 	./gradlew clean build

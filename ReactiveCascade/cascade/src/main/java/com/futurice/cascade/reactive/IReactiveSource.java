@@ -87,7 +87,7 @@ public interface IReactiveSource<OUT> extends INamed {
 //         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.reactive.IReactiveTarget}s
 //         * <p>
 //         * If there is only one down-chain target and the {@link com.futurice.cascade.i.IThreadType} is the
-//         * same, this will continue on the same worker without context switching overhead. In such as case,
+//         * same, this will continue on the same worker without mContext switching overhead. In such as case,
 //         * previous chain steps will not be garbage collectable until the fire completes or reaches
 //         * a down-chain branch.
 //         */
@@ -143,8 +143,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
+     * mContext, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * mContext is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action
@@ -160,8 +160,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
+     * mContext, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * mContext is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action
@@ -177,8 +177,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
-     * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
+     * mContext, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * mContext is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
      * @param action

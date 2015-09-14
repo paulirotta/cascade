@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Note clearly there is an upside and downside toKey this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
- * and less and faster context switches (context switches tend toKey cost marginally more as thread count
+ * and less and faster mContext switches (mContext switches tend toKey cost marginally more as thread count
  * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
  * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
  * mQueue and perhaps unrelated toKey the current focus of your attention will, once started, block the
