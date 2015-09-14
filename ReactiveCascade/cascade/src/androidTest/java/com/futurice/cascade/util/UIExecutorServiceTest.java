@@ -23,10 +23,12 @@ THE SOFTWARE.
 */
 package com.futurice.cascade.util;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
 
@@ -59,54 +61,46 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     volatile int sendCount;
 
     volatile UIExecutorService uiExecutorService;
-    Thread fakeUiThread;
+    private Thread fakeUiThread;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
-            protected void onLooperPrepared() {
-                uiExecutorService = new UIExecutorService(new Handler() {
-                    public void handleMessage(@NonNull @nonnull Message msg) {
-                        super.handleMessage(msg);
-                        handleMessageCount++;
-                    }
+        if (fakeUiThread == null) {
+            fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
+                protected void onLooperPrepared() {
+                    uiExecutorService = new UIExecutorService(new Handler() {
+                        public void handleMessage(@NonNull @nonnull Message msg) {
+                            super.handleMessage(msg);
+                            handleMessageCount++;
+                        }
 
-                    /**
-                     * Handle system messages here.
-                     */
-                    public void dispatchMessage(@NonNull @nonnull Message msg) {
-                        super.dispatchMessage(msg);
-                        dispatchMessageCount++;
-                    }
+                        /**
+                         * Handle system messages here.
+                         */
+                        public void dispatchMessage(@NonNull @nonnull Message msg) {
+                            super.dispatchMessage(msg);
+                            dispatchMessageCount++;
+                        }
 
-                    public boolean sendMessageAtTime(@NonNull @nonnull Message msg, long uptimeMillis) {
-                        sendCount++;
-                        return super.sendMessageAtTime(msg, uptimeMillis);
-                    }
-                });
+                        public boolean sendMessageAtTime(@NonNull @nonnull Message msg, long uptimeMillis) {
+                            sendCount++;
+                            return super.sendMessageAtTime(msg, uptimeMillis);
+                        }
+                    });
+                }
+            };
+            fakeUiThread.start();
+
+            for (; ; ) {
+                if (uiExecutorService != null) {
+                    break;
+                }
+                Thread.yield();
             }
-        };
-        fakeUiThread.start();
-
-        for (; ; ) {
-            if (uiExecutorService != null) {
-                break;
-            }
-            Thread.yield();
         }
-    }
-
-    @After
-    @Override
-    public void tearDown() throws Exception {
-        if (fakeUiThread != null) {
-            fakeUiThread.interrupt();
-        }
-
-        super.tearDown();
     }
 
     protected void flushLooper() throws InterruptedException {

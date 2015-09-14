@@ -80,28 +80,28 @@ public class AsyncBuilder {
     public Thread mUiThread;
     public final Context mContext;
     public ExecutorService mUiExecutorService;
-    public boolean debug = BuildConfig.DEBUG;
-    public boolean mFailFast = debug;
-    public boolean mShowErrorStackTraces = debug;
-    public final boolean mStrictMode = debug;
+    public boolean mDebug = BuildConfig.DEBUG;
+    public boolean mFailFast = mDebug;
+    public boolean mShowErrorStackTraces = mDebug;
+    public final boolean mStrictMode = mDebug;
 
-    private IThreadType workerThreadType;
-    private IThreadType serialWorkerThreadType;
-    private IThreadType uiThreadType;
-    private IThreadType netReadThreadType;
-    private IThreadType netWriteThreadType;
-    private IThreadType fileThreadType;
-    private BlockingQueue<Runnable> workerQueue;
-    private BlockingQueue<Runnable> serialWorkerQueue;
-    private BlockingQueue<Runnable> fileQueue;
-    private BlockingQueue<Runnable> netReadQueue;
-    private BlockingQueue<Runnable> netWriteQueue;
-    private ExecutorService workerExecutorService;
-    private ExecutorService serialWorkerExecutorService;
-    private ExecutorService fileReadExecutorService;
-    private ExecutorService fileWriteExecutorService;
-    private ExecutorService netReadExecutorService;
-    private ExecutorService netWriteExecutorService;
+    private IThreadType mWorkerThreadType;
+    private IThreadType mSerialWorkerThreadType;
+    private IThreadType mUiThreadType;
+    private IThreadType mNetReadThreadType;
+    private IThreadType mNetWriteThreadType;
+    private IThreadType mFileThreadType;
+    private BlockingQueue<Runnable> mWorkerQueue;
+    private BlockingQueue<Runnable> mSerialWorkerQueue;
+    private BlockingQueue<Runnable> mFileQueue;
+    private BlockingQueue<Runnable> mNetReadQueue;
+    private BlockingQueue<Runnable> mNetWriteQueue;
+    private ExecutorService mWorkerExecutorService;
+    private ExecutorService mSerialWorkerExecutorService;
+    private ExecutorService mFileReadExecutorService;
+    private ExecutorService mFileWriteExecutorService;
+    private ExecutorService mNetReadExecutorService;
+    private ExecutorService mNetWriteExecutorService;
 
     /**
      * @return
@@ -141,17 +141,17 @@ public class AsyncBuilder {
     @NotCallOrigin
 //    @VisibleForTesting
     IThreadType getWorkerThreadType() {
-        if (workerThreadType == null) {
+        if (mWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setWorkerThreadType(new DefaultThreadType("WorkerThreadType",
                             getWorkerExecutorService(threadTypeImmutableValue),
                             getWorkerQueue()
                     )
             );
-            threadTypeImmutableValue.set(workerThreadType);
+            threadTypeImmutableValue.set(mWorkerThreadType);
         }
 
-        return workerThreadType;
+        return mWorkerThreadType;
     }
 
     /**
@@ -162,17 +162,17 @@ public class AsyncBuilder {
     @NotCallOrigin
 //    @VisibleForTesting
     IThreadType getSerialWorkerThreadType() {
-        if (serialWorkerThreadType == null) {
+        if (mSerialWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setSerialWorkerThreadType(new DefaultThreadType("SerialWorkerThreadType",
                             getSerialWorkerExecutorService(threadTypeImmutableValue),
                             getSerialWorkerQueue()
                     )
             );
-            threadTypeImmutableValue.set(serialWorkerThreadType);
+            threadTypeImmutableValue.set(mSerialWorkerThreadType);
         }
 
-        return serialWorkerThreadType;
+        return mSerialWorkerThreadType;
     }
 
     /**
@@ -183,7 +183,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setWorkerThreadType(@NonNull final IThreadType workerThreadType) {
         Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
-        this.workerThreadType = workerThreadType;
+        this.mWorkerThreadType = workerThreadType;
 
         return this;
     }
@@ -196,7 +196,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setSerialWorkerThreadType(@NonNull final IThreadType serialWorkerThreadType) {
         Log.v(TAG, "setSerialWorkerThreadType(" + serialWorkerThreadType + ")");
-        this.serialWorkerThreadType = serialWorkerThreadType;
+        this.mSerialWorkerThreadType = serialWorkerThreadType;
 
         return this;
     }
@@ -208,11 +208,11 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     IThreadType getUiThreadType() {
-        if (uiThreadType == null) {
+        if (mUiThreadType == null) {
             setUIThreadType(new DefaultThreadType("UIThreadType", getUiExecutorService(), null));
         }
 
-        return uiThreadType;
+        return mUiThreadType;
     }
 
     /**
@@ -223,7 +223,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setUIThreadType(@NonNull @nonnull final IThreadType uiThreadType) {
         Log.v(TAG, "setUIThreadType(" + uiThreadType + ")");
-        this.uiThreadType = uiThreadType;
+        this.mUiThreadType = uiThreadType;
         return this;
     }
 
@@ -233,17 +233,17 @@ public class AsyncBuilder {
     @NonNull
     @nonnull
     IThreadType getNetReadThreadType() {
-        if (netReadThreadType == null) {
+        if (mNetReadThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetReadThreadType(new DefaultThreadType("NetReadThreadType",
                             getNetReadExecutorService(threadTypeImmutableValue),
                             getNetReadQueue()
                     )
             );
-            threadTypeImmutableValue.set(netReadThreadType);
+            threadTypeImmutableValue.set(mNetReadThreadType);
         }
 
-        return netReadThreadType;
+        return mNetReadThreadType;
     }
 
     /**
@@ -254,7 +254,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetReadThreadType(@NonNull @nonnull final IThreadType netReadThreadType) {
         Log.v(TAG, "setNetReadThreadType(" + netReadThreadType + ")");
-        this.netReadThreadType = netReadThreadType;
+        this.mNetReadThreadType = netReadThreadType;
         return this;
     }
 
@@ -265,17 +265,17 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     IThreadType getNetWriteThreadType() {
-        if (netWriteThreadType == null) {
+        if (mNetWriteThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetWriteThreadType(new DefaultThreadType("NetWriteThreadType",
                             getNetWriteExecutorService(threadTypeImmutableValue),
                             getNetWriteQueue()
                     )
             );
-            threadTypeImmutableValue.set(netWriteThreadType);
+            threadTypeImmutableValue.set(mNetWriteThreadType);
         }
 
-        return netWriteThreadType;
+        return mNetWriteThreadType;
     }
 
     /**
@@ -286,7 +286,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetWriteThreadType(@NonNull @nonnull final IThreadType netWriteThreadType) {
         Log.v(TAG, "setNetWriteThreadType(" + netWriteThreadType + ")");
-        this.netWriteThreadType = netWriteThreadType;
+        this.mNetWriteThreadType = netWriteThreadType;
         return this;
     }
 
@@ -297,17 +297,17 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     IThreadType getFileThreadType() {
-        if (fileThreadType == null) {
+        if (mFileThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setFileThreadType(new DefaultThreadType("FileReadThreadType",
                             getFileExecutorService(threadTypeImmutableValue),
                             getFileQueue()
                     )
             );
-            threadTypeImmutableValue.set(fileThreadType);
+            threadTypeImmutableValue.set(mFileThreadType);
         }
 
-        return fileThreadType;
+        return mFileThreadType;
     }
 
     /**
@@ -318,7 +318,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setFileThreadType(@NonNull @nonnull final IThreadType fileThreadType) {
         Log.v(TAG, "setFileThreadType(" + fileThreadType + ")");
-        this.fileThreadType = fileThreadType;
+        this.mFileThreadType = fileThreadType;
         return this;
     }
 
@@ -362,7 +362,7 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     ExecutorService getWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
-        if (workerExecutorService == null) {
+        if (mWorkerExecutorService == null) {
             Log.v(TAG, "Creating default worker executor service");
             final BlockingQueue<Runnable> q = getWorkerQueue();
             final int numberOfThreads = q instanceof BlockingDeque ? NUMBER_OF_CORES : 1;
@@ -378,7 +378,7 @@ public class AsyncBuilder {
             ));
         }
 
-        return workerExecutorService;
+        return mWorkerExecutorService;
     }
 
     @NonNull
@@ -400,7 +400,7 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     ExecutorService getSerialWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
-        if (serialWorkerExecutorService == null) {
+        if (mSerialWorkerExecutorService == null) {
             Log.v(TAG, "Creating default serial worker executor service");
 
             setSerialWorkerExecutorService(new ThreadPoolExecutor(
@@ -413,7 +413,7 @@ public class AsyncBuilder {
             );
         }
 
-        return workerExecutorService;
+        return mWorkerExecutorService;
     }
 
     /**
@@ -424,7 +424,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setWorkerQueue(" + queue + ")");
-        workerQueue = queue;
+        mWorkerQueue = queue;
         return this;
     }
 
@@ -436,7 +436,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setSerialWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setSerialWorkerQueue(" + queue + ")");
-        serialWorkerQueue = queue;
+        mSerialWorkerQueue = queue;
         return this;
     }
 
@@ -447,12 +447,12 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     BlockingQueue<Runnable> getWorkerQueue() {
-        if (workerQueue == null) {
+        if (mWorkerQueue == null) {
             Log.d(TAG, "Creating default worker mQueue");
             setWorkerQueue(new LinkedBlockingDeque<>());
         }
 
-        return workerQueue;
+        return mWorkerQueue;
     }
 
     /**
@@ -465,12 +465,12 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     BlockingQueue<Runnable> getSerialWorkerQueue() {
-        if (serialWorkerQueue == null) {
+        if (mSerialWorkerQueue == null) {
             Log.d(TAG, "Creating default in-order worker mQueue");
             setSerialWorkerQueue(new DoubleQueue<>(getWorkerQueue()));
         }
 
-        return serialWorkerQueue;
+        return mSerialWorkerQueue;
     }
 
     /**
@@ -481,7 +481,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setFileQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setFileQueue(" + queue + ")");
-        this.fileQueue = queue;
+        this.mFileQueue = queue;
         return this;
     }
 
@@ -492,12 +492,12 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     BlockingQueue<Runnable> getFileQueue() {
-        if (fileQueue == null) {
+        if (mFileQueue == null) {
             Log.d(TAG, "Creating default file read mQueue");
             setFileQueue(new LinkedBlockingDeque<>());
         }
 
-        return fileQueue;
+        return mFileQueue;
     }
 
     /**
@@ -508,7 +508,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetReadQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setNetReadQueue(" + queue + ")");
-        this.netReadQueue = queue;
+        this.mNetReadQueue = queue;
         return this;
     }
 
@@ -520,7 +520,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetWriteQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setNetWriteQueue(" + queue + ")");
-        this.netWriteQueue = queue;
+        this.mNetWriteQueue = queue;
         return this;
     }
 
@@ -531,12 +531,12 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     BlockingQueue<Runnable> getNetReadQueue() {
-        if (netReadQueue == null) {
+        if (mNetReadQueue == null) {
             Log.d(TAG, "Creating default net read mQueue");
             setNetReadQueue(new LinkedBlockingDeque<>());
         }
 
-        return netReadQueue;
+        return mNetReadQueue;
     }
 
     /**
@@ -546,12 +546,12 @@ public class AsyncBuilder {
     @nonnull
 //    @VisibleForTesting
     BlockingQueue<Runnable> getNetWriteQueue() {
-        if (netWriteQueue == null) {
+        if (mNetWriteQueue == null) {
             Log.d(TAG, "Creating default worker net write mQueue");
             setNetWriteQueue(new LinkedBlockingDeque<>());
         }
 
-        return netWriteQueue;
+        return mNetWriteQueue;
     }
 
     /**
@@ -563,7 +563,7 @@ public class AsyncBuilder {
     @VisibleForTesting
     ExecutorService getFileExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
-        if (fileReadExecutorService == null) {
+        if (mFileReadExecutorService == null) {
             Log.d(TAG, "Creating default file read executor service");
             setFileReadExecutorService(new ThreadPoolExecutor(1, 1,
                             0L, TimeUnit.MILLISECONDS,
@@ -573,7 +573,7 @@ public class AsyncBuilder {
         }
         //TODO else Warn if mThreadType does match the previously created IThreadType parameter
 
-        return fileReadExecutorService;
+        return mFileReadExecutorService;
     }
 
     /**
@@ -585,7 +585,7 @@ public class AsyncBuilder {
 //    @VisibleForTesting
     ExecutorService getNetReadExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
-        if (netReadExecutorService == null) {
+        if (mNetReadExecutorService == null) {
             Log.d(TAG, "Creating default net read executor service");
             setNetReadExecutorService(new ThreadPoolExecutor(1, NUMBER_OF_CONCURRENT_NET_READS,
                             1000, TimeUnit.MILLISECONDS, getNetReadQueue(),
@@ -593,7 +593,7 @@ public class AsyncBuilder {
             );
         }
 
-        return netReadExecutorService;
+        return mNetReadExecutorService;
     }
 
     /**
@@ -605,14 +605,14 @@ public class AsyncBuilder {
 //    @VisibleForTesting
     ExecutorService getNetWriteExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
-        if (netWriteExecutorService == null) {
+        if (mNetWriteExecutorService == null) {
             Log.d(TAG, "Creating default net write executor service");
             setNetWriteExecutorService(Executors.newSingleThreadExecutor(
                             runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "NetWriteThread" + sThreadNumber.getAndIncrement()))
             );
         }
 
-        return netWriteExecutorService;
+        return mNetWriteExecutorService;
     }
 
     /**
@@ -663,7 +663,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setWorkerExecutorService(@NonNull @nonnull final ExecutorService executorService) {
         Log.v(TAG, "setWorkerExecutorService(" + executorService + ")");
-        workerExecutorService = executorService;
+        mWorkerExecutorService = executorService;
         return this;
     }
 
@@ -675,7 +675,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setSerialWorkerExecutorService(@NonNull @nonnull final ExecutorService executorService) {
         Log.v(TAG, "setSerialWorkerExecutorService(" + executorService + ")");
-        serialWorkerExecutorService = executorService;
+        mSerialWorkerExecutorService = executorService;
         return this;
     }
 
@@ -692,7 +692,7 @@ public class AsyncBuilder {
     public AsyncBuilder singleThreadedWorkerExecutorService() {
         Log.v(TAG, "singleThreadedWorkerExecutorService()");
         final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-        this.workerExecutorService = Executors.newSingleThreadScheduledExecutor(
+        this.mWorkerExecutorService = Executors.newSingleThreadScheduledExecutor(
                 runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, "SingleThreadedWorker" + sThreadNumber.getAndIncrement())
         );
         threadTypeImmutableValue.set(getWorkerThreadType());
@@ -707,7 +707,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setFileReadExecutorService(@NonNull @nonnull final ExecutorService fileReadExecutorService) {
         Log.v(TAG, "setFileReadExecutorService(" + fileReadExecutorService + ")");
-        this.fileReadExecutorService = fileReadExecutorService;
+        this.mFileReadExecutorService = fileReadExecutorService;
         return this;
     }
 
@@ -718,8 +718,8 @@ public class AsyncBuilder {
     @NonNull
     @nonnull
     public AsyncBuilder setFileWriteExecutorService(@NonNull @nonnull final ExecutorService executorService) {
-        Log.v(TAG, "setFileWriteExecutorService(" + fileWriteExecutorService + ")");
-        fileWriteExecutorService = executorService;
+        Log.v(TAG, "setFileWriteExecutorService(" + mFileWriteExecutorService + ")");
+        mFileWriteExecutorService = executorService;
         return this;
     }
 
@@ -731,7 +731,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetReadExecutorService(@NonNull @nonnull final ExecutorService netReadExecutorService) {
         Log.v(TAG, "setNetReadExecutorService(" + netReadExecutorService + ")");
-        this.netReadExecutorService = netReadExecutorService;
+        this.mNetReadExecutorService = netReadExecutorService;
         return this;
     }
 
@@ -745,7 +745,7 @@ public class AsyncBuilder {
     @nonnull
     public AsyncBuilder setNetWriteExecutorService(@NonNull @nonnull final ExecutorService netWriteExecutorService) {
         Log.v(TAG, "setNetWriteExecutorService(" + netWriteExecutorService + ")");
-        this.netWriteExecutorService = netWriteExecutorService;
+        this.mNetWriteExecutorService = netWriteExecutorService;
         return this;
     }
 

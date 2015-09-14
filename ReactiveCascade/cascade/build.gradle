@@ -57,7 +57,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
-    androidTestCompile 'org.assertj:assertj-core:2.1.0'
+    androidTestCompile 'org.assertj:assertj-core:2.2.0'
 }
 
 // JavaDoc configuration
