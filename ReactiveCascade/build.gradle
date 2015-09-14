@@ -12,37 +12,8 @@ buildscript {
     configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
-plugins {
-    id "com.github.mjdetullio.gradle.coverity" version "1.0.2"
-}
-
 allprojects {
     repositories {
         jcenter()
     }
-}
-
-coverity {
-    // Default values shown here
-    // You only have to add them if you wish to override
-
-    // Directory Coverity uses during emit/analyze/commit
-    intermediateDir = "${project.buildDir}/coverity/intermediate"
-
-    // Path to your Coverity Analysis Tools root directory (leave "bin" off the end)
-    // If env var is not set and you don't set this, it assumes "${COVERITY_HOME}/bin" is on your PATH
-    coverityHome = System.getenv('COVERITY_HOME')
-
-    // Coverity Connect settings used during the commit phase
-    stream = System.getenv('COVERITY_STREAM')
-    host = System.getenv('COVERITY_HOST')
-    port = System.getenv('COVERITY_PORT')
-    user = System.getenv('COVERITY_USER')
-    pass = System.getenv('COVERITY_PASS')
-
-    // Whether child projects (recursive) should be part of the analysis
-    includeChildProjects = true
-
-    // Setting this to true will not skip child projects
-    skip = false
 }

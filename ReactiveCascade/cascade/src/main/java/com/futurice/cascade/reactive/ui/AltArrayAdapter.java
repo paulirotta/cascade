@@ -225,7 +225,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, A> setNotifyOnChangeAsync(final boolean notifyOnChange) {
         return UI.then(() -> setNotifyOnChange(notifyOnChange));
     }
@@ -233,7 +233,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public <A, TT extends T> IAltFuture<A, A> addAllAsync(
             @NonNull @nonnull final Collection<TT> collection,
             final boolean addIfUnique) {
@@ -253,7 +253,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public final <TT extends T> IAltFuture<?, List<TT>> addAllAsync(@NonNull @nonnull final TT... items) {
         final ArrayList<TT> list = new ArrayList<>(items.length);
         for (TT item : items) {
@@ -265,7 +265,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public <A> IAltFuture<A, A> clearAsync() {
         return UI.then(this::clear);
     }
@@ -279,7 +279,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Integer> getCountAsync() {
         return UI.then(this::getCount);
     }
@@ -287,7 +287,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NonNull
     @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, List<T>> getAllAsync() {
         return UI.then(this::getAll);
     }

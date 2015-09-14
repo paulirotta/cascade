@@ -42,6 +42,7 @@ android {
 //    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
 }
 
+// Lint configuration
 allprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
@@ -50,6 +51,16 @@ allprojects {
     }
 }
 
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:support-annotations:23.0.1'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'org.assertj:assertj-core:2.1.0'
+}
+
+// JavaDoc configuration
 android.libraryVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
@@ -61,13 +72,4 @@ android.libraryVariants.all { variant ->
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
     }
-}
-
-dependencies {
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:support-annotations:23.0.1'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    androidTestCompile 'com.android.support.test:runner:0.3'
-    androidTestCompile 'com.android.support.test:rules:0.3'
-    androidTestCompile 'org.assertj:assertj-core:2.1.0'
 }
