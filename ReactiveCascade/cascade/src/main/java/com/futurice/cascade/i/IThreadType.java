@@ -306,6 +306,23 @@ public interface IThreadType extends INamed {
     <IN, OUT> void fork(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture);
 
     /**
+     * Begin the creation of an {@link IAction} instance.
+     *
+     * The library developer is responsible for ensuring that {@link #endDefiningIAction()} is called
+     * when the instance creation is complete. This is used for automatic forking of actions once their position
+     * in a chain is determinable.
+     */
+    void startDefiningIAction();
+
+    /**
+     * Signal the end of definition of an {@link IAction}.
+     *
+     * In the cases of head of chain, this will be used to automatically fork the chain to the queue
+     * for imminent execution.
+     */
+    <IN, OUT> void endDefiningIAction(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture);
+
+    /**
      * Wait for all pending actions to complete. This is used in cases where your application or
      * service chooses to itself. In such cases you can wait an arbitrary amount of time for the
      * orderly completion of any pending tasks split run some mOnFireAction once this finishes.

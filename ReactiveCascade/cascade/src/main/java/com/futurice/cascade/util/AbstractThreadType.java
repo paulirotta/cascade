@@ -55,6 +55,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+import static com.futurice.cascade.Async.assertEqual;
 import static com.futurice.cascade.Async.assertTrue;
 import static com.futurice.cascade.Async.e;
 import static com.futurice.cascade.Async.ee;
@@ -71,8 +72,7 @@ import static com.futurice.cascade.Async.vv;
  * For more specialized behaviour a class may choose to replace this.
  * <p>
  */
-// TODO Add a DEBUG build timer which notifies you of dangling forks (.subscribe() which you forget to call .fork() on after some time period)
-public abstract class AbstractThreadType implements IThreadType, INamed {
+public abstract class AbstractThreadType extends AutoforkThreadType {
     protected final ExecutorService executorService;
     private final String name;
     protected final BlockingQueue<Runnable> mQueue;

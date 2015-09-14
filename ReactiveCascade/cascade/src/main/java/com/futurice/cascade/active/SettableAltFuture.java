@@ -89,6 +89,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public SettableAltFuture(@NonNull @nonnull final IThreadType threadType) {
         this.mThreadType = threadType;
         this.mOrigin = Async.originAsync();
+
+        Async.currentThreadType().startDefiningIAction();
     }
 
     public SettableAltFuture(

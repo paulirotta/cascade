@@ -4,15 +4,15 @@ import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Created by phou on 6/4/2015.
- */
+import static org.assertj.core.api.Assertions.*;
+
 @SmallTest
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
@@ -24,7 +24,18 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testCancel() throws Exception {
-
+        SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER, 20);
+        assertThat(settableAltFuture.cancel("Just because")).isTrue();
+        assertThat(settableAltFuture.isCancelled());
+        assertThat(settableAltFuture.safeGet()).isEqualTo(null);
+        try {
+            settableAltFuture.get();
+            failBecauseExceptionWasNotThrown(IllegalStateException.class);
+        } catch (IndexOutOfBoundsException e) {
+            assertThat(e)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("Just because");
+        }
     }
 
     @Test

@@ -44,6 +44,7 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 import com.futurice.cascade.util.AbstractThreadType;
+import com.futurice.cascade.util.AutoforkThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
 
@@ -955,15 +956,14 @@ public final class Async {
     @nonnull
     public static IThreadType currentThreadType() {
         final Thread thread = Thread.currentThread();
-        IThreadType threadType = NON_CASCADE_THREAD;
 
         if (thread instanceof TypedThread) {
-            threadType = ((TypedThread) thread).getThreadType();
+            return ((TypedThread) thread).getThreadType();
         } else if (isUiThread()) {
-            threadType = UI;
+            return UI;
         }
 
-        return threadType;
+        return NON_CASCADE_THREAD;
     }
 
     /**
@@ -1050,151 +1050,7 @@ public final class Async {
     /**
      * A marker value returned when a thread is not part of Cascade
      */
-    public static final IThreadType NON_CASCADE_THREAD = new IThreadType() {
-        @Override
-        public final boolean isInOrderExecutor() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void execute(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final void run(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void run(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void runNext(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final void runNext(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final boolean moveToHeadOfQueue(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void runNext(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IActionOne<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN> List<IAltFuture<IN, IN>> then(@NonNull @nonnull IAction<IN>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull IActionR<IN, OUT> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull @nonnull IActionR<IN, OUT>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull IActionOneR<IN, OUT> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN, OUT> void fork(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public boolean isShutdown() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable @nullable IAction<IN> afterShutdownAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> List<Runnable> shutdownNow(@NonNull @nonnull String reason, @Nullable @nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable @nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final String getName() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-    };
+    public static final IThreadType NON_CASCADE_THREAD = new AutoforkThreadType();
 
     private static final class StackTaceLine {
 
