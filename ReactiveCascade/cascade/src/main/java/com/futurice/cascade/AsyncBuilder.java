@@ -139,7 +139,7 @@ public class AsyncBuilder {
     @NonNull
     @nonnull
     @NotCallOrigin
-//    @VisibleForTesting
+    @VisibleForTesting
     IThreadType getWorkerThreadType() {
         if (mWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -160,7 +160,7 @@ public class AsyncBuilder {
     @NonNull
     @nonnull
     @NotCallOrigin
-//    @VisibleForTesting
+    @VisibleForTesting
     IThreadType getSerialWorkerThreadType() {
         if (mSerialWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -206,7 +206,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     IThreadType getUiThreadType() {
         if (mUiThreadType == null) {
             setUIThreadType(new DefaultThreadType("UIThreadType", getUiExecutorService(), null));
@@ -232,6 +232,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
+    @VisibleForTesting
     IThreadType getNetReadThreadType() {
         if (mNetReadThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -263,7 +264,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     IThreadType getNetWriteThreadType() {
         if (mNetWriteThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -295,7 +296,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     IThreadType getFileThreadType() {
         if (mFileThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -360,7 +361,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     ExecutorService getWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mWorkerExecutorService == null) {
             Log.v(TAG, "Creating default worker executor service");
@@ -398,7 +399,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     ExecutorService getSerialWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mSerialWorkerExecutorService == null) {
             Log.v(TAG, "Creating default serial worker executor service");
@@ -445,7 +446,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     BlockingQueue<Runnable> getWorkerQueue() {
         if (mWorkerQueue == null) {
             Log.d(TAG, "Creating default worker mQueue");
@@ -463,7 +464,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     BlockingQueue<Runnable> getSerialWorkerQueue() {
         if (mSerialWorkerQueue == null) {
             Log.d(TAG, "Creating default in-order worker mQueue");
@@ -490,7 +491,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     BlockingQueue<Runnable> getFileQueue() {
         if (mFileQueue == null) {
             Log.d(TAG, "Creating default file read mQueue");
@@ -529,7 +530,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     BlockingQueue<Runnable> getNetReadQueue() {
         if (mNetReadQueue == null) {
             Log.d(TAG, "Creating default net read mQueue");
@@ -544,7 +545,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     BlockingQueue<Runnable> getNetWriteQueue() {
         if (mNetWriteQueue == null) {
             Log.d(TAG, "Creating default worker net write mQueue");
@@ -582,7 +583,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     ExecutorService getNetReadExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mNetReadExecutorService == null) {
@@ -602,7 +603,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     ExecutorService getNetWriteExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mNetWriteExecutorService == null) {
@@ -621,7 +622,7 @@ public class AsyncBuilder {
     //TODO All ExecutorService-s should be a new DelayedExecutorService which supports executeDelayed(millis) behavior
     @NonNull
     @nonnull
-//    @VisibleForTesting
+    @VisibleForTesting
     ExecutorService getUiExecutorService() {
         if (mContext == null) {
             Exception e = new IllegalStateException(NOT_INITIALIZED);

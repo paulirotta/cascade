@@ -1169,6 +1169,11 @@ public final class Async {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
+        @Override
+        public boolean isShutdown() {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
         @NonNull
         @nonnull
         @Override

@@ -2,6 +2,9 @@ package com.futurice.cascade;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
@@ -12,15 +15,18 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
 import com.futurice.cascade.util.TestUtil;
+import com.futurice.cascade.util.UIExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.futurice.cascade.Async.originAsync;
+import static com.futurice.cascade.Async.vv;
 
 /**
  * A connectedTest harness which bootstraps the Async class
@@ -30,6 +36,8 @@ import static com.futurice.cascade.Async.originAsync;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
+    private final Object looperFlushMutex = new Object();
+
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
     private NetUtil mNetUtil;
@@ -53,11 +61,15 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      */
     @Before
     @CallSuper
-    @Override // TestCase
+    @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        async = new AsyncBuilder(mContext).build();
+        if (async == null) {
+            async = new AsyncBuilder(mContext)
+                    .build();
+        }
+
         mOrigin = originAsync();
     }
 

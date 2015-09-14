@@ -308,6 +308,11 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
     @Override // IThreadType
+    public boolean isShutdown() {
+        return executorService.isShutdown();
+    }
+
+    @Override // IThreadType
     @NonNull
     @nonnull
     public <IN> Future<Boolean> shutdown(

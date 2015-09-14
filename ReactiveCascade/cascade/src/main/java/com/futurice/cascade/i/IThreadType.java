@@ -345,6 +345,17 @@ public interface IThreadType extends INamed {
             @Nullable @nullable final IAction<IN> afterShutdownAction);
 
     /**
+     * Test if the underlying executor is shutdown.
+     *
+     * Note that once it is shutdown, it can not be recovered. Normally this should only be done
+     * as the application is closing forever. In other/special cases, a new instance of
+     * {@link com.futurice.cascade.Async} may be constructed using {@link com.futurice.cascade.AsyncBuilder}
+     *
+     * @return
+     */
+    public boolean isShutdown();
+
+    /**
      * Halt execution of all functional and reactive subscriptions in this mThreadType.
      *
      * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all active chain elements
