@@ -28,7 +28,7 @@
   public static <fields>;
 }
 
-# -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
 -keepclassmembers,allowoptimization enum * {
     public static **[] values();
