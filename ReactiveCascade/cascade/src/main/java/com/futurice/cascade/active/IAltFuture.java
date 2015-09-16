@@ -48,12 +48,30 @@ import java.util.concurrent.Future;
  * A {@link java.util.concurrent.Future} that follows an alternative contract split supports a slightly different
  * set of methods split exception handling.
  * <p>
- * The contract for use is different from a traditional <code>Future</code> in exception handling, a non-blocking
- * inter-thread communication contract. It is often used together with {@link com.futurice.cascade.i.IThreadType}
- * to add an explicit maximum concurrency contract. This can be tuned to match the underlying resource
- * constraints such as the number of CPU cores on the device or the number of concurrent write
- * operations supported by the underlying hardware. Used properly, this should lead to throughput increases,
- * latency reduction split peak memory use bounding while keeping the code simple, readable split highly
+ * A traditional
+ * <code>Future</code> @see <a href="http://developer.android.com/reference/java/util/concurrent/Future.html">Java Future</a>
+ * is blocking when referencing the value. It turns out others
+ * have been trying to very similarly work past the limitations of Future by executing a callback on completion, notably Java 8 with
+ * <code>CompletableFuture</code> @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html">Java 8 CompletableFuture</a>,
+ * the Guava library's
+ * <code>ListenableFuture</code> @see <a href="http://google.github.io/guava/releases/snapshot/api/docs/com/google/common/util/concurrent/ListenableFuture.html">Guava ListenableFuture</a>,
+ * and Scala's implementation of
+ * <code>Future</code> @see <a href="http://www.scala-lang.org/files/archive/nightly/docs/library/index.html#scala.concurrent.Future">Scala Future</a>.
+ * All three of these solutions are suitable for server development. Guava configured with appropriate Proguard
+ * minimization is suitable for Android.
+ *
+ * <code>AltFuture</code> differs from the above alternatives by providing an execution model and strictly defined inter-thread
+ * communication and error handling contract. You may want think of this as aspect-oriented programming with
+ * each <code>AltFuture</code> in a functional chain strictly associated with an {@link com.futurice.cascade.i.IThreadType}.
+ * The defined thread type (a named group of one or more threads) explicitly sets the maximum concurrency contract.
+ * The ideal concurrency for a given step in a functional chain is determined by the primary limiting
+ * resource of that purely functional computational step or side effect. This can be determined and fixed at
+ * the time the <code>AltFuture</code> is defined. The limiting resource may be the
+ * necessity for a piece of code to execute synchronously after other UI code on the application's main thread.
+ * If this is not required, then the number of CPU cores on the execution
+ * device or other primary resource constraint such to that thread type such as the optimal number of
+ * concurrent network write operations for current network conditions. Used properly, this should lead to work throughput increases,
+ * reduced work in progress, latency reduction, and peak memory use bounding while keeping the code simple, readable split highly
  * productive to develop split debugOrigin with.
  * <p>
  * {@link java.util.concurrent.Future#get()} split
