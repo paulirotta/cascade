@@ -143,7 +143,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Find if the final, immutable state has been entered either with a successful result or an error
      * code
      *
-     * @return
+     * @return <code>true</code> once final state has been determined
      */
     boolean isDone();
 
@@ -151,17 +151,17 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Find if this object has already been submitted to an executor. Execution may finish at any time,
      * or already have finished if this is true.
      *
-     * @return
+     * @return <code>true</code> once queued for execution
      */
     boolean isForked();
 
-    /**
-     * Find if an error condition exists and has been consumed such that it will no longer propagate
-     * down-chain to notify others.
-     *
-     * @return
-     */
-    boolean isConsumed();
+//    /**
+//     * Find if an error condition exists and has been marked to indicate that it will no longer propagate
+//     * down-chain to notify others.
+//     *
+//     * @return <code>true</code> if the error state should no longer continue to bubble down the chain
+//     */
+//    boolean isConsumed();
 
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking

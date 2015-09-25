@@ -779,32 +779,6 @@ public final class Async {
         }
     }
 
-//    /**
-//     * Perform an action once both the async-resolved object creation call stack mOrigin and
-//     * async current call stack mOrigin are settled
-//     *
-//     * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
-//     * @param action               to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
-//     */
-//    private static void debugOriginThen(
-//            @NonNull @nonnull final ImmutableValue<String> objectCreationOrigin,
-//            @NonNull @nonnull final IActionTwo<String, String> action) {
-//        if (TRACE_ASYNC_ORIGIN) {
-//            final ImmutableValue<String> currentCallOrigin = originAsync();
-//            objectCreationOrigin.then(
-//                    creationOrigin -> {
-//                        currentCallOrigin.then(
-//                                callOrigin -> action.call(creationOrigin, callOrigin));
-//                    });
-//        } else if (DEBUG) {
-//            try {
-//                action.call("", "");
-//            } catch (Exception e) {
-//                Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
-//            }
-//        }
-//    }
-
     @NonNull
     @nonnull
     private static List<StackTaceLine> origin(@NonNull @nonnull final StackTraceElement[] traceElementsArray) {

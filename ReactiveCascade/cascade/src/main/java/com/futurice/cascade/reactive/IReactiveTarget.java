@@ -23,7 +23,10 @@
  */
 package com.futurice.cascade.reactive;
 
+import android.support.annotation.NonNull;
+
 import com.futurice.cascade.i.INamed;
+import com.futurice.cascade.i.nonnull;
 
 /**
  * An object which can receive repeated value assertions from a reactive active chain.
@@ -33,8 +36,7 @@ import com.futurice.cascade.i.INamed;
  * <p>
  * Note that classes which are functional but not reactive only receive a value one time before
  * becoming immutable value object. These are thus _not_ <code>IReactiveTarget</code>s because the
- * 2nd etc firing would not be meaningful. You will see example of these in the package
- * {@link com.futurice.cascade.i.active}
+ * 2nd etc firing would not be meaningful.
  *
  * @param <IN>     the type of value expected as input to this node. If this is the head of the reactive chain,
  *                 it is the same type as <code>SOURCE</code>.
@@ -65,9 +67,9 @@ public interface IReactiveTarget<IN> extends INamed {
      * do so in an <code>.mOnError()</code> statement lower down in the chain you wish to trigger
      * such an action.
      *
-     * @param in               The value from the previous link in the reactive chain.
+     * @param in The value from the previous link in the reactive chain.
      */
-    void fire(IN in);
+    void fire(@NonNull @nonnull IN in);
 
     /**
      * Same as {@link #fire(Object)} however this is queued LIFO for more immediate execution.
@@ -77,9 +79,9 @@ public interface IReactiveTarget<IN> extends INamed {
      * individual chains once execution starts. It also decreases the peak memory load by more rapidly
      * flushing intermediate values to the leaf node side effects of the chain.
      *
-     * @param in
+     * @param in The value from the previous link in the reactive chain.
      */
-    void fireNext(IN in);
+    void fireNext(@NonNull @nonnull IN in);
 
     /**
      * Notification that an {@link IReactiveSource}  will start sending updates
@@ -93,7 +95,7 @@ public interface IReactiveTarget<IN> extends INamed {
      *
      * @param reactiveSource
      */
-    void subscribeSource(String reason, IReactiveSource<IN> reactiveSource);
+    void subscribeSource(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveSource<IN> reactiveSource);
 
     /**
      * Notification that an {@link IReactiveSource}  will no longer send updates
@@ -104,10 +106,10 @@ public interface IReactiveTarget<IN> extends INamed {
      * @param reason
      * @param reactiveSource
      */
-    void unsubscribeSource(String reason, IReactiveSource<IN> reactiveSource);
+    void unsubscribeSource(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveSource<IN> reactiveSource);
 
     /**
      * Remove all up-chain branches from this node of the reactive function tree
      */
-    void unsubscribeAllSources(String reason);
+    void unsubscribeAllSources(@NonNull @nonnull String reason);
 }

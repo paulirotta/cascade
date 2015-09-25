@@ -183,16 +183,16 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return state != ZEN && state != FORKED && !(state instanceof AltFutureStateSetButNotYetForked);
     }
 
-    @Override // IAltFuture
-    public boolean isConsumed() {
-        assertErrorState();
+//    @Override // IAltFuture
+//    public boolean isConsumed() {
+//        assertErrorState();
+//
+//        return isConsumed(mStateAR.get());
+//    }
 
-        return isConsumed(mStateAR.get());
-    }
-
-    protected boolean isConsumed(@NonNull @nonnull final Object state) {
-        return state instanceof AltFutureStateError && ((AltFutureStateError) state).isConsumed();
-    }
+//    protected boolean isConsumed(@NonNull @nonnull final Object state) {
+//        return state instanceof AltFutureStateError && ((AltFutureStateError) state).isConsumed();
+//    }
 
     @Override // IAltFuture
     public final boolean isForked() {
@@ -470,7 +470,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         final Object state = this.mStateAR.get();
         if (state instanceof IAltFutureStateCancelled) {
-            if (state instanceof AltFutureStateCancelled || isConsumed(state)) {
+            if (state instanceof AltFutureStateCancelled /*|| isConsumed(state)*/) {
                 final String reason = ((AltFutureStateCancelled) state).reason;
                 final CancellationException cancellationException = new CancellationException(reason);
                 forEachThen(altFuture -> {
@@ -760,7 +760,9 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
      */
     @NotCallOrigin
     protected static class AltFutureStateError implements IAltFutureStateCancelled {
+        @NonNull
         final String reason;
+        @NonNull
         final Exception e;
         private volatile boolean consumed = false; // Set true toKey indicate that no more down-chain error notifications should occur, the developer asserts that the error is handled and of no further interest for all global states and down-chain listeners
 
@@ -770,17 +772,17 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             ee(this, "Moving toKey StateError:\n" + this.reason, e);
         }
 
-        /**
-         * Note that this is not thread-safe. You may only process errors and consume them on a single thread
-         */
-        //FIXME CONTINUE HERE- consume() is not used consistently- eliminate or use everywhere
-        void consume() {
-            consumed = true;
-        }
-
-        boolean isConsumed() {
-            return consumed;
-        }
+//        /**
+//         * Note that this is not thread-safe. You may only process errors and consume them on a single thread
+//         */
+//        //FIXME CONTINUE HERE- consume() is not used consistently- eliminate or use everywhere
+//        void consume() {
+//            consumed = true;
+//        }
+//
+//        boolean isConsumed() {
+//            return consumed;
+//        }
 
         @Override // IAltFutureStateCancelled
         @NonNull

@@ -24,17 +24,15 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testCancel() throws Exception {
-        SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER, 20);
-        assertThat(settableAltFuture.cancel("Just because")).isTrue();
-        assertThat(settableAltFuture.isCancelled());
-        assertThat(settableAltFuture.safeGet()).isEqualTo(null);
+        SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        assertTrue(settableAltFuture.cancel("Just because"));
+        assertTrue(settableAltFuture.isCancelled());
+        assertEquals(null, settableAltFuture.safeGet());
         try {
             settableAltFuture.get();
             failBecauseExceptionWasNotThrown(IllegalStateException.class);
-        } catch (IndexOutOfBoundsException e) {
-            assertThat(e)
-                    .isInstanceOf(IllegalStateException.class)
-                    .hasMessageContaining("Just because");
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Just because"));
         }
     }
 
