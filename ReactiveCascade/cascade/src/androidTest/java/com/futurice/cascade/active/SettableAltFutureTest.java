@@ -8,6 +8,7 @@ import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +23,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
         super.setUp();
     }
 
+    @Ignore
     @Test
     public void testCancel() throws Exception {
         SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);

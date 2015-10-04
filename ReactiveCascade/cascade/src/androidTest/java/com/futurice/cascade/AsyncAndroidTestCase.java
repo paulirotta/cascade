@@ -44,7 +44,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     private long mDefaultTimeoutMillis = 1000;
     protected final Context mContext;
     protected ImmutableValue<String> mOrigin;
-    protected Async async;
+    private static Async async;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
