@@ -147,13 +147,13 @@ public class AutoforkThreadType implements IThreadType {
     }
 
     @Override // IThreadType
-    public void startDefiningIAction() {
+    public void startDefiningFunctionChain() {
         assertEqual(Async.currentThreadType(), this);
         mChainedActionsCurrentlyBeingDefined++;
     }
 
     @Override // IThreadType
-    public <IN, OUT> void endDefiningIAction(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> action) {
+    public <IN, OUT> void endDefiningFunctionChain(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> action) {
         assertEqual(Async.currentThreadType(), this);
         mChainedActionsCurrentlyBeingDefined--;
         if (mChainedActionsCurrentlyBeingDefined == 0) {

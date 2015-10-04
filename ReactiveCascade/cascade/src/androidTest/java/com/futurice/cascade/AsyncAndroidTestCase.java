@@ -2,9 +2,6 @@ package com.futurice.cascade;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
@@ -15,18 +12,15 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
 import com.futurice.cascade.util.TestUtil;
-import com.futurice.cascade.util.UIExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.vv;
 
 /**
  * A connectedTest harness which bootstraps the Async class

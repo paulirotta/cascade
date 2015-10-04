@@ -312,7 +312,7 @@ public interface IThreadType extends INamed {
      * when the instance creation is complete. This is used for automatic forking of actions once their position
      * in a chain is determinable.
      */
-    void startDefiningIAction();
+    void startDefiningFunctionChain();
 
     /**
      * Signal the end of definition of an {@link IAction}.
@@ -320,7 +320,7 @@ public interface IThreadType extends INamed {
      * In the cases of head of chain, this will be used to automatically fork the chain to the queue
      * for imminent execution.
      */
-    <IN, OUT> void endDefiningIAction(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture);
+    <IN, OUT> void endDefiningFunctionChain(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture);
 
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or

@@ -29,13 +29,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IActionTwo;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
@@ -56,7 +52,6 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
@@ -156,10 +151,9 @@ public final class Async {
     Async() {
     }
 
-    private static void exitWithErrorCode(
-            @NonNull @nonnull final String tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    private static void exitWithErrorCode(@NonNull @nonnull final String tag,
+                                          @NonNull @nonnull final String message,
+                                          @NonNull @nonnull final Throwable t) {
         final int errorCode = 1;
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
@@ -187,7 +181,8 @@ public final class Async {
         }
     }
 
-    private static String tagWithAspectAndThreadName(@NonNull @nonnull final String message) {
+    @NonNull
+    private static String tagWithAspectAndThreadName(@NonNull final String message) {
         if (!DEBUG || message.contains("at .")) {
             return message;
         }
@@ -221,10 +216,9 @@ public final class Async {
      * @param t       the {@link Throwable} which triggered this error message
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
-    public static boolean e(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean e(@NonNull @nonnull final Object tag,
+                            @NonNull @nonnull final String message,
+                            @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 log(tag, message, (ta, m) -> {
@@ -258,9 +252,8 @@ public final class Async {
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     @NotCallOrigin
-    public static boolean e(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static boolean e(@NonNull @nonnull final Object tag,
+                            @NonNull @nonnull final String message) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 e(tag, message, new Exception("(Exception created to generate a stack trace)"));
@@ -280,9 +273,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void v(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void v(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.v("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -296,9 +288,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void d(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void d(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.d("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -312,9 +303,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void i(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void i(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.i("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -346,10 +336,9 @@ public final class Async {
      * @param origin  where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the debug log
      */
-    public static void dd(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void dd(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -365,9 +354,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the debug log
      */
-    public static void dd(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void dd(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> d(tag, message + origin));
         }
@@ -383,10 +371,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the verbose log
      */
-    public static void vv(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void vv(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -402,9 +389,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the verbose log
      */
-    public static void vv(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void vv(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> v(tag, message + origin));
         }
@@ -419,11 +405,10 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull @nonnull final Object tag,
+                             @NonNull @nonnull final ImmutableValue<String> origin,
+                             @NonNull @nonnull final String message,
+                             @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(ccOrigin -> {
@@ -451,10 +436,9 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull @nonnull final Object tag,
+                             @NonNull @nonnull final String message,
+                             @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(origin -> e(tag, message + origin, t));
@@ -473,10 +457,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the info log
      */
-    public static void ii(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void ii(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -492,18 +475,16 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the info log
      */
-    public static void ii(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void ii(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> i(tag, message + origin));
         }
     }
 
-    private static String combineOriginStringsRemoveDuplicates(
-            @NonNull @nonnull final String origin1,
-            @NonNull @nonnull final String origin2,
-            @NonNull @nonnull final String message) {
+    private static String combineOriginStringsRemoveDuplicates(@NonNull final String origin1,
+                                                               @NonNull final String origin2,
+                                                               @NonNull final String message) {
         if (origin1.equals(origin2)) {
             return message + origin1;
         }
@@ -581,9 +562,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
+                                                  @NonNull @nonnull final String message)
             throws RuntimeException {
         throwRuntimeException(tag, message, new IllegalStateException(message));
     }
@@ -598,10 +578,9 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
+                                                  @NonNull @nonnull final ImmutableValue<String> origin,
+                                                  @NonNull @nonnull final String message)
             throws RuntimeException {
         throwRuntimeException(tag, origin, message, new IllegalStateException(message));
     }
@@ -650,10 +629,9 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final String message,
+                                             @NonNull @nonnull final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -673,9 +651,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwTimeoutException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message)
+    public static void throwTimeoutException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final String message)
             throws RuntimeException {
         TimeoutException e = new TimeoutException(message);
         ee(tag, message, e);
@@ -693,11 +670,10 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final ImmutableValue<String> origin,
+                                             @NonNull @nonnull final String message,
+                                             @NonNull @nonnull final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -780,7 +756,6 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> origin(@NonNull @nonnull final StackTraceElement[] traceElementsArray) {
         final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
 
@@ -806,8 +781,7 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
-    private static List<StackTaceLine> findClassAndMethod(@NonNull @nonnull final List<StackTraceElement> stackTraceElementList) {
+    private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
         for (final StackTraceElement ste : stackTraceElementList) {
@@ -825,11 +799,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByClass(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<Class, Boolean> classFilter) throws
-            Exception {
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<Class, Boolean> classFilter) throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTaceLine line : list) {
@@ -845,10 +817,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByClassAnnotation(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final Class<? extends Annotation> annotation,
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final Class<? extends Annotation> annotation,
             final boolean mustBeAbsent)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
@@ -866,10 +837,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByMethod(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<Method, Boolean> methodFilter)
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<Method, Boolean> methodFilter)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
@@ -887,10 +857,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByPackage(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<String, Boolean> packageFilter)
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<String, Boolean> packageFilter)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
@@ -907,8 +876,7 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
-    private static String prettyFormat(@NonNull @nonnull final StackTraceElement stackTraceElement) {
+    private static String prettyFormat(@NonNull final StackTraceElement stackTraceElement) {
         final String s = stackTraceElement.toString();
         final int i = stackTraceElement.getClassName().length();
 
@@ -950,62 +918,104 @@ public final class Async {
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage.
+     * In DEBUG builds only, check the assertion and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param testResult the result of the test, <code>true</code> if the assertion condition is met
+     */
+    @NotCallOrigin
+    public static void assertTrue(
+            final boolean testResult) {
+        if (DEBUG && !testResult) {
+            throw new IllegalStateException("assertTrue failed");
+        }
+    }
+
+    /**
+     * In DEBUG builds only, check the assertion and possibly throw an {@link java.lang.IllegalStateException}
      *
      * @param errorMessage a message to display when the assertion fails. It should indicate the
      *                     reason which was not true and, if possible, the likely corrective action
      * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
-    public static void assertTrue(
-            @NonNull @nonnull final String errorMessage,
-            final boolean testResult) {
+    public static void assertTrue(@NonNull @nonnull final String errorMessage,
+                                  final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
         }
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
      *
-     * @param expected
-     * @param actual
-     * @param <T>
+     * @param expected value
+     * @param actual   value
+     * @param <T>      expected type
+     * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T> void assertEqual(
-            @Nullable @nullable final T expected,
-            @Nullable @nullable final T actual) {
+    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
+                                                    @Nullable @nullable final U actual) {
+        if (DEBUG) {
+            assertEqual(expected, actual, "assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+        }
+    }
+
+    /**
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param expected value
+     * @param actual   value
+     * @param <T>      type
+     */
+    @NotCallOrigin
+    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
+                                                    @Nullable @nullable final U actual,
+                                                    @NonNull @nonnull final String message) {
         if (DEBUG
                 && actual != expected
-                && ((actual == null && !expected.equals(actual)) || !actual.equals(expected))) {
-            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+                && (expected != null && !expected.equals(actual))) {
+            throw new IllegalStateException(message);
         }
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
      *
-     * @param expected
-     * @param actual
-     * @param <T>
+     * @param expected value
+     * @param actual   value
+     * @param <T>      expected type
+     * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T> void assertNotEqual(
-            @Nullable @nullable final T expected,
-            @Nullable @nullable final T actual) {
-        if (DEBUG
-                && actual == expected
-                && ((actual == null && expected.equals(actual)) || actual.equals(expected))) {
-            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
+                                                       @Nullable @nullable final U actual) {
+        if (DEBUG) {
+            assertNotNull("assertNotEqual failed: expected ´'" + expected + "' was equal to '" + actual + "'");
         }
     }
 
     /**
-     * In debug and production builds, throw {@link NullPointerException} if the argumen is null
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param expected value
+     * @param actual   value
+     * @param message  error message
+     * @param <T>      expected type
+     * @param <U>      actual type
+     */
+    @NotCallOrigin
+    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
+                                                       @Nullable @nullable final U actual,
+                                                       @NonNull @nonnull final String message) {
+        if (DEBUG
+                && (actual == expected || (expected != null && expected.equals(actual)))) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
+     * In debug and production builds, throw {@link NullPointerException} if the argument is null
      *
      * @param t   the argument
      * @param <T> the type
@@ -1015,8 +1025,23 @@ public final class Async {
     @nonnull
     @NotCallOrigin
     public static <T> T assertNotNull(@Nullable @nullable final T t) {
+        return assertNotNull(t, "assertNotNull failed");
+    }
+
+    /**
+     * In debug and production builds, throw {@link NullPointerException} if the argument is null
+     *
+     * @param t   the argument
+     * @param <T> the type
+     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull @nonnull</code> for rapidly catching errors in the IDE
+     */
+    @NonNull
+    @nonnull
+    @NotCallOrigin
+    public static <T> T assertNotNull(@Nullable @nullable final T t,
+                                      @NonNull @nonnull final String message) {
         if (t == null) {
-            throw new NullPointerException();
+            throw new NullPointerException(message);
         }
         return t;
     }
@@ -1027,7 +1052,6 @@ public final class Async {
     public static final IThreadType NON_CASCADE_THREAD = new AutoforkThreadType();
 
     private static final class StackTaceLine {
-
         final Class<?> claz;
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;
@@ -1046,18 +1070,21 @@ public final class Async {
             final String key = className + methodName;
             this.method = new ImmutableValue<>(
                     () -> {
-                        Method meth = sMethodNameMap.get(key);
+                        final Method meth = sMethodNameMap.get(key);
 
                         if (meth == null) {
                             final Method[] methods = claz.getMethods();
                             for (final Method m : methods) {
                                 sMethodNameMap.putIfAbsent(key, m);
                                 if (m.getName().equals(methodName)) {
-                                    meth = m;
-                                    break;
+                                    return m;
                                 }
                             }
                         }
+                        if (meth == null) {
+                            throw new NullPointerException();
+                        }
+
                         return meth;
                     });
         }
