@@ -4,14 +4,16 @@ param (
     [switch]$connectedTest = $false
 )
 
-./gradlew clean build
-
 if ($test) {
-	./gradlew test --stacktrace 	
-}
-
-if ($connectedTest) {
-	./gradlew connectedCheck --stacktrace 
+	if ($connectedTest) {
+		./gradlew clean build test connectedCheck --stacktrace 
+	} else {
+		./gradlew clean build test --stacktrace 					
+	}
+} elseif ($connectedTest) {
+	./gradlew clean build connectedCheck --stacktrace 
+} else {
+	./gradlew clean build
 }
 
 if ($lint) {
