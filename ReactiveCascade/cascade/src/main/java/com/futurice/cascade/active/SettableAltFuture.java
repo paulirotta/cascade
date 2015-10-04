@@ -208,6 +208,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         final IAltFuture<?, IN> previousAltFuture = getPreviousAltFuture();
         final Object state;
 
+        //TODO Evaluate if this logic is no longer needed since UI.then() etc all fork() for you
         if (previousAltFuture != null && !previousAltFuture.isForked()) {
             previousAltFuture.fork();
             return this;
@@ -239,6 +240,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     public final <P> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull final IAltFuture<P, IN> altFuture) {
         assertEqual(null, mPreviousAltFuture);
+        //TODO mPreviousAltFuture should be an atomicvalue with atomic set and assert only after that
         this.mPreviousAltFuture = altFuture;
 
         return this;
@@ -508,13 +510,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
-        addToThenQueue(altFuture);
-        if (isDone()) {
-            dd(this, mOrigin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
-            altFuture.fork();
-        }
-
-        return altFuture;
+        return addToThenQueue(altFuture);
     }
 
     @Override // IAltFuture

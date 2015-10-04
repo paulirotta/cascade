@@ -389,8 +389,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             }
             vv(this, mOrigin, "Successful PersistentValue persist, value=" + value);
         })
-                .onError(mOnError)
-                .fork();
+                .onError(mOnError);
+//                .fork();
 
         return valueChanged;
     }
