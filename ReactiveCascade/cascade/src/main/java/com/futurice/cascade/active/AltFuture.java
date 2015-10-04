@@ -255,7 +255,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
      * <p>
-     * Non-atomic check-do race conditions must still guard fromKey this point on against concurrent fork()
+     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
      */
     @CallSuper
     @NotCallOrigin

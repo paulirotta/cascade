@@ -30,8 +30,6 @@ import static com.futurice.cascade.Async.originAsync;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
-    private final Object looperFlushMutex = new Object();
-
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
     private NetUtil mNetUtil;

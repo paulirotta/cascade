@@ -67,8 +67,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testGetAsync() throws Exception {
-        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get")
-                .fork();
+        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get");
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 

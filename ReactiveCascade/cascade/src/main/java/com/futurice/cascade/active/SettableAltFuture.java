@@ -89,13 +89,10 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     public SettableAltFuture(@NonNull @nonnull final IThreadType threadType) {
         this.mThreadType = threadType;
         this.mOrigin = Async.originAsync();
-
-        Async.currentThreadType().startDefiningFunctionChain();
     }
 
-    public SettableAltFuture(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final OUT value) {
+    public SettableAltFuture(@NonNull @nonnull final IThreadType threadType,
+                             @NonNull @nonnull final OUT value) {
         this(threadType);
 
         try {
@@ -142,7 +139,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
     @Override // IAltFuture
     @CallOrigin
-    public boolean cancel(@NonNull @nonnull final String reason, @NonNull @nonnull final Exception e) {
+    public boolean cancel(@NonNull @nonnull final String reason,
+                          @NonNull @nonnull final Exception e) {
         assertNotDone();
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
@@ -509,8 +507,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         addToThenQueue(altFuture);
         if (isDone()) {
             dd(this, mOrigin, ".subscribe() toKey an already cancelled/error state AltFuture. It will be fork()ed. Would your code be more clear if you delay fork() of the original chain until you finish building it, or .fork() a new chain at this point?");
@@ -524,8 +521,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<OUT, OUT> then(
-            @NonNull @nonnull final IActionOne<OUT> action) {
+    public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IActionOne<OUT> action) {
         return then(mThreadType, action);
     }
 
@@ -533,9 +529,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<OUT, OUT> then(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionOne<OUT> action) {
+    public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IThreadType threadType,
+                                     @NonNull @nonnull final IActionOne<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
@@ -543,8 +538,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(mThreadType, action);
     }
 
@@ -552,9 +546,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IThreadType threadType,
+                                                               @NonNull @nonnull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
@@ -570,9 +563,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull final IThreadType threadType,
+                                                               @NonNull @nonnull final IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
@@ -588,9 +580,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<OUT, OUT> then(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IAction<OUT> action) {
+    public IAltFuture<OUT, OUT> then(@NonNull @nonnull final IThreadType threadType,
+                                     @NonNull @nonnull final IAction<OUT> action) {
         return then(new AltFuture<>(threadType, action));
     }
 
@@ -606,9 +597,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<List<IN>, List<OUT>> map(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionOneR<IN, OUT> action) {
+    public IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull final IThreadType threadType,
+                                               @NonNull @nonnull final IActionOneR<IN, OUT> action) {
         return new AltFuture<>(threadType,
                 (List<IN> listIN) -> {
                     //TODO Mapping is single-threaded even for long lists or complex transforms

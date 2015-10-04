@@ -72,7 +72,7 @@ import static com.futurice.cascade.Async.vv;
  * For more specialized behaviour a class may choose to replace this.
  * <p>
  */
-public abstract class AbstractThreadType extends AutoforkThreadType {
+public abstract class AbstractThreadType implements IThreadType {
     protected final ExecutorService executorService;
     private final String name;
     protected final BlockingQueue<Runnable> mQueue;
@@ -205,7 +205,8 @@ public abstract class AbstractThreadType extends AutoforkThreadType {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IAction<IN> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<IN, IN>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -213,7 +214,8 @@ public abstract class AbstractThreadType extends AutoforkThreadType {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IActionOne<IN> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<IN, IN>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -221,7 +223,8 @@ public abstract class AbstractThreadType extends AutoforkThreadType {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -229,7 +232,8 @@ public abstract class AbstractThreadType extends AutoforkThreadType {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull final IActionR<IN, OUT> action) {
-        return new AltFuture<IN, OUT>(this, action);
+        return (new AltFuture<IN, OUT>(this, action))
+                .fork();
     }
 
     //======================= .subscribe() List Operations =========================================
@@ -299,12 +303,13 @@ public abstract class AbstractThreadType extends AutoforkThreadType {
 
     @Override // IThreadType
     public <IN, OUT> void fork(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-        assertTrue("AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
+        assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
         if (Async.DEBUG && isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
             throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
         }
 
         run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
+        return;
     }
 
     @Override // IThreadType

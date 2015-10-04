@@ -3,7 +3,6 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.i.IAction;
@@ -18,16 +17,12 @@ import com.futurice.cascade.i.nullable;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import static com.futurice.cascade.Async.assertEqual;
-
 /**
  * A base class which automatically initiates {@link IThreadType#fork(IRunnableAltFuture)} operations on the head of a functional chain
- *
+ * <p>
  * Created by phou on 14-Sep-15.
  */
 public class AutoforkThreadType implements IThreadType {
-    private int mChainedActionsCurrentlyBeingDefined = 0;
-
     @Override
     public boolean isInOrderExecutor() {
         throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
@@ -144,21 +139,6 @@ public class AutoforkThreadType implements IThreadType {
     @Override
     public <IN, OUT> void fork(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
         throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-    }
-
-    @Override // IThreadType
-    public void startDefiningFunctionChain() {
-        assertEqual(Async.currentThreadType(), this);
-        mChainedActionsCurrentlyBeingDefined++;
-    }
-
-    @Override // IThreadType
-    public <IN, OUT> void endDefiningFunctionChain(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> action) {
-        assertEqual(Async.currentThreadType(), this);
-        mChainedActionsCurrentlyBeingDefined--;
-        if (mChainedActionsCurrentlyBeingDefined == 0) {
-            fork(action);
-        }
     }
 
     @Override
