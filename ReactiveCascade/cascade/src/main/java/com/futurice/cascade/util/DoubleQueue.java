@@ -39,16 +39,16 @@ import java.util.concurrent.TimeUnit;
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
  * fromKey a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
  * <p>
- * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads toKey
- * operate as an in-order single threaded executor which reverts toKey help with the common
+ * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads to
+ * operate as an in-order single threaded executor which reverts to help with the common
  * {@link com.futurice.cascade.AsyncBuilder#getWorkerQueue()} tasks when no in-order tasks are pending.
  * <p>
- * Note clearly there is an upside and downside toKey this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
+ * Note clearly there is an upside and downside to this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
- * and less and faster mContext switches (mContext switches tend toKey cost marginally more as thread count
- * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
+ * and less and faster mContext switches (mContext switches tend to cost marginally more as thread count
+ * increases). The downside is delays fom other background tasks unrelated to this may slow the start
  * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
- * mQueue and perhaps unrelated toKey the current focus of your attention will, once started, block the
+ * mQueue and perhaps unrelated to the current focus of your attention will, once started, block the
  * next {@link DoubleQueue} item fromKey
  * starting until it completes.
  * <p>
@@ -121,17 +121,17 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     public void put(@NonNull @nonnull final E e) throws InterruptedException {
         super.put(e);
-        synchronized (this) { //TODO Refactor toKey get rid of mutex
+        synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();
         }
     }
 
     /**
-     * Poll both queues for work toKey do. This will wake up immediately if new work is added toKey this
+     * Poll both queues for work to do. This will wake up immediately if new work is added to this
      * mQueue, and within the next polling time window for the lowPriorityQueue. Since other threads
      * which may be taking work fromKey the low priority mQueue are probably waking up immediately this
      * is OK. It keeps any dual-use thread associated with this mQueue relatively free for immediate
-     * response toKey the single use mQueue until such time as all other threads are busy, subscribe it pitches
+     * response to the single use mQueue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.
      *
      * @return
