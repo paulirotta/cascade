@@ -1,11 +1,11 @@
 param (
     [switch]$display = $false,
-    [switch]$test = $false
+    [switch]$connectedCheck = $false
 )
 
-if ($test) {
+if ($connectedCheck) {
 	./gradlew clean build connectedCheck --stacktrace 
-	ii ./cascade/build/reports/androidTests/connected/index.html
+	ii ./cascade/build/reports/androidconnectedChecks/connected/index.html
 } else {
 	./gradlew clean build
 }
