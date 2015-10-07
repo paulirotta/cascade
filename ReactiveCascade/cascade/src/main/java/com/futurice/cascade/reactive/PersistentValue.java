@@ -66,6 +66,7 @@ import static com.futurice.cascade.Async.vv;
  * TODO Support JSON and/or Serializable and Lists of such arbitrary types
  * TODO Support null as a persisted value by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
  */
+@NotCallOrigin
 public class PersistentValue<T> extends ReactiveValue<T> {
     private static final String TAG = PersistentValue.class.getSimpleName();
     private static final int INIT_READ_TIMEOUT_SECONDS = 10;
