@@ -27,9 +27,7 @@ import static com.futurice.cascade.Async.vv;
 /**
  * An {@link EditText} which can be manipulated and which in turn manipulates a supporting
  * {@link ReactiveValue<String>} which reflects the current on-screen value
- * <p>
- * FIXME The cursor position on screen is not maintained nicely when values update
- * <p>
+ *
  * Created by Paul Houghton on 12-03-2015.
  */
 @NotCallOrigin
@@ -175,6 +173,7 @@ public class ReactiveEditText extends EditText implements INamed {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    setSelection(s.length());
                     mReactiveValue.set(s.toString());
                 }
             };
