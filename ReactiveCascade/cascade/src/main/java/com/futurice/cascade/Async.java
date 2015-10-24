@@ -151,9 +151,10 @@ public final class Async {
     Async() {
     }
 
-    private static void exitWithErrorCode(@NonNull @nonnull final String tag,
-                                          @NonNull @nonnull final String message,
-                                          @NonNull @nonnull final Throwable t) {
+    public static void exitWithErrorCode(
+            @NonNull @nonnull final String tag,
+            @NonNull @nonnull final String message,
+            @Nullable @nullable final Throwable t) {
         final int errorCode = 1;
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
@@ -161,7 +162,11 @@ public final class Async {
         if (sExitWithErrorCodeStarted) {
             Log.v(tag, "Already existing, ignoring exit with error code (" + errorCode + "): " + message + "-" + t);
         } else {
-            Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
+            if (t != null) {
+                Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
+            } else {
+                Log.i(tag, "Exit, no error code : " + message);
+            }
             sExitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NET_READ.shutdownNow("exitWithErrorCode: " + message, null, null, 0);

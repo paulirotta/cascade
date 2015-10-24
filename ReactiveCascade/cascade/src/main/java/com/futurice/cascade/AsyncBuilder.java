@@ -80,7 +80,7 @@ public class AsyncBuilder {
     public Thread mUiThread;
     public final Context mContext;
     public ExecutorService mUiExecutorService;
-    public boolean mDebug = BuildConfig.DEBUG;
+    public boolean mDebug = false; //BuildConfig.DEBUG;
     public boolean mFailFast = mDebug;
     public boolean mShowErrorStackTraces = mDebug;
     public final boolean mStrictMode = mDebug;

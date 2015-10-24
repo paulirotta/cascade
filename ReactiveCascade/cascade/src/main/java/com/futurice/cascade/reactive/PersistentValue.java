@@ -66,6 +66,7 @@ import static com.futurice.cascade.Async.vv;
  * TODO Support JSON and/or Serializable and Lists of such arbitrary types
  * TODO Support null as a persisted value by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
  */
+@NotCallOrigin
 public class PersistentValue<T> extends ReactiveValue<T> {
     private static final String TAG = PersistentValue.class.getSimpleName();
     private static final int INIT_READ_TIMEOUT_SECONDS = 10;
@@ -337,6 +338,19 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
+    private static String toStringSet(final String[] value) {
+        final StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < value.length; i++) {
+            sb.append(value[i]);
+            if (i < value.length - 1) {
+                sb.append(",");
+            }
+        }
+
+        return sb.toString();
+    }
+
     private static float[] toFloatArray(String value) {
         if (value.trim().length() == 0) {
             return new float[0];
@@ -381,6 +395,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
                 editor.putString(key, toStringSet((boolean[]) value));
             } else if (value instanceof float[]) {
                 editor.putString(key, toStringSet((float[]) value));
+            } else if (value instanceof String[]) {
+                editor.putString(key, toStringSet((String[]) value));
             } else {
                 throw new UnsupportedOperationException("Only native types like String are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
             }

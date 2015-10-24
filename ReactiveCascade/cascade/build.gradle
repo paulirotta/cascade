@@ -14,6 +14,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     buildTypes {
         debug {
         }
