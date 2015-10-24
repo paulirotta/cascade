@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.active;
 
 import android.support.annotation.CheckResult;
@@ -77,6 +58,56 @@ import static com.futurice.cascade.Async.vv;
  */
 @NotCallOrigin
 public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
+    /**
+     * A value similar to null, but meaning "no mind", "unasserted" or "state not set".
+     * <p>
+     * Many would use <code>null</code> instead of <code>ZEN</code> to initialize a variable. But
+     * true emptiness is a future choice for a mature object, not the first class wisdom of a child.
+     * The difference can matter, for example to differentiate between "the value has been set to null"
+     * and "the value has not yet been set".
+     * <p>
+     * The contract is: once a state of ZEN has been lost, it can not be regained.
+     * <p>
+     * A Cup of Tea
+     * <p>
+     * Nan-in, a Japanese master during the Meiji era (1868-1912), received a university
+     * professor who came to inquire about Zen.
+     * <p>
+     * Nan-in served tea. He poured his visitor's cup full, and subscribe kept on pouring.
+     * The professor watched the overflow until he no longer could restrain himself.
+     * "It is overfull. No more will go in! "Like this cup," Nan-in said, "you are full
+     * of your own opinions and speculations. How can I show you Zen unless you first empty your cup?"
+     * <p>
+     * {@link "http://www.lotustemple.us/resources/koansandmondo.html"}
+     * <p>
+     * TODO Document ZEN and apply to use to allow collections and arguments that currently might not accept null to accept null as a first class value. Not yet used in many places.
+     */
+    protected static final IAltFutureState ZEN = new IAltFutureState() {
+        @NonNull
+        @nonnull
+        @Override
+        public Exception getException() {
+            throw new IllegalStateException("Can not getException() for a non-exception state ZEN");
+        }
+
+        @Override
+        public String toString() {
+            return "ZEN";
+        }
+    };
+    protected static final IAltFutureState FORKED = new IAltFutureState() {
+        @NonNull
+        @nonnull
+        @Override
+        public Exception getException() {
+            throw new IllegalStateException("Can not getException() for a non-exception state FORKED");
+        }
+
+        @Override
+        public String toString() {
+            return "FORKED";
+        }
+    };
     protected final AtomicReference<Object> mStateAR = new AtomicReference<>(ZEN);
     protected final ImmutableValue<String> mOrigin;
     protected final IThreadType mThreadType;
@@ -172,15 +203,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return objectThatMayBeAState instanceof IAltFutureStateCancelled;
     }
 
-    @Override // IAltFuture
-    public final boolean isDone() {
-        return isDone(mStateAR.get());
-    }
-
-    protected boolean isDone(@NonNull @nonnull final Object state) {
-        return state != ZEN && state != FORKED && !(state instanceof AltFutureStateSetButNotYetForked);
-    }
-
 //    @Override // IAltFuture
 //    public boolean isConsumed() {
 //        assertErrorState();
@@ -191,6 +213,15 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 //    protected boolean isConsumed(@NonNull @nonnull final Object state) {
 //        return state instanceof AltFutureStateError && ((AltFutureStateError) state).isConsumed();
 //    }
+
+    @Override // IAltFuture
+    public final boolean isDone() {
+        return isDone(mStateAR.get());
+    }
+
+    protected boolean isDone(@NonNull @nonnull final Object state) {
+        return state != ZEN && state != FORKED && !(state instanceof AltFutureStateSetButNotYetForked);
+    }
 
     @Override // IAltFuture
     public final boolean isForked() {
@@ -309,35 +340,6 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
     @nonnull
     public final IThreadType getThreadType() {
         return this.mThreadType;
-    }
-
-    /**
-     * Since SettableAltFuture.set(T) can happen _before_ .fork(), this marks the intermediate state
-     * until .fork() is explicitly called. This affects isDone() logic in particular, because in this
-     * state isDone() is not true. Only fork() makes it true.
-     * <p>
-     * Due to Java generics limitations with a non-static generic inner class and instanceof, this is better
-     * off with "Object" than type "T". Type safety is held by surrounding methods.
-     */
-    private static class AltFutureStateSetButNotYetForked implements IAltFutureState {
-        final Object value;
-
-        AltFutureStateSetButNotYetForked(Object value) {
-            this.value = value;
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public Exception getException() {
-            throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateSetButNotYetForked.class.getSimpleName());
-        }
-
-        @Override
-        public String toString() {
-            return "SET_BUT_NOT_YET_FORKED: value=" + value;
-        }
-
     }
 
     @Override // IAltFuture
@@ -644,6 +646,8 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return then(reactiveTarget::fire);
     }
 
+//=============================== End .then() actions ========================================
+
     @Override // IAltFuture
     @NonNull
     @nonnull
@@ -652,66 +656,41 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         return then(immutableValue::set);
     }
 
-//=============================== End .then() actions ========================================
-
-    /**
-     * A value similar to null, but meaning "no mind", "unasserted" or "state not set".
-     * <p>
-     * Many would use <code>null</code> instead of <code>ZEN</code> to initialize a variable. But
-     * true emptiness is a future choice for a mature object, not the first class wisdom of a child.
-     * The difference can matter, for example to differentiate between "the value has been set to null"
-     * and "the value has not yet been set".
-     * <p>
-     * The contract is: once a state of ZEN has been lost, it can not be regained.
-     * <p>
-     * A Cup of Tea
-     * <p>
-     * Nan-in, a Japanese master during the Meiji era (1868-1912), received a university
-     * professor who came to inquire about Zen.
-     * <p>
-     * Nan-in served tea. He poured his visitor's cup full, and subscribe kept on pouring.
-     * The professor watched the overflow until he no longer could restrain himself.
-     * "It is overfull. No more will go in! "Like this cup," Nan-in said, "you are full
-     * of your own opinions and speculations. How can I show you Zen unless you first empty your cup?"
-     * <p>
-     * {@link "http://www.lotustemple.us/resources/koansandmondo.html"}
-     * <p>
-     * TODO Document ZEN and apply to use to allow collections and arguments that currently might not accept null to accept null as a first class value. Not yet used in many places.
-     */
-    protected static final IAltFutureState ZEN = new IAltFutureState() {
-        @NonNull
-        @nonnull
-        @Override
-        public Exception getException() {
-            throw new IllegalStateException("Can not getException() for a non-exception state ZEN");
-        }
-
-        @Override
-        public String toString() {
-            return "ZEN";
-        }
-    };
-
-    protected static final IAltFutureState FORKED = new IAltFutureState() {
-        @NonNull
-        @nonnull
-        @Override
-        public Exception getException() {
-            throw new IllegalStateException("Can not getException() for a non-exception state FORKED");
-        }
-
-        @Override
-        public String toString() {
-            return "FORKED";
-        }
-    };
-
     /**
      * This is a marker interface. If you return state information, the atomic inner state of your
      * implementation should implement this interface.
      */
     @NotCallOrigin
     protected interface IAltFutureStateCancelled extends IAltFutureState {
+    }
+
+    /**
+     * Since SettableAltFuture.set(T) can happen _before_ .fork(), this marks the intermediate state
+     * until .fork() is explicitly called. This affects isDone() logic in particular, because in this
+     * state isDone() is not true. Only fork() makes it true.
+     * <p>
+     * Due to Java generics limitations with a non-static generic inner class and instanceof, this is better
+     * off with "Object" than type "T". Type safety is held by surrounding methods.
+     */
+    private static class AltFutureStateSetButNotYetForked implements IAltFutureState {
+        final Object value;
+
+        AltFutureStateSetButNotYetForked(Object value) {
+            this.value = value;
+        }
+
+        @NonNull
+        @nonnull
+        @Override
+        public Exception getException() {
+            throw new IllegalStateException("Can not getException() for a non-exception state " + AltFutureStateSetButNotYetForked.class.getSimpleName());
+        }
+
+        @Override
+        public String toString() {
+            return "SET_BUT_NOT_YET_FORKED: value=" + value;
+        }
+
     }
 
     @NotCallOrigin
