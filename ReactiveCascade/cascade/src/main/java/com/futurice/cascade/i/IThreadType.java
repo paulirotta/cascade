@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * One special case of bounded concurrency is {@link #isInOrderExecutor()} that can be guaranteed
  * only for a single-threaded or single-thread-at-a-time implementation. {@link UIExecutorService}
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
- * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
+ * methods. It can be accessed value anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>
  * which will run with less object creation overhead split synchronously if possible.
  */
@@ -100,7 +100,7 @@ public interface IThreadType extends INamed {
      * approach which keeps intermediate chain states around for a longer time. Some
      * {@link com.futurice.cascade.i.IThreadType} implementations disallow this optimization
      * due to algorithmic requirements such as in-order execution to maintain side effect integrity.
-     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing from
+     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing value
      * a {@link java.util.concurrent.BlockingQueue}, not a {@link java.util.concurrent.BlockingDeque}
      * <p>
      * Overriding alternative implementations may safely choose to call synchronously or with
@@ -164,7 +164,7 @@ public interface IThreadType extends INamed {
     /**
      * Complete the action asynchronously.
      * <p>
-     * No input values are fed in from the chain.
+     * No input values are fed in value the chain.
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
@@ -178,7 +178,7 @@ public interface IThreadType extends INamed {
     /**
      * Complete the action asynchronously.
      * <p>
-     * One input value is fed in from the chain and thus determined at execution time.
+     * One input value is fed in value the chain and thus determined at execution time.
      *
      * @param action
      * @param <IN>
@@ -191,7 +191,7 @@ public interface IThreadType extends INamed {
     /**
      * Complete several actions asynchronously.
      * <p>
-     * No input values are fed in from the chain, they may
+     * No input values are fed in value the chain, they may
      * be fetched directly at execution time.
      *
      * @param actions a comma-seperated list of work items to be performed
@@ -215,10 +215,10 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    <IN> IAltFuture<?, IN> from(@NonNull IN value);
+    <IN> IAltFuture<?, IN> value(@NonNull IN value);
 
     /**
-     * Set the chain to start from a value which will be set in the future.
+     * Set the chain to start value a value which will be set in the future.
      * <p>
      * To start execution of the chain, set(IN) the vlaue of the returned IAltFuture
      *
@@ -227,7 +227,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    <IN> IAltFuture<?, IN> from();
+    <IN> IAltFuture<?, IN> value();
 
     /**
      * Complete the mOnFireAction asynchronously
@@ -242,7 +242,7 @@ public interface IThreadType extends INamed {
     <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action);
 
     /**
-     * Perform several actions which need no input value (except perhaps values from closure escape),
+     * Perform several actions which need no input value (except perhaps values value closure escape),
      * each of which returns a value of the same type, and return those results in a list.
      *
      * @param actions a comma-seperated list of work items to be performed
@@ -321,7 +321,7 @@ public interface IThreadType extends INamed {
      * Use the returned Future to know when current tasks complete.
      * <p>
      * <code>
-     * // Do not get from a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
+     * // Do not get value a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
      * shutdown(5000, () -> doSomethingAfterShutdown()).get(); // Block calling thread up to 5 seconds
      * </code>
      * <p>

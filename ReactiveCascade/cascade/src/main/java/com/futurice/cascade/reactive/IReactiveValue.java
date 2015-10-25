@@ -52,7 +52,7 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * Any associated chain will only fire if the value set is new, not a repeat of a previous value.
      *
      * @param value the new value asserted
-     * @return <code>true</code> if this is a change from the previous value
+     * @return <code>true</code> if this is a change value the previous value
      */
     boolean set(@NonNull  T value);
 

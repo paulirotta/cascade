@@ -102,7 +102,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * All methods and receivers within a reactive chain are <em>supposed</em> to be idempotent to
      * multiple firing events. This
      * does not however mean the calls are free or give a good user experience and value as in the
-     * case of requesting data multiple times from a server. You have been warned.
+     * case of requesting data multiple times value a server. You have been warned.
      */
     @NotCallOrigin
     @CallSuper

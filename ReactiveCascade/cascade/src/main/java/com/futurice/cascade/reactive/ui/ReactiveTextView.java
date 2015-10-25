@@ -27,13 +27,13 @@ import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.vv;
 
 /**
- * Change the displayed value from any thread by calling <code>view.bindable.set(String value)</code>
+ * Change the displayed value value any thread by calling <code>view.bindable.set(String value)</code>
  * <p>
  * Examples:
  * <pre><code>
  *     AtomicTextView view = new AtomicTextView(Activity.this);
  * <p>
- *     // Inject shared concurrent data from your model
+ *     // Inject shared concurrent data value your model
  *     AtomicValue<String> statusAtomicValue = new AtomicValue<>();
  *     AtomicTextView liveView = new AtomicTextView(Activity.this, statusAtomicValue);
  *     statusAtomicView.set("Something updated live to the screen");
@@ -43,8 +43,8 @@ import static com.futurice.cascade.Async.vv;
 public class ReactiveTextView extends TextView implements INamed {
     @Nullable
     private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
-    private IReactiveSource<String> mReactiveSource; // Access only from UI thread
-    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
+    private IReactiveSource<String> mReactiveSource; // Access only value UI thread
+    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only value UI thread
 
     public ReactiveTextView(@NonNull  final Context context) {
         super(context);

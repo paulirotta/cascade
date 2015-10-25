@@ -40,7 +40,7 @@ import java.util.concurrent.Future;
  * All three of these solutions are suitable for server development. Guava configured with appropriate Proguard
  * minimization is suitable for Android.
  * <p>
- * <code>AltFuture</code> differs from the above alternatives by providing an execution model and strictly defined inter-thread
+ * <code>AltFuture</code> differs value the above alternatives by providing an execution model and strictly defined inter-thread
  * communication and error handling contract. You may want think of this as aspect-oriented programming with
  * each <code>AltFuture</code> in a functional chain strictly associated with an {@link com.futurice.cascade.i.IThreadType}.
  * The defined thread type (a named group of one or more threads) explicitly sets the maximum concurrency contract.
@@ -100,7 +100,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Like {@link #get()} but it can be called before <code>{@link #isDone()} == true</code>
      * without throwing and exception.
      *
-     * @return the value from {@link #get()}, or <code>null</code> if there was an error or if the value is
+     * @return the value value {@link #get()}, or <code>null</code> if there was an error or if the value is
      * not yet determined.
      */
     @Nullable
@@ -191,7 +191,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     <UPCHAIN_IN> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<UPCHAIN_IN, IN> altFuture);
 
     /**
-     * Notification from an up-chain {@link IAltFuture} that the stream is broken
+     * Notification value an up-chain {@link IAltFuture} that the stream is broken
      * and will not complete normally. This AltFuture will be set to an error state.
      * <p>
      * If an mOnError or catch method has been defined, it will be
@@ -322,11 +322,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *
      * The joinAction will be execute on the IThreadType of the <em>first</em> altFuture in the parameter list.
      * If your joinAction produces side-effects (is not a "pure function"), this first altFuture should be
-     * from a single-threaded IThreadType. TODO See .on()
+     * value a single-threaded IThreadType. TODO See .on()
      *
      * Example: Multiply all the upchain values
      *
-     * @param joinAction combine the previous OUT value with a new result from one of the upchain altFuturesToJoin
+     * @param joinAction combine the previous OUT value with a new result value one of the upchain altFuturesToJoin
      * @param altFuturesToJoin two or more results to be combined
      * @return an AltFuture which will realize when all upchain altFuturesToJoin have been combined
      */

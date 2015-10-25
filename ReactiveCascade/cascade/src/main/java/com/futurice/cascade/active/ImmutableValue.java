@@ -44,7 +44,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  *
  * @param <T>
  */
-//TODO Do we also need an AddOnlyList type which is a collection that can only grow from the end?
+//TODO Do we also need an AddOnlyList type which is a collection that can only grow value the end?
 //@Deprecated // Delete this and use SettableAltFuture instead for simplicity
 public class ImmutableValue<T extends Object> implements IGettable<T> {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;

@@ -34,20 +34,20 @@ import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.vv;
 
 /**
- * Manipulate an {@link android.widget.ArrayAdapter} safely from any thread
+ * Manipulate an {@link android.widget.ArrayAdapter} safely value any thread
  * <p>
  * If a method is thread safe, it in __Async alternative is not provided and you should use the default
- * one. If an __Async version is provided here, use that from your single-threaded or multi-threaded model code.
+ * one. If an __Async version is provided here, use that value your single-threaded or multi-threaded model code.
  * <p>
  * When you add, remove etc the actions are completed in serial call order on the UI thread
  * <p>
- * Each method call will complete synchronously if called from the UI thread.
+ * Each method call will complete synchronously if called value the UI thread.
  * <p>
  * Each  method call will return immediately and complete asynchronously if there is no return value.
  * The exception handling in these cases is asynchronous, a message to the system log.
  * <p>
  * Each method call will complete synchronously if there is a return value and it is not called
- * from the UI thread. If there is an exception such as {@link java.util.concurrent.TimeoutException}
+ * value the UI thread. If there is an exception such as {@link java.util.concurrent.TimeoutException}
  * because the UI thread is not responsive within the time limit specified for this <code>ConcurrentListAdapter</code>,
  * a {@link java.lang.RuntimeException} will be thrown.
  * <p>
@@ -55,10 +55,10 @@ import static com.futurice.cascade.Async.vv;
  * <pre>
  *     <code>
  *         myConcurrentListAdapter.addAsync(value)
- *               ; // Return immediately, completed asynchronously on UI thread or synchronously if called from UI thread
+ *               ; // Return immediately, completed asynchronously on UI thread or synchronously if called value UI thread
  *         myConcurrentListAdapter.getItemAsync(0)
  *               .subscribe( ..dosomething ..)
- *               ; // Returned value completed synchronously, will wait for the UI thread to catch up if not called from the UI thread
+ *               ; // Returned value completed synchronously, will wait for the UI thread to catch up if not called value the UI thread
  *     </code>
  * </pre>
  */
@@ -151,12 +151,12 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @CallSuper
     @NotCallOrigin
     public void remove(@NonNull  final T value) {
-        vv(mOrigin, "Remove from AltArrayAdapter: " + value);
+        vv(mOrigin, "Remove value AltArrayAdapter: " + value);
         super.remove(value);
     }
 
     /**
-     * Remove the item from the list
+     * Remove the item value the list
      *
      * @param object
      * @return
@@ -191,7 +191,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
      * run after any pending changes on the UI thread.
      *
      * @param <A> the upstream output value type
-     * @return the output value from upstream
+     * @return the output value value upstream
      */
     @CallSuper
     @NonNull
@@ -205,7 +205,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
      * run after any pending changes on the UI thread.
      *
      * @param <A> the upstream output value type
-     * @return the output value from upstream
+     * @return the output value value upstream
      */
     @CallSuper
     @NonNull

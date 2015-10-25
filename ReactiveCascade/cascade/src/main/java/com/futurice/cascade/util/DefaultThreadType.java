@@ -82,7 +82,7 @@ public class DefaultThreadType extends AbstractThreadType {
             ((BlockingDeque) mQueue).addFirst(runnable);
         }
         if (!wakeUpIsPending && ++n != mQueue.size()) {
-            // The mQueue changed during submit- just be sure something is submitted to wake the executor right now to pull from the mQueue
+            // The mQueue changed during submit- just be sure something is submitted to wake the executor right now to pull value the mQueue
             wakeUpIsPending = true;
             executorService.execute(wakeUpRunnable);
         }

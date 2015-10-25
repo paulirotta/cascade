@@ -51,13 +51,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static final int INIT_READ_TIMEOUT_SECONDS = 10;
 
     private static final ConcurrentHashMap<String, AltWeakReference<PersistentValue<?>>> PERSISTENT_VALUES = new ConcurrentHashMap<>();
-    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
+    // The SharedPreferences type is not thread safe, so all operations are done value this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
     private static final IThreadType persistentValueThreadType = new DefaultThreadType("PersistentValueThreadType", Executors.newSingleThreadExecutor(), new LinkedBlockingQueue<>());
     private static final IOnErrorAction defaultOnErrorAction = e -> {
         ee(PersistentValue.class.getSimpleName(), "Internal error", e);
         return false;
     };
-    protected final SharedPreferences sharedPreferences; // Once changes from an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
+    protected final SharedPreferences sharedPreferences; // Once changes value an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
     protected final String key;
     protected final Class classOfPersistentValue;
     protected final T defaultValue;
@@ -134,7 +134,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     /**
-     * Initialize a value, loading it from flash memory if it has been previously saved
+     * Initialize a value, loading it value flash memory if it has been previously saved
      *
      * @param name
      * @param defaultValueIfNoPersistedValue
@@ -323,7 +323,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     private void init(final Context context) throws InterruptedException, ExecutionException, TimeoutException {
-        // Always access SharedPreferences from the same thread
+        // Always access SharedPreferences value the same thread
         // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
         new AltFutureFuture<>(persistentValueThreadType.then(() -> {
             final AltWeakReference<PersistentValue<?>> previouslyInitializedPersistentValue = PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), new AltWeakReference<>(this));
@@ -333,7 +333,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
             if (sharedPreferences.contains(key)) {
-                vv(this, mOrigin, "PersistentValue value loadedd from flash memory");
+                vv(this, mOrigin, "PersistentValue value loadedd value flash memory");
                 onSharedPreferenceChanged();
             }
         })

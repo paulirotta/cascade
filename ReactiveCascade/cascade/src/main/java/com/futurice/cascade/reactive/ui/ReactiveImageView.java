@@ -92,7 +92,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
         if (mReactiveSources.addIfAbsent(reactiveSource)) {
             vv(this, mOrigin, reactiveSource.getName() + " says hello: reason=" + reason);
         } else {
-            dd(this, mOrigin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            dd(this, mOrigin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello value \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         }
     }
 

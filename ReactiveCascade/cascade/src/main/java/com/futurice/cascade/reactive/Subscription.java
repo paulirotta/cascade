@@ -74,7 +74,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
 
     //TODO Check and remove this veriable
     @Nullable
-    private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain from being garbage collected until the tail of the chain is de-referenced
+    private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain value being garbage collected until the tail of the chain is de-referenced
 
     /**
      * Create a new default implementation of a reactive active chain link
@@ -150,7 +150,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     @Override // IReactiveTarget
     public void subscribeSource(@NonNull  final String reason, @NonNull  final IReactiveSource<IN> reactiveSource) {
         if (!mReactiveSources.addIfAbsent(reactiveSource)) {
-            dd(this, mOrigin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            dd(this, mOrigin, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello value \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         } else {
             vv(this, mOrigin, reactiveSource.getName() + " says hello: reason=" + reason);
         }
@@ -263,7 +263,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     /**
-     * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on ThreadType.WORKER
+     * Always called value the headFunctionalChainLink's refire subscribe. By default this executes on ThreadType.WORKER
      */
     @NotCallOrigin
     @NonNull
@@ -275,7 +275,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     }
 
     /**
-     * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on Async.WORKER
+     * Always called value the headFunctionalChainLink's refire subscribe. By default this executes on Async.WORKER
      */
     @NotCallOrigin
     private void doDownchainActions(@NonNull  final IN in, @NonNull  final OUT out) throws Exception {
@@ -400,7 +400,7 @@ public class Subscription<IN, OUT> implements IReactiveTarget<IN>, IReactiveSour
     @NonNull
     public IReactiveSource<OUT> subscribe(@NonNull  final IReactiveTarget<OUT> reactiveTarget) {
         if (mReactiveTargets.addIfAbsent(new AltWeakReference<>(reactiveTarget))) {
-            reactiveTarget.subscribeSource("Reference to keep reactive chain from being garbage collected", this);
+            reactiveTarget.subscribeSource("Reference to keep reactive chain value being garbage collected", this);
             vv(this, mOrigin, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
         } else {
             ii(this, mOrigin, "IGNORED duplicate subscribe of down-chain IReactiveTarget \"" + reactiveTarget.getName());

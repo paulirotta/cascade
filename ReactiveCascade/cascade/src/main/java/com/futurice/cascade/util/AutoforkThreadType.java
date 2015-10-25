@@ -168,7 +168,7 @@ public class AutoforkThreadType implements IThreadType {
      */
     @NonNull
     @Override
-    public <IN> IAltFuture<?, IN> from(@NonNull  IN value) {
+    public <IN> IAltFuture<?, IN> value(@NonNull IN value) {
         throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
     }
 
@@ -178,7 +178,7 @@ public class AutoforkThreadType implements IThreadType {
      * @throws UnsupportedOperationException
      */
     @NonNull    @Override
-    public <IN> IAltFuture<?, IN> from() {
+    public <IN> IAltFuture<?, IN> value() {
         throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
     }
 

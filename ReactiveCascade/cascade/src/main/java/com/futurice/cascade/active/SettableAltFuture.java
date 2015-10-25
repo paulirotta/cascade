@@ -96,6 +96,14 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
             return "ZEN";
         }
     };
+
+    /*
+     * TODO It should be possible to refactor and eliminate the FORKED state, using only ZEN
+     * This would however result in more debugging difficulty. Users would not know at they time
+     * of .fork() if the operation has already been forked due to an error in their code. They
+     * would only find out much later. Perhaps this is acceptable if the debug pattern remains clear
+     * as to the source of the problem.
+     */
     protected static final IAltFutureState FORKED = new IAltFutureState() {
         @NonNull
         @Override
@@ -352,7 +360,7 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
         }
 
         // Already set, cancelled or error state
-        throwIllegalStateException(this, mOrigin, "Attempted to set " + this + " to value=" + value + ", but the value can only be set once");
+        throwIllegalStateException(this, mOrigin, "Attempted to set " + this + " to value=" + value + ", but the value can only be set once and was already set to value=" + get());
     }
 
     @Override // IAltFuture

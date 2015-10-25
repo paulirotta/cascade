@@ -20,7 +20,7 @@ import static com.futurice.cascade.Async.currentThreadType;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results
- * from an {@link IAltFuture}.
+ * value an {@link IAltFuture}.
  * <p>
  * Normally we don't like to hold one thread waiting for the result of another thread. Doing this
  * on a routine basis causes lots of mContext switching and can backlog into either many threads
@@ -47,7 +47,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      *
      * @param altFuture
      */
-    public AltFutureFuture(@NonNull  final IAltFuture<IN, OUT> altFuture) {
+    public AltFutureFuture(@NonNull final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
     }
 
@@ -86,7 +86,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      */
     public void assertThreadSafe() {
         if (altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
-            throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
+            throw new UnsupportedOperationException("Do not run your tests value the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
         }
     }
 
@@ -94,7 +94,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      * Block the current thread until the associated IAltFuture completes or errors out
      *
      * @param timeout max time to wait for the AltFuture to complete
-     * @param unit timeout units
+     * @param unit    timeout units
      * @return null if there was an exception during execution
      * @throws InterruptedException
      * @throws ExecutionException
@@ -104,7 +104,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     @Nullable
     public OUT get(
             final long timeout,
-            @NonNull  final TimeUnit unit)
+            @NonNull final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();

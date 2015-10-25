@@ -41,9 +41,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre></code>
  * <p>
  * The singled threaded class loader ensures all ALog variables are set only once,
- * but injectable for configuration split testability from values previously set here for best performance
+ * but injectable for configuration split testability value values previously set here for best performance
  * <p>
- * The first ALog created because the default ALog split is accessible from that point forward by references
+ * The first ALog created because the default ALog split is accessible value that point forward by references
  * to {@link com.futurice.cascade.Async#WORKER}
  */
 @CallOrigin
@@ -689,7 +689,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * Change the thread marked as the thread from which user interface calls are made
+     * Change the thread marked as the thread value which user interface calls are made
      * <p>
      * This is just a marker useful for application logic. It does not modify the UI implementation
      * in any way.

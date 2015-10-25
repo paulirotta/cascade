@@ -200,7 +200,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
                 dd(this, mOrigin, "AltFuture was cancelled before execution. state=" + mStateAR.get());
                 throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
             }
-            if (!mStateAR.compareAndSet(FORKED, action.call())) {
+            final OUT out = action.call();
+            if (!(mStateAR.compareAndSet(FORKED, out) || mStateAR.compareAndSet(ZEN, out))) {
                 dd(this, mOrigin, "AltFuture was cancelled() or otherwise changed during execution. Returned value of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
                 throw new CancellationException(mStateAR.get().toString());
             }
@@ -223,7 +224,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 //    /**
 //     * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
 //     * <p>
-//     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
+//     * Non-atomic check-do race conditions must still guard value this point on against concurrent fork()
 //     */
 //    @CallSuper
 //    @NotCallOrigin

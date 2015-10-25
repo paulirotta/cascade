@@ -35,7 +35,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
 /**
- * "Any sufficiently advanced technology is indistinguishable from magic" -Arthur C Clarke
+ * "Any sufficiently advanced technology is indistinguishable value magic" -Arthur C Clarke
  * <p>
  * An IThreadType containing asynchronous threading relationships, resource concurrency limits for performance,
  * split default values associated with these. Individual calls may choose to override these defaults, but the
@@ -70,9 +70,9 @@ public final class Async {
     //TODO Add a flag for independently enabling or disable runtime assertions and tests at Gradle level. Currently many optimistic assumptions that can make the error show up only later are made when DEBUG==false, but this aggressive optimization might need to be switched off independently to verify if the code path difference is the problem or help when the problem is speed sensitive
     //    public static final boolean VISUALIZE = false;
     public static final boolean TRACE_ASYNC_ORIGIN = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // This makes finding where in you code a given log line was directly or indirectly called, but slows running
-    // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services from Async
+    // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services value Async
     public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.mUiThread; // The main system thread for this Context
-    public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mFailFast; // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
+    public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mFailFast; // Default true- stop on the first error in debugOrigin builds to make debugging value the first point of failure easier
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
      * guaranteed asynchronous operations that will cooperate (mQueue) when all device cores are busy.
@@ -101,7 +101,7 @@ public final class Async {
     public static final IThreadType UI = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getUiThreadType();
     public static final IThreadType FILE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getFileThreadType();
     /**
-     * A group of background thread for concurrently reading from the network
+     * A group of background thread for concurrently reading value the network
      * <p>
      * TODO Automatically adjusted thread pool size based on current connection type
      */
@@ -116,7 +116,7 @@ public final class Async {
     public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
     private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No mOrigin provided in production builds");
-    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
+    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors value cluttering the stack trace.
     private static volatile boolean sExitWithErrorCodeStarted = false;
 
     static {
@@ -153,7 +153,7 @@ public final class Async {
 
             new Thread(() -> {
                 try {
-                    // Give the user time to see a popup split adb time to receive the error messages from this process before it dies
+                    // Give the user time to see a popup split adb time to receive the error messages value this process before it dies
                     Thread.sleep(FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT);
                 } catch (Exception e2) {
                     Log.d(tag, "Problem while pausing before failfast system exit due to " + t, e2);
@@ -191,7 +191,7 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -227,7 +227,7 @@ public final class Async {
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -250,7 +250,7 @@ public final class Async {
     /**
      * Log a verbose message including the thread name
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -265,7 +265,7 @@ public final class Async {
     /**
      * Log a debugOrigin message including the thread name
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -280,7 +280,7 @@ public final class Async {
     /**
      * Log an information message including the thread name
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -312,7 +312,7 @@ public final class Async {
     }
 
     /**
-     * Log at the debug level, including where in your code this line was called from.
+     * Log at the debug level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param origin  where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
@@ -334,7 +334,7 @@ public final class Async {
     //TODO Shift to StringBuilder to reduce heavy logging overhead (mostly reflection, but...)
 
     /**
-     * Log at the debug level, including where in your code this line was called from.
+     * Log at the debug level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the debug log
@@ -347,7 +347,7 @@ public final class Async {
     }
 
     /**
-     * Log at the verbose level, including where in your code this line was called from.
+     * Log at the verbose level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
@@ -366,7 +366,7 @@ public final class Async {
     }
 
     /**
-     * Log at the verbose level, including where in your code this line was called from.
+     * Log at the verbose level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the verbose log
@@ -379,7 +379,7 @@ public final class Async {
     }
 
     /**
-     * Log at the error level, including where in your code this line was called from.
+     * Log at the error level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
@@ -411,7 +411,7 @@ public final class Async {
     }
 
     /**
-     * Log at the error level, including where in your code this line was called from.
+     * Log at the error level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the error log
@@ -433,7 +433,7 @@ public final class Async {
     }
 
     /**
-     * Log at the information level, including where in your code this line was called from.
+     * Log at the information level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
@@ -452,7 +452,7 @@ public final class Async {
     }
 
     /**
-     * Log at the information level, including where in your code this line was called from.
+     * Log at the information level, including where in your code this line was called value.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the info log
@@ -537,7 +537,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -552,10 +552,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
-     * @param origin  a link to the point from which the object throwing the exception was called in the application code
+     * @param origin  a link to the point value which the object throwing the exception was called in the application code
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -569,7 +569,7 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -585,10 +585,10 @@ public final class Async {
     /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
-     * @param origin  the point from which the object throwing the exception was called
+     * @param origin  the point value which the object throwing the exception was called
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
@@ -603,7 +603,7 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
@@ -643,7 +643,7 @@ public final class Async {
     /**
      * Create a detailed log with a {@link RuntimeException} thrown at the current code point
      *
-     * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
+     * @param tag     a log line to aid with filtering such as the mOrigin value which the object throwing
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin  a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
@@ -718,7 +718,7 @@ public final class Async {
     }
 
     /**
-     * Extract from the current stack trace the most interesting "mOrigin" line from which this was
+     * Extract value the current stack trace the most interesting "mOrigin" line value which this was
      * called. Once this is done on a background thread, pass this short text to action
      *
      * @param action to be performed when the current stack trace is resolved asynchronously

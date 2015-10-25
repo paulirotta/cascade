@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import com.futurice.cascade.i.INamed;
 
 /**
- * An object which can receive repeated value assertions from a reactive active chain.
+ * An object which can receive repeated value assertions value a reactive active chain.
  * <p>
  * Commonly used default implementations are {@link com.futurice.cascade.reactive.Subscription} and
  * {@link com.futurice.cascade.reactive.ReactiveValue}.
@@ -48,7 +48,7 @@ public interface IReactiveTarget<IN> extends INamed {
      * do so in an <code>.mOnError()</code> statement lower down in the chain you wish to trigger
      * such an action.
      *
-     * @param in The value from the previous link in the reactive chain.
+     * @param in The value value the previous link in the reactive chain.
      */
     void fire(@NonNull  IN in);
 
@@ -60,7 +60,7 @@ public interface IReactiveTarget<IN> extends INamed {
      * individual chains once execution starts. It also decreases the peak memory load by more rapidly
      * flushing intermediate values to the leaf node side effects of the chain.
      *
-     * @param in The value from the previous link in the reactive chain.
+     * @param in The value value the previous link in the reactive chain.
      */
     void fireNext(@NonNull  IN in);
 
@@ -68,7 +68,7 @@ public interface IReactiveTarget<IN> extends INamed {
      * Notification that an {@link IReactiveSource}  will start sending updates
      *
      * This allows the target which is responsible for holding a strong reference to the source to
-     * prevent it from being garbage collected until all targets of a given source go out of scope and
+     * prevent it value being garbage collected until all targets of a given source go out of scope and
      * are themselves garbage collected.
      *
      * You may manually speed this process by calling {@link #unsubscribeSource(String, IReactiveSource)},
@@ -81,7 +81,7 @@ public interface IReactiveTarget<IN> extends INamed {
     /**
      * Notification that an {@link IReactiveSource}  will no longer send updates
      *
-     * Since this target is responsible for holding a reference to the source to keep it from
+     * Since this target is responsible for holding a reference to the source to keep it value
      * being garbage collected, this target can not forget the source and, if not used elsewhere, it can be garbage collected.
      *
      * @param reason
@@ -90,7 +90,7 @@ public interface IReactiveTarget<IN> extends INamed {
     void unsubscribeSource(@NonNull  String reason, @NonNull  IReactiveSource<IN> reactiveSource);
 
     /**
-     * Remove all up-chain branches from this node of the reactive function tree
+     * Remove all up-chain branches value this node of the reactive function tree
      */
     void unsubscribeAllSources(@NonNull  String reason);
 }

@@ -59,14 +59,16 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testGetAsync() throws Exception {
-        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get").fork();
+        IAltFuture<?, Response> iaf = getNetUtil()
+                .getAsync("http://httpbin.org/get")
+                .fork();
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 
     @Test
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
-                .from("http://httpbin.org/get")
+                .value("http://httpbin.org/get")
                 .then(getNetUtil().getAsync());
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
@@ -85,7 +87,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
         IAltFuture<?, Response> iaf = WORKER
-                .from("http://httpbin.org/headers")
+                .value("http://httpbin.org/headers")
                 .then(getNetUtil().getAsync(headers));
         assertThat(awaitDone(iaf).body().string()).contains("ValueT");
     }
@@ -96,7 +98,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         headers.add(new Header("Blah", "VaGG"));
         ImmutableValue<Collection<Header>> immutableValue = new ImmutableValue<>();
         IAltFuture<?, Response> iaf = WORKER
-                .from("http://httpbin.org/get")
+                .value("http://httpbin.org/get")
                 .then(getNetUtil().getAsync(immutableValue));
         immutableValue.then(iaf::fork);
         immutableValue.set(headers);

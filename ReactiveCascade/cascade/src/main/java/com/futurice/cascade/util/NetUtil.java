@@ -60,30 +60,32 @@ import static com.futurice.cascade.Async.originAsync;
  * OkHttp convenience wrapper methods
  */
 public final class NetUtil {
-    @NonNull    final OkHttpClient mOkHttpClient;
-    @NonNull    final ImmutableValue<String> mOrigin;
     private static final int MAX_NUMBER_OF_WIFI_NET_CONNECTIONS = 6;
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
-
-    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G}
-
-    @NonNull    private final TelephonyManager mTelephonyManager;
-    @NonNull    private final WifiManager mWifiManager;
-    @NonNull    private final IThreadType mNetReadThreadType;
-    @NonNull    private final IThreadType mNetWriteThradType;
-
+    @NonNull
+    final OkHttpClient mOkHttpClient;
+    @NonNull
+    final ImmutableValue<String> mOrigin;
+    @NonNull
+    private final TelephonyManager mTelephonyManager;
+    @NonNull
+    private final WifiManager mWifiManager;
+    @NonNull
+    private final IThreadType mNetReadThreadType;
+    @NonNull
+    private final IThreadType mNetWriteThradType;
     @RequiresPermission(allOf = {Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.ACCESS_WIFI_STATE})
-    public NetUtil(@NonNull  final Context context) {
+    public NetUtil(@NonNull final Context context) {
         this(context, NET_READ, NET_WRITE);
     }
 
     public NetUtil(
-            @NonNull  final Context context,
-            @NonNull  final IThreadType netReadThreadType,
-            @NonNull  final IThreadType netWriteThreadType) {
+            @NonNull final Context context,
+            @NonNull final IThreadType netReadThreadType,
+            @NonNull final IThreadType netWriteThreadType) {
         mOrigin = originAsync();
         this.mNetReadThreadType = netReadThreadType;
         this.mNetWriteThradType = netWriteThreadType;
@@ -94,13 +96,13 @@ public final class NetUtil {
 
     @NonNull
     @WorkerThread
-    public Response get(@NonNull  final String url) throws IOException {
+    public Response get(@NonNull final String url) throws IOException {
         return get(url, null);
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> getAsync(@NonNull  final String url) {
+    public IAltFuture<?, Response> getAsync(@NonNull final String url) {
         return mNetReadThreadType.then(() -> get(url, null));
     }
 
@@ -112,15 +114,15 @@ public final class NetUtil {
 
     @NonNull
     @WorkerThread
-    public Response get(@NonNull  final IGettable<String> urlGettable) throws IOException {
+    public Response get(@NonNull final IGettable<String> urlGettable) throws IOException {
         return get(urlGettable.get(), null);
     }
 
     @NonNull
     @WorkerThread
     public Response get(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) throws IOException {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) throws IOException {
         if (headers == null) {
             dd(mOrigin, "get " + url);
         } else {
@@ -139,22 +141,22 @@ public final class NetUtil {
     @NonNull
     @WorkerThread
     public Response get(
-            @NonNull  final IGettable<String> urlGettable,
-            @Nullable  final Collection<Header> headers) throws IOException {
+            @NonNull final IGettable<String> urlGettable,
+            @Nullable final Collection<Header> headers) throws IOException {
         return get(urlGettable.get(), headers);
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> getAsync(
-            @Nullable  final Collection<Header> headers) {
+            @Nullable final Collection<Header> headers) {
         return mNetReadThreadType.map(url -> get(url, headers));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> getAsync(
-            @NonNull  final String url,
+            @NonNull final String url,
             final IGettable<Collection<Header>> headersGettable) {
         return mNetReadThreadType.then(() -> get(url, headersGettable.get()));
     }
@@ -162,15 +164,15 @@ public final class NetUtil {
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> getAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
         return mNetReadThreadType.then(() -> get(url, headers));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> getAsync(
-            @NonNull  final IGettable<String> urlGettable,
+            @NonNull final IGettable<String> urlGettable,
             final IGettable<Collection<Header>> headersGettable) {
         return mNetReadThreadType.then(() -> get(urlGettable.get(), headersGettable.get()));
     }
@@ -185,17 +187,17 @@ public final class NetUtil {
     @NonNull
     @WorkerThread
     public Response put(
-            @NonNull  final String url,
-            @NonNull  final RequestBody body) throws IOException {
+            @NonNull final String url,
+            @NonNull final RequestBody body) throws IOException {
         return put(url, null, body);
     }
 
     @NonNull
     @WorkerThread
     public Response put(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) throws IOException {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) throws IOException {
         dd(mOrigin, "put " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
@@ -208,119 +210,119 @@ public final class NetUtil {
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Response> putAsync(
-            @NonNull  final String url,
-            @NonNull  final RequestBody body) {
+            @NonNull final String url,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.then(() -> put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<RequestBody, Response> putAsync(
-            @NonNull  final String url) {
+            @NonNull final String url) {
         return mNetWriteThradType.map(body -> put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> putAsync(
-            @NonNull  final RequestBody body) {
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.map(url -> put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Response> putAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.then(() -> put(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> putAsync(
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) {
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.map(url -> put(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<RequestBody, Response> putAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
         return mNetWriteThradType.map(body -> put(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
     public Response post(
-            @NonNull  final String url,
-            @NonNull  final RequestBody body) throws IOException {
+            @NonNull final String url,
+            @NonNull final RequestBody body) throws IOException {
         return post(url, null, body);
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Response> postAsync(
-            @NonNull  final String url,
-            @NonNull  final RequestBody body) {
+            @NonNull final String url,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.then(() -> post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> postAsync(
-            @NonNull  final RequestBody body) {
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.map(url -> post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<RequestBody, Response> postAsync(
-            @NonNull  final String url) {
+            @NonNull final String url) {
         return mNetWriteThradType.map(body -> post(url, null, body));
     }
 
     @NonNull
     @WorkerThread
     public Response post(
-            @NonNull  final URL url,
-            @NonNull  final RequestBody body) throws IOException {
+            @NonNull final URL url,
+            @NonNull final RequestBody body) throws IOException {
         return post(url.toString(), null, body);
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Response> postAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.then(() -> post(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> postAsync(
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) {
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) {
         return mNetWriteThradType.map(url -> post(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<RequestBody, Response> postAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
         return mNetWriteThradType.map(body -> post(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
     public Response post(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers,
-            @NonNull  final RequestBody body) throws IOException {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers,
+            @NonNull final RequestBody body) throws IOException {
         dd(mOrigin, "post " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
@@ -332,7 +334,7 @@ public final class NetUtil {
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> deleteAsync(@NonNull  final String url) {
+    public IAltFuture<?, Response> deleteAsync(@NonNull final String url) {
         return mNetWriteThradType.then(() -> delete(url, null));
     }
 
@@ -344,30 +346,30 @@ public final class NetUtil {
 
     @NonNull
     @WorkerThread
-    public Response delete(@NonNull  final String url) throws IOException {
+    public Response delete(@NonNull final String url) throws IOException {
         return delete(url, null);
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<?, Response> deleteAsync(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) {
         return mNetWriteThradType.then(() -> delete(url, headers));
     }
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Response> deleteAsync(
-            @Nullable  final Collection<Header> headers) {
+            @Nullable final Collection<Header> headers) {
         return mNetWriteThradType.map(url -> delete(url, headers));
     }
 
     @NonNull
     @WorkerThread
     public Response delete(
-            @NonNull  final String url,
-            @Nullable  final Collection<Header> headers) throws IOException {
+            @NonNull final String url,
+            @Nullable final Collection<Header> headers) throws IOException {
         dd(mOrigin, "delete " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
@@ -378,8 +380,8 @@ public final class NetUtil {
     }
 
     private void addHeaders(
-            @NonNull  final Request.Builder builder,
-            @Nullable  final Collection<Header> headers) {
+            @NonNull final Request.Builder builder,
+            @Nullable final Collection<Header> headers) {
         if (headers == null) {
             return;
         }
@@ -391,8 +393,8 @@ public final class NetUtil {
 
     @NonNull
     private Call setupCall(
-            @NonNull  final String url,
-            @Nullable  final BuilderModifier builderModifier) throws IOException {
+            @NonNull final String url,
+            @Nullable final BuilderModifier builderModifier) throws IOException {
         final Request.Builder builder = new Request.Builder()
                 .url(url);
         if (builderModifier != null) {
@@ -414,7 +416,7 @@ public final class NetUtil {
      */
     @NonNull
     @WorkerThread
-    private Response execute(@NonNull  final Call call) throws IOException {
+    private Response execute(@NonNull final Call call) throws IOException {
         final Response response = call.execute();
 
         if (response.isRedirect()) {
@@ -432,13 +434,6 @@ public final class NetUtil {
         }
 
         return response;
-    }
-
-    /**
-     * Functional interface to do something to an OkHttp request builder before dispatch
-     */
-    private interface BuilderModifier {
-        void modify(Request.Builder builder);
     }
 
     //TODO Use max number of NET connections on startup split adapt as these change
@@ -506,5 +501,14 @@ public final class NetUtil {
             case NETWORK_TYPE_LTE:
                 return NetType.NET_4G;
         }
+    }
+
+    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G}
+
+    /**
+     * Functional interface to do something to an OkHttp request builder before dispatch
+     */
+    private interface BuilderModifier {
+        void modify(Request.Builder builder);
     }
 }

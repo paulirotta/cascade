@@ -50,10 +50,14 @@ import static com.futurice.cascade.Async.vv;
  * <p>
  */
 public abstract class AbstractThreadType implements IThreadType {
-    @NonNull    protected final ExecutorService executorService;
-    @NonNull    protected final BlockingQueue<Runnable> mQueue;
-    @NonNull    protected final ImmutableValue<String> mOrigin;
-    @NonNull    private final String name;
+    @NonNull
+    protected final ExecutorService executorService;
+    @NonNull
+    protected final BlockingQueue<Runnable> mQueue;
+    @NonNull
+    protected final ImmutableValue<String> mOrigin;
+    @NonNull
+    private final String name;
 
     /**
      * Create an asynchronous mOnFireAction handler that embodies certain rules for threading split concurrency
@@ -65,9 +69,9 @@ public abstract class AbstractThreadType implements IThreadType {
      *                        of tasks in one thread type by tasks in another thread type
      */
     public AbstractThreadType(
-            @NonNull  final String name,
-            @NonNull  final ExecutorService executorService,
-            @NonNull  final BlockingQueue<Runnable> queue) {
+            @NonNull final String name,
+            @NonNull final ExecutorService executorService,
+            @NonNull final BlockingQueue<Runnable> queue) {
         this.name = name;
         this.executorService = executorService;
         this.mQueue = queue;
@@ -84,9 +88,8 @@ public abstract class AbstractThreadType implements IThreadType {
     }
 
     @NotCallOrigin
-    public abstract void run(@NonNull  Runnable runnable);
+    public abstract void run(@NonNull Runnable runnable);
 
-    //TODO Rename this as fork() once smoke clears on refactoring
     private <IN, OUT> IAltFuture<IN, OUT> runAltFuture(@NonNull final IRunnableAltFuture<IN, OUT> altFuture) {
         run(altFuture);
 
@@ -96,7 +99,7 @@ public abstract class AbstractThreadType implements IThreadType {
     @Override
     @NonNull
     @NotCallOrigin
-    public <IN> Runnable wrapActionWithErrorProtection(@NonNull  final IAction<IN> action) {
+    public <IN> Runnable wrapActionWithErrorProtection(@NonNull final IAction<IN> action) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -114,8 +117,8 @@ public abstract class AbstractThreadType implements IThreadType {
     @NonNull
     @NotCallOrigin
     public <IN> Runnable wrapActionWithErrorProtection(
-            @NonNull  final IAction<IN> action,
-            @NonNull  final IOnErrorAction onErrorAction) {
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -138,46 +141,48 @@ public abstract class AbstractThreadType implements IThreadType {
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void execute(@NonNull  final IAction<IN> action) {
+    public <IN> void execute(@NonNull final IAction<IN> action) {
         run(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
     @NotCallOrigin
     public <IN> void run(
-            @NonNull  final IAction<IN> action,
-            @NonNull  final IOnErrorAction onErrorAction) {
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         run(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void runNext(@NonNull  final IAction<IN> action) {
+    public <IN> void runNext(@NonNull final IAction<IN> action) {
         runNext(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
-    public boolean moveToHeadOfQueue(@NonNull  final Runnable runnable) {
+    @SuppressWarnings("unchecked")
+    public boolean moveToHeadOfQueue(@NonNull final Runnable runnable) {
         //TODO Analyze if this non-atomic operation is a risk for closing a ThreadType and moving all pending actions to a new thread type as we would like to do for NET_READ when the available bandwdith changes
 
-        if (!(mQueue instanceof Deque)) {
-            return false; // The UI thread does not have a visible mQueue, and some queues choose not to support re-ordering
+        if (mQueue instanceof Deque) {
+            final boolean moved = mQueue.remove(runnable);
+
+            if (moved) {
+                ((Deque<Runnable>) mQueue).addFirst(runnable);
+            }
+            vv(this, mOrigin, "moveToHeadOfQueue() moved=" + moved);
+
+            return moved;
         }
 
-        final boolean moved = mQueue.remove(runnable);
-        if (moved) {
-            ((Deque<Runnable>) mQueue).addFirst(runnable);
-        }
-
-        vv(this, mOrigin, "moveToHeadOfQueue() moved=" + moved);
-        return moved;
+        return false; // The UI thread does not have a visible mQueue, and some queues choose not to support re-ordering
     }
 
     @Override // IThreadType
     @NotCallOrigin
     public <IN> void runNext(
-            @NonNull  final IAction<IN> action,
-            @NonNull  final IOnErrorAction onErrorAction) {
+            @NonNull final IAction<IN> action,
+            @NonNull final IOnErrorAction onErrorAction) {
         vv(this, mOrigin, "runNext()");
         runNext(wrapActionWithErrorProtection(action, onErrorAction));
     }
@@ -185,42 +190,42 @@ public abstract class AbstractThreadType implements IThreadType {
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN> IAltFuture<IN, IN> then(@NonNull  final IAction<IN> action) {
+    public <IN> IAltFuture<IN, IN> then(@NonNull final IAction<IN> action) {
         return runAltFuture(new AltFuture<IN, IN>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN> IAltFuture<IN, IN> then(@NonNull  final IActionOne<IN> action) {
+    public <IN> IAltFuture<IN, IN> then(@NonNull final IActionOne<IN> action) {
         return runAltFuture(new AltFuture<IN, IN>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull  final IActionOneR<IN, OUT> action) {
+    public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull final IActionOneR<IN, OUT> action) {
         return runAltFuture(new AltFuture<>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull  final IActionR<IN, OUT> action) {
+    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final IActionR<IN, OUT> action) {
         return runAltFuture(new AltFuture<>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN> IAltFuture<?, IN> from(@NonNull  final IN value) {
+    public <IN> IAltFuture<?, IN> value(@NonNull final IN value) {
         return new SettableAltFuture<>(this, value);
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <IN> IAltFuture<?, IN> from() {
+    public <IN> IAltFuture<?, IN> value() {
         return new SettableAltFuture<>(this);
     }
 
@@ -230,7 +235,7 @@ public abstract class AbstractThreadType implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public final <IN> List<IAltFuture<IN, IN>> then(@NonNull  final IAction<IN>... actions) {
+    public final <IN> List<IAltFuture<IN, IN>> then(@NonNull final IAction<IN>... actions) {
         final List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
 
         vv(this, mOrigin, "map(List[" + actions.length + "])");
@@ -245,7 +250,7 @@ public abstract class AbstractThreadType implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull  final IActionR<IN, OUT>... actions) {
+    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull final IActionR<IN, OUT>... actions) {
         vv(this, mOrigin, "map(List[" + actions.length + "])");
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
@@ -260,7 +265,7 @@ public abstract class AbstractThreadType implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull  final IActionOneR<IN, OUT>... actions) {
+    public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull final IActionOneR<IN, OUT>... actions) {
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
         for (final IActionOneR<IN, OUT> action : actions) {
@@ -270,8 +275,8 @@ public abstract class AbstractThreadType implements IThreadType {
         return altFutures;
     }
 
-    //TODO add mapEach(IActionOneR) from list to list
-    //TODO add thenEach(IActionOne) from list
+    //TODO add mapEach(IActionOneR) value list to list
+    //TODO add thenEach(IActionOne) value list
 
 //=============================== Public Utility Methods ======================================
 
@@ -296,7 +301,7 @@ public abstract class AbstractThreadType implements IThreadType {
     @NonNull
     public <IN> Future<Boolean> shutdown(
             final long timeout,
-            @Nullable  final IAction<IN> afterShutdownAction) {
+            @Nullable final IAction<IN> afterShutdownAction) {
         if (timeout < 1) {
             Async.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
@@ -340,9 +345,9 @@ public abstract class AbstractThreadType implements IThreadType {
     @Override // IThreadType
     @NonNull
     public <IN> List<Runnable> shutdownNow(
-            @NonNull  final String reason,
-            @Nullable  final IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-            @Nullable  final IAction<IN> actionOnDedicatedThreadIfTimeout,
+            @NonNull final String reason,
+            @Nullable final IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+            @Nullable final IAction<IN> actionOnDedicatedThreadIfTimeout,
             long timeoutMillis) {
         ii(this, "shutdownNow: reason=" + reason);
         final List<Runnable> pendingActions = executorService.shutdownNow();

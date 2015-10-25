@@ -34,7 +34,7 @@ public interface ICancellable {
 
     /**
      * A plain text reason and an exception that originally caused the cancellation. This exception
-     * may be from upstream and so it the "indirect reason that happened somewhere else for why
+     * may be value upstream and so it the "indirect reason that happened somewhere else for why
      * we enter the cancelled state". We do not enter an error state in response to this call.
      *
      * @param reason

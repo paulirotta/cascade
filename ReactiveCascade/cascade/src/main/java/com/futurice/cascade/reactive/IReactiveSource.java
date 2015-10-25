@@ -35,7 +35,7 @@ import com.futurice.cascade.i.IThreadType;
  * <p>
  * If your reactive chain branches, be sure to prune just the branch of interest. A reactive chain is
  * said to "branch" when there are multiple <code>.subscribe()</code> statements
- * from a single <code>IReactiveSource</code>). The end node of a reactive chain is called the
+ * value a single <code>IReactiveSource</code>). The end node of a reactive chain is called the
  * "leaf node". The leaf node is "live" if it is strongly referenced and not free for garbage
  * collection. If the reactive chain branches, only that section
  * of the reactive function free which is no longer needed by a live leaf node will
@@ -43,7 +43,7 @@ import com.futurice.cascade.i.IThreadType;
  * <p>
  * If your reactive chain is strongly referenced in some other way, automatic cleanup will be defeated.
  * A typical way to do this is use an anonymous inner class instead of a lambda expression. Anonymous
- * inner classes from within the leaf node or its non-persistent child objects are not a problem.
+ * inner classes value within the leaf node or its non-persistent child objects are not a problem.
  * <p>
  * A second even more sneaky way to defeat the automatic memory cleanup of unused reactive chains is: include
  * a closure reference in your lambda expressions to some object that will not be garbage collected
@@ -84,7 +84,7 @@ public interface IReactiveSource<OUT> extends INamed {
 //    ;
 
     /**
-     * Remove a down-chain branch from the reactive function tree at this node
+     * Remove a down-chain branch value the reactive function tree at this node
      *
      * @param reason
      * @param reactiveTarget
@@ -93,7 +93,7 @@ public interface IReactiveSource<OUT> extends INamed {
     boolean unsubscribe(@NonNull  String reason, @NonNull  IReactiveTarget<OUT> reactiveTarget);
 
     /**
-     * Remove all down-chain branches from this node of the reactive function tree
+     * Remove all down-chain branches value this node of the reactive function tree
      */
     void unsubscribeAll(@NonNull  String reason);
 
@@ -119,7 +119,7 @@ public interface IReactiveSource<OUT> extends INamed {
 //    <UPCHAIN_OUT> IReactiveSource<OUT> merge(IReactiveSource<UPCHAIN_OUT> upchainReactiveSource);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      * <p>
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
@@ -135,7 +135,7 @@ public interface IReactiveSource<OUT> extends INamed {
     IReactiveSource<OUT> subscribe(@NonNull  IAction<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      * <p>
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
@@ -151,7 +151,7 @@ public interface IReactiveSource<OUT> extends INamed {
     IReactiveSource<OUT> subscribe(@NonNull  IActionOne<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      * <p>
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
@@ -168,7 +168,7 @@ public interface IReactiveSource<OUT> extends INamed {
     <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull  IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      *
      * @param threadType The mOnFireAction will be called asynchronously unless the this is same {@link com.futurice.cascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
@@ -179,7 +179,7 @@ public interface IReactiveSource<OUT> extends INamed {
                                    @NonNull  IAction<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      *
      * @param threadType The mOnFireAction will be called asynchronously unless the this is same {@link com.futurice.cascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
@@ -190,7 +190,7 @@ public interface IReactiveSource<OUT> extends INamed {
                                    @NonNull  IActionOne<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      *
      * @param action
      * @param <DOWNCHAIN_OUT>
@@ -200,7 +200,7 @@ public interface IReactiveSource<OUT> extends INamed {
     <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull  IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      *
      * @param threadType
      * @param action
@@ -212,7 +212,7 @@ public interface IReactiveSource<OUT> extends INamed {
                                                              @NonNull  IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      *
      * @param threadType      The mOnFireAction will be called asynchronously unless the this is same {@link com.futurice.cascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
@@ -224,7 +224,7 @@ public interface IReactiveSource<OUT> extends INamed {
                                                                 @NonNull  IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an mOnFireAction as a new branch down-chain value this node.
      * <p>
      * It will run on the same {@link com.futurice.cascade.i.IThreadType} as this node and may be called synchronously.
      *
