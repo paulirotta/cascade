@@ -1,5 +1,6 @@
 package com.futurice.cascade.util;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.test.suitebuilder.annotation.MediumTest;
 import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.active.AltFuture;
 import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.active.SettableAltFuture;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -127,10 +129,6 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     @Test
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
-        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
-        });
-        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
-        });
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
@@ -140,21 +138,19 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             ai.set(200);
             return 200;
         });
-        WORKER.execute(() -> {
+        SERIAL_WORKER.execute(() -> {
             uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
         });
 
-        awaitDone(done1);
-        awaitDone(done2);
+        awaitDone(SERIAL_WORKER.then(() -> {
+        }));
         assertThat(sendCount).isGreaterThan(0);
         assertThat(ai.get()).isGreaterThan(0);
     }
 
     @Test
     public void testInvokeAllCallable() throws Exception {
-        AtomicInteger ai = new AtomicInteger(0);
-        final IAltFuture<?, String> done = SERIAL_WORKER.then(() -> {
-        });
+        final AtomicInteger ai = new AtomicInteger(0);
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
@@ -168,50 +164,45 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             uiExecutorService.invokeAll(callableList);
         });
 
-        awaitDone(done);
+        awaitDone(SERIAL_WORKER.then(() -> {
+        }));
         assertThat(sendCount).isGreaterThan(0);
         assertThat(ai.get()).isEqualTo(300);
     }
 
     @Test
     public void testInvokeAnyCallable() throws Exception {
-        AtomicInteger ai = new AtomicInteger(0);
-        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
-        });
-        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
-        });
+        final AtomicInteger ai = new AtomicInteger(0);
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
             return 100;
         });
         callableList.add(() -> {
-            ai.set(200);
+            ai.set(200 + ai.get());
             return 200;
         });
-        WORKER.execute(() -> {
+        SERIAL_WORKER.execute(() -> {
             uiExecutorService.invokeAny(callableList);
         });
 
-        awaitDone(done1);
-        awaitDone(done2);
+        awaitDone(SERIAL_WORKER.then(() -> {
+        }));
         assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isGreaterThan(0);
+        assertThat(ai.get()).isEqualTo(300);
     }
 
     @Test
-    @Ignore //FIXME Stopped working, not clear why
     public void testExecute() throws Exception {
+        //TODO Not a completely thread-safe test. We need fluah() logic
         final AtomicInteger ai = new AtomicInteger(0);
-        final AtomicInteger ai2 = new AtomicInteger(0);
-        final IAltFuture<Object, Object> done = new AltFuture<>(WORKER, () -> {
-            ai2.set(200);
+        SERIAL_WORKER.execute(() -> {
+            uiExecutorService.execute(() -> {
+                ai.set(100);
+            });
         });
-        uiExecutorService.execute(() -> {
-            ai.set(100);
-        });
-        awaitDone(done); // Hold for UI to complete
+        awaitDone(SERIAL_WORKER.then(() -> {
+        })); // Hold for UI to complete
         assertEqual(100, ai.get());
-        assertEqual(200, ai2.get());
     }
 }
