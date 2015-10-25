@@ -7,8 +7,6 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.active.IAltFuture;
-
 /**
  * Stop an ongoing activity early if it has not already completed.
  * Long running tasks such as {@link IAltFuture} must

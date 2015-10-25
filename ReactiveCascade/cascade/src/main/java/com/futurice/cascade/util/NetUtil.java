@@ -19,7 +19,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
-import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.IThreadType;

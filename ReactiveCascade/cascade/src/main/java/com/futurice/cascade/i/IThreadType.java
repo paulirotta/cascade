@@ -9,8 +9,6 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
@@ -291,18 +289,18 @@ public interface IThreadType extends INamed {
     @CheckResult(suggest = "IAltFuture#fork()")
     <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
-//    /**
-//     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
-//     * in to an execution mQueue associated with this {@link IThreadType}.
-//     * <p>
-//     * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
-//     * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
-//     *
-//     * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
-//     * @param <IN>              the type of input argument expected by the action
-//     * @param <OUT>             the type of output returned by the action
-//     */
-//    <IN, OUT> void fork(@NonNull  IRunnableAltFuture<IN, OUT> runnableAltFuture);
+    /**
+     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
+     * in to an execution mQueue associated with this {@link IThreadType}.
+     * <p>
+     * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
+     * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
+     *
+     * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
+     * @param <IN>              the type of input argument expected by the action
+     * @param <OUT>             the type of output returned by the action
+     */
+    <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture);
 
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or

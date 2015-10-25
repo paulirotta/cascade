@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.IReactiveSource;
+import com.futurice.cascade.i.IReactiveValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 

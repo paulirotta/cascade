@@ -13,7 +13,7 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 
-import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.dd;
 
 /**
  * A {@link Long} which can be updated in an atomic, thread-safe manner.
@@ -64,12 +64,12 @@ public class ReactiveLong extends ReactiveValue<Long> {
     public long addAndGet(final long l) {
         long currentValue;
 
-        for (; ; ) {
+        while (true) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
             }
-            ii(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
+            dd(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -81,14 +81,12 @@ public class ReactiveLong extends ReactiveValue<Long> {
      */
     @CallSuper
     public long multiplyAndGet(final long l) {
-        long currentValue;
-
-        for (; ; ) {
-            currentValue = get();
+        while (true) {
+            final long currentValue = get();
             if (compareAndSet(currentValue, currentValue * l)) {
                 return currentValue;
             }
-            ii(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
+            dd(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 

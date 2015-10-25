@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.IReactiveSource;
+import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.reactive.ReactiveValue;
 
 import static com.futurice.cascade.Async.UI;

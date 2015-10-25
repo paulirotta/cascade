@@ -17,11 +17,13 @@ import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IActionTwoR;
+import com.futurice.cascade.i.IAltFuture;
+import com.futurice.cascade.i.IAltFutureState;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.IReactiveSource;
-import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.IReactiveSource;
+import com.futurice.cascade.i.IReactiveTarget;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,7 +51,7 @@ import static com.futurice.cascade.Async.vv;
  * and {@link IAltFuture#isForked()} do not have their traditional meanings.
  * <p>
  * {@link AltFuture} overrides this class.
- * TODO You may also use a {@link SettableAltFuture} to inject data where the value is determined fromKey entirely outside of the current chain hierarchy.
+ * TODO You may also use a {@link SettableAltFuture} to inject data where the value is determined from entirely outside of the current chain hierarchy.
  * This is currently an experimental feature so be warned, your results and chain behaviour may vary. Additional
  * testing is on the long list.
  * <p>
@@ -198,11 +200,11 @@ public class SettableAltFuture<IN, OUT> implements IAltFuture<IN, OUT> {
 
         final IAltFutureState errorState = new AltFutureStateError(reason, e);
         if (mStateAR.compareAndSet(ZEN, errorState)) {
-            dd(this, mOrigin, "Cancelled fromKey ZEN state: reason=" + reason);
+            dd(this, mOrigin, "Cancelled from ZEN state: reason=" + reason);
             return true;
         } else {
             if (mStateAR.compareAndSet(FORKED, errorState)) {
-                dd(this, mOrigin, "Cancelled fromKey FORKED state: reason=" + reason);
+                dd(this, mOrigin, "Cancelled from FORKED state: reason=" + reason);
                 return true;
             } else {
                 if (DEBUG) {

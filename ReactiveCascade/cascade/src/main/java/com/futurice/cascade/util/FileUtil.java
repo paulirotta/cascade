@@ -11,7 +11,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 
 import java.io.ByteArrayOutputStream;

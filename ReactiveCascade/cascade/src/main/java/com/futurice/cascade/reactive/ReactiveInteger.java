@@ -13,7 +13,7 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 
-import static com.futurice.cascade.Async.ii;
+import static com.futurice.cascade.Async.dd;
 
 /**
  * An {@link Integer} which can be updated in an atomic, thread-safe manner.
@@ -64,12 +64,12 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     public int addAndGet(final int i) {
         int currentValue;
 
-        for (; ; ) {
+        while (true) {
             currentValue = get();
             if (compareAndSet(currentValue, currentValue + i)) {
                 return currentValue;
             }
-            ii(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
+            dd(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -81,32 +81,29 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      */
     @CallSuper
     public int multiplyAndGet(final int i) {
-        int currentValue;
-
-        for (; ; ) {
-            currentValue = get();
+        while (true) {
+            final int currentValue = get();
             if (compareAndSet(currentValue, currentValue * i)) {
                 return currentValue;
             }
-            ii(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
+            dd(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
     /**
      * Increment the integer in a thread-safe manner
      *
-     * @return
+     * @return the value after increment
      */
     @CallSuper
     public int incrementAndGet() {
         return addAndGet(1);
     }
 
-
     /**
      * Decrement the integer in a thread-safe manner
      *
-     * @return
+     * @return the value after decriment
      */
     @CallSuper
     public int decrementAndGet() {

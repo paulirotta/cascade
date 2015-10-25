@@ -1,6 +1,5 @@
 package com.futurice.cascade.util;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -8,12 +7,8 @@ import android.support.annotation.NonNull;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
-import com.futurice.cascade.active.AltFuture;
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.SettableAltFuture;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -23,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.futurice.cascade.Async.SERIAL_WORKER;
 import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.WORKER;
 import static com.futurice.cascade.Async.assertEqual;
 import static com.futurice.cascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;

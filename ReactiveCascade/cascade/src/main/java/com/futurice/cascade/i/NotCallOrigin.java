@@ -5,8 +5,6 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade.i;
 
-import com.futurice.cascade.active.IAltFuture;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

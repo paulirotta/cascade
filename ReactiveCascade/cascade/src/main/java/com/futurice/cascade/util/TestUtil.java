@@ -7,7 +7,7 @@ package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 
 import java.util.concurrent.TimeUnit;
 

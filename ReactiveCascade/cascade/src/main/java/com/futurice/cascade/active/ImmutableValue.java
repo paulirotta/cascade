@@ -13,6 +13,8 @@ import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IAltFuture;
+import com.futurice.cascade.i.IAltFutureState;
 import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IGettable;
 
@@ -39,7 +41,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  * Note that <code>null</code> is not a permissible value
  * <p>
  * This uses a free thread model (any calling thread is used for all chained functions). This is a
- * main difference fromKey the similar {@link com.futurice.cascade.active.SettableAltFuture} which forces
+ * main difference from the similar {@link com.futurice.cascade.active.SettableAltFuture} which forces
  * the specified evaluation thread group.
  *
  * @param <T>
@@ -49,7 +51,7 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
 public class ImmutableValue<T extends Object> implements IGettable<T> {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;
 
-    private final AtomicReference<Object> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
+    private final AtomicReference<Object> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
     private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
     @Nullable
     private final IActionR<?, T> action;

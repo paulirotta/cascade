@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
-import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
 

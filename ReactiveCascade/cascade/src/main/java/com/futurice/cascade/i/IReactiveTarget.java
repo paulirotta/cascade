@@ -3,11 +3,12 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.reactive;
+package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.INamed;
+import com.futurice.cascade.i.IReactiveSource;
 
 /**
  * An object which can receive repeated value assertions value a reactive active chain.

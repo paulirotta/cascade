@@ -44,6 +44,10 @@ import static com.futurice.cascade.Async.vv;
  * <p>
  * TODO Support JSON and/or Serializable and Lists of such arbitrary types
  * TODO Support null as a persisted value by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
+ *
+ * TODO Eliminate this class, replace with a new @Persist annotation to any IReactiveSource that would like persistent state
+ * TODO Create IReactiveBindingContext to allow values to start and stop with fragment and activity resume/pause or other custom cases. null context means forever
+ * TODO Persist triggered only in onPause() transition of the IReactiveBindingContext
  */
 @NotCallOrigin
 public class PersistentValue<T> extends ReactiveValue<T> {

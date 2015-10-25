@@ -3,16 +3,9 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.reactive;
+package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
-
-import com.futurice.cascade.i.IAction;
-import com.futurice.cascade.i.IActionOne;
-import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IActionR;
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
 
 /**
  * An object you can bind _from_ to receive updates each time this object decides to emit them.
@@ -65,7 +58,7 @@ public interface IReactiveSource<OUT> extends INamed {
 //         * Default behaviour
 //         * <p>
 //         * <p>
-//         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.reactive.IReactiveTarget}s
+//         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.i.IReactiveTarget}s
 //         * <p>
 //         * If there is only one down-chain target and the {@link com.futurice.cascade.i.IThreadType} is the
 //         * same, this will continue on the same worker without mContext switching overhead. In such as case,

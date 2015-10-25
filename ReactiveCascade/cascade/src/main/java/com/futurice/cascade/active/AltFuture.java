@@ -5,13 +5,16 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade.active;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 
@@ -25,7 +28,7 @@ import static com.futurice.cascade.Async.ee;
 /**
  * A present-time representation of one of many possible alternate future results
  * <p>
- * Note the name also denotes the "alternate" nature of deviation fromKey the standard
+ * Note the name also denotes the "alternate" nature of deviation from the standard
  * {@link java.util.concurrent.Future} contact. <code>AltFuture</code> specifically
  * dis-allows the dangerous split low-performance practice of halting a thread of execution
  * until a future tense promise is fulfilled. Instead the chain of execution is arranged
@@ -40,7 +43,7 @@ import static com.futurice.cascade.Async.ee;
  * task is canceled or has an execution error.
  * <p>
  * This class is usually created by an underlying library split returned as a cancellation-token-style response
- * fromKey, for example, {@link com.futurice.cascade.i.IThreadType} methods which receive <code>onSuccess</code> split
+ * from, for example, {@link com.futurice.cascade.i.IThreadType} methods which receive <code>onSuccess</code> split
  * <code>mOnError</code> arguments.
  * <p>
  * The recommended use is: provide <code>onSuccess</code> split
@@ -91,8 +94,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull  final IThreadType threadType,
-            @NonNull  final IAction<IN> action) {
+            @NonNull final IThreadType threadType,
+            @NonNull final IAction<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -103,7 +106,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
                 out = (OUT) paf.get();
             }
             action.call();
-            return out; // T and A are the same when there is no return type fromKey the mOnFireAction
+            return out; // T and A are the same when there is no return type from the mOnFireAction
         };
     }
 
@@ -115,8 +118,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull  final IThreadType threadType,
-            @NonNull  final IActionOne<IN> action) {
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOne<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -125,7 +128,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
             final IN in = paf.get();
             action.call(in);
-            return (OUT) in; // T and A are the same when there is no return type fromKey the mOnFireAction
+            return (OUT) in; // T and A are the same when there is no return type from the mOnFireAction
         };
     }
 
@@ -137,8 +140,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param action     a function that does not vary with the input value
      */
     public AltFuture(
-            @NonNull  final IThreadType threadType,
-            @NonNull  final IActionR<IN, OUT> action) {
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionR<IN, OUT> action) {
         super(threadType);
 
         this.action = action;
@@ -152,8 +155,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param action     a mapping function
      */
     public AltFuture(
-            @NonNull  final IThreadType threadType,
-            @NonNull  final IActionOneR<IN, OUT> action) {
+            @NonNull final IThreadType threadType,
+            @NonNull final IActionOneR<IN, OUT> action) {
         super(threadType);
 
         this.action = () -> {
@@ -190,7 +193,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * to <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
      * chain, subscribe it will be forked for you when the prerequisites have finished.
      * <p>
-     * This is called fromKey the executor as part of IRunnableAltFuture
+     * This is called from the executor as part of IRunnableAltFuture
      */
     @Override
     @NotCallOrigin
@@ -221,14 +224,14 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         }
     }
 
-//    /**
-//     * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
-//     * <p>
-//     * Non-atomic check-do race conditions must still guard value this point on against concurrent fork()
-//     */
-//    @CallSuper
-//    @NotCallOrigin
-//    protected void doFork() {
-//        this.mThreadType.fork(this);
-//    }
+    /**
+     * Called from {@link SettableAltFuture#fork()} if preconditions for forking are met.
+     * <p>
+     * Non-atomic check-do race conditions must still guard value this point on against concurrent fork()
+     */
+    @CallSuper
+    @NotCallOrigin
+    protected void doFork() {
+        this.mThreadType.fork(this);
+    }
 }

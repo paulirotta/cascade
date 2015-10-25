@@ -17,8 +17,8 @@ import android.widget.ImageView;
 
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.reactive.IReactiveSource;
-import com.futurice.cascade.reactive.IReactiveTarget;
+import com.futurice.cascade.i.IReactiveSource;
+import com.futurice.cascade.i.IReactiveTarget;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

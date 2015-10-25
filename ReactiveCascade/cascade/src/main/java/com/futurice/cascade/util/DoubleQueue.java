@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
- * fromKey a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
+ * from a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
  * <p>
  * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads to
  * operate as an in-order single threaded executor which reverts to help with the common
@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
  * and less and faster mContext switches (mContext switches tend to cost marginally more as thread count
  * increases). The downside is delays fom other background tasks unrelated to this may slow the start
- * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
+ * of execution. A very slow task pulled from the {@link com.futurice.cascade.Async#WORKER}
  * mQueue and perhaps unrelated to the current focus of your attention will, once started, block the
- * next {@link DoubleQueue} item fromKey
+ * next {@link DoubleQueue} item from
  * starting until it completes.
  * <p>
  * In practice this performs well for most uses since everything is best effort anyway and the single
@@ -103,7 +103,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     /**
      * Poll both queues for work to do. This will wake up immediately if new work is added to this
      * mQueue, and within the next polling time window for the lowPriorityQueue. Since other threads
-     * which may be taking work fromKey the low priority mQueue are probably waking up immediately this
+     * which may be taking work from the low priority mQueue are probably waking up immediately this
      * is OK. It keeps any dual-use thread associated with this mQueue relatively free for immediate
      * response to the single use mQueue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.

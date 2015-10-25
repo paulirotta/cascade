@@ -12,8 +12,8 @@ import android.util.Log;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.active.AltFuture;
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
+import com.futurice.cascade.i.IAltFuture;
+import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.i.IAction;
@@ -282,15 +282,15 @@ public abstract class AbstractThreadType implements IThreadType {
 
     //TODO public <A> AltFuture<A> flush()  - current thread type - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
 
-//    @Override // IThreadType
-//    public <IN, OUT> void fork(@NonNull  final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-//        assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
-//        if (Async.DEBUG && isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
-//            throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
-//        }
-//
-//        run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
-//    }
+    @Override // IThreadType
+    public <IN, OUT> void fork(@NonNull  final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
+        assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
+        if (Async.DEBUG && isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
+            throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
+        }
+
+        run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
+    }
 
     @Override // IThreadType
     public boolean isShutdown() {

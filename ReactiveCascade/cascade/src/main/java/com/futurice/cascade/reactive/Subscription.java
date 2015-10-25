@@ -14,6 +14,8 @@ import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IOnErrorAction;
+import com.futurice.cascade.i.IReactiveSource;
+import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltWeakReference;

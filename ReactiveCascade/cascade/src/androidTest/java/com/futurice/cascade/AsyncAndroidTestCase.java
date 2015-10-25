@@ -15,7 +15,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.futurice.cascade.active.IAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
