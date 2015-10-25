@@ -14,8 +14,6 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -44,6 +42,7 @@ import static com.futurice.cascade.Async.vv;
  */
 @NotCallOrigin
 public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveValue<T> {
+    //TODO Check that reactive chains which are not yet asserted observe "cold" behavior until first assertion. Use ZEN<T> for clarity and null support?
     private final AtomicReference<T> valueAR = new AtomicReference<>();
 
     /**
@@ -53,8 +52,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param initialValue
      */
     public ReactiveValue(
-            @NonNull @nonnull final String name,
-            @NonNull @nonnull final T initialValue) {
+            @NonNull  final String name,
+            @NonNull  final T initialValue) {
         this(name, initialValue, null, null, null);
     }
 
@@ -68,11 +67,11 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param onError
      */
     public ReactiveValue(
-            @NonNull @nonnull final String name,
-            @NonNull @nonnull final T initialValue,
-            @Nullable @nullable final IThreadType threadType,
-            @Nullable @nullable final IActionOneR<T, T> inputMapping,
-            @Nullable @nullable final IOnErrorAction onError) {
+            @NonNull  final String name,
+            @NonNull  final T initialValue,
+            @Nullable  final IThreadType threadType,
+            @Nullable  final IActionOneR<T, T> inputMapping,
+            @Nullable  final IOnErrorAction onError) {
         super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
         set(initialValue);
@@ -113,7 +112,6 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @NonNull
-    @nonnull
     @Override // IAtomicValue, IGettable
     public T get() {
         return valueAR.get();
@@ -121,7 +119,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean set(@NonNull @nonnull final T value) {
+    public boolean set(@NonNull  final T value) {
         final T previousValue = valueAR.getAndSet(value);
         final boolean valueChanged = !(value == previousValue || value.equals(previousValue) || (previousValue != null && previousValue.equals(value)));
 
@@ -137,7 +135,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean compareAndSet(@NonNull @nonnull final T expected, @NonNull @nonnull final T update) {
+    public boolean compareAndSet(@NonNull  final T expected, @NonNull  final T update) {
         final boolean success = this.valueAR.compareAndSet(expected, update);
 
         if (success) {
@@ -151,7 +149,6 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     }
 
     @NonNull
-    @nonnull
     @Override // Object
     public String toString() {
         return get().toString();

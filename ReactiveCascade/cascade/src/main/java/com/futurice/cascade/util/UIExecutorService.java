@@ -14,7 +14,6 @@ import com.futurice.cascade.Async;
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,12 +44,10 @@ import static com.futurice.cascade.Async.throwRuntimeException;
  * items, for example related to lifecycle. make sense to implement.
  */
 public final class UIExecutorService implements ExecutorService {
-    @NonNull
-    private final Handler mHandler;
-    @NonNull
-    private final ImmutableValue<String> mOrigin;
+    @NonNull    private final Handler mHandler;
+    @NonNull    private final ImmutableValue<String> mOrigin;
 
-    public UIExecutorService(@NonNull @nonnull final Handler handler) {
+    public UIExecutorService(@NonNull  final Handler handler) {
         this.mHandler = handler;
         this.mOrigin = originAsync();
     }
@@ -62,7 +59,6 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull
-    @nonnull
     @Override // ExecutorService
     public List<Runnable> shutdownNow() {
         ii(mOrigin, "shutdownNow() called on UiAsync default ExecutorService");
@@ -82,16 +78,15 @@ public final class UIExecutorService implements ExecutorService {
     @Override // ExecutorService
     public boolean awaitTermination(
             final long timeout,
-            @NonNull @nonnull final TimeUnit unit)
+            @NonNull  final TimeUnit unit)
             throws InterruptedException {
         ii(mOrigin, "awaitTermination() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("awaitTermination() called on UiAsync default ExecutorService");
     }
 
     @NonNull
-    @nonnull
     @Override // ExecutorService
-    public <T> Future<T> submit(@NonNull @nonnull final Callable<T> callable) {
+    public <T> Future<T> submit(@NonNull  final Callable<T> callable) {
         final FutureTask<T> future = new FutureTask<>(callable);
         execute(future);
 
@@ -99,11 +94,10 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull
-    @nonnull
     @Override // ExecutorService
     public <T> Future<T> submit(
-            @NonNull @nonnull final Runnable runnable,
-            @NonNull @nonnull final T result) {
+            @NonNull  final Runnable runnable,
+            @NonNull  final T result) {
         final FutureTask<T> future = new FutureTask<>(() -> {
             runnable.run();
             return result;
@@ -114,10 +108,9 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull
-    @nonnull
     @NotCallOrigin
     @Override // ExecutorService
-    public Future submit(@NonNull @nonnull final Runnable runnable) {
+    public Future submit(@NonNull  final Runnable runnable) {
         if (runnable instanceof RunnableFuture) {
             mHandler.post(runnable);
             return (Future) runnable;
@@ -126,8 +119,7 @@ public final class UIExecutorService implements ExecutorService {
         FutureTask<Object> future = new FutureTask<>(new Callable<Object>() {
             @Override
             @NotCallOrigin
-            @Nullable
-            public Object call() throws Exception {
+            @Nullable            public Object call() throws Exception {
                 runnable.run();
                 return null;
             }
@@ -141,7 +133,7 @@ public final class UIExecutorService implements ExecutorService {
     @Override // ExecutorService
     @WorkerThread
     public <T> List<Future<T>> invokeAll(
-            @NonNull @nonnull final Collection<? extends Callable<T>> callables)
+            @NonNull  final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() > 0) {
@@ -159,13 +151,12 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull
-    @nonnull
     @Override // ExecutorService
     @WorkerThread
     public <T> List<Future<T>> invokeAll(
-            @NonNull @nonnull final Collection<? extends Callable<T>> callables,
+            @NonNull  final Collection<? extends Callable<T>> callables,
             final long timeout,
-            @NonNull @nonnull final TimeUnit unit)
+            @NonNull  final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() > 0) {
@@ -187,7 +178,7 @@ public final class UIExecutorService implements ExecutorService {
     @Override // ExecutorService
     @WorkerThread
     public <T> T invokeAny(
-            @NonNull @nonnull final Collection<? extends Callable<T>> callables)
+            @NonNull  final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException, ExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() == 0) {
@@ -201,13 +192,12 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @NonNull
-    @nonnull
     @Override // ExecutorService
     @WorkerThread
     public <T> T invokeAny(
-            @NonNull @nonnull final Collection<? extends Callable<T>> callables,
+            @NonNull  final Collection<? extends Callable<T>> callables,
             final long timeout,
-            @NonNull @nonnull final TimeUnit unit)
+            @NonNull  final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException, TimeoutException, ExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() == 0) {
@@ -221,7 +211,7 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @Override // ExecutorService
-    public void execute(@NonNull @nonnull final Runnable command) {
+    public void execute(@NonNull  final Runnable command) {
         if (!mHandler.post(command)) {
             throwIllegalStateException(mOrigin, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }

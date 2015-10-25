@@ -30,7 +30,7 @@ public interface ICancellable {
      * @param reason
      * @return
      */
-    boolean cancel(@NonNull @nonnull String reason);
+    boolean cancel(@NonNull String reason);
 
     /**
      * A plain text reason and an exception that originally caused the cancellation. This exception
@@ -41,7 +41,7 @@ public interface ICancellable {
      * @param e
      * @return
      */
-    boolean cancel(@NonNull @nonnull String reason, @NonNull @nonnull Exception e);
+    boolean cancel(@NonNull String reason, @NonNull Exception e);
 
     /**
      * Check if {@link #cancel(String)} or a similar occurrence such as a {@link java.lang.Exception}

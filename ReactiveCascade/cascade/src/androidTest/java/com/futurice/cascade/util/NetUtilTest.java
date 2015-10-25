@@ -1,7 +1,6 @@
 package com.futurice.cascade.util;
 
 import android.support.annotation.RequiresPermission;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
@@ -11,9 +10,7 @@ import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.framed.Header;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,11 +18,6 @@ import java.util.Collection;
 import static com.futurice.cascade.Async.WORKER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Integration tests for the NetUtil class
- * <p>
- * Created by phou on 6/2/2015.
- */
 @LargeTest
 public class NetUtilTest extends AsyncAndroidTestCase {
 
@@ -67,7 +59,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testGetAsync() throws Exception {
-        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get");
+        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get").fork();
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 
@@ -75,8 +67,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
-                .then(getNetUtil().getAsync())
-                .fork();
+                .then(getNetUtil().getAsync());
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
 
@@ -95,8 +86,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         headers.add(new Header("Test", "ValueT"));
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/headers")
-                .then(getNetUtil().getAsync(headers))
-                .fork();
+                .then(getNetUtil().getAsync(headers));
         assertThat(awaitDone(iaf).body().string()).contains("ValueT");
     }
 

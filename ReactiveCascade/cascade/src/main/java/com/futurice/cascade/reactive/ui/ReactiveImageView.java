@@ -1,26 +1,8 @@
-/**
- * Copyright (c) 2015 Futurice GmbH. All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.reactive.ui;
 
 import android.content.Context;
@@ -35,8 +17,6 @@ import android.widget.ImageView;
 
 import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 import com.futurice.cascade.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.IReactiveTarget;
 
@@ -55,30 +35,29 @@ import static com.futurice.cascade.Async.vv;
  */
 public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitmap> {
     @Nullable
-    @nullable
     private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
     private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> mReactiveSources = new CopyOnWriteArrayList<>();
 
-    public ReactiveImageView(@NonNull @nonnull final Context context) {
+    public ReactiveImageView(@NonNull  final Context context) {
         super(context);
     }
 
     public ReactiveImageView(
-            @NonNull @nonnull final Context context,
-            @NonNull @nonnull final AttributeSet attrs) {
+            @NonNull  final Context context,
+            @NonNull  final AttributeSet attrs) {
         super(context, attrs);
     }
 
     public ReactiveImageView(
-            @NonNull @nonnull final Context context,
-            @NonNull @nonnull final AttributeSet attrs,
+            @NonNull  final Context context,
+            @NonNull  final AttributeSet attrs,
             @StyleRes final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void fire(@NonNull @nonnull final Bitmap bitmap) {
+    public void fire(@NonNull  final Bitmap bitmap) {
         assertNotNull(mOrigin);
         dd(this, mOrigin, "fire bitmap=");
 
@@ -91,22 +70,22 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void fireNext(@NonNull @nonnull final Bitmap bitmap) {
+    public void fireNext(@NonNull  final Bitmap bitmap) {
         //FIXME is not really fire next
 
         fire(bitmap);
     }
 
     @Override
-    public void setImageURI(@NonNull @nonnull final Uri uri) {
+    public void setImageURI(@NonNull  final Uri uri) {
         throw new UnsupportedOperationException();
     }
 
     @Override // IReactiveTarget
     @NotCallOrigin
     public void subscribeSource(
-            @NonNull @nonnull final String reason,
-            @NonNull @nonnull final IReactiveSource<Bitmap> reactiveSource) {
+            @NonNull  final String reason,
+            @NonNull  final IReactiveSource<Bitmap> reactiveSource) {
         assertNotNull(mOrigin);
         vv(this, mOrigin, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
 
@@ -120,8 +99,8 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @Override // IReactiveTarget
     @NotCallOrigin
     public void unsubscribeSource(
-            @NonNull @nonnull final String reason,
-            @NonNull @nonnull final IReactiveSource<Bitmap> reactiveSource) {
+            @NonNull  final String reason,
+            @NonNull  final IReactiveSource<Bitmap> reactiveSource) {
         assertNotNull(mOrigin);
         if (mReactiveSources.remove(reactiveSource)) {
             vv(this, mOrigin, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
@@ -132,7 +111,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     }
 
     @Override // IReactiveTarget
-    public void unsubscribeAllSources(@NonNull @nonnull final String reason) {
+    public void unsubscribeAllSources(@NonNull  final String reason) {
 
         for (IReactiveSource<Bitmap> reactiveSource : mReactiveSources) {
             reactiveSource.unsubscribeAll(reason);
@@ -141,7 +120,6 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // INamed
     @NonNull
-    @nonnull
     public String getName() {
         return "ReactiveTextView-" + getId();
     }

@@ -1,7 +1,6 @@
 package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.Async;
@@ -10,9 +9,8 @@ import com.futurice.cascade.AsyncAndroidTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SmallTest
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
@@ -85,11 +83,6 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testFork() throws Exception {
-
-    }
-
-    @Test
-    public void testDoFork() throws Exception {
 
     }
 

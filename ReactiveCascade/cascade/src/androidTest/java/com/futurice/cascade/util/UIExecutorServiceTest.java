@@ -1,8 +1,3 @@
-/*
-This file is part of Reactive Cascade which is released under The MIT License.
-See license.txt or http://reactivecascade.com for details.
-This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
-*/
 package com.futurice.cascade.util;
 
 import android.os.Handler;
@@ -14,7 +9,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.active.AltFuture;
 import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.i.nonnull;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,6 +19,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.futurice.cascade.Async.SERIAL_WORKER;
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.WORKER;
 import static com.futurice.cascade.Async.assertEqual;
@@ -49,7 +44,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
                 protected void onLooperPrepared() {
                     uiExecutorService = new UIExecutorService(new Handler() {
-                        public void handleMessage(@NonNull @nonnull Message msg) {
+                        public void handleMessage(@NonNull Message msg) {
                             super.handleMessage(msg);
                             handleMessageCount++;
                         }
@@ -57,12 +52,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
                         /**
                          * Handle system messages here.
                          */
-                        public void dispatchMessage(@NonNull @nonnull Message msg) {
+                        public void dispatchMessage(@NonNull Message msg) {
                             super.dispatchMessage(msg);
                             dispatchMessageCount++;
                         }
 
-                        public boolean sendMessageAtTime(@NonNull @nonnull Message msg, long uptimeMillis) {
+                        public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
                             sendCount++;
                             return super.sendMessageAtTime(msg, uptimeMillis);
                         }
@@ -139,12 +134,10 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
-            done1.fork();
             return 100;
         });
         callableList.add(() -> {
             ai.set(200);
-            done2.fork();
             return 200;
         });
         WORKER.execute(() -> {
@@ -160,29 +153,24 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     @Test
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
-        final IAltFuture<Object, Object> done1 = new AltFuture<>(WORKER, () -> {
-        });
-        final IAltFuture<Object, Object> done2 = new AltFuture<>(WORKER, () -> {
+        final IAltFuture<?, String> done = SERIAL_WORKER.then(() -> {
         });
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
-            done1.fork();
             return 100;
         });
         callableList.add(() -> {
-            ai.set(200);
-            done2.fork();
+            ai.set(ai.get() + 200);
             return 200;
         });
-        WORKER.execute(() -> {
+        SERIAL_WORKER.execute(() -> {
             uiExecutorService.invokeAll(callableList);
         });
 
-        awaitDone(done1);
-        awaitDone(done2);
+        awaitDone(done);
         assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isGreaterThan(0);
+        assertThat(ai.get()).isEqualTo(300);
     }
 
     @Test
@@ -195,12 +183,10 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
         callableList.add(() -> {
             ai.set(100);
-            done1.fork();
             return 100;
         });
         callableList.add(() -> {
             ai.set(200);
-            done2.fork();
             return 200;
         });
         WORKER.execute(() -> {
@@ -223,7 +209,6 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         });
         uiExecutorService.execute(() -> {
             ai.set(100);
-            done.fork();
         });
         awaitDone(done); // Hold for UI to complete
         assertEqual(100, ai.get());

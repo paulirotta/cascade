@@ -6,10 +6,10 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -47,7 +47,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      *
      * @param altFuture
      */
-    public AltFutureFuture(@NonNull @nonnull final IAltFuture<IN, OUT> altFuture) {
+    public AltFutureFuture(@NonNull  final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
     }
 
@@ -68,7 +68,6 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
 
     @Override // Future
     @NonNull
-    @nonnull
     public OUT get() throws InterruptedException, ExecutionException {
         final OUT out;
 
@@ -91,12 +90,21 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
         }
     }
 
+    /**
+     * Block the current thread until the associated IAltFuture completes or errors out
+     *
+     * @param timeout max time to wait for the AltFuture to complete
+     * @param unit timeout units
+     * @return null if there was an exception during execution
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     */
     @Override // Future
-    @NonNull
-    @nonnull
+    @Nullable
     public OUT get(
             final long timeout,
-            @NonNull @nonnull final TimeUnit unit)
+            @NonNull  final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();
@@ -127,6 +135,6 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
             }
         }
 
-        return altFuture.get();
+        return altFuture.safeGet();
     }
 }

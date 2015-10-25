@@ -16,7 +16,6 @@ import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.DoubleQueue;
 import com.futurice.cascade.util.TypedThread;
@@ -116,7 +115,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @NotCallOrigin
     @VisibleForTesting
     IThreadType getWorkerThreadType() {
@@ -138,7 +136,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     public AsyncBuilder setWorkerThreadType(@NonNull final IThreadType workerThreadType) {
         Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
         this.mWorkerThreadType = workerThreadType;
@@ -150,7 +147,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @NotCallOrigin
     @VisibleForTesting
     IThreadType getSerialWorkerThreadType() {
@@ -172,7 +168,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     public AsyncBuilder setSerialWorkerThreadType(@NonNull final IThreadType serialWorkerThreadType) {
         Log.v(TAG, "setSerialWorkerThreadType(" + serialWorkerThreadType + ")");
         this.mSerialWorkerThreadType = serialWorkerThreadType;
@@ -184,7 +179,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     IThreadType getUiThreadType() {
         if (mUiThreadType == null) {
@@ -199,8 +193,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setUIThreadType(@NonNull @nonnull final IThreadType uiThreadType) {
+    public AsyncBuilder setUIThreadType(@NonNull  final IThreadType uiThreadType) {
         Log.v(TAG, "setUIThreadType(" + uiThreadType + ")");
         this.mUiThreadType = uiThreadType;
         return this;
@@ -210,7 +203,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     IThreadType getNetReadThreadType() {
         if (mNetReadThreadType == null) {
@@ -231,8 +223,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetReadThreadType(@NonNull @nonnull final IThreadType netReadThreadType) {
+    public AsyncBuilder setNetReadThreadType(@NonNull  final IThreadType netReadThreadType) {
         Log.v(TAG, "setNetReadThreadType(" + netReadThreadType + ")");
         this.mNetReadThreadType = netReadThreadType;
         return this;
@@ -242,7 +233,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     IThreadType getNetWriteThreadType() {
         if (mNetWriteThreadType == null) {
@@ -263,8 +253,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetWriteThreadType(@NonNull @nonnull final IThreadType netWriteThreadType) {
+    public AsyncBuilder setNetWriteThreadType(@NonNull  final IThreadType netWriteThreadType) {
         Log.v(TAG, "setNetWriteThreadType(" + netWriteThreadType + ")");
         this.mNetWriteThreadType = netWriteThreadType;
         return this;
@@ -274,7 +263,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     IThreadType getFileThreadType() {
         if (mFileThreadType == null) {
@@ -295,15 +283,13 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setFileThreadType(@NonNull @nonnull final IThreadType fileThreadType) {
+    public AsyncBuilder setFileThreadType(@NonNull  final IThreadType fileThreadType) {
         Log.v(TAG, "setFileThreadType(" + fileThreadType + ")");
         this.mFileThreadType = fileThreadType;
         return this;
     }
 
-//    @NonNull
-//    public MirrorService getFileService() {
+//    @NonNull//    public MirrorService getFileService() {
 //        if (fileService == null) {
 //            Log.v(TAG, "Creating default file service");
 //            setFileService(new FileMirrorService("Default FileMirrorService",
@@ -317,17 +303,15 @@ public class AsyncBuilder {
 //        return fileService;
 //    }
 
-//    @NonNull
-//    public AsyncBuilder setFileService(@NonNull final MirrorService fileService) {
+//    @NonNull//    public AsyncBuilder setFileService(@NonNull final MirrorService fileService) {
 //        Log.v(TAG, "setFileService(" + fileService + ")");
 //        this.fileService = fileService;
 //        return this;
 //    }
 
-    @NonNull
-    private Thread getWorkerThread(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final Runnable runnable) {
+    @NonNull    private Thread getWorkerThread(
+            @NonNull  final IThreadType threadType,
+            @NonNull  final Runnable runnable) {
         if (NUMBER_OF_CORES == 1 || mWorkerPoolIncludesSerialWorkerThread.getAndSet(true)) {
             return new TypedThread(threadType, runnable, "WorkerThread" + sThreadNumber.getAndIncrement());
         }
@@ -339,9 +323,8 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
-    ExecutorService getWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    ExecutorService getWorkerExecutorService(@NonNull  final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mWorkerExecutorService == null) {
             Log.v(TAG, "Creating default worker executor service");
             final BlockingQueue<Runnable> q = getWorkerQueue();
@@ -361,10 +344,9 @@ public class AsyncBuilder {
         return mWorkerExecutorService;
     }
 
-    @NonNull
-    private synchronized Thread getSerialWorkerThread(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final Runnable runnable) {
+    @NonNull    private synchronized Thread getSerialWorkerThread(
+            @NonNull  final IThreadType threadType,
+            @NonNull  final Runnable runnable) {
         if (sSerialWorkerThread == null) {
             sSerialWorkerThread = new TypedThread(threadType, runnable, "SerialWorkerThread" + sThreadNumber.getAndIncrement());
         }
@@ -377,9 +359,8 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
-    ExecutorService getSerialWorkerExecutorService(@NonNull @nonnull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    ExecutorService getSerialWorkerExecutorService(@NonNull  final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (mSerialWorkerExecutorService == null) {
             Log.v(TAG, "Creating default serial worker executor service");
 
@@ -400,7 +381,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     BlockingQueue<Runnable> getWorkerQueue() {
         if (mWorkerQueue == null) {
@@ -416,8 +396,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public AsyncBuilder setWorkerQueue(@NonNull  final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setWorkerQueue(" + queue + ")");
         mWorkerQueue = queue;
         return this;
@@ -430,7 +409,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     BlockingQueue<Runnable> getSerialWorkerQueue() {
         if (mSerialWorkerQueue == null) {
@@ -446,8 +424,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setSerialWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public AsyncBuilder setSerialWorkerQueue(@NonNull  final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setSerialWorkerQueue(" + queue + ")");
         mSerialWorkerQueue = queue;
         return this;
@@ -457,7 +434,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     BlockingQueue<Runnable> getFileQueue() {
         if (mFileQueue == null) {
@@ -473,8 +449,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setFileQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public AsyncBuilder setFileQueue(@NonNull  final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setFileQueue(" + queue + ")");
         this.mFileQueue = queue;
         return this;
@@ -484,7 +459,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     BlockingQueue<Runnable> getNetReadQueue() {
         if (mNetReadQueue == null) {
@@ -500,8 +474,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetReadQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public AsyncBuilder setNetReadQueue(@NonNull  final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setNetReadQueue(" + queue + ")");
         this.mNetReadQueue = queue;
         return this;
@@ -511,7 +484,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     BlockingQueue<Runnable> getNetWriteQueue() {
         if (mNetWriteQueue == null) {
@@ -527,8 +499,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetWriteQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+    public AsyncBuilder setNetWriteQueue(@NonNull  final BlockingQueue<Runnable> queue) {
         Log.d(TAG, "setNetWriteQueue(" + queue + ")");
         this.mNetWriteQueue = queue;
         return this;
@@ -539,7 +510,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     ExecutorService getFileExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
@@ -561,7 +531,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     ExecutorService getNetReadExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
@@ -581,7 +550,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     @VisibleForTesting
     ExecutorService getNetWriteExecutorService(
             @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
@@ -600,7 +568,6 @@ public class AsyncBuilder {
      */
     //TODO All ExecutorService-s should be a new DelayedExecutorService which supports executeDelayed(millis) behavior
     @NonNull
-    @nonnull
     @VisibleForTesting
     ExecutorService getUiExecutorService() {
         if (mContext == null) {
@@ -623,8 +590,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setUiExecutorService(@NonNull @nonnull final ExecutorService uiExecutorService) {
+    public AsyncBuilder setUiExecutorService(@NonNull  final ExecutorService uiExecutorService) {
         Log.d(TAG, "setUiExecutorService(" + uiExecutorService + ")");
         this.mUiExecutorService = uiExecutorService;
         return this;
@@ -640,8 +606,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setWorkerExecutorService(@NonNull @nonnull final ExecutorService executorService) {
+    public AsyncBuilder setWorkerExecutorService(@NonNull  final ExecutorService executorService) {
         Log.v(TAG, "setWorkerExecutorService(" + executorService + ")");
         mWorkerExecutorService = executorService;
         return this;
@@ -652,8 +617,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setSerialWorkerExecutorService(@NonNull @nonnull final ExecutorService executorService) {
+    public AsyncBuilder setSerialWorkerExecutorService(@NonNull  final ExecutorService executorService) {
         Log.v(TAG, "setSerialWorkerExecutorService(" + executorService + ")");
         mSerialWorkerExecutorService = executorService;
         return this;
@@ -668,7 +632,6 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
     public AsyncBuilder singleThreadedWorkerExecutorService() {
         Log.v(TAG, "singleThreadedWorkerExecutorService()");
         final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
@@ -684,8 +647,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setFileReadExecutorService(@NonNull @nonnull final ExecutorService fileReadExecutorService) {
+    public AsyncBuilder setFileReadExecutorService(@NonNull  final ExecutorService fileReadExecutorService) {
         Log.v(TAG, "setFileReadExecutorService(" + fileReadExecutorService + ")");
         this.mFileReadExecutorService = fileReadExecutorService;
         return this;
@@ -696,8 +658,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setFileWriteExecutorService(@NonNull @nonnull final ExecutorService executorService) {
+    public AsyncBuilder setFileWriteExecutorService(@NonNull  final ExecutorService executorService) {
         Log.v(TAG, "setFileWriteExecutorService(" + mFileWriteExecutorService + ")");
         mFileWriteExecutorService = executorService;
         return this;
@@ -708,8 +669,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetReadExecutorService(@NonNull @nonnull final ExecutorService netReadExecutorService) {
+    public AsyncBuilder setNetReadExecutorService(@NonNull  final ExecutorService netReadExecutorService) {
         Log.v(TAG, "setNetReadExecutorService(" + netReadExecutorService + ")");
         this.mNetReadExecutorService = netReadExecutorService;
         return this;
@@ -722,8 +682,7 @@ public class AsyncBuilder {
      * @return the builder, for chaining
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setNetWriteExecutorService(@NonNull @nonnull final ExecutorService netWriteExecutorService) {
+    public AsyncBuilder setNetWriteExecutorService(@NonNull  final ExecutorService netWriteExecutorService) {
         Log.v(TAG, "setNetWriteExecutorService(" + netWriteExecutorService + ")");
         this.mNetWriteExecutorService = netWriteExecutorService;
         return this;
@@ -739,8 +698,7 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
-    public AsyncBuilder setUI_Thread(@NonNull @nonnull final Thread uiThread) {
+    public AsyncBuilder setUI_Thread(@NonNull  final Thread uiThread) {
         Log.v(TAG, "setUI_Thread(" + uiThread + ")");
         uiThread.setName("UIThread");
         this.mUiThread = uiThread;
@@ -760,7 +718,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     public AsyncBuilder setFailFast(final boolean failFast) {
         Log.v(TAG, "setFailFast(" + failFast + ")");
         this.mFailFast = failFast;
@@ -775,7 +732,6 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @nonnull
     public AsyncBuilder setShowErrorStackTraces(final boolean showErrorStackTraces) {
         Log.v(TAG, "setShowErrorStackTraces(" + showErrorStackTraces + ")");
         this.mShowErrorStackTraces = showErrorStackTraces;
@@ -810,7 +766,6 @@ public class AsyncBuilder {
      * for convenience.
      */
     @NonNull
-    @nonnull
     @NotCallOrigin
     public Async build() {
         if (mUiThread == null) {

@@ -8,13 +8,13 @@ package com.futurice.cascade.i;
 import android.support.annotation.NonNull;
 
 /**
- * A lambda-friendly mOnFireAction which receives two values split returns a getValue
+ * A lambda-friendly functional interface for subscribe actions which receive two parameters
  *
- * @param <IN>
- * @param <OUT>
+ * @param <IN1>
+ * @param <IN2>
  * @throws Exception
  */
-public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
-    @NonNull
-    OUT call(@NonNull IN value) throws Exception;
+public interface IActionTwoR<IN1, IN2, OUT> extends IBaseAction<IN1> {
+    OUT call(@NonNull IN1 in1,
+             @NonNull IN2 in2) throws Exception;
 }

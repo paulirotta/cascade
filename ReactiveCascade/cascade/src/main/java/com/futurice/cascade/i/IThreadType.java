@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
+import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
@@ -48,9 +48,7 @@ public interface IThreadType extends INamed {
      * @param <IN>   the type of input argument expected by the action
      */
     @NotCallOrigin
-    <IN> void execute(@NonNull
-                      @nonnull
-                      IAction<IN> action);
+    <IN> void execute(@NonNull IAction<IN> action);
 
     /**
      * Execute a runnable. Generally this is an action that has already been error-catch wrapped using for example
@@ -59,7 +57,7 @@ public interface IThreadType extends INamed {
      * @param runnable
      */
     @NotCallOrigin
-    void run(@NonNull @nonnull Runnable runnable);
+    void run(@NonNull Runnable runnable);
 
     /**
      * Run this mOnFireAction after all previously submitted actions (FIFO).
@@ -69,7 +67,7 @@ public interface IThreadType extends INamed {
      * @param <IN>          the type of input argument expected by the action
      */
     @NotCallOrigin
-    <IN> void run(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction);
+    <IN> void run(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
 
     /**
      * If this ThreadType permits out-of-order execution, run this mOnFireAction before any previously
@@ -83,7 +81,7 @@ public interface IThreadType extends INamed {
      * @param action the work to be performed
      */
     @NotCallOrigin
-    <IN> void runNext(@NonNull @nonnull IAction<IN> action);
+    <IN> void runNext(@NonNull IAction<IN> action);
 
     /**
      * Like {@link #run(Runnable)} but the task is queued LIFO as the first item of the
@@ -115,7 +113,7 @@ public interface IThreadType extends INamed {
      * @param runnable
      */
     @NotCallOrigin
-    void runNext(@NonNull @nonnull Runnable runnable);
+    void runNext(@NonNull Runnable runnable);
 
     /**
      * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
@@ -127,7 +125,7 @@ public interface IThreadType extends INamed {
      * @param runnable the work to be performed
      * @return <code>true</code> if found in the mQueue and moved
      */
-    boolean moveToHeadOfQueue(@NonNull @nonnull Runnable runnable);
+    boolean moveToHeadOfQueue(@NonNull Runnable runnable);
 
     /**
      * Run this mOnFireAction after all previously submitted actions (FIFO).
@@ -136,7 +134,7 @@ public interface IThreadType extends INamed {
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
      * @param <IN>          the type of input argument expected by the action
      */
-    <IN> void runNext(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction);
+    <IN> void runNext(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
 
     /**
      * Convert this action into a runnable which will catch and handle
@@ -146,8 +144,8 @@ public interface IThreadType extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action);
 
     /**
      * Convert this action into a runnable
@@ -158,10 +156,10 @@ public interface IThreadType extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
+    @CheckResult(suggest = "IAltFuture#fork()")
     <IN> Runnable wrapActionWithErrorProtection(
-            @NonNull @nonnull IAction<IN> action,
-            @NonNull @nonnull IOnErrorAction onErrorAction);
+            @NonNull IAction<IN> action,
+            @NonNull IOnErrorAction onErrorAction);
 
     /**
      * Complete the action asynchronously.
@@ -173,10 +171,9 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @nonnull
-//    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = "IAltFuture#fork()")
     //TODO CHECK CONTRACT- no automatic concurrency, sequential by default, let developers explicitly split() as they prefer
-    <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action);
+    <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action);
 
     /**
      * Complete the action asynchronously.
@@ -188,8 +185,8 @@ public interface IThreadType extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IActionOne<IN> action);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action);
 
     /**
      * Complete several actions asynchronously.
@@ -203,8 +200,8 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @nonnull
-    <IN> List<IAltFuture<IN, IN>> then(@NonNull @nonnull IAction<IN>... actions);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions);
 
     /**
      * Set the chain value to a value which can be determined at the time the chain is built.
@@ -217,9 +214,20 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value);
+    <IN> IAltFuture<?, IN> from(@NonNull IN value);
+
+    /**
+     * Set the chain to start from a value which will be set in the future.
+     * <p>
+     * To start execution of the chain, set(IN) the vlaue of the returned IAltFuture
+     *
+     * @param <IN> the type of input argument expected by the action
+     * @return a chainable handle to track completion of this unit of work
+     */
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN> IAltFuture<?, IN> from();
 
     /**
      * Complete the mOnFireAction asynchronously
@@ -230,8 +238,8 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @nonnull
-    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull IActionR<IN, OUT> action);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action);
 
     /**
      * Perform several actions which need no input value (except perhaps values from closure escape),
@@ -244,8 +252,18 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @nonnull
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull @nonnull IActionR<IN, OUT>... actions);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions);
+
+//    /**
+//     *
+//     * @param altFuture
+//     * @param <IN>    the type of input argument expected by the action
+//     * @param <OUT>   the type of output returned by the action
+//     * @return the altFuture
+//     */
+//    @NonNull
+//    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IAltFuture<IN, OUT> altFuture);
 
     /**
      * Transform input A to output T, possibly with other input which may be fetched directly in the function.
@@ -256,8 +274,8 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @nonnull
-    <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull IActionOneR<IN, OUT> action);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action);
 
     /**
      * Transform input A to output T using each of the several actions provided and return
@@ -270,21 +288,21 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @nonnull
-    <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT>... actions);
+    @CheckResult(suggest = "IAltFuture#fork()")
+    <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
-    /**
-     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
-     * in to an execution mQueue associated with this {@link IThreadType}.
-     * <p>
-     * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
-     * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
-     *
-     * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
-     * @param <IN>              the type of input argument expected by the action
-     * @param <OUT>             the type of output returned by the action
-     */
-    <IN, OUT> void fork(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture);
+//    /**
+//     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
+//     * in to an execution mQueue associated with this {@link IThreadType}.
+//     * <p>
+//     * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
+//     * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
+//     *
+//     * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
+//     * @param <IN>              the type of input argument expected by the action
+//     * @param <OUT>             the type of output returned by the action
+//     */
+//    <IN, OUT> void fork(@NonNull  IRunnableAltFuture<IN, OUT> runnableAltFuture);
 
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or
@@ -320,19 +338,12 @@ public interface IThreadType extends INamed {
      * @return a Future that will return true if the shutdown completes within the specified time, otherwise shutdown continues
      */
     @NonNull
-    @nonnull
     public <IN> Future<Boolean> shutdown(
             long timeoutMillis,
-            @Nullable @nullable final IAction<IN> afterShutdownAction);
+            @Nullable final IAction<IN> afterShutdownAction);
 
     /**
-     * Test if the underlying executor is shutdown.
-     * <p>
-     * Note that once it is shutdown, it can not be recovered. Normally this should only be done
-     * as the application is closing forever. In other/special cases, a new instance of
-     * {@link com.futurice.cascade.Async} may be constructed using {@link com.futurice.cascade.AsyncBuilder}
-     *
-     * @return
+     * @return <code>true</code> if thread executor is shutdown
      */
     public boolean isShutdown();
 
@@ -348,10 +359,9 @@ public interface IThreadType extends INamed {
      * @return a list of work which failed to complete before shutdown
      */
     @NonNull
-    @nonnull
     public <IN> List<Runnable> shutdownNow(
-            @NonNull @nonnull String reason,
-            @Nullable @nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-            @Nullable @nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
+            @NonNull String reason,
+            @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+            @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
             long timeoutMillis);
 }

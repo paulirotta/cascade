@@ -1,32 +1,13 @@
 /*
- * Copyright (c) 2015 Futurice GmbH. All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.nonnull;
 
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.
@@ -50,7 +31,6 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      */
     @Override // IGettable
     @NonNull
-    @nonnull
     T get();
 
     /**
@@ -60,7 +40,6 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      */
     @Override // Object
     @NonNull
-    @nonnull
     String toString();
 
     /**
@@ -75,7 +54,7 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * @param value the new value asserted
      * @return <code>true</code> if this is a change from the previous value
      */
-    boolean set(@NonNull @nonnull T value);
+    boolean set(@NonNull  T value);
 
     /**
      * Replace the current valueAR with an update, but only if the valueAR is the expected valueAR.
@@ -89,5 +68,5 @@ public interface IReactiveValue<T extends Object> extends IGettable<T> {
      * @return true of the expected value was the current value and the change of state completed
      * successfully
      */
-    boolean compareAndSet(@NonNull @nonnull T expected, @NonNull @nonnull T update);
+    boolean compareAndSet(@NonNull  T expected, @NonNull  T update);
 }

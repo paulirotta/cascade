@@ -1,3 +1,8 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade;
 
 import android.app.Activity;
@@ -30,13 +35,13 @@ import static com.futurice.cascade.Async.originAsync;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
+    private static Async async;
+    protected final Context mContext;
+    protected ImmutableValue<String> mOrigin;
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
     private NetUtil mNetUtil;
     private long mDefaultTimeoutMillis = 1000;
-    protected final Context mContext;
-    protected ImmutableValue<String> mOrigin;
-    private static Async async;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
@@ -70,6 +75,10 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public void dummyTest() {
     }
 
+    public final long getDefaultTimeoutMillis() {
+        return this.mDefaultTimeoutMillis;
+    }
+
     /**
      * Change the default timeout period when one thread waits for a result on another thread.
      *
@@ -77,10 +86,6 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      */
     public final void setDefaultTimeoutMillis(final long defaultTimeoutMillis) {
         this.mDefaultTimeoutMillis = defaultTimeoutMillis;
-    }
-
-    public final long getDefaultTimeoutMillis() {
-        return this.mDefaultTimeoutMillis;
     }
 
     /**

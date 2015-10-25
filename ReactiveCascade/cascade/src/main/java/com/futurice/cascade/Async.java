@@ -18,8 +18,6 @@ import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 import com.futurice.cascade.util.AbstractThreadType;
 import com.futurice.cascade.util.AutoforkThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
@@ -132,9 +130,9 @@ public final class Async {
     }
 
     public static void exitWithErrorCode(
-            @NonNull @nonnull final String tag,
-            @NonNull @nonnull final String message,
-            @Nullable @nullable final Throwable t) {
+            @NonNull  final String tag,
+            @NonNull  final String message,
+            @Nullable  final Throwable t) {
         final int errorCode = 1;
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
@@ -166,8 +164,7 @@ public final class Async {
         }
     }
 
-    @NonNull
-    private static String tagWithAspectAndThreadName(@NonNull final String message) {
+    @NonNull    private static String tagWithAspectAndThreadName(@NonNull final String message) {
         if (!DEBUG || message.contains("at .")) {
             return message;
         }
@@ -201,9 +198,9 @@ public final class Async {
      * @param t       the {@link Throwable} which triggered this error message
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
-    public static boolean e(@NonNull @nonnull final Object tag,
-                            @NonNull @nonnull final String message,
-                            @NonNull @nonnull final Throwable t) {
+    public static boolean e(@NonNull  final Object tag,
+                            @NonNull  final String message,
+                            @NonNull  final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 log(tag, message, (ta, m) -> {
@@ -237,8 +234,8 @@ public final class Async {
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     @NotCallOrigin
-    public static boolean e(@NonNull @nonnull final Object tag,
-                            @NonNull @nonnull final String message) {
+    public static boolean e(@NonNull  final Object tag,
+                            @NonNull  final String message) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 e(tag, message, new Exception("(Exception created to generate a stack trace)"));
@@ -258,8 +255,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void v(@NonNull @nonnull final Object tag,
-                         @NonNull @nonnull final String message) {
+    public static void v(@NonNull  final Object tag,
+                         @NonNull  final String message) {
         log(tag, message, (ta, m) -> {
             Log.v("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -273,8 +270,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void d(@NonNull @nonnull final Object tag,
-                         @NonNull @nonnull final String message) {
+    public static void d(@NonNull  final Object tag,
+                         @NonNull  final String message) {
         log(tag, message, (ta, m) -> {
             Log.d("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -288,16 +285,16 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void i(@NonNull @nonnull final Object tag,
-                         @NonNull @nonnull final String message) {
+    public static void i(@NonNull  final Object tag,
+                         @NonNull  final String message) {
         log(tag, message, (ta, m) -> {
             Log.i("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
     }
 
     @SuppressWarnings("unchecked")
-    private static void log(@NonNull @nonnull final Object tag,
-                            @NonNull @nonnull final String message,
+    private static void log(@NonNull  final Object tag,
+                            @NonNull  final String message,
                             @NonNull final IActionTwo<String, String> action) {
         if (DEBUG) {
             if (tag instanceof ImmutableValue) {
@@ -321,9 +318,9 @@ public final class Async {
      * @param origin  where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the debug log
      */
-    public static void dd(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final ImmutableValue<String> origin,
-                          @NonNull @nonnull final String message) {
+    public static void dd(@NonNull  final Object tag,
+                          @NonNull  final ImmutableValue<String> origin,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -342,8 +339,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the debug log
      */
-    public static void dd(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final String message) {
+    public static void dd(@NonNull  final Object tag,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> d(tag, message + origin));
         }
@@ -356,9 +353,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the verbose log
      */
-    public static void vv(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final ImmutableValue<String> origin,
-                          @NonNull @nonnull final String message) {
+    public static void vv(@NonNull  final Object tag,
+                          @NonNull  final ImmutableValue<String> origin,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -374,8 +371,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the verbose log
      */
-    public static void vv(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final String message) {
+    public static void vv(@NonNull  final Object tag,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> v(tag, message + origin));
         }
@@ -390,10 +387,10 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(@NonNull @nonnull final Object tag,
-                             @NonNull @nonnull final ImmutableValue<String> origin,
-                             @NonNull @nonnull final String message,
-                             @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull  final Object tag,
+                             @NonNull  final ImmutableValue<String> origin,
+                             @NonNull  final String message,
+                             @NonNull  final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(ccOrigin -> {
@@ -421,9 +418,9 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(@NonNull @nonnull final Object tag,
-                             @NonNull @nonnull final String message,
-                             @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull  final Object tag,
+                             @NonNull  final String message,
+                             @NonNull  final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(origin -> e(tag, message + origin, t));
@@ -442,9 +439,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the info log
      */
-    public static void ii(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final ImmutableValue<String> origin,
-                          @NonNull @nonnull final String message) {
+    public static void ii(@NonNull  final Object tag,
+                          @NonNull  final ImmutableValue<String> origin,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -460,8 +457,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the info log
      */
-    public static void ii(@NonNull @nonnull final Object tag,
-                          @NonNull @nonnull final String message) {
+    public static void ii(@NonNull  final Object tag,
+                          @NonNull  final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> i(tag, message + origin));
         }
@@ -523,8 +520,7 @@ public final class Async {
      * @param tag a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
      */
-    @NonNull
-    private static String getTag(@NonNull @nonnull final Object tag) {
+    @NonNull    private static String getTag(@NonNull  final Object tag) {
         if (tag instanceof String) {
             return (String) tag;
         }
@@ -547,8 +543,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
-                                                  @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull  final Object tag,
+                                                  @NonNull  final String message)
             throws RuntimeException {
         throwRuntimeException(tag, message, new IllegalStateException(message));
     }
@@ -563,9 +559,9 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
-                                                  @NonNull @nonnull final ImmutableValue<String> origin,
-                                                  @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull  final Object tag,
+                                                  @NonNull  final ImmutableValue<String> origin,
+                                                  @NonNull  final String message)
             throws RuntimeException {
         throwRuntimeException(tag, origin, message, new IllegalStateException(message));
     }
@@ -580,8 +576,8 @@ public final class Async {
      * @throws RuntimeException
      */
     public static void throwIllegalArgumentException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message)
+            @NonNull  final Object tag,
+            @NonNull  final String message)
             throws RuntimeException {
         throwRuntimeException(tag, message, new IllegalArgumentException(message));
     }
@@ -597,9 +593,9 @@ public final class Async {
      * @throws RuntimeException
      */
     public static void throwIllegalArgumentException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message)
+            @NonNull  final Object tag,
+            @NonNull  final ImmutableValue<String> origin,
+            @NonNull  final String message)
             throws RuntimeException {
         throwRuntimeException(tag, origin, message, new IllegalArgumentException(message));
     }
@@ -614,9 +610,9 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
-                                             @NonNull @nonnull final String message,
-                                             @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull  final Object tag,
+                                             @NonNull  final String message,
+                                             @NonNull  final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -636,8 +632,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwTimeoutException(@NonNull @nonnull final Object tag,
-                                             @NonNull @nonnull final String message)
+    public static void throwTimeoutException(@NonNull  final Object tag,
+                                             @NonNull  final String message)
             throws RuntimeException {
         TimeoutException e = new TimeoutException(message);
         ee(tag, message, e);
@@ -655,10 +651,10 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
-                                             @NonNull @nonnull final ImmutableValue<String> origin,
-                                             @NonNull @nonnull final String message,
-                                             @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull  final Object tag,
+                                             @NonNull  final ImmutableValue<String> origin,
+                                             @NonNull  final String message,
+                                             @NonNull  final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -700,7 +696,6 @@ public final class Async {
      * @return a string holder that will be populated in the background on a WORKER thread (only in {@link #DEBUG} builds)
      */
     @NonNull
-    @nonnull
     @CheckResult(suggest = "<local variable> mOrigin =")
     public static ImmutableValue<String> originAsync() {
         //FIXME Example static iniailiazer object is not a clickable link: .<init>(ServiceSingleton.java:59))  DO STRING REPLACE on <init>
@@ -728,7 +723,7 @@ public final class Async {
      *
      * @param action to be performed when the current stack trace is resolved asynchronously
      */
-    private static void debugOriginThen(@NonNull @nonnull final IActionOne<String> action) {
+    private static void debugOriginThen(@NonNull  final IActionOne<String> action) {
         try {
             if (TRACE_ASYNC_ORIGIN && WORKER != null) {
                 originAsync().then(action);
@@ -740,8 +735,7 @@ public final class Async {
         }
     }
 
-    @NonNull
-    private static List<StackTaceLine> origin(@NonNull @nonnull final StackTraceElement[] traceElementsArray) {
+    @NonNull    private static List<StackTaceLine> origin(@NonNull  final StackTraceElement[] traceElementsArray) {
         final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
 
         allStackTraceElements.addAll(Arrays.asList(traceElementsArray).subList(3, traceElementsArray.length));
@@ -765,8 +759,7 @@ public final class Async {
         return previousList;
     }
 
-    @NonNull
-    private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
+    @NonNull    private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
         for (final StackTraceElement ste : stackTraceElementList) {
@@ -783,8 +776,7 @@ public final class Async {
         return lines;
     }
 
-    @NonNull
-    private static List<StackTaceLine> filterListByClass(
+    @NonNull    private static List<StackTaceLine> filterListByClass(
             @NonNull final List<StackTaceLine> list,
             @NonNull final IActionOneR<Class, Boolean> classFilter) throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
@@ -801,8 +793,7 @@ public final class Async {
         return list;
     }
 
-    @NonNull
-    private static List<StackTaceLine> filterListByClassAnnotation(
+    @NonNull    private static List<StackTaceLine> filterListByClassAnnotation(
             @NonNull final List<StackTaceLine> list,
             @NonNull final Class<? extends Annotation> annotation,
             final boolean mustBeAbsent)
@@ -821,8 +812,7 @@ public final class Async {
         return list;
     }
 
-    @NonNull
-    private static List<StackTaceLine> filterListByMethod(
+    @NonNull    private static List<StackTaceLine> filterListByMethod(
             @NonNull final List<StackTaceLine> list,
             @NonNull final IActionOneR<Method, Boolean> methodFilter)
             throws Exception {
@@ -841,8 +831,7 @@ public final class Async {
         return list;
     }
 
-    @NonNull
-    private static List<StackTaceLine> filterListByPackage(
+    @NonNull    private static List<StackTaceLine> filterListByPackage(
             @NonNull final List<StackTaceLine> list,
             @NonNull final IActionOneR<String, Boolean> packageFilter)
             throws Exception {
@@ -860,8 +849,7 @@ public final class Async {
         return list;
     }
 
-    @NonNull
-    private static String prettyFormat(@NonNull final StackTraceElement stackTraceElement) {
+    @NonNull    private static String prettyFormat(@NonNull final StackTraceElement stackTraceElement) {
         final String s = stackTraceElement.toString();
         final int i = stackTraceElement.getClassName().length();
 
@@ -880,7 +868,6 @@ public final class Async {
      * @return the current ThreadType or {@link #NON_CASCADE_THREAD} if the type can be determined
      */
     @NonNull
-    @nonnull
     public static IThreadType currentThreadType() {
         final Thread thread = Thread.currentThread();
 
@@ -923,7 +910,7 @@ public final class Async {
      * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
-    public static void assertTrue(@NonNull @nonnull final String errorMessage,
+    public static void assertTrue(@NonNull  final String errorMessage,
                                   final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
@@ -939,8 +926,8 @@ public final class Async {
      * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
-                                                    @Nullable @nullable final U actual) {
+    public static <T, U extends T> void assertEqual(@Nullable  final T expected,
+                                                    @Nullable  final U actual) {
         if (DEBUG) {
             assertEqual(expected, actual, "assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
         }
@@ -954,9 +941,9 @@ public final class Async {
      * @param <T>      type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
-                                                    @Nullable @nullable final U actual,
-                                                    @NonNull @nonnull final String message) {
+    public static <T, U extends T> void assertEqual(@Nullable  final T expected,
+                                                    @Nullable  final U actual,
+                                                    @NonNull  final String message) {
         if (DEBUG
                 && actual != expected
                 && (expected != null && !expected.equals(actual))) {
@@ -973,8 +960,8 @@ public final class Async {
      * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
-                                                       @Nullable @nullable final U actual) {
+    public static <T, U extends T> void assertNotEqual(@Nullable  final T expected,
+                                                       @Nullable  final U actual) {
         if (DEBUG) {
             assertNotNull("assertNotEqual failed: expected ´'" + expected + "' was equal to '" + actual + "'");
         }
@@ -990,9 +977,9 @@ public final class Async {
      * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
-                                                       @Nullable @nullable final U actual,
-                                                       @NonNull @nonnull final String message) {
+    public static <T, U extends T> void assertNotEqual(@Nullable  final T expected,
+                                                       @Nullable  final U actual,
+                                                       @NonNull  final String message) {
         if (DEBUG
                 && (actual == expected || (expected != null && expected.equals(actual)))) {
             throw new IllegalStateException(message);
@@ -1004,12 +991,11 @@ public final class Async {
      *
      * @param t   the argument
      * @param <T> the type
-     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull @nonnull</code> for rapidly catching errors in the IDE
+     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull </code> for rapidly catching errors in the IDE
      */
     @NonNull
-    @nonnull
     @NotCallOrigin
-    public static <T> T assertNotNull(@Nullable @nullable final T t) {
+    public static <T> T assertNotNull(@Nullable  final T t) {
         return assertNotNull(t, "assertNotNull failed");
     }
 
@@ -1018,13 +1004,12 @@ public final class Async {
      *
      * @param t   the argument
      * @param <T> the type
-     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull @nonnull</code> for rapidly catching errors in the IDE
+     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull </code> for rapidly catching errors in the IDE
      */
     @NonNull
-    @nonnull
     @NotCallOrigin
-    public static <T> T assertNotNull(@Nullable @nullable final T t,
-                                      @NonNull @nonnull final String message) {
+    public static <T> T assertNotNull(@Nullable  final T t,
+                                      @NonNull  final String message) {
         if (t == null) {
             throw new NullPointerException(message);
         }
@@ -1036,7 +1021,7 @@ public final class Async {
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;
 
-        StackTaceLine(@NonNull @nonnull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
+        StackTaceLine(@NonNull  final StackTraceElement stackTraceElement) throws ClassNotFoundException {
             this.stackTraceElement = stackTraceElement;
             final String className = stackTraceElement.getClassName();
             Class<?> c = sClassNameMap.get(className);

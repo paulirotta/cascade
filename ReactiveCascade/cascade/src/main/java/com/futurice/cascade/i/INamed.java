@@ -14,6 +14,5 @@ public interface INamed {
      * @return object name suitable for easy debugging
      */
     @NonNull
-    @nonnull
     String getName();
 }

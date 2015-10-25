@@ -6,7 +6,7 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade.i;
 
 /**
- * AFile lambda-friendly continuation mOnFireAction which may be run in the future or on a different thread
+ * A lambda-friendly continuation mOnFireAction which may be run in the future or on a different thread
  * similar to {@link java.lang.Runnable}. The differences is that an explicit <code>Exception</code>
  * may be thrown which helps facilitate asynchronous exception handling in a lambda-friendly manner.
  */

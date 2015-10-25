@@ -3,7 +3,6 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
@@ -20,7 +19,5 @@ import java.util.concurrent.Callable;
  */
 public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
     @Override // Callable
-    @NonNull
-    @nonnull
-    OUT call() throws Exception;
+    @NonNull    OUT call() throws Exception;
 }

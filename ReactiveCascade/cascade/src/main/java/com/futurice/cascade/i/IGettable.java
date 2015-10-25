@@ -29,6 +29,5 @@ public interface IGettable<T> {
      * @return the current value, or the next value in the series
      */
     @NonNull
-    @nonnull
     public T get();
 }

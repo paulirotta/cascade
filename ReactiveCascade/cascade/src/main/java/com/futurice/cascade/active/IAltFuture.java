@@ -5,7 +5,6 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade.active;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -13,11 +12,11 @@ import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IActionTwoR;
 import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
+import com.futurice.cascade.reactive.IReactiveSource;
 import com.futurice.cascade.reactive.IReactiveTarget;
 
 import java.util.List;
@@ -76,8 +75,6 @@ import java.util.concurrent.Future;
  * this is to "chain" the output of one function to the input of one or more next functions. For example
  * {@link com.futurice.cascade.active.AltFuture#then(IActionOneR)} will create an <code>AltFuture</code> which
  * will receive as input the output of <code>this</code>, process it split output another value in turn.
- * {@link com.futurice.cascade.active.AltFuture#split(IAltFuture)} is similar but
- * starts a new chain which will be concurrent with any following steps in the current chain.
  * <p>
  * <code>IAltFuture</code> implementations are compatible with {@link Future}. The default implementation
  * {@link com.futurice.cascade.active.AltFuture} is not a <code>Future</code> to avoid confusion.
@@ -97,7 +94,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
     OUT get();
 
     /**
@@ -108,7 +104,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * not yet determined.
      */
     @Nullable
-    @nullable
     OUT safeGet();
 
     /**
@@ -117,7 +112,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
     IThreadType getThreadType();
 
     /**
@@ -136,6 +130,22 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      */
     boolean isForked();
 
+    /**
+     * Stop this task if possible. This is a cooperative cancel. It will be ignored if execution has
+     * already passed the point at which cancellation is possible.
+     * <p>
+     * If cancellation is still possible at this time, subscribe <code>mOnError</code> in this split any downstream
+     * active chain will be notified of the cancellation split reason for cancellation.
+     * <p>
+     * Note that cancel(reason) may show up as mOnError() errors in the near future on operations that
+     * have already started but detect cancellation only after completion with any possible side effects.
+     * If needed, it is the responsibility of the mOnError mOnFireAction to possibly unwind the side effects.
+     *
+     * @param reason Debug-friendly explanation why this was cancelled
+     * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
+     */
+    public boolean cancel(@NonNull final String reason);
+
 //    /**
 //     * Find if an error condition exists and has been marked to indicate that it will no longer propagate
 //     * down-chain to notify others.
@@ -151,9 +161,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      *
      * @return
      */
-    //TODO Returning IAltFuture<IN, OUT>  does not match some cases which expect IAltFuture<IN, IN>
     @NonNull
-    @nonnull
     IAltFuture<IN, OUT> fork();
 
     /**
@@ -167,7 +175,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @Nullable
-    @nullable
     <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture();
 
     /**
@@ -181,8 +188,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull IAltFuture<UPCHAIN_OUT, IN> altFuture);
+    <UPCHAIN_IN> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull IAltFuture<UPCHAIN_IN, IN> altFuture);
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
@@ -196,7 +202,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param state
      * @throws Exception
      */
-    void doThenOnError(@NonNull @nonnull IAltFutureState state) throws Exception;
+    void doThenOnError(@NonNull IAltFutureState state) throws Exception;
 
     /**
      * Notification indicates an up-chain {@link IAltFuture} has been cancelled.
@@ -206,35 +212,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @param cancellationException
      * @throws Exception
      */
-    void doThenOnCancelled(@NonNull @nonnull CancellationException cancellationException) throws Exception;
-
-    /**
-     * Complete an mOnFireAction after this <code>AltFuture</code>
-     * <p>
-     * Usage will typically be to start a concurrent execution chain such that <code>B</code> and <code>C</code>
-     * in the following example may both begin after <code>A</code> completes.
-     * <pre><code>
-     *     myAltFuture
-     *        .subscribe(..A..)
-     *        .split(this
-     *               .subscribe(..B..)
-     *               .subscribe(..)
-     *               .mOnError(..))
-     *        .subscribe(..C..)
-     *        .mOnError(..)
-     * </code></pre>
-     * <p>
-     * Additional {@link #split(IAltFuture)} split {@link com.futurice.cascade.active.AltFuture#then(IAltFuture)}
-     * functions chained after this will receive the same input argument split (depending on the {@link com.futurice.cascade.i.IThreadType}
-     * may run concurrently.
-     *
-     * @param altFuture
-     * @return the alt future which was passed in
-     */
-    @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, OUT> split(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+    void doThenOnCancelled(@NonNull CancellationException cancellationException) throws Exception;
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -243,9 +221,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<OUT, OUT> then(@NonNull @nonnull IAction<OUT> action);
+    IAltFuture<OUT, OUT> then(@NonNull IAction<OUT> action);
+
+    //TODO Change signature of all to be varargs: IAltFuture<OUT, OUT> then(@NonNull  IAction<OUT>... action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -255,11 +233,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     IAltFuture<OUT, OUT> then(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IAction<OUT> action);
+            @NonNull IThreadType threadType,
+            @NonNull IAction<OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -269,11 +245,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     IAltFuture<OUT, OUT> then(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IActionOne<OUT> action);
+            @NonNull IThreadType threadType,
+            @NonNull IActionOne<OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -282,15 +256,12 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<OUT, OUT> then(@NonNull @nonnull IActionOne<OUT> action);
+    IAltFuture<OUT, OUT> then(@NonNull IActionOne<OUT> action);
 
     //TODO Add .thenForEach(IActionOne<OUT>) action such that it does not have same erasure as the above
-//    @NonNull
-//    @nonnull
+//    @NonNull//
 //    @CheckResult(suggest = "IAltFuture#fork()")
-//    IAltFuture<List<OUT>, List<OUT>> thenForEach(@NonNull @nonnull IActionOne<OUT> action);
+//    IAltFuture<List<OUT>, List<OUT>> thenForEach(@NonNull  IActionOne<OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -299,9 +270,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -311,11 +280,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
+            @NonNull IThreadType threadType,
+            @NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -325,9 +292,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -338,11 +303,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+            @NonNull IThreadType threadType,
+            @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Complete an mOnFireAction after this <code>AltFuture</code>
@@ -352,9 +315,34 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull @nonnull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
+
+    /**
+     * Combine several AltFutures into a single value.
+     *
+     * The joinAction will be execute on the IThreadType of the <em>first</em> altFuture in the parameter list.
+     * If your joinAction produces side-effects (is not a "pure function"), this first altFuture should be
+     * from a single-threaded IThreadType. TODO See .on()
+     *
+     * Example: Multiply all the upchain values
+     *
+     * @param joinAction combine the previous OUT value with a new result from one of the upchain altFuturesToJoin
+     * @param altFuturesToJoin two or more results to be combined
+     * @return an AltFuture which will realize when all upchain altFuturesToJoin have been combined
+     */
+    @NonNull
+    @SuppressWarnings("unchecked")
+    IAltFuture<IN, OUT> join(@NonNull IActionTwoR<OUT, IN, OUT> joinAction,
+                             @NonNull IAltFuture<?, IN>... altFuturesToJoin);
+
+    /**
+     * Continue downchain actions on the specified {@link IThreadType}
+     *
+     * @param theadType the thread execution group to change to for the next chain operation
+     * @return the previous chain link alt future value continuing the chain on the new {@link IThreadType}
+     */
+    @NonNull
+    IAltFuture<OUT, OUT> on(@NonNull IThreadType theadType);
 
     /**
      * A list of values is transformed using the mapping function provided
@@ -363,9 +351,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<List<IN>, List<OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT> action);
+    IAltFuture<List<IN>, List<OUT>> map(@NonNull IActionOneR<IN, OUT> action);
 
     /**
      * Execute the mOnFireAction after this <code>AltFuture</code> finishes.
@@ -377,11 +363,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     IAltFuture<List<IN>, List<OUT>> map(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IActionOneR<IN, OUT> action);
+            @NonNull IThreadType threadType,
+            @NonNull IActionOneR<IN, OUT> action);
 
     /**
      * Pass through to the next function only elements of the list which meet a logic test
@@ -390,9 +374,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<List<IN>, List<IN>> filter(@NonNull @nonnull IActionOneR<IN, Boolean> action);
+    IAltFuture<List<IN>, List<IN>> filter(@NonNull IActionOneR<IN, Boolean> action);
 
     /**
      * Pass through to the next function only elements of the list which meet a logic test
@@ -402,11 +384,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
     IAltFuture<List<IN>, List<IN>> filter(
-            @NonNull @nonnull IThreadType threadType,
-            @NonNull @nonnull IActionOneR<IN, Boolean> action);
+            @NonNull IThreadType threadType,
+            @NonNull IActionOneR<IN, Boolean> action);
 
     /**
      * Set the return value. This may only be done one time, for example in a {@link com.futurice.cascade.active.SettableAltFuture}
@@ -419,23 +399,25 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @throws Exception if the current state does not permit the change or if downstream error and cancellation
      *                   as part of this set triggers a synchronous mOnError() method which throws an exception based on this value.
      */
-    void set(@NonNull @nonnull OUT value) throws Exception;
+    void set(@NonNull OUT value) throws Exception;
 
     /**
-     * Set an atomic value with the output value of this {@link com.futurice.cascade.active.AltFuture}.
-     * <p>
-     * If this <code>AltFuture</code> does not assert a value change
-     * (its mOnFireAction is for example {@link IActionOne}
-     * which does not return a new value) subscribe the value assigned will be the up-chain value. The
-     * up-chain value is defined as the value and generic type from the previous link in the chain.
+     * Set the reactiveTarget (one time only) when this is asserted
      *
      * @param reactiveTarget
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<OUT, OUT> set(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
+    IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
+
+    /**
+     * Set this (one time only) when the reactiveSource is asserted
+     *
+     * @param reactiveSource
+     * @return
+     */
+    @NonNull
+    IAltFuture<OUT, OUT> set(@NonNull IReactiveSource<IN> reactiveSource);
 
     /**
      * An {@link com.futurice.cascade.active.ImmutableValue} is a simpler structure than {@link com.futurice.cascade.active.SettableAltFuture}.
@@ -446,9 +428,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<OUT, OUT> set(@NonNull @nonnull ImmutableValue<OUT> immutableValue);
+    IAltFuture<OUT, OUT> set(@NonNull ImmutableValue<OUT> immutableValue);
 
     /**
      * Add an mOnFireAction which will be performed if this AltFuture or any AltFuture up-chain either has
@@ -461,7 +441,5 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * @return
      */
     @NonNull
-    @nonnull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    IAltFuture<OUT, OUT> onError(@NonNull @nonnull IOnErrorAction action);
+    IAltFuture<OUT, OUT> onError(@NonNull IOnErrorAction action);
 }

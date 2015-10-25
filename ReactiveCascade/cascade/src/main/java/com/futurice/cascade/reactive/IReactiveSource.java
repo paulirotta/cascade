@@ -1,26 +1,8 @@
 /*
- * Copyright (c) 2015 Futurice GmbH. All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
@@ -31,7 +13,6 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.nonnull;
 
 /**
  * An object you can bind _from_ to receive updates each time this object decides to emit them.
@@ -109,12 +90,12 @@ public interface IReactiveSource<OUT> extends INamed {
      * @param reactiveTarget
      * @return <code>true</code> if the branch was found and removed
      */
-    boolean unsubscribe(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
+    boolean unsubscribe(@NonNull  String reason, @NonNull  IReactiveTarget<OUT> reactiveTarget);
 
     /**
      * Remove all down-chain branches from this node of the reactive function tree
      */
-    void unsubscribeAll(@NonNull @nonnull String reason);
+    void unsubscribeAll(@NonNull  String reason);
 
     /**
      * Attach a downstream <code>.subscribe()</code> like {@link #split(IReactiveTarget)}
@@ -124,7 +105,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @param reactiveTarget
      * @return
      */
-    IReactiveSource<OUT> split(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
+    IReactiveSource<OUT> split(@NonNull  IReactiveTarget<OUT> reactiveTarget);
 
     //TODO revisit the use cases for a merge function in async (Not the same as RX zip)
 //    /**
@@ -151,8 +132,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IAction<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull  IAction<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -168,8 +148,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IActionOne<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull  IActionOne<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -186,8 +165,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull  IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -197,9 +175,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType,
-                                   @NonNull @nonnull IAction<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull  IThreadType threadType,
+                                   @NonNull  IAction<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -209,9 +186,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType,
-                                   @NonNull @nonnull IActionOne<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull  IThreadType threadType,
+                                   @NonNull  IActionOne<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -221,8 +197,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull  IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -233,9 +208,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IThreadType threadType,
-                                                             @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull  IThreadType threadType,
+                                                             @NonNull  IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -246,9 +220,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IThreadType threadType,
-                                                                @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull  IThreadType threadType,
+                                                                @NonNull  IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -259,6 +232,5 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
+    IReactiveSource<OUT> subscribe(@NonNull  IReactiveTarget<OUT> reactiveTarget);
 }

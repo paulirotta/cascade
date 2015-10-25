@@ -15,8 +15,6 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -47,13 +45,13 @@ import static com.futurice.cascade.Async.throwIllegalStateException;
  * @param <T>
  */
 //TODO Do we also need an AddOnlyList type which is a collection that can only grow from the end?
+//@Deprecated // Delete this and use SettableAltFuture instead for simplicity
 public class ImmutableValue<T extends Object> implements IGettable<T> {
     protected static final IAltFutureState ZEN = SettableAltFuture.ZEN;
 
     private final AtomicReference<Object> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different fromKey null
     private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
     @Nullable
-    @nullable
     private final IActionR<?, T> action;
 
     /**
@@ -75,12 +73,12 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      *
      * @param value
      */
-    public ImmutableValue(@NonNull @nonnull T value) {
+    public ImmutableValue(@NonNull  T value) {
         set(value);
         action = null;
     }
 
-    public ImmutableValue(@Nullable @nullable IActionR<?, T> action) {
+    public ImmutableValue(@Nullable  IActionR<?, T> action) {
         this.action = action;
     }
 
@@ -95,7 +93,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      * @return if <code>false</code> is returned, you may try again as the value as needed since the
      * final value has not been set.
      */
-    private boolean compareAndSet(@NonNull @nonnull final Object expected, @NonNull @nonnull final T value) {
+    private boolean compareAndSet(@NonNull  final Object expected, @NonNull  final T value) {
         boolean success = mValueAR.compareAndSet(expected, value);
 
         if (success) {
@@ -116,8 +114,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      * @return
      */
     @NonNull
-    @nonnull
-    public ImmutableValue<T> then(@NonNull @nonnull final IActionOne<T> action) {
+    public ImmutableValue<T> then(@NonNull  final IActionOne<T> action) {
         mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -126,8 +123,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     }
 
     @NonNull
-    @nonnull
-    public ImmutableValue<T> then(@NonNull @nonnull final IAction<T> action) {
+    public ImmutableValue<T> then(@NonNull  final IAction<T> action) {
         mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -135,7 +131,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
         return this;
     }
 
-    private void doThenActions(@NonNull @nonnull final T value) {
+    private void doThenActions(@NonNull  final T value) {
         final Iterator<IBaseAction<T>> iterator = mThenActions.iterator();
 
         while (iterator.hasNext()) {
@@ -151,12 +147,11 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     }
 
     @Nullable
-    @nullable
     @SuppressWarnings("unchecked")
     // IN->OUT must be bent to match all cases but the mContext makes this safe
     private <IN, OUT> OUT call(
-            @NonNull @nonnull final IN in,
-            @NonNull @nonnull final IBaseAction<IN> action)
+            @NonNull  final IN in,
+            @NonNull  final IBaseAction<IN> action)
             throws Exception {
         if (action instanceof IAction) {
             ((IAction) action).call();
@@ -206,7 +201,6 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      */
     @CallSuper
     @NonNull
-    @nonnull
     @SuppressWarnings("unchecked")
     // The response must be cast because of internal atomic state is a non-T class
     public T get() {
@@ -240,7 +234,6 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     @CallSuper
     @SuppressWarnings("unchecked")
     @Nullable
-    @nullable
     public T safeGet() {
         final Object value = mValueAR.get();
 
@@ -263,8 +256,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      */
     @CallSuper
     @NonNull
-    @nonnull
-    public T set(@NonNull @nonnull final T value) {
+    public T set(@NonNull  final T value) {
         if (!compareAndSet(ZEN, value)) {
             throwIllegalStateException(this, "ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new value=" + value);
         }
@@ -283,7 +275,6 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      */
     @CallSuper
     @NonNull
-    @nonnull
     public String toString() {
         T t = safeGet();
 
@@ -295,8 +286,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     }
 
 //    @Override
-//    @NonNull
-//    @nonnull
+//    @NonNull//
 //    public String getName() {
 //        return "(ImmutableValue, value=" + toString() + ")";
 //    }

@@ -9,9 +9,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -41,17 +38,15 @@ import java.util.concurrent.TimeUnit;
 public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
     @NonNull
-    @nonnull
     final BlockingQueue<E> lowPriorityQueue;
 
-    public DoubleQueue(@NonNull @nonnull final BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull  final BlockingQueue<E> lowPriorityQueue) {
         super();
 
         this.lowPriorityQueue = lowPriorityQueue;
     }
 
     @Nullable
-    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
     public E peek() {
@@ -65,7 +60,6 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
-    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
     public E poll() {
@@ -79,10 +73,9 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     @Nullable
-    @nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E poll(final long timeout, @NonNull @nonnull final TimeUnit unit) throws InterruptedException {
+    public E poll(final long timeout, @NonNull  final TimeUnit unit) throws InterruptedException {
         E e = super.poll(timeout, unit);
 
         if (e == null) {
@@ -94,13 +87,13 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public boolean remove(@Nullable @nullable final Object o) {
+    public boolean remove(@Nullable  final Object o) {
         return super.remove(o) || lowPriorityQueue.remove(o);
     }
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public void put(@NonNull @nonnull final E e) throws InterruptedException {
+    public void put(@NonNull  final E e) throws InterruptedException {
         super.put(e);
         synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();
@@ -121,7 +114,6 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     @CallSuper
     @NonNull
-    @nonnull
     public synchronized E take() throws InterruptedException {
         E e;
 

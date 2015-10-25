@@ -10,9 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Created by phou on 6/4/2015.
- */
 @SmallTest
 public class ImmutableValueTest extends AsyncAndroidTestCase {
 

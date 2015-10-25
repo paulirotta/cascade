@@ -3,7 +3,6 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
@@ -25,5 +24,5 @@ import android.support.annotation.NonNull;
  * @throws Exception
  */
 public interface IActionOne<IN> extends IBaseAction<IN> {
-    void call(@NonNull @nonnull IN value) throws Exception;
+    void call(@NonNull IN value) throws Exception;
 }

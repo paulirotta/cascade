@@ -5,7 +5,6 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade.active;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IAction;
@@ -15,7 +14,6 @@ import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.CancellationException;
 
@@ -93,8 +91,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IAction<IN> action) {
+            @NonNull  final IThreadType threadType,
+            @NonNull  final IAction<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -117,8 +115,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      */
     @SuppressWarnings("unchecked")
     public AltFuture(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionOne<IN> action) {
+            @NonNull  final IThreadType threadType,
+            @NonNull  final IActionOne<IN> action) {
         super(threadType);
 
         this.action = () -> {
@@ -139,8 +137,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param action     a function that does not vary with the input value
      */
     public AltFuture(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionR<IN, OUT> action) {
+            @NonNull  final IThreadType threadType,
+            @NonNull  final IActionR<IN, OUT> action) {
         super(threadType);
 
         this.action = action;
@@ -154,8 +152,8 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * @param action     a mapping function
      */
     public AltFuture(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final IActionOneR<IN, OUT> action) {
+            @NonNull  final IThreadType threadType,
+            @NonNull  final IActionOneR<IN, OUT> action) {
         super(threadType);
 
         this.action = () -> {
@@ -166,36 +164,25 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         };
     }
 
-    /**
-     * Stop this task if possible. This is a cooperative cancel. It will be ignored if execution has
-     * already passed the point at which cancellation is possible.
-     * <p>
-     * If cancellation is still possible at this time, subscribe <code>mOnError</code> in this split any downstream
-     * active chain will be notified of the cancellation split reason for cancellation.
-     * <p>
-     * Note that cancel(reason) may show up as mOnError() errors in the near future on operations that
-     * have already started but detect cancellation only after completion with any possible side effects.
-     * If needed, it is the responsibility of the mOnError mOnFireAction to possibly unwind the side effects.
-     *
-     * @param reason Debug-friendly explanation why this was cancelled
-     * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
-     */
-    @CallSuper
-    public boolean cancel(@NonNull @nonnull final String reason) {
-        final Object state = mStateAR.get();
-
-        if (state instanceof AltFutureStateCancelled) {
-            dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
-        } else {
-            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
-                dd(this, mOrigin, "Cancelled, reason=" + reason);
-                return true;
-            } else {
-                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
-            }
-        }
-        return false;
-    }
+//    @CallSuper
+//    @CallOrigin
+//    @Override // IAltFuture
+//    public boolean cancel(@NonNull  final String reason) {
+//        assertNotDone();
+//        final Object state = mStateAR.get();
+//
+//        if (state instanceof AltFutureStateCancelled) {
+//            dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
+//        } else {
+//            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
+//                dd(this, mOrigin, "Cancelled, reason=" + reason);
+//                return true;
+//            } else {
+//                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
+//            }
+//        }
+//        return false;
+//    }
 
     /**
      * The {@link java.util.concurrent.ExecutorService} of this <code>AltFuture</code>s {@link com.futurice.cascade.i.IThreadType}
@@ -233,14 +220,14 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
         }
     }
 
-    /**
-     * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
-     * <p>
-     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
-     */
-    @CallSuper
-    @NotCallOrigin
-    protected void doFork() {
-        this.mThreadType.fork(this);
-    }
+//    /**
+//     * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
+//     * <p>
+//     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
+//     */
+//    @CallSuper
+//    @NotCallOrigin
+//    protected void doFork() {
+//        this.mThreadType.fork(this);
+//    }
 }

@@ -1,8 +1,11 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
-
-import com.futurice.cascade.i.nonnull;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -20,7 +23,7 @@ public class AltWeakReference<T> extends WeakReference<T> {
      *
      * @param r
      */
-    public AltWeakReference(@NonNull @nonnull final T r) {
+    public AltWeakReference(@NonNull  final T r) {
         super(r);
     }
 
@@ -31,15 +34,15 @@ public class AltWeakReference<T> extends WeakReference<T> {
      * @param q
      */
     public AltWeakReference(
-            @NonNull @nonnull final T r,
-            @NonNull @nonnull final ReferenceQueue<? super T> q) {
+            @NonNull  final T r,
+            @NonNull  final ReferenceQueue<? super T> q) {
         super(r, q);
     }
 
     /**
      * Test equality. The definition of equality is different from {@link WeakReference}. Two items
      * are also equal if the <em>items referenced</em> are equal or if one of them is the item referenced.
-     *
+     * <p>
      * This helps to simplify some logic associated with {@link WeakReference}
      *
      * @param other

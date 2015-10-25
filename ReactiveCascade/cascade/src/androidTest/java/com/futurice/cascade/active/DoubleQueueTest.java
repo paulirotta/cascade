@@ -1,18 +1,13 @@
 package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-/**
- * Created by phou on 6/4/2015.
- */
 @SmallTest
 public class DoubleQueueTest extends AsyncAndroidTestCase {
 

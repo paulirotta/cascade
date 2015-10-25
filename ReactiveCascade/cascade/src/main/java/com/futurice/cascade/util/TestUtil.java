@@ -1,9 +1,13 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.i.nonnull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +38,7 @@ public class TestUtil {
      * @throws Exception
      */
     public <IN, OUT> OUT awaitDone(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
+            @NonNull  final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
@@ -53,7 +57,7 @@ public class TestUtil {
      * @throws Exception
      */
     public <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull @nonnull final IAltFuture<IN, OUT> altFuture,
+            @NonNull  final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
         SHOW_ERROR_STACK_TRACES = false;

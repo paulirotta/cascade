@@ -6,11 +6,8 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -46,16 +43,16 @@ public class DefaultThreadType extends AbstractThreadType {
      *                        case {@link #isInOrderExecutor()} will return <code>false</code>
      */
     public DefaultThreadType(
-            @NonNull @nonnull final String name,
-            @NonNull @nonnull final ExecutorService executorService,
-            @Nullable @nullable final BlockingQueue<Runnable> queue) {
+            @NonNull  final String name,
+            @NonNull  final ExecutorService executorService,
+            @NonNull  final BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
-        this.inOrderExecution = queue == null || queue instanceof BlockingDeque;
+        this.inOrderExecution = queue instanceof BlockingDeque;
     }
 
     @Override // IThreadType
-    public void run(@NonNull @nonnull final Runnable runnable) {
+    public void run(@NonNull  final Runnable runnable) {
         if (executorService.isShutdown()) {
             e(TAG, "Executor service for ThreadType='" + getName() + "' was shut down. Can not run " + runnable);
         }
@@ -66,7 +63,7 @@ public class DefaultThreadType extends AbstractThreadType {
     @Override // IThreadType
     @SuppressWarnings("unchecked")
     @NotCallOrigin
-    public void runNext(@NonNull @nonnull final Runnable runnable) {
+    public void runNext(@NonNull  final Runnable runnable) {
         int n;
         if (inOrderExecution || (n = mQueue.size()) == 0) {
             run(runnable);

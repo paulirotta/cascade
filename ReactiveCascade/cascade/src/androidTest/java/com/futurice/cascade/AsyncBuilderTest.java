@@ -1,3 +1,8 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade;
 
 import android.support.annotation.CallSuper;
@@ -5,11 +10,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-/**
- * Created by phou on 04-06-2015.
- */
 @LargeTest
 public class AsyncBuilderTest extends AsyncAndroidTestCase {
 

@@ -1,3 +1,8 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.CallSuper;
@@ -7,8 +12,6 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
 
 import static com.futurice.cascade.Async.ii;
 
@@ -28,7 +31,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param initialValue
      */
     public ReactiveInteger(
-            @NonNull @nonnull final String name,
+            @NonNull  final String name,
             final int initialValue) {
         super(name, initialValue);
     }
@@ -43,11 +46,11 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param onError
      */
     public ReactiveInteger(
-            @NonNull @nonnull final IThreadType threadType,
-            @NonNull @nonnull final String name,
+            @NonNull  final IThreadType threadType,
+            @NonNull  final String name,
             final int initialValue,
-            @Nullable @nullable final IActionOneR<Integer, Integer> onFireAction,
-            @NonNull @nonnull final IOnErrorAction onError) {
+            @Nullable  final IActionOneR<Integer, Integer> onFireAction,
+            @NonNull  final IOnErrorAction onError) {
         super(name, initialValue, threadType, onFireAction, onError);
     }
 

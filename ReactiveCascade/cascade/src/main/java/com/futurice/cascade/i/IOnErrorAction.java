@@ -19,5 +19,5 @@ import android.support.annotation.NonNull;
  * @throws Exception
  */
 public interface IOnErrorAction extends IBaseAction<Exception> {
-    boolean call(@NonNull @nonnull Exception e) throws Exception;
+    boolean call(@NonNull Exception e) throws Exception;
 }

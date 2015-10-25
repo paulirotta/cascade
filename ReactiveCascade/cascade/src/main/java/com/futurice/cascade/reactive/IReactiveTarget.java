@@ -1,32 +1,13 @@
 /*
- * Copyright (c) 2015 Futurice GmbH. All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.reactive;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.nonnull;
 
 /**
  * An object which can receive repeated value assertions from a reactive active chain.
@@ -69,7 +50,7 @@ public interface IReactiveTarget<IN> extends INamed {
      *
      * @param in The value from the previous link in the reactive chain.
      */
-    void fire(@NonNull @nonnull IN in);
+    void fire(@NonNull  IN in);
 
     /**
      * Same as {@link #fire(Object)} however this is queued LIFO for more immediate execution.
@@ -81,7 +62,7 @@ public interface IReactiveTarget<IN> extends INamed {
      *
      * @param in The value from the previous link in the reactive chain.
      */
-    void fireNext(@NonNull @nonnull IN in);
+    void fireNext(@NonNull  IN in);
 
     /**
      * Notification that an {@link IReactiveSource}  will start sending updates
@@ -95,7 +76,7 @@ public interface IReactiveTarget<IN> extends INamed {
      *
      * @param reactiveSource
      */
-    void subscribeSource(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveSource<IN> reactiveSource);
+    void subscribeSource(@NonNull  String reason, @NonNull  IReactiveSource<IN> reactiveSource);
 
     /**
      * Notification that an {@link IReactiveSource}  will no longer send updates
@@ -106,10 +87,10 @@ public interface IReactiveTarget<IN> extends INamed {
      * @param reason
      * @param reactiveSource
      */
-    void unsubscribeSource(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveSource<IN> reactiveSource);
+    void unsubscribeSource(@NonNull  String reason, @NonNull  IReactiveSource<IN> reactiveSource);
 
     /**
      * Remove all up-chain branches from this node of the reactive function tree
      */
-    void unsubscribeAllSources(@NonNull @nonnull String reason);
+    void unsubscribeAllSources(@NonNull  String reason);
 }

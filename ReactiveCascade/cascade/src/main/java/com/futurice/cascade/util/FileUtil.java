@@ -1,36 +1,18 @@
 /*
- * Copyright (c) 2015 Futurice GmbH. All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
+*/
 package com.futurice.cascade.util;
 
 import android.content.Context;
+import android.support.annotation.CheckResult;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.active.IAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.nonnull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -47,46 +29,44 @@ import static com.futurice.cascade.Async.originAsync;
 import static com.futurice.cascade.Async.throwRuntimeException;
 
 public final class FileUtil {
-    @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface FileMode {}
-
     private static final int BUFFER_SIZE = 16384;
     @NonNull
     private final Context mContext;
     @FileMode
     private final int mMode;
     private final ImmutableValue<String> mOrigin;
-
     public FileUtil(
-            @NonNull @nonnull final Context context,
+            @NonNull final Context context,
             @FileMode final int mode) {
         this.mContext = context;
         this.mMode = mode;
         this.mOrigin = originAsync();
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<IN, IN> writeAsync(
-            @NonNull @nonnull final String fileName,
-            @NonNull @nonnull final byte[] bytes) {
+            @NonNull final String fileName,
+            @NonNull final byte[] bytes) {
         return FILE.then(() -> {
             write(fileName, bytes);
         });
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, byte[]> writeAsync(
-            @NonNull @nonnull final byte[] bytes) {
+            @NonNull final byte[] bytes) {
         return FILE.map(fileName -> {
             write(fileName, bytes);
             return bytes;
         });
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<byte[], byte[]> writeAsync(
-            @NonNull @nonnull final String fileName) {
+            @NonNull final String fileName) {
         return FILE.then(bytes -> {
             write(fileName, bytes);
         });
@@ -94,8 +74,8 @@ public final class FileUtil {
 
     @WorkerThread
     public void write(
-            @NonNull @nonnull final String fileName,
-            @NonNull @nonnull final byte[] bytes) {
+            @NonNull final String fileName,
+            @NonNull final byte[] bytes) {
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -120,21 +100,23 @@ public final class FileUtil {
         }
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, byte[]> readAsync() {
         return FILE.map(this::read);
     }
 
-    @NonNull @nonnull
-    public IAltFuture<?, byte[]> readAsync(@NonNull @nonnull final String fileName) {
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
+    public IAltFuture<?, byte[]> readAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
             return read(fileName);
         });
     }
 
-    @NonNull @nonnull
+    @NonNull
     @WorkerThread
-    public byte[] read(@NonNull @nonnull final String fileName) {
+    public byte[] read(@NonNull final String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -172,19 +154,26 @@ public final class FileUtil {
     }
 
     @WorkerThread
-    public boolean delete(@NonNull @nonnull final String fileName) {
+    public boolean delete(@NonNull final String fileName) {
         return mContext.deleteFile(fileName);
     }
 
-    @NonNull @nonnull
-    public IAltFuture<?, Boolean> deleteAsync(@NonNull @nonnull final String fileName) {
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
+    public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
             return delete(fileName);
         });
     }
 
-    @NonNull @nonnull
+    @NonNull
+    @CheckResult(suggest = "IAltFuture#fork()")
     public IAltFuture<String, Boolean> deleteAsync() {
         return FILE.map(this::delete);
+    }
+
+    @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FileMode {
     }
 }
