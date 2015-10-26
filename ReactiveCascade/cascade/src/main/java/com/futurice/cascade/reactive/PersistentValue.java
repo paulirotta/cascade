@@ -66,6 +66,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     protected final Class classOfPersistentValue;
     protected final T defaultValue;
     private static final SharedPreferences.OnSharedPreferenceChangeListener sharedPreferencesListener = (sharedPreference, key) -> {
+        if (key == null) return;
+
         final WeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(key);
 
         if (wr == null) {
@@ -212,6 +214,14 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
+    private static String[] toStringArray(String value) {
+        if (value.trim().length() == 0) {
+            return new String[0];
+        }
+
+        return value.split("\n");
+    }
+
     private static int[] toIntegerArray(String value) {
         if (value.trim().length() == 0) {
             return new int[0];
@@ -305,6 +315,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         vv(this, mOrigin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
         if (classOfPersistentValue == String.class) {
             super.set((T) sharedPreferences.getString(key, (String) defaultValue));
+        } else if (classOfPersistentValue == String[].class) {
+            super.set((T) toStringArray(sharedPreferences.getString(key, toStringSet((String[]) defaultValue))));
         } else if (classOfPersistentValue == Integer.class) {
             super.set((T) Integer.valueOf(sharedPreferences.getInt(key, (Integer) defaultValue)));
         } else if (classOfPersistentValue == int[].class) {
@@ -322,7 +334,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         } else if (classOfPersistentValue == float[].class) {
             super.set((T) toFloatArray(sharedPreferences.getString(key, toStringSet((float[]) defaultValue))));
         } else {
-            throw new UnsupportedOperationException("Only native types and arrays like String and int[] are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
+            throw new UnsupportedOperationException(classOfPersistentValue + " is not supported. Only native types and arrays like String and int[] are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
         }
     }
 
