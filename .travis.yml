@@ -9,7 +9,7 @@ env:
     - TERM=dumb
     - ANDROID_API_LEVEL=23
     - ANDROID_BUILD_TOOLS_VERSION=23.0.1
-    - EMULATOR=android-19
+    - EMULATOR=android-15
     - ABI=armeabi-v7a
     - ADB_INSTALL_TIMEOUT=8 # minutes         
     - INSTALL_TIMEOUT=8 # minutes        
