@@ -19,7 +19,7 @@ import com.futurice.cascade.i.IReactiveTarget;
  *
  * @param <T>
  */
-public interface IReactiveValue<T extends Object> extends IGettable<T> {
+public interface IReactiveValue<T> extends IGettable<T> {
     /**
      * Get the current valueAR.
      * <p>

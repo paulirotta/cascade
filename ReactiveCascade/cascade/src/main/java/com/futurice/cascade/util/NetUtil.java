@@ -108,7 +108,7 @@ public final class NetUtil {
 
     @NonNull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <T extends Object> IAltFuture<T, Response> getAsync() {
+    public <T> IAltFuture<T, Response> getAsync() {
         return mNetReadThreadType.map(url -> get(url.toString(), null));
     }
 
