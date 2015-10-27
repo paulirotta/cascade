@@ -55,7 +55,7 @@ allprojects {
 }
 
 dependencies {
-    def supportLibrary = '23.0.1'
+    def supportLibrary = '23.1.0'
     compile "com.android.support:appcompat-v7:${supportLibrary}"
     compile "com.android.support:support-annotations:${supportLibrary}"
     compile 'com.squareup.okhttp:okhttp:2.5.0'
