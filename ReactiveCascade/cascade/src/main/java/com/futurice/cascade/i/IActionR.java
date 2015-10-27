@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
  *
  * @param <PHANTOM_IN>
  * @param <OUT>
- * @throws Exception
  */
 public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
     @Override // Callable
