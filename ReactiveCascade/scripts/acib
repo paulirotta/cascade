@@ -1,0 +1,295 @@
+#!/bin/bash
+
+############  ###########  ##########  #########  ########  #######  ######  #####  ####  ###  ##  #
+##
+##  ACIB SCRIPT
+##
+############  ###########  ##########  #########  ########  #######  ######  #####  ####  ###  ##  #
+
+# Create and start device
+function create-and-start-device {
+    # Create device
+    echo n | android create avd -f \
+        -n "${AVD_NAME:-test}" \
+        -t "${AVD_TARGET:-android-21}" \
+        -b "${AVD_ABI:-armeabi-v7a}" \
+        -g "${AVD_TAG:-default}"
+    # Start device
+    emulator -avd "${AVD_NAME:-test}" \
+        -no-skin \
+        -no-audio \
+        -no-window \
+        -no-boot-anim \
+        -debug "${AVD_DEBUG:-avd_config}" &
+}
+
+# Install and update SDK
+function install-and-update-sdk {
+    # Keep SDK packages up-to-date (only missing suggested updates are installed).
+    echo y | android update sdk -u -t \
+        ${UPDATE_PKGS:-'platform-tools,tools,extra-android-m2repository,extra-google-m2repository'}
+    # Install or reinstall SDK packages (if empty, all packages are installed).
+    echo y | android update sdk -a -u -t \
+        ${INSTALL_PKGS:-'build-tools-23.0.1,android-23'},${TARGET_PKGS:-}
+}
+
+# Wait for device online
+function wait-for-device-online {
+    adb wait-for-device get-serialno # start adbd, wait for device connected and show android serial
+}
+
+# Wait for device ready
+function wait-for-device-ready {
+    local bootanim=""
+    local failcounter=0
+    until [[ "$bootanim" =~ "stopped" ]]; do
+       bootanim=`adb hell getprop init.svc.bootanim 2>&1`
+       echo "$bootanim"
+       if [[ "$bootanim" =~ "not found" ]]; then
+          let "failcounter += 1"
+          if [[ ${failcounter} -gt 30 ]]; then
+            echo "Failed to start emulator"
+            exit 1
+          fi
+       fi
+       sleep 1
+    done
+    sleep 30
+    adb shell input keyevent 82 &
+    sleep 150
+    echo "Done"
+}
+
+# Get foreground color
+function get-foreground {
+    echo "${FOREGROUND:-39}"
+}
+
+# Set foreground color
+function set-foreground {
+    if [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -ge 30 -a "$1" -le 37 ]; then
+        FOREGROUND="$1"
+    fi
+    # print-format yellow "FOREGROUND=`get-foreground`"
+}
+
+# Get background color
+function get-background {
+    echo "${BACKGROUND:-49}"
+}
+
+# Set background color
+function set-background {
+    if [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -ge 40 -a "$1" -le 47 ]; then
+        BACKGROUND="$1"
+    fi
+    # print-format yellow "BACKGROUND=`get-background`"
+}
+
+# Get underline attribute
+function get-underline {
+    echo "${UNDERLINE:-24}"
+}
+
+# Set underline attribute
+function set-underline {
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        UNDERLINE="$1"
+    fi
+    # print-format yellow "UNDERLINE=`get-underline`"
+}
+
+# Get dim attribute
+function get-dim {
+    echo "${DIM:-22}"
+}
+
+# Set dim attribute
+function set-dim {
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        DIM="$1"
+    fi
+    # print-format yellow "DIM=`get-dim`"
+}
+
+# Get bold attribute
+function get-bold {
+    echo "${BOLD:-21}"
+}
+
+# Set bold attribute
+function set-bold {
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        BOLD="$1"
+    fi
+    # print-format yellow "BOLD=`get-bold`"
+}
+
+# Get format attributes
+function get-attributes {
+    echo "`get-underline`;`get-dim`;`get-bold`"
+}
+
+# Set format attributes
+function set-attributes {
+    set-underline "$1"
+    set-dim "$2"
+    set-bold "$3"
+    # print-format yellow "ATTRIBUTES=`get-attributes`"
+}
+
+# Get formatting
+function get-formatting {
+    echo "`get-foreground`;`get-background`;`get-attributes`"
+}
+
+# Set formatting
+function set-formatting {
+    set-foreground "$1"
+    set-background "$2"
+    set-attributes "$3" "$4" "$5"
+    # print-format yellow "FORMATTING=`get-formatting`"
+}
+
+# Apply format
+# Usage: apply-format format. Apply 'format'.
+function apply-format {
+    while [ -n "$1" ] ; do
+        case "$1" in
+            reset | r_all | reset_all | normal) set-formatting 39 49 24 22 21;;
+            bold | bright) set-bold 1;;
+            dim) set-dim 2;;
+            underline) set-underline 4;;
+            r_bold | reset_bold | r_bright | reset_bright) set-bold 21;;
+            r_dim | reset_dim) set-dim 22;;
+            r_underline | reset_underline) set-underline 24;;
+            black | f_black) set-foreground 30;;
+            red | f_red) set-foreground 31;;
+            green | f_green) set-foreground 32;;
+            yellow | f_yellow) set-foreground 33;;
+            blue | f_blue) set-foreground 34;;
+            magenta | f_magenta) set-foreground 35;;
+            cyan | f_cyan) set-foreground 36;;
+            white | f_white) set-foreground 37;;
+            b_black) set-background 40;;
+            b_red) set-background 41;;
+            b_green) set-background 42;;
+            b_yellow) set-background 43;;
+            b_blue) set-background 44;;
+            b_magenta) set-background 45;;
+            b_cyan) set-background 46;;
+            b_white) set-background 47;;
+            *) print-format red "`basename ${0}`: ${1} command not found. Ignoring argument.";;
+        esac
+        shift
+    done
+    echo -en "\033[$(get-formatting)m"
+}
+
+# Print my text
+# Usage: print-mytext mytext. Print my formatted 'mytext'.
+function print-mytext {
+    echo -e "$1"
+}
+
+# Reset format
+# Usage: reset-format. Reset format.
+function reset-format {
+    apply-format reset
+}
+
+# Print format
+# Usage: print-format text. Print formatted 'text'.
+function print-format {
+    if [ -z "$1" ] ; then # if zero args, show usage.
+        print-format cyan "Usage: `basename ${0}` print-format [format args] text"
+    elif [ -z "$2" ] ; then # if one arg, apply format.
+        apply-format "$1"
+    elif [ -z "$3" ] ; then # if two args, apply format to text, print text and reset format.
+        apply-format "$1"
+        print-mytext "$2"
+        reset-format
+    else # three or more args: apply one format, shift and recall.
+        apply-format "$1"
+        shift
+        print-format "$@"
+    fi
+}
+
+# Print my path
+# Print and return the full directory name of this script
+# See http://stackoverflow.com/a/246128/1009132
+function print-mypath {
+    local SOURCE="${BASH_SOURCE[0]}"
+    local DIR=`pwd`
+    while [ -h "$SOURCE" ]; do # Resolve $SOURCE until the file is no longer a symlink
+      DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+      SOURCE="$(readlink "$SOURCE")"
+      [[ ${SOURCE} != /* ]] && SOURCE="$DIR/$SOURCE"
+    done
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    print-mytext "$DIR"
+}
+
+# Print my name
+# Print and return the name of this script
+function print-myname {
+    print-mytext "`basename ${0}`"
+}
+
+# Print my help
+# Print this help about the script usage
+function print-myhelp {
+    apply-format cyan
+    print-mytext "Name:"
+    print-mytext "\tACIB - Acib CI Bridge"
+    print-mytext "Usage:"
+    print-mytext "\tacib action [action2 action3 ... actionN]"
+    print-mytext "Actions:"
+    print-mytext "\tcreate-and-start-device : Create and start device."
+    print-mytext "\tinstall-and-update-sdk : Install and update SDK."
+    print-mytext "\twait-for-device-online : Wait for device online."
+    print-mytext "\twait-for-device-ready : Wait for device ready."
+    print-mytext "\tprint-mypath : Print and return the full directory name of this script."
+    print-mytext "\tprint-myname : Print and return the name of this script."
+    print-mytext "\tprint-myhelp : Print this help about the script usage."
+    reset-format
+}
+
+# Print my menu
+# Print the main menu
+function print-mymenu {
+    print-format green "ACIB:"
+    while [ -n "$1" ] ; do
+        print-format yellow "Executing task [ ${1} ]:"
+        case "$1" in
+            "export-environment-variables") export-environment-variables;;
+            "create-and-start-device") create-and-start-device;;
+            "install-and-update-sdk") install-and-update-sdk;;
+            "wait-for-device-online") wait-for-device-online;;
+            "wait-for-device-ready") wait-for-device-ready;;
+            "print-format") shift; print-format "$@"; break;;
+            "print-mypath") print-mypath;;
+            "print-myname") print-myname;;
+            "-h" | "--help" | "print-myhelp") print-myhelp;;
+            "-v" | "--verbose") PRINT_VERBOSE=true && print-format yellow "Enabling verbose mode:";;
+            "-s" | "--silent") print-format yellow "Disabled verbose mode." && PRINT_VERBOSE=false;;
+            *) print-format red "Ignoring unknown argument [ ${1} ]";;
+        esac
+        print-format yellow "Task done."
+        shift
+    done
+    print-format green "Done."
+}
+
+#
+# ACIB: ACIB CI Bridge
+#
+if [ -z "$1" ]; then # if zero args, show help
+    print-mymenu "--help"
+elif [ "$1" = "print-format" ]; then # if first arg is print-format, execute it directly.
+    shift; print-format "$@"
+else
+    print-mymenu "$@" # otherwise, execute menu loop
+fi
+exit $?
