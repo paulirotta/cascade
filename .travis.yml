@@ -53,7 +53,7 @@ before_install:
   - chmod +x execute
   - chmod +x scripts/acib
   - ./execute install-and-update-sdk
-  - ./execute create-and-start-device wait-for-device-online
+  - ./execute create-and-start-device wait-for-device-online &
 
 install:
   - chmod +x gradlew
