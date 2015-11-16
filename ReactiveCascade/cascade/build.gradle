@@ -3,7 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
     publishNonDefault true  // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
@@ -15,7 +15,7 @@ android {
     }
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "2g"
     }
 
     buildTypes {
@@ -55,12 +55,10 @@ allprojects {
 }
 
 dependencies {
-    def supportLibrary = '23.1.0'
-    compile "com.android.support:appcompat-v7:${supportLibrary}"
-    compile "com.android.support:support-annotations:${supportLibrary}"
+    compile "com.android.support:appcompat-v7:23.1.1"
+    compile "com.android.support:support-annotations:23.1.1"
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    androidTestCompile 'com.android.support.test:runner:0.3'
-    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test:runner:0.4'
     androidTestCompile 'org.assertj:assertj-core:2.2.0'
 }
 
