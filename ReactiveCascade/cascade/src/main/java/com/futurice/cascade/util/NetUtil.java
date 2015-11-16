@@ -19,8 +19,10 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
+import com.futurice.cascade.active.RunnableAltFuture;
+import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.IThreadType;
 import com.squareup.okhttp.Call;
@@ -31,7 +33,6 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.framed.Header;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 
 import static android.telephony.TelephonyManager.NETWORK_TYPE_1xRTT;
@@ -52,21 +53,16 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_UNKNOWN;
 import static com.futurice.cascade.Async.NET_READ;
 import static com.futurice.cascade.Async.NET_WRITE;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.originAsync;
 
 /**
  * OkHttp convenience wrapper methods
  */
-public final class NetUtil {
+public final class NetUtil extends Origin {
     private static final int MAX_NUMBER_OF_WIFI_NET_CONNECTIONS = 6;
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
     @NonNull
-    final OkHttpClient mOkHttpClient;
-    @NonNull
-    final ImmutableValue<String> mOrigin;
+    private final OkHttpClient mOkHttpClient;
     @NonNull
     private final TelephonyManager mTelephonyManager;
     @NonNull
@@ -74,7 +70,8 @@ public final class NetUtil {
     @NonNull
     private final IThreadType mNetReadThreadType;
     @NonNull
-    private final IThreadType mNetWriteThradType;
+    private final IThreadType mNetWriteThreadType;
+
     @RequiresPermission(allOf = {Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.ACCESS_WIFI_STATE})
@@ -86,9 +83,8 @@ public final class NetUtil {
             @NonNull final Context context,
             @NonNull final IThreadType netReadThreadType,
             @NonNull final IThreadType netWriteThreadType) {
-        mOrigin = originAsync();
         this.mNetReadThreadType = netReadThreadType;
-        this.mNetWriteThradType = netWriteThreadType;
+        this.mNetWriteThreadType = netWriteThreadType;
         mOkHttpClient = new OkHttpClient();
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         mWifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
@@ -96,234 +92,299 @@ public final class NetUtil {
 
     @NonNull
     @WorkerThread
-    public Response get(@NonNull final String url) throws IOException {
+    public <T> Response get(@NonNull final T url) throws IOException {
         return get(url, null);
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> getAsync(@NonNull final String url) {
-        return mNetReadThreadType.then(() -> get(url, null));
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> getAsync(@NonNull final T url) {
+        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+                get(url, null));
     }
 
+    /**
+     * Take the output from the previous step in the chain as the URL.
+     * <p>
+     * Note that the input object has {@link T#toString()} is called to generate the URL at the last
+     * possible moment before the network connection is opened. This may be useful to delay the decision
+     * of which URL will be used, for example to decide what is the highest priority use of the network
+     * at that moment.
+     *
+     * @param <T> the output of the upchain step
+     * @return alt future of the network response
+     */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> getAsync() {
-        return mNetReadThreadType.map(url -> get(url.toString(), null));
+        return new RunnableAltFuture<>(mNetReadThreadType, (T url) ->
+                get(url.toString(), null));
+    }
+
+    /**
+     * @param urlGettable
+     * @param <T>
+     * @return
+     * @throws IOException           if problem with network
+     * @throws IllegalStateException if <code>urlGettable</code> can not yet be determined.
+     *                               Consider using <code>urlGettable.then()</code> instead.
+     */
+    @NonNull
+    @WorkerThread
+    public <T> Response get(@NonNull final IGettable<T> urlGettable) throws IOException {
+        return get(urlGettable.get().toString());
     }
 
     @NonNull
     @WorkerThread
-    public Response get(@NonNull final IGettable<String> urlGettable) throws IOException {
-        return get(urlGettable.get(), null);
-    }
-
-    @NonNull
-    @WorkerThread
-    public Response get(
-            @NonNull final String url,
+    public <T> Response get(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) throws IOException {
         if (headers == null) {
-            dd(mOrigin, "get " + url);
+            CLog.d(getOrigin(), "get " + url);
         } else {
-            dd(mOrigin, "get " + url + " with " + headers.size() + " custom headers");
+            CLog.d(getOrigin(), "get " + url + " with " + headers.size() + " custom headers");
         }
 
         return execute(setupCall(url, builder -> {
-            if (headers != null) {
-                for (Header header : headers) {
-                    builder.addHeader(header.name.utf8(), header.value.utf8());
-                }
-            }
+            addHeaders(builder, headers);
         }));
     }
 
+    /**
+     * @param urlGettable
+     * @param headers
+     * @param <T>
+     * @return
+     * @throws IOException
+     * @throws IllegalStateException if <code>urlGettable</code> can not be determined. Consider using
+     *                               <code>urlGettable.then(headers)</code> instead.
+     */
     @NonNull
     @WorkerThread
-    public Response get(
-            @NonNull final IGettable<String> urlGettable,
+    public <T> Response get(
+            @NonNull final IGettable<T> urlGettable,
             @Nullable final Collection<Header> headers) throws IOException {
         return get(urlGettable.get(), headers);
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> getAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> getAsync(
             @Nullable final Collection<Header> headers) {
-        return mNetReadThreadType.map(url -> get(url, headers));
+        return new RunnableAltFuture<>(mNetReadThreadType, (T url) ->
+                get(url.toString(), headers));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> getAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @SuppressWarnings("unchecked")
+    public <T> IAltFuture<T, Response> getAsync(
+            @NonNull final T url,
             final IGettable<Collection<Header>> headersGettable) {
-        return mNetReadThreadType.then(() -> get(url, headersGettable.get()));
+        if (headersGettable instanceof IAltFuture) {
+            return ((IAltFuture<?, T>) headersGettable)
+                    .on(mNetReadThreadType)
+                    .then(() ->
+                            get(url, headersGettable.get()));
+        }
+
+        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+                get(url, headersGettable.get()));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> getAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> getAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) {
-        return mNetReadThreadType.then(() -> get(url, headers));
+        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+                get(url, headers));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> getAsync(
-            @NonNull final IGettable<String> urlGettable,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @SuppressWarnings("unchecked")
+    public <T> IAltFuture<T, Response> getAsync(
+            @NonNull final IGettable<T> urlGettable,
             final IGettable<Collection<Header>> headersGettable) {
-        return mNetReadThreadType.then(() -> get(urlGettable.get(), headersGettable.get()));
+        final IAltFuture<T, Response> headOfChain = new SettableAltFuture<>(mNetReadThreadType);
+        IAltFuture<T, Response> chainedAltFuture = headOfChain;
+        boolean chained = false;
+
+        if (urlGettable instanceof IAltFuture) {
+            chainedAltFuture = chainedAltFuture.await((IAltFuture<?, Response>) urlGettable);
+            chained = true;
+        }
+        if (headersGettable instanceof IAltFuture) {
+            chainedAltFuture = chainedAltFuture
+                    .await((IAltFuture<?, Collection<Header>>) headersGettable);
+            chained = true;
+        }
+
+        if (chained) {
+            final IAltFuture<Response, Response> tailOfChain = chainedAltFuture.then(() ->
+                    get(urlGettable.get(), headersGettable.get()));
+
+//            FIXME We need to return the chain as a single entity, or does forking fire up this alternate chain and back down?
+            return headOfChain;
+        }
+
+        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+                get(urlGettable.get(), headersGettable.get()));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> getAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> getAsync(
             final IGettable<Collection<Header>> headersGettable) {
-        return mNetReadThreadType.map(url -> get(url, headersGettable.get()));
+        return new RunnableAltFuture<>(mNetReadThreadType, (T url) ->
+                get(url, headersGettable.get()));
     }
 
     @NonNull
     @WorkerThread
-    public Response put(
-            @NonNull final String url,
+    public <T> Response put(
+            @NonNull final T url,
             @NonNull final RequestBody body) throws IOException {
         return put(url, null, body);
     }
 
     @NonNull
     @WorkerThread
-    public Response put(
-            @NonNull final String url,
+    public <T> Response put(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) throws IOException {
-        dd(mOrigin, "put " + url);
-        final Call call = setupCall(url, builder -> {
+        CLog.d(getOrigin(), "put " + url + " headers=" + headers + " body=" + body);
+
+        return execute(setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.put(body);
-        });
-
-        return execute(call);
+        }));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> putAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> putAsync(
+            @NonNull final T url,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.then(() -> put(url, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                put(url, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<RequestBody, Response> putAsync(
-            @NonNull final String url) {
-        return mNetWriteThradType.map(body -> put(url, body));
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<RequestBody, Response> putAsync(
+            @NonNull final T url) {
+        return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
+                put(url, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> putAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> putAsync(
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.map(url -> put(url, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                put(url, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> putAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> putAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.then(() -> put(url, headers, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                put(url, headers, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> putAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> putAsync(
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.map(url -> put(url, headers, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                put(url, headers, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<RequestBody, Response> putAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<RequestBody, Response> putAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) {
-        return mNetWriteThradType.map(body -> put(url, headers, body));
+        return new RunnableAltFuture<RequestBody, Response>(mNetWriteThreadType, (RequestBody body) ->
+                put(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
-    public Response post(
-            @NonNull final String url,
+    public <T> Response post(
+            @NonNull final T url,
             @NonNull final RequestBody body) throws IOException {
         return post(url, null, body);
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> postAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> postAsync(
+            @NonNull final T url,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.then(() -> post(url, null, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                post(url, null, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> postAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> postAsync(
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.map(url -> post(url, null, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                post(url, null, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<RequestBody, Response> postAsync(
-            @NonNull final String url) {
-        return mNetWriteThradType.map(body -> post(url, null, body));
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<RequestBody, Response> postAsync(
+            @NonNull final T url) {
+        return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
+                post(url, null, body));
     }
 
     @NonNull
-    @WorkerThread
-    public Response post(
-            @NonNull final URL url,
-            @NonNull final RequestBody body) throws IOException {
-        return post(url.toString(), null, body);
-    }
-
-    @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> postAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> postAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.then(() -> post(url, headers, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                post(url, headers, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> postAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> postAsync(
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) {
-        return mNetWriteThradType.map(url -> post(url, headers, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                post(url, headers, body));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<RequestBody, Response> postAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<RequestBody, Response> postAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) {
-        return mNetWriteThradType.map(body -> post(url, headers, body));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
+                post(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
-    public Response post(
-            @NonNull final String url,
+    public <T> Response post(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) throws IOException {
-        dd(mOrigin, "post " + url);
+        CLog.d(getOrigin(), "post " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.post(body);
@@ -333,44 +394,48 @@ public final class NetUtil {
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> deleteAsync(@NonNull final String url) {
-        return mNetWriteThradType.then(() -> delete(url, null));
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> deleteAsync(@NonNull final T url) {
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                delete(url, null));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> deleteAsync() {
-        return mNetWriteThradType.map(url -> delete(url, null));
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> deleteAsync() {
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                delete(url, null));
     }
 
     @NonNull
     @WorkerThread
-    public Response delete(@NonNull final String url) throws IOException {
+    public <T> Response delete(@NonNull final T url) throws IOException {
         return delete(url, null);
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, Response> deleteAsync(
-            @NonNull final String url,
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<?, Response> deleteAsync(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) {
-        return mNetWriteThradType.then(() -> delete(url, headers));
+        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+                delete(url, headers));
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<String, Response> deleteAsync(
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    public <T> IAltFuture<T, Response> deleteAsync(
             @Nullable final Collection<Header> headers) {
-        return mNetWriteThradType.map(url -> delete(url, headers));
+        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+                delete(url, headers));
     }
 
     @NonNull
     @WorkerThread
-    public Response delete(
-            @NonNull final String url,
+    public <T> Response delete(
+            @NonNull final T url,
             @Nullable final Collection<Header> headers) throws IOException {
-        dd(mOrigin, "delete " + url);
+        CLog.d(getOrigin(), "delete " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();
@@ -386,17 +451,17 @@ public final class NetUtil {
             return;
         }
 
-        for (Header header : headers) {
+        for (final Header header : headers) {
             builder.addHeader(header.name.utf8(), header.value.utf8());
         }
     }
 
     @NonNull
-    private Call setupCall(
-            @NonNull final String url,
+    private <T> Call setupCall(
+            @NonNull final T url,
             @Nullable final BuilderModifier builderModifier) throws IOException {
         final Request.Builder builder = new Request.Builder()
-                .url(url);
+                .url(url.toString());
         if (builderModifier != null) {
             builderModifier.modify(builder);
         }
@@ -422,14 +487,14 @@ public final class NetUtil {
         if (response.isRedirect()) {
             final String location = response.headers().get("Location");
 
-            dd(mOrigin, "Following HTTP redirect to " + location);
+            CLog.d(getOrigin(), "Following HTTP redirect to " + location);
             return get(location);
         }
         if (!response.isSuccessful()) {
             final String s = "Unexpected response code " + response;
             final IOException e = new IOException(s);
 
-            ee(mOrigin, s, e);
+            CLog.e(getOrigin(), s, e);
             throw e;
         }
 
@@ -464,8 +529,8 @@ public final class NetUtil {
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-        SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
-        NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
+        final SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
+        final NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
         return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
     }
@@ -485,7 +550,6 @@ public final class NetUtil {
 
             case NETWORK_TYPE_UMTS:
             case NETWORK_TYPE_1xRTT:
-            default:
                 return NetType.NET_3G;
 
             case NETWORK_TYPE_EHRPD:
@@ -499,11 +563,12 @@ public final class NetUtil {
                 return NetType.NET_3_5G;
 
             case NETWORK_TYPE_LTE:
+            default:
                 return NetType.NET_4G;
         }
     }
 
-    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G}
+    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G, NET_5G}
 
     /**
      * Functional interface to do something to an OkHttp request builder before dispatch

@@ -7,7 +7,7 @@ import com.futurice.cascade.AsyncAndroidTestCase;
 import org.junit.Test;
 
 @LargeTest
-public class AltFutureTest extends AsyncAndroidTestCase {
+public class RunnableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testCancel() throws Exception {

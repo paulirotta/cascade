@@ -5,11 +5,14 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade.i;
 
+import com.futurice.cascade.active.RunnableAltFuture;
+
 /**
- * Some implementations such as {@link com.futurice.cascade.active.SettableAltFuture} are not themselves
- * runnable in their {@link com.futurice.cascade.i.IThreadType}'s {@link java.util.concurrent.ExecutorService}.
- * <p>
- * Other, such as {@link com.futurice.cascade.active.AltFuture} are, and they are marked with this interface.
+ * A future value which will execute an {@link IAction} before the value is determined. The output
+ * of the action may determine the value, or the {@link #getUpchain()} value is used if no value is
+ * output by the action.
+ *
+ * See also {@link ISettableAltFuture}
  */
 public interface IRunnableAltFuture<IN, OUT> extends IAltFuture<IN, OUT>, Runnable {
 }

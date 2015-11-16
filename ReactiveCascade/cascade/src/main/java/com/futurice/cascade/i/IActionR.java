@@ -17,6 +17,12 @@ import java.util.concurrent.Callable;
  * @param <OUT>
  */
 public interface IActionR<PHANTOM_IN, OUT> extends Callable<OUT>, IBaseAction<PHANTOM_IN> {
+    /**
+     * @return
+     * @throws Exception                                  to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
+     */
     @Override // Callable
-    @NonNull    OUT call() throws Exception;
+    @NonNull
+    OUT call() throws Exception;
 }

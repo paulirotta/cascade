@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 @LargeTest
-public class AltFutureFutureTest extends AsyncAndroidTestCase {
+public class RunnableAltFutureFutureTest extends AsyncAndroidTestCase {
 
     @Before
     public void setUp() throws Exception {

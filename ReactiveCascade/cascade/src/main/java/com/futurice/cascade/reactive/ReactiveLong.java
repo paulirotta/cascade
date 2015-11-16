@@ -12,14 +12,13 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-
-import static com.futurice.cascade.Async.dd;
+import com.futurice.cascade.util.CLog;
 
 /**
  * A {@link Long} which can be updated in an atomic, thread-safe manner.
  * <p>
  * This is similar to an {@link java.util.concurrent.atomic.AtomicLong} with reactive bindings to
- * get and set the value in reactive chains (function sequences that can fire multiple times).
+ * get and set the from in reactive chains (function sequences that can fire multiple times).
  * <p>*
  * Created by phou on 30-05-2015.
  */
@@ -62,14 +61,13 @@ public class ReactiveLong extends ReactiveValue<Long> {
      */
     @CallSuper
     public long addAndGet(final long l) {
-        long currentValue;
-
         while (true) {
-            currentValue = get();
+            final long currentValue = get();
+
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
             }
-            dd(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
+            CLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -77,7 +75,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * Multiply two longs in a thread-safe manner
      *
      * @param l the second operand
-     * @return the updated value
+     * @return the updated from
      */
     @CallSuper
     public long multiplyAndGet(final long l) {
@@ -86,14 +84,14 @@ public class ReactiveLong extends ReactiveValue<Long> {
             if (compareAndSet(currentValue, currentValue * l)) {
                 return currentValue;
             }
-            dd(this, mOrigin, "Collision in concurrent add, will try again: " + currentValue);
+            CLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 
     /**
      * Increment the long in a thread-safe manner
      *
-     * @return the updated value
+     * @return the updated from
      */
     @CallSuper
     public long incrementAndGet() {
@@ -103,7 +101,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
     /**
      * Decrement the long in a thread-safe manner
      *
-     * @return the updated value
+     * @return the updated from
      */
     @CallSuper
     public long decrementAndGet() {

@@ -5,15 +5,15 @@ import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.i.IAltFuture;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SmallTest
-public class SettableAltFutureTest extends AsyncAndroidTestCase {
+public class SettableRunnableAltFutureTest extends AsyncAndroidTestCase {
 
     @Before
     @CallSuper
@@ -25,8 +25,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
     public void testCancel() throws Exception {
         final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertTrue(settableAltFuture.cancel("Just because"));
-        assertTrue(settableAltFuture.isCancelled());
-        assertEquals(null, settableAltFuture.safeGet());
+        assertEquals((Object) IAltFuture.VALUE_NOT_AVAILABLE, (Object) settableAltFuture.safeGet());
         try {
             settableAltFuture.get();
             failBecauseExceptionWasNotThrown(IllegalStateException.class);
@@ -36,28 +35,28 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testCancel1() throws Exception {
-
-    }
-
-    @Test
     public void testIsCancelled() throws Exception {
-
-    }
-
-    @Test
-    public void testIsCancelled1() throws Exception {
-
+        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        assertFalse(settableAltFuture.isCancelled());
+        assertTrue(settableAltFuture.cancel("Just because"));
+        assertTrue(settableAltFuture.isCancelled());
     }
 
     @Test
     public void testIsDone() throws Exception {
-
+        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        assertFalse(settableAltFuture.isDone());
+        settableAltFuture.set(42);
+        assertTrue(settableAltFuture.isDone());
     }
 
     @Test
-    public void testIsDone1() throws Exception {
-
+    public void testForkIsDone() throws Exception {
+        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        settableAltFuture.fork();
+        assertFalse(settableAltFuture.isDone());
+        settableAltFuture.set(42);
+        assertTrue(settableAltFuture.isDone());
     }
 
     @Test
@@ -72,17 +71,20 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testIsForked() throws Exception {
-
+        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        assertFalse(settableAltFuture.isForked());
+        settableAltFuture.fork();
+        assertTrue(settableAltFuture.isForked());
+        settableAltFuture.set(42);
+        assertTrue(settableAltFuture.isForked());
     }
 
     @Test
-    public void testIsForked1() throws Exception {
-
-    }
-
-    @Test
-    public void testFork() throws Exception {
-
+    public void testForkAfterSet() throws Exception {
+        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        settableAltFuture.set(42);
+        assertTrue(settableAltFuture.isForked());
+        settableAltFuture.fork();
     }
 
     @Test

@@ -16,7 +16,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.util.FileUtil;
 import com.futurice.cascade.util.NetUtil;
 import com.futurice.cascade.util.TestUtil;
@@ -24,8 +23,6 @@ import com.futurice.cascade.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static com.futurice.cascade.Async.originAsync;
 
 /**
  * A connectedTest harness which bootstraps the Async class
@@ -35,13 +32,11 @@ import static com.futurice.cascade.Async.originAsync;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
-    private static Async async;
     protected final Context mContext;
-    protected ImmutableValue<String> mOrigin;
     private TestUtil mTestUtil;
     private FileUtil mFileUtil;
     private NetUtil mNetUtil;
-    private long mDefaultTimeoutMillis = 1000;
+    private long mDefaultTimeoutMillis = 5000;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
@@ -62,12 +57,14 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     public void setUp() throws Exception {
         super.setUp();
 
-        if (async == null) {
-            async = new AsyncBuilder(mContext)
+        if (!AsyncBuilder.isInitialized()) {
+            new AsyncBuilder(mContext)
+                    .setStrictModeEnabled(false)
+                    .setShowErrorStackTraces(false)
                     .build();
         }
 
-        mOrigin = originAsync();
+//        mOrigin = originAsync();
     }
 
     @Test
@@ -89,7 +86,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * Access {@link TestUtil} value within an integration test
+     * Access {@link TestUtil} from within an integration test
      *
      * @return the test util implementation
      */
@@ -102,7 +99,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * Change value the default {@link TestUtil} implementation.
+     * Change from the default {@link TestUtil} implementation.
      * <p>
      * It is usually not needed to call this method.
      *
@@ -121,7 +118,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * Change value the default {@link FileUtil} implementation.
+     * Change from the default {@link FileUtil} implementation.
      * <p>
      * It is usually not needed to call this method.
      *
@@ -140,7 +137,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * Change value the default {@link NetUtil} implementation.
+     * Change from the default {@link NetUtil} implementation.
      * <p>
      * It is usually not needed to call this method.
      *
@@ -151,7 +148,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces value the logs to
+     * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces from the logs to
      * avoid confusion.
      * <p>
      * The default timeout of 1 second will be used unless this has been overridden by
@@ -159,8 +156,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param altFuture the action to be performed
      * @param <IN>      the type passed into the altFuture
-     * @param <OUT>     the type returned value the altFuture
-     * @return output value execution of altFuture
+     * @param <OUT>     the type returned from the altFuture
+     * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull
@@ -171,14 +168,14 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     /**
-     * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces value the logs to
+     * {@link #awaitDone(IAltFuture, long)} and hide intentional error stack traces from the logs to
      * avoid confusion.
      *
      * @param altFuture     the action to be performed
      * @param timeoutMillis maximum time to wait for the action to complete before throwing a {@link java.util.concurrent.TimeoutException}
      * @param <IN>          the type passed into the altFuture
-     * @param <OUT>         the type returned value the altFuture
-     * @return output value execution of altFuture
+     * @param <OUT>         the type returned from the altFuture
+     * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull
@@ -197,8 +194,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param altFuture the action to be performed
      * @param <IN>      the type passed into the altFuture
-     * @param <OUT>     the type returned value the altFuture
-     * @return output value execution of altFuture
+     * @param <OUT>     the type returned from the altFuture
+     * @return output from execution of altFuture
      * @throws Exception
      */
 
@@ -215,8 +212,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @param altFuture     the action to be performed
      * @param timeoutMillis maximum time to wait for the action to complete before throwing a {@link java.util.concurrent.TimeoutException}
      * @param <IN>          the type passed into the altFuture
-     * @param <OUT>         the type returned value the altFuture
-     * @return output value execution of altFuture
+     * @param <OUT>         the type returned from the altFuture
+     * @return output from execution of altFuture
      * @throws Exception
      */
     @NonNull

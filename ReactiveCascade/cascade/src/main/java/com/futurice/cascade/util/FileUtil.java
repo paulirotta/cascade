@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.IAsyncOrigin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -23,28 +23,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import static com.futurice.cascade.Async.FILE;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.throwRuntimeException;
 
-public final class FileUtil {
+public final class FileUtil extends Origin {
     private static final int BUFFER_SIZE = 16384;
     @NonNull
     private final Context mContext;
     @FileMode
     private final int mMode;
-    private final ImmutableValue<String> mOrigin;
     public FileUtil(
             @NonNull final Context context,
             @FileMode final int mode) {
         this.mContext = context;
         this.mMode = mode;
-        this.mOrigin = originAsync();
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <IN> IAltFuture<IN, IN> writeAsync(
             @NonNull final String fileName,
             @NonNull final byte[] bytes) {
@@ -54,7 +48,7 @@ public final class FileUtil {
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<String, byte[]> writeAsync(
             @NonNull final byte[] bytes) {
         return FILE.map(fileName -> {
@@ -64,7 +58,7 @@ public final class FileUtil {
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<byte[], byte[]> writeAsync(
             @NonNull final String fileName) {
         return FILE.then(bytes -> {
@@ -83,31 +77,31 @@ public final class FileUtil {
             fileOutputStream.write(bytes);
         } catch (FileNotFoundException e) {
             final String s = "Can not locate FILE: " + fileName;
-            dd(mOrigin, s);
-            throwRuntimeException(mOrigin, s, e);
+            CLog.d(this, s);
+            CLog.throwRuntimeException(this, s, e);
         } catch (IOException e) {
             final String s = "Can not write FILE: " + fileName;
-            dd(mOrigin, s);
-            throwRuntimeException(mOrigin, s, e);
+            CLog.d(this, s);
+            CLog.throwRuntimeException(this, s, e);
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    ee(mOrigin, "Can not close FILE output stream", e);
+                    CLog.e(this, "Can not close FILE output stream", e);
                 }
             }
         }
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<String, byte[]> readAsync() {
         return FILE.map(this::read);
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<?, byte[]> readAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
             return read(fileName);
@@ -133,19 +127,15 @@ public final class FileUtil {
                 bos.write(buffer, 0, count);
             }
         } catch (FileNotFoundException e) {
-            final String s = "Can not locate FILE: " + fileName;
-            dd(mOrigin, s);
-            throwRuntimeException(mOrigin, s, e);
+            CLog.throwRuntimeException(this, "Can not locate FILE: " + fileName, e);
         } catch (IOException e) {
-            final String s = "Can not read FILE: " + fileName;
-            dd(mOrigin, s);
-            throwRuntimeException(mOrigin, s, e);
+            CLog.throwRuntimeException(this, "Can not read FILE: " + fileName, e);
         } finally {
             if (fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    ee(mOrigin, "Can not close FILE input stream: " + fileName, e);
+                    CLog.e(this, "Can not close FILE input stream: " + fileName, e);
                 }
             }
         }
@@ -159,7 +149,7 @@ public final class FileUtil {
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
         return FILE.then(() -> {
             return delete(fileName);
@@ -167,7 +157,7 @@ public final class FileUtil {
     }
 
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<String, Boolean> deleteAsync() {
         return FILE.map(this::delete);
     }

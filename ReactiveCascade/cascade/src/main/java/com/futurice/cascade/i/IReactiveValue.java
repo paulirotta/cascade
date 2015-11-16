@@ -6,10 +6,7 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
-
-import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.IReactiveSource;
-import com.futurice.cascade.i.IReactiveTarget;
+import android.support.annotation.Nullable;
 
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.
@@ -19,44 +16,20 @@ import com.futurice.cascade.i.IReactiveTarget;
  *
  * @param <T>
  */
-public interface IReactiveValue<T> extends IGettable<T> {
+public interface IReactiveValue<T> extends ISafeGettable<T>, ISettable<T> {
     /**
-     * Get the current valueAR.
+     * Implementations are required to map this from to be <pre><code>
      * <p>
-     * The value returned may change at any time. Therefore if you need to use it several times, keep
-     * your algorithm internally consistent by keeping an unchanging copy in a local variable for the
-     * duration of the function.
-     * <p>
-     * Your function should also re-start either directly or indirectly the next time the value changes.
+     *     T t = safeGet();
+     *     return t != null ? t.toString() : null;
+     * </code>
+     * </pre>
      *
-     * @return
-     */
-    @Override // IGettable
-    @NonNull
-    T get();
-
-    /**
-     * Implementations are required to map this value to be <code>get().toString()</code>
-     *
-     * @return
+     * @return the string representation of the current from
      */
     @Override // Object
-    @NonNull
+    @Nullable
     String toString();
-
-    /**
-     * Set the current value.
-     * <p>
-     * In the case of {@link com.futurice.cascade.reactive.ReactiveValue} which also implements
-     * {@link IReactiveSource}, which will also trigger all
-     * down-chain {@link IReactiveTarget}s to receive the update.
-     * <p>
-     * Any associated chain will only fire if the value set is new, not a repeat of a previous value.
-     *
-     * @param value the new value asserted
-     * @return <code>true</code> if this is a change value the previous value
-     */
-    boolean set(@NonNull  T value);
 
     /**
      * Replace the current valueAR with an update, but only if the valueAR is the expected valueAR.
@@ -64,11 +37,20 @@ public interface IReactiveValue<T> extends IGettable<T> {
      * This is a high performance concurrent atomic compare-split-swap. For more information, see
      * {@link java.util.concurrent.atomic.AtomicReference#compareAndSet(Object, Object)}
      *
-     * @param expected - Must be of the same type as <code>update</code> and must be the current value
+     * @param expected - Must be of the same type as <code>update</code> and must be the current from
      *                 or the state will not change.
-     * @param update   - The asserted new value.
-     * @return true of the expected value was the current value and the change of state completed
+     * @param update   - The asserted new from.
+     * @return true of the expected from was the current from and the change of state completed
      * successfully
      */
-    boolean compareAndSet(@NonNull  T expected, @NonNull  T update);
+    boolean compareAndSet(@NonNull T expected,
+                          @NonNull T update);
+
+    /**
+     * Atomic from swap with the current from
+     *
+     * @param value asserted
+     * @return the from before this operation
+     */
+    T getAndSet(@NonNull T value);
 }

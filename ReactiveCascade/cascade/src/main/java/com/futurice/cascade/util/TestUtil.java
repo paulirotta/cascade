@@ -16,7 +16,7 @@ import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
 /**
  * Intergration test utilities.
  * <p>
- * Although there is technically nothing preventing these value running during normal program operation
+ * Although there is technically nothing preventing these from running during normal program operation
  * it is not advised. These methods may suspend one thread while waiting for a result run on another
  * thread. This is classic {@link java.util.concurrent.Future} behavior, but use of {@link IAltFuture}
  * is much safer and more performant in a production environment especially since the number of threads
@@ -41,8 +41,7 @@ public class TestUtil {
             @NonNull final IAltFuture<IN, OUT> altFuture,
             final long timeoutMillis)
             throws Exception {
-        return new AltFutureFuture<>(altFuture.fork())
-                .get(timeoutMillis, TimeUnit.MILLISECONDS);
+        return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     /**

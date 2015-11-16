@@ -15,6 +15,13 @@ import android.support.annotation.NonNull;
  * @throws Exception
  */
 public interface IActionTwo<IN1, IN2> extends IBaseAction<IN1> {
+    /**
+     *
+     * @param in1
+     * @param in2
+     * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
+     */
     void call(@NonNull IN1 in1,
               @NonNull IN2 in2) throws Exception;
 }

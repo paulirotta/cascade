@@ -9,6 +9,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.active.RunnableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.concurrent.Future;
  * One special case of bounded concurrency is {@link #isInOrderExecutor()} that can be guaranteed
  * only for a single-threaded or single-thread-at-a-time implementation. {@link UIExecutorService}
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
- * methods. It can be accessed value anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
+ * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>
  * which will run with less object creation overhead split synchronously if possible.
  */
@@ -88,17 +89,17 @@ public interface IThreadType extends INamed {
      * Generally out of order execution is supported on multi-thread pools such as
      * {@link com.futurice.cascade.Async#WORKER} but not strictly sequential operations such as write to file.
      * <p>
-     * This is called for you when it is time to add the {@link com.futurice.cascade.active.AltFuture} to the
-     * {@link java.util.concurrent.ExecutorService}. If the <code>AltFuture</code> is not the head
+     * This is called for you when it is time to add the {@link RunnableAltFuture} to the
+     * {@link java.util.concurrent.ExecutorService}. If the <code>RunnableAltFuture</code> is not the head
      * of the mQueue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
-     * to allow out-of-order execution, subscribe the <code>AltFuture</code> will be added so as to be the next
+     * to allow out-of-order execution, subscribe the <code>RunnableAltFuture</code> will be added so as to be the next
      * item to run. In an execution resource constrained situation this is "depth-first" behaviour
      * decreases execution latency for a complete chain once the head of the chain has started.
      * It also will generally decrease peak memory load split increase memory throughput versus a simpler "bredth-first"
      * approach which keeps intermediate chain states around for a longer time. Some
      * {@link com.futurice.cascade.i.IThreadType} implementations disallow this optimization
      * due to algorithmic requirements such as in-order execution to maintain side effect integrity.
-     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing value
+     * They do this by setting <code>inOrderExecution</code> to <code>true</code> or executing from
      * a {@link java.util.concurrent.BlockingQueue}, not a {@link java.util.concurrent.BlockingDeque}
      * <p>
      * Overriding alternative implementations may safely choose to call synchronously or with
@@ -137,24 +138,24 @@ public interface IThreadType extends INamed {
     /**
      * Convert this action into a runnable which will catch and handle
      *
-     * @param action
-     * @param <IN>
+     * @param action the work to be performed
+     * @param <IN>   the type of input argument expected by the action
      * @return
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action);
 
     /**
      * Convert this action into a runnable
      *
-     * @param action
+     * @param action the work to be performed
      * @param onErrorAction
-     * @param <IN>
+     * @param <IN>   the type of input argument expected by the action
      * @return
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN> Runnable wrapActionWithErrorProtection(
             @NonNull IAction<IN> action,
             @NonNull IOnErrorAction onErrorAction);
@@ -162,34 +163,31 @@ public interface IThreadType extends INamed {
     /**
      * Complete the action asynchronously.
      * <p>
-     * No input values are fed in value the chain.
+     * No input values are fed in from the chain.
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    //TODO CHECK CONTRACT- no automatic concurrency, sequential by default, let developers explicitly split() as they prefer
     <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action);
 
     /**
      * Complete the action asynchronously.
      * <p>
-     * One input value is fed in value the chain and thus determined at execution time.
+     * One input from is fed in from the chain and thus determined at execution time.
      *
-     * @param action
-     * @param <IN>
+     * @param action the work to be performed
+     * @param <IN>   the type of input argument expected by the action
      * @return
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
     <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action);
 
     /**
      * Complete several actions asynchronously.
      * <p>
-     * No input values are fed in value the chain, they may
+     * No input values are fed in from the chain, they may
      * be fetched directly at execution time.
      *
      * @param actions a comma-seperated list of work items to be performed
@@ -198,34 +196,33 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
     <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions);
 
     /**
-     * Set the chain value to a value which can be determined at the time the chain is built.
+     * Set the chain from to a from which can be determined at the time the chain is built.
      * This is most suitable for starting a chain. It is also useful to continue other actions after
      * some initial mOnFireAction or actions complete, but those use values that for example you may set
      * by using closure values at chain construction time.
      *
-     * @param value the pre-determined value to be injected into the chain at this point
-     * @param <IN>  the type of input argument expected by the action
+     * @param value the pre-determined from to be injected into the chain at this point
+     * @param <OUT> the type of input argument expected by the action
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <IN> IAltFuture<?, IN> value(@NonNull IN value);
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    <OUT> ISettableAltFuture<?, OUT> from(@NonNull OUT value);
 
     /**
-     * Set the chain to start value a value which will be set in the future.
+     * Set the chain to start with a value which will be set in the future.
      * <p>
-     * To start execution of the chain, set(IN) the vlaue of the returned IAltFuture
+     * To start execution of the chain, set(OUT) the value of the returned IAltFuture
      *
-     * @param <IN> the type of input argument expected by the action
+     * @param <OUT> the type of input argument expected by the action
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
-    <IN> IAltFuture<?, IN> value();
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    <OUT> ISettableAltFuture<?, OUT> from();
 
     /**
      * Complete the mOnFireAction asynchronously
@@ -236,12 +233,12 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action);
 
     /**
-     * Perform several actions which need no input value (except perhaps values value closure escape),
-     * each of which returns a value of the same type, and return those results in a list.
+     * Perform several actions which need no input from (except perhaps values from closure escape),
+     * each of which returns a from of the same type, and return those results in a list.
      *
      * @param actions a comma-seperated list of work items to be performed
      * @param <IN>    the type of input argument expected by the action
@@ -250,18 +247,8 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions);
-
-//    /**
-//     *
-//     * @param altFuture
-//     * @param <IN>    the type of input argument expected by the action
-//     * @param <OUT>   the type of output returned by the action
-//     * @return the altFuture
-//     */
-//    @NonNull
-//    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IAltFuture<IN, OUT> altFuture);
 
     /**
      * Transform input A to output T, possibly with other input which may be fetched directly in the function.
@@ -272,7 +259,7 @@ public interface IThreadType extends INamed {
      * @return a chainable handle to track completion of this unit of work
      */
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action);
 
     /**
@@ -286,11 +273,11 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    @CheckResult(suggest = "IAltFuture#fork()")
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
     /**
-     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link com.futurice.cascade.active.AltFuture}
+     * Place this the {@link IRunnableAltFuture} implementation such as the default {@link RunnableAltFuture}
      * in to an execution mQueue associated with this {@link IThreadType}.
      * <p>
      * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
@@ -319,7 +306,7 @@ public interface IThreadType extends INamed {
      * Use the returned Future to know when current tasks complete.
      * <p>
      * <code>
-     * // Do not get value a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
+     * // Do not get from a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
      * shutdown(5000, () -> doSomethingAfterShutdown()).get(); // Block calling thread up to 5 seconds
      * </code>
      * <p>

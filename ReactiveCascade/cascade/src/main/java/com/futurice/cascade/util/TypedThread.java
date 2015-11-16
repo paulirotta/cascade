@@ -16,18 +16,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.futurice.cascade.Async.e;
-
 /**
  * This is a marker class to aid in runtime tests.
  */
 @NotCallOrigin
 public class TypedThread extends Thread {
-    private static final String TAG = TypedThread.class.getSimpleName();
     public static final ThreadGroup THREAD_GROUP = new ThreadGroup("ThreadTypeThreadGroup") {
         @Override
         public void uncaughtException(@NonNull  final Thread t, @NonNull  final Throwable throwable) {
-            e(TAG, "uncaughtException in " + t, throwable);
+            CLog.e(this, "uncaughtException in " + t, throwable);
         }
     };
     /*
@@ -131,7 +128,7 @@ public class TypedThread extends Thread {
         if (currentThreadTypes.size() == 1) {
             currentThreadType = currentThreadTypes.get(0);
         } else {
-            Async.vv(this, currentThreadTypes.size() + " threadTypes for this Thread, can not disambiguate");
+            CLog.v(this, currentThreadTypes.size() + " threadTypes for this Thread, can not disambiguate");
         }
 
         return currentThreadType;

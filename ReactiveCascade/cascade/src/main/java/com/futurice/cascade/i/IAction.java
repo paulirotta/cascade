@@ -16,7 +16,8 @@ public interface IAction<PHANTOM_IN> extends IBaseAction<PHANTOM_IN> {
      * <p>
      * If parameters need to be passed in, see for example {@link IActionOne}
      *
-     * @throws Exception
+     * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
      */
     void call() throws Exception;
 }

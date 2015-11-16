@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IAltFuture;
+import com.futurice.cascade.i.IGettable;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -20,7 +21,7 @@ import static com.futurice.cascade.Async.currentThreadType;
 
 /**
  * A {@link java.util.concurrent.Future} which can be used to safely wait for the results
- * value an {@link IAltFuture}.
+ * from an {@link IAltFuture}.
  * <p>
  * Normally we don't like to hold one thread waiting for the result of another thread. Doing this
  * on a routine basis causes lots of mContext switching and can backlog into either many threads
@@ -32,7 +33,8 @@ import static com.futurice.cascade.Async.currentThreadType;
  *
  * @param <OUT>
  */
-public class AltFutureFuture<IN, OUT> implements Future<OUT> {
+public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGettable<OUT> {
+    private static final long DEFAULT_GET_TIMEOUT = 5000;
     private static final long CHECK_INTERVAL = 50; // This is a fallback in case you for example have an error and fail to altFuture.notifyAll() when finished
     private final IAltFuture<IN, OUT> altFuture;
     private final Object mutex = new Object();
@@ -68,16 +70,14 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
 
     @Override // Future
     @NonNull
-    public OUT get() throws InterruptedException, ExecutionException {
-        final OUT out;
-
+    public OUT get() {
         try {
-            out = get(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            throw new ExecutionException("Timeout waiting for AltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
+            return get(DEFAULT_GET_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            CLog.throwRuntimeException(this, "Timeout waiting for RunnableAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
         }
 
-        return out;
+        return null; //FIXME null return
     }
 
     /**
@@ -86,14 +86,14 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
      */
     public void assertThreadSafe() {
         if (altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
-            throw new UnsupportedOperationException("Do not run your tests value the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
+            throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
         }
     }
 
     /**
      * Block the current thread until the associated IAltFuture completes or errors out
      *
-     * @param timeout max time to wait for the AltFuture to complete
+     * @param timeout max time to wait for the RunnableAltFuture to complete
      * @param unit    timeout units
      * @return null if there was an exception during execution
      * @throws InterruptedException
@@ -114,18 +114,17 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
-            altFuture.then(() -> {
-                // Attach this to speed up and notify to continue the Future when the AltFuture finishes
-                // For speed, we don't normally notify after AltFuture end
+            final IAltFuture<IN, OUT> iaf = altFuture.then(() -> {
+                // Attach this to speed up and notify to continue the Future when the RunnableAltFuture finishes
+                // For speed, we don't normally notify after RunnableAltFuture end
                 synchronized (mutex) {
                     mutex.notifyAll();
                 }
-            })
-                    .fork();
+            });
         }
         while (!isDone()) {
             if (System.currentTimeMillis() >= endTime) {
-                Async.throwTimeoutException(this, "Waited " + (System.currentTimeMillis() - t) + "ms for AltFuture to end: " + altFuture);
+                CLog.throwTimeoutException(this, "Waited " + (System.currentTimeMillis() - t) + "ms for RunnableAltFuture to end: " + altFuture);
             }
             synchronized (mutex) {
                 final long t2 = Math.min(CHECK_INTERVAL, endTime - System.currentTimeMillis());

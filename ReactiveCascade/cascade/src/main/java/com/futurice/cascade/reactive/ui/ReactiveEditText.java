@@ -9,7 +9,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.UiThread;
 import android.text.Editable;
@@ -18,64 +17,64 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
+import com.futurice.cascade.util.AssertUtil;
+import com.futurice.cascade.util.CLog;
 
 import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.assertNotNull;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.vv;
 
 /**
  * An {@link EditText} which can be manipulated and which in turn manipulates a supporting
- * {@link ReactiveValue<String>} which reflects the current on-screen value
- *
+ * {@link ReactiveValue<String>} which reflects the current on-screen from
+ * <p>
  * Created by Paul Houghton on 12-03-2015.
  */
 @NotCallOrigin
-public class ReactiveEditText extends EditText implements INamed {
-    @Nullable
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
+public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
+    @NonNull
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? CLog.DEFAULT_ORIGIN : CLog.originAsync();
     public volatile ReactiveValue<String> mReactiveValue;
     private TextWatcher mTextWatcher;
 
 //TODO Constructors which support a string validator (example: trim whitespace or fix capitalization as you type)
 
-    public ReactiveEditText(@NonNull  final Context context) {
+    public ReactiveEditText(@NonNull final Context context) {
         super(context);
 
         mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
-            @NonNull  final Context context,
-            @NonNull  final ReactiveValue<String> reactiveValue) {
+            @NonNull final Context context,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context);
 
         this.mReactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs) {
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
         mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
     }
 
     public ReactiveEditText(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
-            @NonNull  final ReactiveValue<String> reactiveValue) {
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs);
 
         this.mReactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -84,11 +83,11 @@ public class ReactiveEditText extends EditText implements INamed {
     }
 
     public ReactiveEditText(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
-            @NonNull  final ReactiveValue<String> reactiveValue) {
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
 
         this.mReactiveValue = reactiveValue;
@@ -96,9 +95,9 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @TargetApi(21)
     public ReactiveEditText(
-            @NonNull  final String name,
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
             @StyleRes
@@ -110,14 +109,14 @@ public class ReactiveEditText extends EditText implements INamed {
 
     @TargetApi(21)
     public ReactiveEditText(
-            @NonNull  final String name,
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final String name,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @AttrRes
             final int defStyleAttr,
             @StyleRes
             final int defStyleRes,
-            @NonNull  final ReactiveValue<String> reactiveValue) {
+            @NonNull final ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         this.mReactiveValue = reactiveValue;
@@ -132,7 +131,7 @@ public class ReactiveEditText extends EditText implements INamed {
      */
     @NonNull
     public ReactiveValue<String> setReactiveValue(
-            @NonNull  final ReactiveValue<String> reactiveValue,
+            @NonNull final ReactiveValue<String> reactiveValue,
             final boolean fire) {
         UI.run(() -> {
             this.mReactiveValue = reactiveValue;
@@ -153,26 +152,31 @@ public class ReactiveEditText extends EditText implements INamed {
     @Override // View
     @UiThread
     public void onAttachedToWindow() {
-        assertNotNull(mOrigin);
         final String currentText = mReactiveValue.get();
         setText(currentText);
 
-        vv(this, mOrigin, "onAttachedToWindow " + getName() + ", value=" + currentText);
+        CLog.v(this, "onAttachedToWindow " + getName() + ", from=" + currentText);
 
         mReactiveValue.subscribe(UI, this::setText);
 
         if (mTextWatcher == null) {
             mTextWatcher = new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                public void beforeTextChanged(@NonNull final CharSequence s,
+                                              final int start,
+                                              final int count,
+                                              final int after) {
                 }
 
                 @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                public void onTextChanged(@NonNull final CharSequence s,
+                                          final int start,
+                                          final int before,
+                                          final int count) {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
+                public void afterTextChanged(@NonNull final Editable s) {
                     setSelection(s.length());
                     mReactiveValue.set(s.toString());
                 }
@@ -186,10 +190,16 @@ public class ReactiveEditText extends EditText implements INamed {
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        assertNotNull(mOrigin);
-        vv(this, mOrigin, "onDetachedFromWindow " + getName() + ", current value=" + getText());
+        AssertUtil.assertNotNull(mOrigin);
+        CLog.v(this, "onDetachedFromWindow " + getName() + ", current from=" + getText());
         mReactiveValue.unsubscribeAll("onDetachedFromWindow");
 
         super.onDetachedFromWindow();
+    }
+
+    @NonNull
+    @Override
+    public ImmutableValue<String> getOrigin() {
+        return mOrigin;
     }
 }

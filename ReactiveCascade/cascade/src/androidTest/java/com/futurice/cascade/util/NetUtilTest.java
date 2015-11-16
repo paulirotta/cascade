@@ -4,8 +4,8 @@ import android.support.annotation.RequiresPermission;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.active.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.framed.Header;
@@ -68,7 +68,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     @Test
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
-                .value("http://httpbin.org/get")
+                .from("http://httpbin.org/get")
                 .then(getNetUtil().getAsync());
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }
@@ -83,25 +83,24 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testGetAsyncFromWithHeaders() throws Exception {
+    public void testValueGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
         IAltFuture<?, Response> iaf = WORKER
-                .value("http://httpbin.org/headers")
+                .from("http://httpbin.org/headers")
                 .then(getNetUtil().getAsync(headers));
         assertThat(awaitDone(iaf).body().string()).contains("ValueT");
     }
 
     @Test
-    public void testGetAsyncFromWithIGettableWithHeaders() throws Exception {
+    public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));
-        ImmutableValue<Collection<Header>> immutableValue = new ImmutableValue<>();
+        SettableAltFuture<?, Collection<Header>> altFuture = new SettableAltFuture<>(WORKER);
+        altFuture.set(headers);
         IAltFuture<?, Response> iaf = WORKER
-                .value("http://httpbin.org/get")
-                .then(getNetUtil().getAsync(immutableValue));
-        immutableValue.then(iaf::fork);
-        immutableValue.set(headers);
+                .from("http://httpbin.org/get")
+                .then(getNetUtil().getAsync(altFuture));
         assertThat(awaitDone(iaf).body().string()).contains("VaGG");
     }
 

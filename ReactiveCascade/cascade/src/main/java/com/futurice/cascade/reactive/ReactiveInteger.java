@@ -12,14 +12,13 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-
-import static com.futurice.cascade.Async.dd;
+import com.futurice.cascade.util.CLog;
 
 /**
  * An {@link Integer} which can be updated in an atomic, thread-safe manner.
  * <p>
  * This is similar to an {@link java.util.concurrent.atomic.AtomicInteger} with reactive bindings to
- * get and set the value in reactive chains (function sequences that can fire multiple times).
+ * get and set the from in reactive chains (function sequences that can fire multiple times).
  * <p>
  * Created by phou on 30-04-2015.
  */
@@ -62,14 +61,13 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      */
     @CallSuper
     public int addAndGet(final int i) {
-        int currentValue;
-
         while (true) {
-            currentValue = get();
+            final int currentValue = get();
+
             if (compareAndSet(currentValue, currentValue + i)) {
                 return currentValue;
             }
-            dd(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
+            CLog.d(this, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -83,17 +81,18 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     public int multiplyAndGet(final int i) {
         while (true) {
             final int currentValue = get();
+
             if (compareAndSet(currentValue, currentValue * i)) {
                 return currentValue;
             }
-            dd(this, mOrigin, "Collision concurrent add, will try again: " + currentValue);
+            CLog.d(this, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
     /**
      * Increment the integer in a thread-safe manner
      *
-     * @return the value after increment
+     * @return the from after increment
      */
     @CallSuper
     public int incrementAndGet() {
@@ -103,7 +102,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
     /**
      * Decrement the integer in a thread-safe manner
      *
-     * @return the value after decriment
+     * @return the from after decriment
      */
     @CallSuper
     public int decrementAndGet() {

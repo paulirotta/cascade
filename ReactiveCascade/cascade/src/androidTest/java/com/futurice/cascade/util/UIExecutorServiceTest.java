@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
+import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.i.IAltFuture;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +16,13 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.SERIAL_WORKER;
+import static com.futurice.cascade.Async.WORKER;
 import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.assertEqual;
-import static com.futurice.cascade.Async.vv;
+import static com.futurice.cascade.util.AssertUtil.assertEqual;
+import static com.futurice.cascade.Async.v;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest
@@ -62,7 +65,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             };
             fakeUiThread.start();
 
-            for (; ; ) {
+            while (true) {
                 if (uiExecutorService != null) {
                     break;
                 }
@@ -77,7 +80,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         synchronized (looperFlushMutex) {
             uiExecutorService.execute(() -> {
                 synchronized (looperFlushMutex) {
-                    vv(mOrigin, "Looper flushed");
+                    v("TEST", "Looper flushed");
                     looperFlushMutex.notifyAll();
                 }
             });
@@ -121,31 +124,11 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testInvokeAllCallableTimeout() throws Exception {
-        AtomicInteger ai = new AtomicInteger(0);
-        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        callableList.add(() -> {
-            ai.set(100);
-            return 100;
-        });
-        callableList.add(() -> {
-            ai.set(200);
-            return 200;
-        });
-        SERIAL_WORKER.execute(() -> {
-            uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
-        });
-
-        awaitDone(SERIAL_WORKER.then(() -> {
-        }));
-        assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isGreaterThan(0);
-    }
-
-    @Test
     public void testInvokeAllCallable() throws Exception {
-        final AtomicInteger ai = new AtomicInteger(0);
-        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        AtomicInteger ai = new AtomicInteger(0);
+        ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+
         callableList.add(() -> {
             ai.set(100);
             return 100;
@@ -154,49 +137,102 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             ai.set(ai.get() + 200);
             return 200;
         });
-        SERIAL_WORKER.execute(() -> {
-            uiExecutorService.invokeAll(callableList);
+        callableList.add(() -> {
+            saf.set("done");
+            return 1;
         });
+        uiExecutorService.invokeAll(callableList);
+        awaitDone(saf);
+        assertThat(sendCount).isGreaterThan(0);
+        assertThat(ai.get()).isEqualTo(300);
+    }
 
-        awaitDone(SERIAL_WORKER.then(() -> {
-        }));
+    @Test
+    public void testInvokeAllCallableTimeout() throws Exception {
+        AtomicInteger ai = new AtomicInteger(0);
+        ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+
+        callableList.add(() -> {
+            ai.set(100);
+            return 100;
+        });
+        callableList.add(() -> {
+            ai.set(ai.get() + 200);
+            return 200;
+        });
+        callableList.add(() -> {
+            saf.set("done");
+            return 1;
+        });
+        uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
+        awaitDone(saf);
         assertThat(sendCount).isGreaterThan(0);
         assertThat(ai.get()).isEqualTo(300);
     }
 
     @Test
     public void testInvokeAnyCallable() throws Exception {
-        final AtomicInteger ai = new AtomicInteger(0);
-        final ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        AtomicInteger ai = new AtomicInteger(0);
+        ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+
         callableList.add(() -> {
             ai.set(100);
             return 100;
         });
         callableList.add(() -> {
-            ai.set(200 + ai.get());
+            ai.set(ai.get() + 200);
             return 200;
         });
-        SERIAL_WORKER.execute(() -> {
-            uiExecutorService.invokeAny(callableList);
+        callableList.add(() -> {
+            saf.set("done");
+            return 1;
         });
-
-        awaitDone(SERIAL_WORKER.then(() -> {
-        }));
+        uiExecutorService.invokeAny(callableList);
+        awaitDone(saf);
         assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isEqualTo(300);
+        assertThat(ai.get()).isGreaterThan(0);
+    }
+
+    @Test
+    public void testInvokeAnyCallableTimeout() throws Exception {
+        AtomicInteger ai = new AtomicInteger(0);
+        ArrayList<Callable<Integer>> callableList = new ArrayList<>();
+        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+
+        callableList.add(() -> {
+            ai.set(100);
+            return 100;
+        });
+        callableList.add(() -> {
+            ai.set(ai.get() + 200);
+            return 200;
+        });
+        callableList.add(() -> {
+            saf.set("done");
+            return 1;
+        });
+        uiExecutorService.invokeAny(callableList, 1000, TimeUnit.MILLISECONDS);
+        awaitDone(saf);
+        assertThat(sendCount).isGreaterThan(0);
+        assertThat(ai.get()).isGreaterThan(0);
     }
 
     @Test
     public void testExecute() throws Exception {
-        //TODO Not a completely thread-safe test. We need fluah() logic
         final AtomicInteger ai = new AtomicInteger(0);
-        SERIAL_WORKER.execute(() -> {
+        WORKER.execute(() -> {
             uiExecutorService.execute(() -> {
                 ai.set(100);
             });
         });
-        awaitDone(SERIAL_WORKER.then(() -> {
-        })); // Hold for UI to complete
-        assertEqual(100, ai.get());
+        long endTime = System.currentTimeMillis() + 1000;
+        while (!(ai.get() == 100)) {
+            if (System.currentTimeMillis() > endTime) {
+                throw new TimeoutException();
+            }
+            Thread.yield();
+        }
     }
 }

@@ -9,60 +9,60 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.IReactiveSource;
+import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
+import com.futurice.cascade.util.AssertUtil;
+import com.futurice.cascade.util.CLog;
 
 import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.assertNotNull;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.vv;
 
 /**
- * Change the displayed value value any thread by calling <code>view.bindable.set(String value)</code>
+ * Change the displayed from from any thread by calling <code>view.bindable.set(String from)</code>
  * <p>
  * Examples:
  * <pre><code>
  *     AtomicTextView view = new AtomicTextView(Activity.this);
  * <p>
- *     // Inject shared concurrent data value your model
+ *     // Inject shared concurrent data from your model
  *     AtomicValue<String> statusAtomicValue = new AtomicValue<>();
  *     AtomicTextView liveView = new AtomicTextView(Activity.this, statusAtomicValue);
  *     statusAtomicView.set("Something updated live to the screen");
  * </code></pre>
  */
 @NotCallOrigin
-public class ReactiveTextView extends TextView implements INamed {
-    @Nullable
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? null : originAsync();
-    private IReactiveSource<String> mReactiveSource; // Access only value UI thread
-    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only value UI thread
+public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
+    @NonNull
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? CLog.DEFAULT_ORIGIN : CLog.originAsync();
+    private IReactiveSource<String> mReactiveSource; // Access only from UI thread
+    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
 
-    public ReactiveTextView(@NonNull  final Context context) {
+    public ReactiveTextView(@NonNull final Context context) {
         super(context);
 
         mReactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs) {
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs) {
         super(context, attrs);
 
         mReactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @StyleRes final int defStyle) {
         super(context, attrs, defStyle);
 
@@ -71,8 +71,8 @@ public class ReactiveTextView extends TextView implements INamed {
 
     @TargetApi(21)
     public ReactiveTextView(
-            @NonNull  final Context context,
-            @NonNull  final AttributeSet attrs,
+            @NonNull final Context context,
+            @NonNull final AttributeSet attrs,
             @AttrRes final int defStyleAttr,
             @StyleRes final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -111,17 +111,17 @@ public class ReactiveTextView extends TextView implements INamed {
      * Change the view model used to set the display
      *
      * @param reactiveValue the new view model
-     * @param fire          push the current value of the view model to the screen after this action completes on the UI thread
+     * @param fire          push the current from of the view model to the screen after this action completes on the UI thread
      */
-    public void setReactiveValue(@NonNull  final ReactiveValue<String> reactiveValue, final boolean fire) {
-        assertNotNull(mOrigin);
+    public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
+        AssertUtil.assertNotNull(mOrigin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute(() -> {
             if (mReactiveSource != null) {
                 reactiveValue.unsubscribeSource(s, mReactiveSource);
             }
-            vv(this, mOrigin, s);
+            CLog.v(this, s);
             this.mReactiveValue = reactiveValue;
             subscribe();
             if (fire) {
@@ -133,5 +133,11 @@ public class ReactiveTextView extends TextView implements INamed {
     @NonNull
     public ReactiveValue<String> getReactiveValue() {
         return this.mReactiveValue;
+    }
+
+    @NonNull
+    @Override
+    public ImmutableValue<String> getOrigin() {
+        return mOrigin;
     }
 }

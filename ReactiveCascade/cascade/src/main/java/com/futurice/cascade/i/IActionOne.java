@@ -18,11 +18,14 @@ import android.support.annotation.NonNull;
  * Chaining with a <code>RunnableResult</code> has the performance advantage that it is non-blocking. Only one
  * thread is involved at a time. The {@link com.futurice.cascade.Async} classes will fork that continuation mOnFireAction to
  * involve a second thread if needed, however note that with idiomatic usage <code>RunnableResult</code>
- * is a tail function. The first thread is free at this point split the result can call synchronously on
+ * is a mTail function. The first thread is free at this point split the result can call synchronously on
  * the current thread.
- *
- * @throws Exception
  */
 public interface IActionOne<IN> extends IBaseAction<IN> {
+    /**
+     * @param value
+     * @throws Exception                                  to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
+     */
     void call(@NonNull IN value) throws Exception;
 }

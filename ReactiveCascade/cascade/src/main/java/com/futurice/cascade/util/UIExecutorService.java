@@ -12,7 +12,6 @@ import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
 import com.futurice.cascade.i.NotCallOrigin;
 
 import java.util.ArrayList;
@@ -28,11 +27,6 @@ import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.ii;
-import static com.futurice.cascade.Async.originAsync;
-import static com.futurice.cascade.Async.throwIllegalStateException;
-import static com.futurice.cascade.Async.throwRuntimeException;
-
 /**
  * Treat the system UI thread as an ExecutorService
  * <p>
@@ -43,25 +37,24 @@ import static com.futurice.cascade.Async.throwRuntimeException;
  * Since the system UI thread runs forever, not all {@link java.util.concurrent.ExecutorService}
  * items, for example related to lifecycle. make sense to implement.
  */
-public final class UIExecutorService implements ExecutorService {
-    @NonNull    private final Handler mHandler;
-    @NonNull    private final ImmutableValue<String> mOrigin;
+public final class UIExecutorService extends Origin implements ExecutorService {
+    @NonNull
+    private final Handler mHandler;
 
-    public UIExecutorService(@NonNull  final Handler handler) {
+    public UIExecutorService(@NonNull final Handler handler) {
         this.mHandler = handler;
-        this.mOrigin = originAsync();
     }
 
     @Override // ExecutorService
     public void shutdown() {
-        ii(mOrigin, "shutdown() called on UiAsync default ExecutorService");
+        CLog.i(this, "shutdown() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("Shutdown() called on UiAsync default ExecutorService");
     }
 
     @NonNull
     @Override // ExecutorService
     public List<Runnable> shutdownNow() {
-        ii(mOrigin, "shutdownNow() called on UiAsync default ExecutorService");
+        CLog.i(this, "shutdownNow() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("ShutdownNow() called on UiAsync default ExecutorService");
     }
 
@@ -78,15 +71,15 @@ public final class UIExecutorService implements ExecutorService {
     @Override // ExecutorService
     public boolean awaitTermination(
             final long timeout,
-            @NonNull  final TimeUnit unit)
+            @NonNull final TimeUnit unit)
             throws InterruptedException {
-        ii(mOrigin, "awaitTermination() called on UiAsync default ExecutorService");
+        CLog.i(this, "awaitTermination() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("awaitTermination() called on UiAsync default ExecutorService");
     }
 
     @NonNull
     @Override // ExecutorService
-    public <T> Future<T> submit(@NonNull  final Callable<T> callable) {
+    public <T> Future<T> submit(@NonNull final Callable<T> callable) {
         final FutureTask<T> future = new FutureTask<>(callable);
         execute(future);
 
@@ -96,8 +89,8 @@ public final class UIExecutorService implements ExecutorService {
     @NonNull
     @Override // ExecutorService
     public <T> Future<T> submit(
-            @NonNull  final Runnable runnable,
-            @NonNull  final T result) {
+            @NonNull final Runnable runnable,
+            @NonNull final T result) {
         final FutureTask<T> future = new FutureTask<>(() -> {
             runnable.run();
             return result;
@@ -110,7 +103,7 @@ public final class UIExecutorService implements ExecutorService {
     @NonNull
     @NotCallOrigin
     @Override // ExecutorService
-    public Future submit(@NonNull  final Runnable runnable) {
+    public Future submit(@NonNull final Runnable runnable) {
         if (runnable instanceof RunnableFuture) {
             mHandler.post(runnable);
             return (Future) runnable;
@@ -119,7 +112,8 @@ public final class UIExecutorService implements ExecutorService {
         FutureTask<Object> future = new FutureTask<>(new Callable<Object>() {
             @Override
             @NotCallOrigin
-            @Nullable            public Object call() throws Exception {
+            @Nullable
+            public Object call() throws Exception {
                 runnable.run();
                 return null;
             }
@@ -130,10 +124,11 @@ public final class UIExecutorService implements ExecutorService {
         return future;
     }
 
+    @NonNull
     @Override // ExecutorService
     @WorkerThread
     public <T> List<Future<T>> invokeAll(
-            @NonNull  final Collection<? extends Callable<T>> callables)
+            @NonNull final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() > 0) {
@@ -143,7 +138,7 @@ public final class UIExecutorService implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get();
             } catch (ExecutionException e) {
-                throwRuntimeException(mOrigin, "Can not get() last element of invokeAll()", e);
+                CLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
             }
         }
 
@@ -154,11 +149,12 @@ public final class UIExecutorService implements ExecutorService {
     @Override // ExecutorService
     @WorkerThread
     public <T> List<Future<T>> invokeAll(
-            @NonNull  final Collection<? extends Callable<T>> callables,
+            @NonNull final Collection<? extends Callable<T>> callables,
             final long timeout,
-            @NonNull  final TimeUnit unit)
+            @NonNull final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
+
         if (callables.size() > 0) {
             for (Callable<T> callable : callables) {
                 futures.add(submit(callable));
@@ -166,9 +162,9 @@ public final class UIExecutorService implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get(timeout, unit);
             } catch (ExecutionException e) {
-                throwRuntimeException(mOrigin, "Can not get() last element of invokeAll()", e);
+                CLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
             } catch (TimeoutException e) {
-                throwRuntimeException(mOrigin, "Timeout waiting to get() last element of invokeAll()", e);
+                CLog.throwRuntimeException(this, "Timeout waiting to get() last element of invokeAll()", e);
             }
         }
 
@@ -177,14 +173,15 @@ public final class UIExecutorService implements ExecutorService {
 
     @Override // ExecutorService
     @WorkerThread
-    public <T> T invokeAny(
-            @NonNull  final Collection<? extends Callable<T>> callables)
+    @NonNull
+    public <T> T invokeAny(@NonNull final Collection<? extends Callable<T>> callables)
             throws InterruptedException, NullPointerException, RejectedExecutionException, ExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
+
         if (callables.size() == 0) {
-            throw new NullPointerException("Empty list can not invokeAny() as there is no value to return");
+            throw new NullPointerException("Empty list can not invokeAny() as there is no from to return");
         }
-        for (Callable<T> callable : callables) {
+        for (final Callable<T> callable : callables) {
             futures.add(submit(callable));
         }
 
@@ -194,14 +191,13 @@ public final class UIExecutorService implements ExecutorService {
     @NonNull
     @Override // ExecutorService
     @WorkerThread
-    public <T> T invokeAny(
-            @NonNull  final Collection<? extends Callable<T>> callables,
-            final long timeout,
-            @NonNull  final TimeUnit unit)
+    public <T> T invokeAny(@NonNull final Collection<? extends Callable<T>> callables,
+                           final long timeout,
+                           @NonNull final TimeUnit unit)
             throws InterruptedException, NullPointerException, RejectedExecutionException, TimeoutException, ExecutionException {
         final ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
         if (callables.size() == 0) {
-            throw new NullPointerException("Empty list can not invokeAny() as there is no value to return");
+            throw new NullPointerException("Empty list can not invokeAny() as there is no from to return");
         }
         for (Callable<T> callable : callables) {
             futures.add(submit(callable));
@@ -211,9 +207,9 @@ public final class UIExecutorService implements ExecutorService {
     }
 
     @Override // ExecutorService
-    public void execute(@NonNull  final Runnable command) {
+    public void execute(@NonNull final Runnable command) {
         if (!mHandler.post(command)) {
-            throwIllegalStateException(mOrigin, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
+            CLog.throwIllegalStateException(this, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }
     }
 }

@@ -15,6 +15,14 @@ import android.support.annotation.NonNull;
  * @throws Exception
  */
 public interface IActionTwoR<IN1, IN2, OUT> extends IBaseAction<IN1> {
+    /**
+     *
+     * @param in1
+     * @param in2
+     * @return
+     * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
+     */
     OUT call(@NonNull IN1 in1,
              @NonNull IN2 in2) throws Exception;
 }

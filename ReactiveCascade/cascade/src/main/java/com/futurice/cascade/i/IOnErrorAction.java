@@ -13,11 +13,7 @@ import android.support.annotation.NonNull;
  * <p>
  * Perform some cleanup or notification mOnFireAction to bring this object into a rest state after
  * irregular termination.
- *
- * @return <code>true</code> if the error is consumed and should not propagate further down-chain.
- * The default response is <code>false</code> indicating the error is not consumed and should continue to propagate down-chain
  * @throws Exception
  */
-public interface IOnErrorAction extends IBaseAction<Exception> {
-    boolean call(@NonNull Exception e) throws Exception;
+public interface IOnErrorAction extends IActionOne<Exception> {
 }

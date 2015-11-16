@@ -14,26 +14,26 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IBaseAction;
+import com.futurice.cascade.i.ICancellable;
+import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.util.AbstractAltFuture;
+import com.futurice.cascade.util.AssertUtil;
+import com.futurice.cascade.util.CLog;
 
 import java.util.concurrent.CancellationException;
-
-import static com.futurice.cascade.Async.assertNotNull;
-import static com.futurice.cascade.Async.assertTrue;
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
 
 /**
  * A present-time representation of one of many possible alternate future results
  * <p>
  * Note the name also denotes the "alternate" nature of deviation from the standard
- * {@link java.util.concurrent.Future} contact. <code>AltFuture</code> specifically
+ * {@link java.util.concurrent.Future} contact. <code>RunnableAltFuture</code> specifically
  * dis-allows the dangerous split low-performance practice of halting a thread of execution
  * until a future tense promise is fulfilled. Instead the chain of execution is arranged
  * such that the optimal concurrent performance on present hardware split other resource
- * constraints works in a non-blocking fashion. An <code>AltFuture</code> never starts
+ * constraints works in a non-blocking fashion. An <code>RunnableAltFuture</code> never starts
  * allocating scarce resources for execution until all prerequisites for execution are
  * fulfilled including completion of prior code split the throttling split prioritization
  * of excessive concurrent resource allocations.
@@ -58,7 +58,7 @@ import static com.futurice.cascade.Async.ee;
  * {@link java.util.concurrent.FutureTask} methods are left exposed.
  * <p>
  * This is a debugOrigin-build-only fail fast check to see if you are re-submitting an
- * <code>AltFuture</code> which has already been sent to its {@link com.futurice.cascade.i.IThreadType}'s
+ * <code>RunnableAltFuture</code> which has already been sent to its {@link com.futurice.cascade.i.IThreadType}'s
  * {@link java.util.concurrent.ExecutorService}. Here were are following the following principles:
  * <p>
  * fail fast - check for problems as they are created split halt debugOrigin build runs immediately
@@ -82,30 +82,33 @@ import static com.futurice.cascade.Async.ee;
  * @param <OUT>
  */
 @NotCallOrigin
-public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IRunnableAltFuture<IN, OUT> {
-    private final IActionR<IN, OUT> action;
+public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> implements IRunnableAltFuture<IN, OUT> {
+    private final IActionR<IN, OUT> mAction;
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
      * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
      * @param threadType the thread pool to run this command on
-     * @param action     a function that receives one input and no return value
+     * @param mAction    a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
-    public AltFuture(
+    public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IAction<IN> action) {
+            @NonNull final IAction<IN> mAction) {
         super(threadType);
 
-        this.action = () -> {
-            final IAltFuture<?, IN> paf = getPreviousAltFuture();
-            OUT out = null;            //TODO do not init to null, define a marker value instead
-            if (paf != null) {
-                assertTrue("The previous AltFuture to Iaction is not finished", paf.isDone());
+        this.mAction = () -> {
+            final IAltFuture<?, IN> paf = getUpchain();
+            final OUT out;
+
+            if (paf == null) {
+                out = (OUT) ZEN;
+            } else {
+                AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", paf.isDone());
                 out = (OUT) paf.get();
             }
-            action.call();
+            mAction.call();
             return out; // T and A are the same when there is no return type from the mOnFireAction
         };
     }
@@ -114,20 +117,21 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * Constructor
      *
      * @param threadType the thread pool to run this command on
-     * @param action     a function that receives one input and no return value
+     * @param mAction    a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
-    public AltFuture(
+    public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IActionOne<IN> action) {
+            @NonNull final IActionOne<IN> mAction) {
         super(threadType);
 
-        this.action = () -> {
-            final IAltFuture<?, IN> paf = getPreviousAltFuture();
-            assertNotNull(paf);
-            assertTrue("The previous AltFuture in the chain is not finished", paf.isDone());
+        this.mAction = () -> {
+            final IAltFuture<?, IN> paf = getUpchain();
+            AssertUtil.assertNotNull(paf);
+            AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished", paf.isDone());
             final IN in = paf.get();
-            action.call(in);
+            mAction.call(in);
+
             return (OUT) in; // T and A are the same when there is no return type from the mOnFireAction
         };
     }
@@ -137,14 +141,14 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
      * @param threadType the thread pool to run this command on
-     * @param action     a function that does not vary with the input value
+     * @param mAction    a function that does not vary with the input from
      */
-    public AltFuture(
+    public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IActionR<IN, OUT> action) {
+            @NonNull final IActionR<IN, OUT> mAction) {
         super(threadType);
 
-        this.action = action;
+        this.mAction = mAction;
     }
 
     /**
@@ -152,18 +156,18 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
      * @param threadType the thread pool to run this command on
-     * @param action     a mapping function
+     * @param mAction    a mapping function
      */
-    public AltFuture(
+    public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<IN, OUT> action) {
+            @NonNull final IActionOneR<IN, OUT> mAction) {
         super(threadType);
 
-        this.action = () -> {
-            final IAltFuture<?, IN> paf = getPreviousAltFuture();
-            assertNotNull(paf);
-            assertTrue("The previous AltFuture in the chain is not finished:" + mOrigin, paf.isDone());
-            return action.call(paf.get());
+        this.mAction = () -> {
+            final IAltFuture<?, IN> paf = getUpchain();
+            AssertUtil.assertNotNull(paf);
+            AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished:" + getOrigin(), paf.isDone());
+            return mAction.call(paf.get());
         };
     }
 
@@ -175,59 +179,67 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 //        final Object state = mStateAR.get();
 //
 //        if (state instanceof AltFutureStateCancelled) {
-//            dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
+//            CLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
 //        } else {
 //            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
-//                dd(this, mOrigin, "Cancelled, reason=" + reason);
+//                CLog.d(this, mOrigin, "Cancelled, reason=" + reason);
 //                return true;
 //            } else {
-//                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
+//                CLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
 //            }
 //        }
 //        return false;
 //    }
 
     /**
-     * The {@link java.util.concurrent.ExecutorService} of this <code>AltFuture</code>s {@link com.futurice.cascade.i.IThreadType}
+     * The {@link java.util.concurrent.ExecutorService} of this <code>RunnableAltFuture</code>s {@link com.futurice.cascade.i.IThreadType}
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
-     * to <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
+     * to <code>{@link #isDone()} == true</code> state. If this <code>RunnableAltFuture</code> is part of an asynchronous functional
      * chain, subscribe it will be forked for you when the prerequisites have finished.
      * <p>
-     * This is called from the executor as part of IRunnableAltFuture
+     * This is called for you from the {@link IThreadType}'s {@link java.util.concurrent.ExecutorService}
      */
     @Override
     @NotCallOrigin
     public final void run() {
         try {
             if (isCancelled()) {
-                dd(this, mOrigin, "AltFuture was cancelled before execution. state=" + mStateAR.get());
+                CLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + mStateAR.get());
                 throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
             }
-            final OUT out = action.call();
+            final OUT out = mAction.call();
             if (!(mStateAR.compareAndSet(FORKED, out) || mStateAR.compareAndSet(ZEN, out))) {
-                dd(this, mOrigin, "AltFuture was cancelled() or otherwise changed during execution. Returned value of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
+                CLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
                 throw new CancellationException(mStateAR.get().toString());
             }
+        } catch (CancellationException e) {
+            this.cancel("RunnableAltFuture threw a CancellationException (accepted behavior, will not fail fast): " + e);
+        } catch (InterruptedException e) {
+            this.cancel("RunnableAltFuture was interrupted (may be normal but NOT RECOMMENDED as behaviour is non-deterministic, but app will not fail fast): " + e);
         } catch (Exception e) {
-            if (e instanceof CancellationException || e instanceof InterruptedException) {
-                this.cancel("AltFuture had a problem (may be normal, will not fail fast)", e);
-            } else {
-                this.mStateAR.set(new AltFutureStateError("AltFuture run problem:\n" + mOrigin, e));
+            final AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
+
+            if (!(mStateAR.compareAndSet(ZEN, stateError) && !(mStateAR.compareAndSet(FORKED, stateError)))) {
+                CLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
             }
         } finally {
             try {
-                doThenActions();
+                doThen();
             } catch (Exception e) {
-                ee(this, "AltFuture.run() changed value, but problem in resulting .doThenActions()", e);
+                CLog.e(this, "RunnableAltFuture.run() changed from, but problem in resulting .doThen()", e);
             }
-            clearPreviousAltFuture(); // Allow garbage collect of past values as we work through a active chain
+            try {
+                clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
+            } catch (Exception e) {
+                CLog.e(this, "RunnableAltFuture.run() changed from, but can not clearPreviousAltFuture()", e);
+            }
         }
     }
 
     /**
-     * Called from {@link SettableAltFuture#fork()} if preconditions for forking are met.
+     * Called from {@link AbstractAltFuture#fork()} if preconditions for forking are met.
      * <p>
-     * Non-atomic check-do race conditions must still guard value this point on against concurrent fork()
+     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
      */
     @CallSuper
     @NotCallOrigin

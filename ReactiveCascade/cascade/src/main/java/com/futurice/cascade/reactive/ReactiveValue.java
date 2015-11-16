@@ -11,16 +11,16 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.util.AssertUtil;
+import com.futurice.cascade.util.CLog;
 
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.vv;
 
 /**
  * Thread-safe reactive display of a variable getValue. Add one or more {@link IActionOne}
@@ -45,7 +45,18 @@ import static com.futurice.cascade.Async.vv;
 @NotCallOrigin
 public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveValue<T> {
     //TODO Check that reactive chains which are not yet asserted observe "cold" behavior until first assertion. Use ZEN<T> for clarity and null support?
-    private final AtomicReference<T> valueAR = new AtomicReference<>();
+    @SuppressWarnings("unchecked")
+    private final AtomicReference<T> mValueAR = new AtomicReference<>((T) IAltFuture.VALUE_NOT_AVAILABLE);
+
+    /**
+     * Create a new AtomicValue
+     *
+     * @param name
+     */
+    public ReactiveValue(
+            @NonNull final String name) {
+        this(name, null, null, null, null);
+    }
 
     /**
      * Create a new AtomicValue
@@ -54,8 +65,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param initialValue
      */
     public ReactiveValue(
-            @NonNull  final String name,
-            @NonNull  final T initialValue) {
+            @NonNull final String name,
+            @Nullable final T initialValue) {
         this(name, initialValue, null, null, null);
     }
 
@@ -68,22 +79,30 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param inputMapping
      * @param onError
      */
+    @SuppressWarnings("unchecked")
     public ReactiveValue(
-            @NonNull  final String name,
-            @NonNull  final T initialValue,
-            @Nullable  final IThreadType threadType,
-            @Nullable  final IActionOneR<T, T> inputMapping,
-            @Nullable  final IOnErrorAction onError) {
+            @NonNull final String name,
+            @Nullable T initialValue,
+            @Nullable final IThreadType threadType,
+            @Nullable final IActionOneR<T, T> inputMapping,
+            @Nullable final IOnErrorAction onError) {
         super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
-        set(initialValue);
+        if (initialValue == null) {
+            initialValue = (T) IAltFuture.VALUE_NOT_AVAILABLE;
+        }
+        try {
+            set(initialValue);
+        } catch (Exception e) {
+            CLog.e(getOrigin(), "Can not set initial ReactiveValue from=" + initialValue, e);
+        }
     }
 
     /**
      * Run all reactive functional chains bound to this {@link ReactiveValue}.
      * <p>
      * Normally you do not need to call this, it is called for you. Instead, call
-     * {@link #set(Object)} to assert a new value.
+     * {@link #set(Object)} to assert a new from.
      * <p>
      * You can also link this to receive multiple reactive updates as a
      * down-chain {@link IReactiveSource#subscribe(IActionOne)}
@@ -92,7 +111,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * You can also link into a active chain to receive individually constructed and fired updates using
      * <code>
      * <pre>
-     *         myAltFuture.subscribe(value -> myAtomicValue.set(value))
+     *         myAltFuture.subscribe(from -> myAtomicValue.set(from))
      *     </pre>
      * </code>
      *
@@ -103,56 +122,96 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      *
      * All methods and receivers within a reactive chain are <em>supposed</em> to be idempotent to
      * multiple firing events. This
-     * does not however mean the calls are free or give a good user experience and value as in the
-     * case of requesting data multiple times value a server. You have been warned.
+     * does not however mean the calls are free or give a good user experience and from as in the
+     * case of requesting data multiple times from a server. You have been warned.
      */
     @NotCallOrigin
     @CallSuper
     public void fire() {
-        fire(valueAR.get());
+        fire(mValueAR.get());
     }
 
     @CallSuper
     @NonNull
     @Override // IAtomicValue, IGettable
     public T get() {
-        return valueAR.get();
+        final T t = safeGet();
+
+        if (t == IAltFuture.VALUE_NOT_AVAILABLE) {
+            throw new IllegalStateException("Can not get(), ReactiveValue is not yet asserted");
+        }
+
+        return t;
     }
 
     @CallSuper
-    @Override // IAtomicValue
-    public boolean set(@NonNull  final T value) {
-        final T previousValue = valueAR.getAndSet(value);
-        final boolean valueChanged = !(value == previousValue || value.equals(previousValue) || (previousValue != null && previousValue.equals(value)));
+    @NonNull
+    @Override // ISafeGettable
+    public T safeGet() {
+        return mValueAR.get();
+    }
+
+    /**
+     * Set the from in a thread-safe manner.
+     * <p>
+     * If set to <code>null</code>, the variable goes 'cold' and will not fire until set to a non-null from
+     *
+     * @param value the new from asserted
+     * @return <code>true</code> if the asserted from is different from the previous from
+     */
+    @CallSuper
+    @Override // ISettable
+    public void set(@NonNull final T value) {
+        final T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
+        final boolean valueChanged = !(value == previousValue
+                || (value.equals(previousValue))
+                || previousValue.equals(value));
 
         if (valueChanged) {
-            vv(this, mOrigin, "Successful set(" + value + "), about to fire()");
+            CLog.v(this, "Successful set(" + value + "), about to fire()");
             fire(value);
         } else {
-            // The value has not changed
-            vv(this, mOrigin, "set() value=" + value + " was already the value, so no change");
+            // The from has not changed
+            CLog.v(this, "set() from=" + value + " was already the from, so no change");
         }
-        return valueChanged;
     }
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean compareAndSet(@NonNull  final T expected, @NonNull  final T update) {
-        final boolean success = this.valueAR.compareAndSet(expected, update);
+    public boolean compareAndSet(@Nullable final T expected, @Nullable final T update) {
+        final boolean success = this.mValueAR.compareAndSet(expected, update);
 
         if (success) {
-            vv(this, mOrigin, "Successful compareAndSet(" + expected + ", " + update + ")");
-            fire(update);
+            if (update != null) {
+                CLog.v(this, "Successful compareAndSet(" + expected + ", " + update + "), will fire");
+                fire(update);
+            } else {
+                CLog.v(this, "Successful compareAndSet(" + expected + ", null). "
+                        + Class.class.getSimpleName()
+                        + " is now 'cold' and will not fire until set to a non-null from");
+            }
         } else {
-            dd(this, mOrigin, "Failed compareAndSet(" + expected + ", " + update + "). The current value is " + get());
+            CLog.d(this, "compareAndSet(" + expected + ", " + update + ") FAILED. The current from is " + get());
         }
 
         return success;
     }
 
     @NonNull
-    @Override // Object
+    @Override // IReactiveValue
+    public T getAndSet(@NonNull T value) {
+        T t = mValueAR.getAndSet(value);
+
+        if (t == null) {
+            throw new IllegalStateException("Can not getAndSet(), ReactiveValue is not yet asserted");
+        }
+
+        return t;
+    }
+
+    @Nullable
+    @Override // ISafeGettable
     public String toString() {
-        return get().toString();
+        return safeGet().toString();
     }
 }

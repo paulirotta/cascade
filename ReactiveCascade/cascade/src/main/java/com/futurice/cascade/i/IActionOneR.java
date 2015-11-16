@@ -15,6 +15,13 @@ import android.support.annotation.NonNull;
  * @throws Exception
  */
 public interface IActionOneR<IN, OUT> extends IBaseAction<IN> {
+    /**
+     *
+     * @param value the in argument for the function
+     * @return the result of computation which is often the next value used in a functional chain
+     * @throws Exception that will trigger a transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
+     */
     @NonNull
     OUT call(@NonNull IN value) throws Exception;
 }

@@ -40,7 +40,7 @@ public class AltWeakReference<T> extends WeakReference<T> {
     }
 
     /**
-     * Test equality. The definition of equality is different value {@link WeakReference}. Two items
+     * Test equality. The definition of equality is different from {@link WeakReference}. Two items
      * are also equal if the <em>items referenced</em> are equal or if one of them is the item referenced.
      * <p>
      * This helps to simplify some logic associated with {@link WeakReference}

@@ -22,41 +22,12 @@ import android.support.annotation.NonNull;
  *
  * @param <T>
  */
-public interface IGettable<T> {
-    /**
-     * A null object indicating that the <code>IGettable</code> is not able to meaningfully provide its state
-     * as a string at this time. For example, the from may not yet be determined.
-     * <p>
-     * This will appear as "VALUE_NOT_AVAILABLE" in debugging outputs
-     */
-    IGettable<?> VALUE_NOT_AVAILABLE = (IGettable<?>) new IGettable<Object>() {
-        @NonNull
-        @Override // IGettable
-        public Object get() {
-            return toString();
-        }
-
-        @NonNull
-        @Override // IGettable
-        public String toString() {
-            return "VALUE_NOT_AVAILABLE";
-        }
-    };
-
+public interface ISafeGettable<T> extends IGettable<T> {
     /**
      * Get the current from of a variable or the next from in a list.
      *
-     * @return the current from, or the next from in the series
-     * @throws IllegalStateException if the current from is not available. See also {@link ISafeGettable#safeGet()}
+     * @return the current from, or {@link #VALUE_NOT_AVAILABLE} if there is no current from available
      */
     @NonNull
-    T get();
-
-    /**
-     * Must be the {@link Object#toString()} of the from returned by {@link #get()}
-     *
-     * @return string representation of the current from, or {@link #VALUE_NOT_AVAILABLE}
-     */
-    String toString();
-    //TODO Check all implementations for compliance of toString() returning the get().toString()
+    T safeGet();
 }

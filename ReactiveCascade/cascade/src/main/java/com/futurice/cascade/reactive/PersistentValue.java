@@ -13,11 +13,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltFutureFuture;
 import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.util.CLog;
 import com.futurice.cascade.util.DefaultThreadType;
 
 import java.lang.ref.WeakReference;
@@ -28,23 +30,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.ee;
-import static com.futurice.cascade.Async.ii;
-import static com.futurice.cascade.Async.vv;
-
 /**
  * A {@link com.futurice.cascade.reactive.ReactiveValue} which retains state between stops and
  * starts of the application.
  * <p>
  * You must provide a unique name. PersistentValue enforces a singletone per name. If any other
- * persistent value has the same name, they will share value and be the same object. This is an
+ * persistent from has the same name, they will share from and be the same object. This is an
  * intentional dependency state injection in a flat name space, so pick a naming convention that will
  * make your app debuggable and maintainable.
  * <p>
  * TODO Support JSON and/or Serializable and Lists of such arbitrary types
- * TODO Support null as a persisted value by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
- *
+ * TODO Support null as a persisted from by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
+ * <p>
  * TODO Eliminate this class, replace with a new @Persist annotation to any IReactiveSource that would like persistent state
  * TODO Create IReactiveBindingContext to allow values to start and stop with fragment and activity resume/pause or other custom cases. null context means forever
  * TODO Persist triggered only in onPause() transition of the IReactiveBindingContext
@@ -52,16 +49,15 @@ import static com.futurice.cascade.Async.vv;
 @NotCallOrigin
 public class PersistentValue<T> extends ReactiveValue<T> {
     private static final String TAG = PersistentValue.class.getSimpleName();
-    private static final int INIT_READ_TIMEOUT_SECONDS = 10;
+    private static final int INIT_READ_TIMEOUT_SECONDS = 3;
 
     private static final ConcurrentHashMap<String, AltWeakReference<PersistentValue<?>>> PERSISTENT_VALUES = new ConcurrentHashMap<>();
-    // The SharedPreferences type is not thread safe, so all operations are done value this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
+    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
     private static final IThreadType persistentValueThreadType = new DefaultThreadType("PersistentValueThreadType", Executors.newSingleThreadExecutor(), new LinkedBlockingQueue<>());
     private static final IOnErrorAction defaultOnErrorAction = e -> {
-        ee(PersistentValue.class.getSimpleName(), "Internal error", e);
-        return false;
+        CLog.e(PersistentValue.class.getSimpleName(), "Internal error", e);
     };
-    protected final SharedPreferences sharedPreferences; // Once changes value an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
+    protected final SharedPreferences sharedPreferences; // Once changes from an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
     protected final String key;
     protected final Class classOfPersistentValue;
     protected final T defaultValue;
@@ -71,24 +67,24 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         final WeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(key);
 
         if (wr == null) {
-            vv(TAG, "SharedPreference " + key + " has changed, but it is not recognized as a PersistentValue. You can ignore this warning if you use SharedPreferences without other than as a PersistentValue");
+            CLog.v(TAG, "SharedPreference " + key + " has changed, but it is not recognized as a PersistentValue. You can ignore this warning if you use SharedPreferences without other than as a PersistentValue");
             return;
         }
         final PersistentValue<?> persistentValue = wr.get();
         if (persistentValue == null) {
-            dd(TAG, "SharedPreference " + key + " has changed, but the PersistentValue is an expired WeakReference. Probably this is PersistentValue which has gone out of scope before the value persisted. Ignoring this change");
+            CLog.d(TAG, "SharedPreference " + key + " has changed, but the PersistentValue is an expired WeakReference. Probably this is PersistentValue which has gone out of scope before the from persisted. Ignoring this change");
             return;
         }
         persistentValue.onSharedPreferenceChanged();
     };
 
     protected PersistentValue(
-            @NonNull  String name,
-            @NonNull  T defaultValueIfNoPersistedValue,
-            @NonNull  IThreadType threadType,
-            @Nullable  final IActionOneR<T, T> inputMapping,
-            @Nullable  IOnErrorAction onError,
-            @NonNull  Context context) {
+            @NonNull String name,
+            @NonNull T defaultValueIfNoPersistedValue,
+            @NonNull IThreadType threadType,
+            @Nullable final IActionOneR<T, T> inputMapping,
+            @Nullable IOnErrorAction onError,
+            @NonNull Context context) {
         super(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError);
 
         this.defaultValue = defaultValueIfNoPersistedValue;
@@ -99,12 +95,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         try {
             init(context);
         } catch (Exception e) {
-            ee(this, mOrigin, "Can not initialize", e);
-            try {
-                threadType.then(() -> this.mOnError.call(e));
-            } catch (Exception e2) {
-                ee(this, mOrigin, "Can not call mOnError after failure to initialize: " + e, e2);
-            }
+            CLog.e(this, "Can not initialize", e);
         }
     }
 
@@ -119,9 +110,9 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @Nullable
     @SuppressWarnings("unchecked")
     private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(
-            @NonNull  String name,
-            @NonNull  Context context,
-            @NonNull  IOnErrorAction onErrorAction) {
+            @NonNull String name,
+            @NonNull Context context,
+            @NonNull IOnErrorAction onErrorAction) {
         final AltWeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(getKey(context, name));
         if (wr == null) {
             return null;
@@ -133,14 +124,14 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         }
 
         if (!pv.mOnError.equals(onErrorAction)) {
-            ii(pv, pv.mOrigin, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first mOnError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
+            CLog.i(pv, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first mOnError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
         }
 
         return pv;
     }
 
     /**
-     * Initialize a value, loading it value flash memory if it has been previously saved
+     * Initialize a from, loading it from flash memory if it has been previously saved
      *
      * @param name
      * @param defaultValueIfNoPersistedValue
@@ -152,12 +143,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
      * @return
      */
     public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-            @NonNull  final String name,
-            @NonNull  final TT defaultValueIfNoPersistedValue,
-            @NonNull  final IThreadType threadType,
-            @Nullable  final IActionOneR<TT, TT> inputMapping,
-            @Nullable  final IOnErrorAction onError,
-            @NonNull  final Context context) {
+            @NonNull final String name,
+            @NonNull final TT defaultValueIfNoPersistedValue,
+            @NonNull final IThreadType threadType,
+            @Nullable final IActionOneR<TT, TT> inputMapping,
+            @Nullable final IOnErrorAction onError,
+            @NonNull final Context context) {
         final IOnErrorAction errorAction = onError != null ? onError : defaultOnErrorAction;
 
         PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(name, context, errorAction);
@@ -166,7 +157,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             persistentValue = new PersistentValue<>(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError, context);
         } else {
             final TT tt = persistentValue.get();
-            vv(TAG, persistentValue.mOrigin, "Found existing PersistentValue name=" + name + " with existing value: " + tt);
+            CLog.v(persistentValue, "Found existing PersistentValue name=" + name + " with existing from: " + tt);
         }
 
         return persistentValue;
@@ -239,7 +230,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     private static String toStringSet(final boolean[] value) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -268,7 +259,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     private static String toStringSet(final float[] value) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -312,7 +303,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @CallSuper
     @SuppressWarnings("unchecked")
     protected void onSharedPreferenceChanged() {
-        vv(this, mOrigin, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
+        CLog.v(this, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
         if (classOfPersistentValue == String.class) {
             super.set((T) sharedPreferences.getString(key, (String) defaultValue));
         } else if (classOfPersistentValue == String[].class) {
@@ -339,21 +330,21 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     private void init(final Context context) throws InterruptedException, ExecutionException, TimeoutException {
-        // Always access SharedPreferences value the same thread
+        // Always access SharedPreferences from the same thread
         // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
         new AltFutureFuture<>(persistentValueThreadType.then(() -> {
             final AltWeakReference<PersistentValue<?>> previouslyInitializedPersistentValue = PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), new AltWeakReference<>(this));
             if (previouslyInitializedPersistentValue != null) {
-                ii(this, mOrigin, "WARNING: PersistentValue has already been initialized, a possible race condition resulting in indeterminate initial value may exist");
+                CLog.i(this, "WARNING: PersistentValue has already been initialized, a possible race condition resulting in indeterminate initial from may exist");
             }
             sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
             if (sharedPreferences.contains(key)) {
-                vv(this, mOrigin, "PersistentValue value loadedd value flash memory");
+                CLog.v(this, "PersistentValue from loadedd from flash memory");
                 onSharedPreferenceChanged();
             }
         })
-                .onError(mOnError)
+//                .onError(mOnError)
                 .fork()
         )
                 .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS); // Wait for initialization on the other thread
@@ -362,10 +353,10 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @NotCallOrigin
     @CallSuper
     @Override
-    public boolean set(@NonNull  final T value) {
-        final boolean valueChanged = super.set(value);
+    public void set(@NonNull final T value) {
+        super.set(value);
 
-        vv(this, mOrigin, "PersistentValue \"" + getName() + "\" persist soon, value=" + value);
+        CLog.v(this, "PersistentValue \"" + getName() + "\" persist soon, from=" + value);
         persistentValueThreadType.then(() -> {
             final SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -393,13 +384,10 @@ public class PersistentValue<T> extends ReactiveValue<T> {
                 throw new UnsupportedOperationException("Only native types like String are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
             }
             if (!editor.commit()) {
-                throw new RuntimeException("Failed to commit PersistentValue value=" + value + ". Probably some other thread besides Async.Net.NET_WRITE is concurrently updating SharedPreferences for this Context");
+                throw new RuntimeException("Failed to commit PersistentValue from=" + value + ". Probably some other thread besides Async.Net.NET_WRITE is concurrently updating SharedPreferences for this Context");
             }
-            vv(this, mOrigin, "Successful PersistentValue persist, value=" + value);
+            CLog.v(this, "Successful PersistentValue persist, from=" + value);
         })
                 .onError(mOnError);
-//                ;
-
-        return valueChanged;
     }
 }
