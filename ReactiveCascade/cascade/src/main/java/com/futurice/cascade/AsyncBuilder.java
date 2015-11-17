@@ -60,7 +60,7 @@ public class AsyncBuilder {
     private final AtomicBoolean mWorkerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
     public Thread mUiThread;
     public ExecutorService mUiExecutorService;
-    private boolean mCheckAlreadyForked = BuildConfig.DEBUG;
+    private boolean mUseForkedState = BuildConfig.DEBUG;
     private boolean mRuntimeAssertionsEnabled = BuildConfig.DEBUG;
     private boolean mStrictModeEnabled = BuildConfig.DEBUG;
     private boolean mFailFast = BuildConfig.DEBUG;
@@ -139,8 +139,8 @@ public class AsyncBuilder {
      *
      * @return mode
      */
-    public boolean isCheckAlreadyForked() {
-        return mCheckAlreadyForked;
+    public boolean isUseForkedState() {
+        return mUseForkedState;
     }
 
     /**
@@ -153,9 +153,9 @@ public class AsyncBuilder {
      *
      * @param enabled mode
      */
-    public AsyncBuilder setCheckAlreadyForked(final boolean enabled) {
-        Log.v(TAG, "setCheckAlreadyForked(" + enabled + ")");
-        this.mCheckAlreadyForked = enabled;
+    public AsyncBuilder setUseForkedState(final boolean enabled) {
+        Log.v(TAG, "setUseForkedState(" + enabled + ")");
+        this.mUseForkedState = enabled;
 
         return this;
     }
@@ -165,7 +165,7 @@ public class AsyncBuilder {
      *
      * @return mode
      */
-    public boolean isStrictModeEnabled() {
+    public boolean isStrictMode() {
         return mStrictModeEnabled;
     }
 
@@ -176,8 +176,8 @@ public class AsyncBuilder {
      *
      * @param enabled mode
      */
-    public AsyncBuilder setStrictModeEnabled(final boolean enabled) {
-        Log.v(TAG, "setStrictModeEnabled(" + enabled + ")");
+    public AsyncBuilder setStrictMode(final boolean enabled) {
+        Log.v(TAG, "setStrictMode(" + enabled + ")");
         this.mStrictModeEnabled = enabled;
 
         return this;

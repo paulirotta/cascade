@@ -22,17 +22,21 @@ public class OnCancelledAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
         super(threadType, (IActionOne<IN>) action);
     }
 
+    @NonNull
     @Override // IAltFuture
     public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
         CLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
         this.mStateAR.set(stateCancelled);
 
-        //FIXME Continue here
-//        if (oe != null) {
-//            oe.call(cancellationException);
-//        }
-//        forEachThen(altFuture -> {
-//            altFuture.doOnCancelled(cancellationException);
-//        });
+        if (oe != null) {
+            oe.call(cancellationException);
+        }
+        final Exception e = forEachThen(altFuture -> {
+            altFuture.doOnCancelled(stateCancelled);
+        });
+
+        if (e != null) {
+            throw e;
+        }
     }
 }

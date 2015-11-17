@@ -221,11 +221,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
 
         Object s = null;
-        if (Async.CHECK_ALREADY_FORKED ? !mStateAR.compareAndSet(ZEN, FORKED) : (s = mStateAR.get()) != ZEN) {
+        if (Async.USE_FORKED_STATE ? !mStateAR.compareAndSet(ZEN, FORKED) : (s = mStateAR.get()) != ZEN) {
             if (s == null) {
                 s = mStateAR.get();
             }
-            if (s instanceof StateCancelled) {
+            if (s instanceof StateCancelled || s instanceof StateError) {
                 CLog.v(getOrigin(), "Can not fork(), RunnableAltFuture was cancelled: " + s);
                 return this;
             }
@@ -312,6 +312,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return this.mThreadType;
     }
 
+    @NonNull
     @Override // IAltFuture
     public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
         CLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
@@ -367,44 +368,29 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NotCallOrigin
     @Override // IAltFuture
     public void doOnError(@NonNull final StateError stateError) throws Exception {
-        if (!this.mStateAR.compareAndSet(ZEN, stateError) && !this.mStateAR.compareAndSet(FORKED, stateError)) {
-            CLog.i(this, "Can not doOnError because IAltFuture stateError is already determined: " + mStateAR.get());
-        } else {
-            CLog.v(this, "Handling doOnError(): " + stateError);
-            forEachThen(altFuture -> {
-                altFuture.doOnError(stateError);
-            });
+        CLog.d(this, "Handling doOnError(): " + stateError);
+
+        if (!this.mStateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateError))) {
+            CLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
+            return;
+        }
+
+        final Exception e = forEachThen(af -> {
+            af.doOnError(stateError);
+        });
+
+        if (e != null) {
+            throw e;
         }
     }
-
-//    @Override // IAltFuture
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    public IAltFuture<IN, OUT> onError(@NonNull final IOnErrorAction action) {
-//        AssertUtil.assertNotNull(mPreviousAltFutureAR);
-//
-//        setOnError(action);
-//
-//        //NOTE: mOnError must return a new object to allow proper chaining of mOnError actions
-//        return then(() -> {
-//            final Object o = mStateAR.get();
-//
-//            if (o instanceof S)
-//            action
-//        });
-//    }
 
     //----------------------------------- .then() actions ---------------------------------------------
     protected void doThen() {
         AssertUtil.assertTrue(isDone());
-
-try{
-    forEachThen(af -> {
-                    if (!af.isForked()) {
-                        af.fork();
-                    }
-                });
-        } catch (Exception e) {
+        final Exception e = forEachThen(af -> {
+            af.fork();
+        });
+        if (e != null) {
             throw new IllegalStateException("Problem completing downchain actions", e);
         }
     }
@@ -425,7 +411,6 @@ try{
 
         return then(() -> {});
     }
-
 
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.

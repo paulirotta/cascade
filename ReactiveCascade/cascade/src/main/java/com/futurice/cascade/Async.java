@@ -5,42 +5,26 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade;
 
-import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
-import com.futurice.cascade.i.IActionTwo;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IAsyncOrigin;
-import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.util.AbstractThreadType;
-import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeoutException;
 
 /**
  * "Any sufficiently advanced technology is indistinguishable from magic" -Arthur C Clarke
@@ -335,7 +319,7 @@ public final class Async {
     };
 
     private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.sAsyncBuilder; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
-    public static final boolean CHECK_ALREADY_FORKED = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isCheckAlreadyForked();
+    public static final boolean USE_FORKED_STATE = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isUseForkedState();
     //    public static final boolean VISUALIZE = false;
     public static final boolean RUNTIME_ASSERTIONS = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isRuntimeAssertionsEnabled();
     /**

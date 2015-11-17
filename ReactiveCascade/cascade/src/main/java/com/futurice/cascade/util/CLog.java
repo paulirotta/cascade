@@ -324,21 +324,21 @@ public class CLog {
      *                the exception was created. This may be a {@link String}, {@link INamed},
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
-     * @param t       the throwable which triggered this new {@link RuntimeException}
+     * @param e       the exception  which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(@NonNull final IAsyncOrigin origin,
                                              @NonNull final String message,
-                                             @NonNull final Throwable t) throws RuntimeException {
-        RuntimeException e;
+                                             @NonNull final Exception e) throws RuntimeException {
+        RuntimeException runtimeException;
 
-        if (t instanceof RuntimeException) {
-            e = (RuntimeException) t;
+        if (e instanceof RuntimeException) {
+            runtimeException = (RuntimeException) e;
         } else {
-            e = new RuntimeException(message, t);
+            runtimeException = new RuntimeException(message, e);
         }
-        e(origin, message, t);
-        throw e;
+        e(origin, message, e);
+        throw runtimeException;
     }
 
     /**
@@ -364,22 +364,22 @@ public class CLog {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param origin  a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
-     * @param t       the throwable which triggered this new {@link RuntimeException}
+     * @param e       the exception which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
     public static void throwRuntimeException(@NonNull final Object tag,
                                              @NonNull final ImmutableValue<String> origin,
                                              @NonNull final String message,
-                                             @NonNull final Throwable t) throws RuntimeException {
-        RuntimeException e;
+                                             @NonNull final Exception e) throws RuntimeException {
+        RuntimeException runtimeException;
 
-        if (t instanceof RuntimeException) {
-            e = (RuntimeException) t;
+        if (e instanceof RuntimeException) {
+            runtimeException = (RuntimeException) e;
         } else {
-            e = new RuntimeException(message, t);
+            runtimeException = new RuntimeException(message, e);
         }
-        e(tag, origin, message, t);
-        throw e;
+        e(tag, origin, message, e);
+        throw runtimeException;
     }
 
     /**

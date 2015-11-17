@@ -59,7 +59,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
 
         if (!AsyncBuilder.isInitialized()) {
             new AsyncBuilder(mContext)
-                    .setStrictModeEnabled(false)
+                    .setStrictMode(false)
                     .setShowErrorStackTraces(false)
                     .build();
         }
