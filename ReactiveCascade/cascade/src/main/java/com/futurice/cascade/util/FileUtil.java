@@ -77,18 +77,18 @@ public final class FileUtil extends Origin {
             fileOutputStream.write(bytes);
         } catch (FileNotFoundException e) {
             final String s = "Can not locate FILE: " + fileName;
-            CLog.d(this, s);
-            CLog.throwRuntimeException(this, s, e);
+            RCLog.d(this, s);
+            RCLog.throwRuntimeException(this, s, e);
         } catch (IOException e) {
             final String s = "Can not write FILE: " + fileName;
-            CLog.d(this, s);
-            CLog.throwRuntimeException(this, s, e);
+            RCLog.d(this, s);
+            RCLog.throwRuntimeException(this, s, e);
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
-                    CLog.e(this, "Can not close FILE output stream", e);
+                    RCLog.e(this, "Can not close FILE output stream", e);
                 }
             }
         }
@@ -127,15 +127,15 @@ public final class FileUtil extends Origin {
                 bos.write(buffer, 0, count);
             }
         } catch (FileNotFoundException e) {
-            CLog.throwRuntimeException(this, "Can not locate FILE: " + fileName, e);
+            RCLog.throwRuntimeException(this, "Can not locate FILE: " + fileName, e);
         } catch (IOException e) {
-            CLog.throwRuntimeException(this, "Can not read FILE: " + fileName, e);
+            RCLog.throwRuntimeException(this, "Can not read FILE: " + fileName, e);
         } finally {
             if (fileInputStream != null) {
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    CLog.e(this, "Can not close FILE input stream: " + fileName, e);
+                    RCLog.e(this, "Can not close FILE input stream: " + fileName, e);
                 }
             }
         }

@@ -14,12 +14,17 @@ import com.futurice.cascade.i.NotCallOrigin;
  */
 @NotCallOrigin
 public class Origin implements IAsyncOrigin {
-    private final ImmutableValue<String> mOrigin = CLog.originAsync();
+    private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
     @NonNull
-    @Override
+    @Override // IAsyncOrigin
     @NotCallOrigin
     public ImmutableValue<String> getOrigin() {
         return mOrigin;
+    }
+
+    @Override // Object
+    public String toString() {
+        return mOrigin.get();
     }
 }

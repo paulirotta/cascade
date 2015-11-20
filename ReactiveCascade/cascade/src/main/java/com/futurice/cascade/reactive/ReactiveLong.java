@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 /**
  * A {@link Long} which can be updated in an atomic, thread-safe manner.
@@ -67,7 +67,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
             }
-            CLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -84,7 +84,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
             if (compareAndSet(currentValue, currentValue * l)) {
                 return currentValue;
             }
-            CLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent add, will try again: " + currentValue);
         }
     }
 

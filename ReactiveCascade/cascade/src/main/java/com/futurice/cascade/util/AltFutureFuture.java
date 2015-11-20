@@ -74,7 +74,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
         try {
             return get(DEFAULT_GET_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            CLog.throwRuntimeException(this, "Timeout waiting for RunnableAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
+            RCLog.throwRuntimeException(this, "Timeout waiting for RunnableAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
         }
 
         return null; //FIXME null return
@@ -124,7 +124,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
         }
         while (!isDone()) {
             if (System.currentTimeMillis() >= endTime) {
-                CLog.throwTimeoutException(this, "Waited " + (System.currentTimeMillis() - t) + "ms for RunnableAltFuture to end: " + altFuture);
+                RCLog.throwTimeoutException(this, "Waited " + (System.currentTimeMillis() - t) + "ms for RunnableAltFuture to end: " + altFuture);
             }
             synchronized (mutex) {
                 final long t2 = Math.min(CHECK_INTERVAL, endTime - System.currentTimeMillis());

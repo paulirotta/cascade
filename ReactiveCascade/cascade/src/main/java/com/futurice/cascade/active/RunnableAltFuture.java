@@ -21,7 +21,7 @@ import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AbstractAltFuture;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.concurrent.CancellationException;
 
@@ -179,13 +179,13 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
 //        final Object state = mStateAR.get();
 //
 //        if (state instanceof AltFutureStateCancelled) {
-//            CLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
+//            RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
 //        } else {
 //            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
-//                CLog.d(this, mOrigin, "Cancelled, reason=" + reason);
+//                RCLog.d(this, mOrigin, "Cancelled, reason=" + reason);
 //                return true;
 //            } else {
-//                CLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
+//                RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
 //            }
 //        }
 //        return false;
@@ -204,12 +204,12 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
     public final void run() {
         try {
             if (isCancelled()) {
-                CLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + mStateAR.get());
+                RCLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + mStateAR.get());
                 throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
             }
             final OUT out = mAction.call();
             if (!(mStateAR.compareAndSet(FORKED, out) || mStateAR.compareAndSet(ZEN, out))) {
-                CLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
+                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
                 throw new CancellationException(mStateAR.get().toString());
             }
         } catch (CancellationException e) {
@@ -220,18 +220,18 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             final AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
             if (!(mStateAR.compareAndSet(ZEN, stateError) && !(mStateAR.compareAndSet(FORKED, stateError)))) {
-                CLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
+                RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
             }
         } finally {
             try {
                 doThen();
             } catch (Exception e) {
-                CLog.e(this, "RunnableAltFuture.run() changed from, but problem in resulting .doThen()", e);
+                RCLog.e(this, "RunnableAltFuture.run() changed from, but problem in resulting .doThen()", e);
             }
             try {
                 clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
             } catch (Exception e) {
-                CLog.e(this, "RunnableAltFuture.run() changed from, but can not clearPreviousAltFuture()", e);
+                RCLog.e(this, "RunnableAltFuture.run() changed from, but can not clearPreviousAltFuture()", e);
             }
         }
     }

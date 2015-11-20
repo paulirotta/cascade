@@ -25,7 +25,7 @@ import com.futurice.cascade.active.RunnableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +66,7 @@ import static com.futurice.cascade.Async.UI;
  */
 @NotCallOrigin
 public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin {
-    private final ImmutableValue<String> mOrigin = CLog.originAsync();
+    private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
     public AltArrayAdapter(@NonNull final Context context,
                            @LayoutRes final int resource) {
@@ -120,7 +120,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @UiThread
     public void add(@NonNull final T value) {
         super.add(value);
-        CLog.v(mOrigin, "Add to AltArrayAdapter: " + value);
+        RCLog.v(mOrigin, "Add to AltArrayAdapter: " + value);
 
     }
 
@@ -150,7 +150,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     public void remove(@NonNull final T value) {
         super.remove(value);
 
-        CLog.v(mOrigin, "Remove from AltArrayAdapter: " + value);
+        RCLog.v(mOrigin, "Remove from AltArrayAdapter: " + value);
 
     }
 
@@ -182,7 +182,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <A> IAltFuture<A, A> sortAsync(@NonNull final Comparator<? super T> comparator) {
-        CLog.v(mOrigin, "Sort AltArrayAdapter: " + comparator);
+        RCLog.v(mOrigin, "Sort AltArrayAdapter: " + comparator);
 
         return new RunnableAltFuture<>(UI, () ->
                 sort(comparator));
@@ -231,7 +231,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull final Collection<TT> collection,
                                                           final boolean addIfUnique) {
-        CLog.v(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
+        RCLog.v(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
         if (addIfUnique) {
             return new RunnableAltFuture<>(UI, () -> {
                 for (final TT t : collection) {

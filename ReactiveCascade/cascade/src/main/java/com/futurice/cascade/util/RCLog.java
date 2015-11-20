@@ -37,7 +37,7 @@ import java.util.concurrent.TimeoutException;
  * point in your code where the object triggering the logged event was created and the point at which this
  * method were called.
  */
-public class CLog {
+public class RCLog {
     /**
      * A null object indicating the origin is not available
      */

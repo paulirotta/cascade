@@ -22,7 +22,8 @@ import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +35,7 @@ import static com.futurice.cascade.Async.isUiThread;
  */
 public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitmap>, IAsyncOrigin {
     @NonNull
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? CLog.DEFAULT_ORIGIN : CLog.originAsync();
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
     private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> mReactiveSources = new CopyOnWriteArrayList<>();
 
     public ReactiveImageView(@NonNull final Context context) {
@@ -58,7 +59,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @NotCallOrigin
     public void fire(@NonNull final Bitmap bitmap) {
         AssertUtil.assertNotNull(mOrigin);
-        CLog.v(this, "fire bitmap");
+        RCLog.v(this, "fire bitmap");
 
         if (isUiThread()) {
             setImageBitmap(bitmap);
@@ -86,12 +87,12 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void subscribeSource(
             @NonNull final String reason,
             @NonNull final IReactiveSource<Bitmap> reactiveSource) {
-        CLog.v(this, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
+        RCLog.v(this, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
 
         if (mReactiveSources.addIfAbsent(reactiveSource)) {
-            CLog.v(this, reactiveSource.getName() + " says hello: reason=" + reason);
+            RCLog.v(this, reactiveSource.getName() + " says hello: reason=" + reason);
         } else {
-            CLog.d(this, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            RCLog.d(this, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         }
     }
 
@@ -102,10 +103,10 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
             @NonNull final IReactiveSource<Bitmap> reactiveSource) {
         AssertUtil.assertNotNull(mOrigin);
         if (mReactiveSources.remove(reactiveSource)) {
-            CLog.v(this, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
+            RCLog.v(this, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
             reactiveSource.unsubscribe(reason, this);
         } else {
-            CLog.throwIllegalStateException(this, "Upchain says goodbye, reason=" + reason + ", but upchain \"" + reactiveSource.getName() + "\" is not currently subscribed to \"" + getName() + "\"");
+            RCLog.throwIllegalStateException(this, "Upchain says goodbye, reason=" + reason + ", but upchain \"" + reactiveSource.getName() + "\" is not currently subscribed to \"" + getName() + "\"");
         }
     }
 

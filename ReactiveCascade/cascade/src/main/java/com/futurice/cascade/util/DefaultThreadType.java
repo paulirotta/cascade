@@ -72,7 +72,7 @@ public class DefaultThreadType extends AbstractThreadType {
 
         // Out of order execution is permitted and desirable to finish functional chains we have started before clouding memory and execution queues by starting more
         if (isInOrderExecutor()) {
-            CLog.v(this, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
+            RCLog.v(this, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
             mQueue.add(runnable);
         } else {
             ((BlockingDeque) mQueue).addFirst(runnable);

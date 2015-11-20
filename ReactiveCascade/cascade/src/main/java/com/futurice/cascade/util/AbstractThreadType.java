@@ -98,7 +98,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                 try {
                     action.call();
                 } catch (Exception e) {
-                    CLog.e(this, "run(IAction) problem", e);
+                    RCLog.e(this, "run(IAction) problem", e);
                 }
             }
         };
@@ -117,11 +117,11 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                 try {
                     action.call();
                 } catch (Exception e) {
-                    CLog.e(this, "run(Runnable) problem", e);
+                    RCLog.e(this, "run(Runnable) problem", e);
                     try {
                         onErrorAction.call(e);
                     } catch (Exception e1) {
-                        CLog.e(this, "run(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
+                        RCLog.e(this, "run(Runnable) problem " + e + " lead to another problem in onErrorAction", e1);
                     }
                 }
             }
@@ -161,7 +161,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
             if (moved) {
                 ((Deque<Runnable>) mQueue).addFirst(runnable);
             }
-            CLog.v(this, "moveToHeadOfQueue() moved=" + moved);
+            RCLog.v(this, "moveToHeadOfQueue() moved=" + moved);
 
             return moved;
         }
@@ -174,7 +174,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     public <IN> void runNext(
             @NonNull final IAction<IN> action,
             @NonNull final IOnErrorAction onErrorAction) {
-    CLog.v(this, "runNext()");
+    RCLog.v(this, "runNext()");
         runNext(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
@@ -229,7 +229,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     public final <IN> List<IAltFuture<IN, IN>> then(@NonNull final IAction<IN>... actions) {
         final List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
 
-        CLog.v(this, "map(List[" + actions.length + "])");
+        RCLog.v(this, "map(List[" + actions.length + "])");
         for (final IAction<IN> action : actions) {
             altFutures.add(then(action));
         }
@@ -242,7 +242,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull final IActionR<IN, OUT>... actions) {
-        CLog.v(this, "map(List[" + actions.length + "])");
+        RCLog.v(this, "map(List[" + actions.length + "])");
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
         for (final IActionR<IN, OUT> action : actions) {
@@ -281,7 +281,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                 throw new UnsupportedOperationException("Method for internal use only. Call " + runnableAltFuture + ".fork() instead. If you are implementing your own IAltFuture, do so in " + Async.class.getPackage());
             }
             if (runnableAltFuture.isDone()) {
-                CLog.v(this, "Warning: fork() called multiple times");
+                RCLog.v(this, "Warning: fork() called multiple times");
             }
         }
 
@@ -299,14 +299,14 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
             final long timeout,
             @Nullable final IAction<IN> afterShutdownAction) {
         if (timeout < 1) {
-            CLog.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
+            RCLog.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
         if (timeout == 0 && afterShutdownAction != null) {
-            CLog.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
+            RCLog.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
         }
-        final ImmutableValue<String> origin = CLog.originAsync()
+        final ImmutableValue<String> origin = RCLog.originAsync()
                 .then(o -> {
-                    CLog.i(this, "shutdown " + timeout + " mOrigin=" + o + " ThreadType");
+                    RCLog.i(this, "shutdown " + timeout + " mOrigin=" + o + " ThreadType");
                     executorService.shutdown();
                 });
         final FutureTask<Boolean> futureTask = new FutureTask<>(() -> {
@@ -320,14 +320,14 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                 Log.e(AbstractThreadType.class.getSimpleName(), "Could not shutdown. afterShutdownAction will not be called: " + origin, e);
                 terminated = false;
             } catch (Exception e) {
-                CLog.e(this, "Could not shutdown. afterShutdownAction will not be called: " + origin, e);
+                RCLog.e(this, "Could not shutdown. afterShutdownAction will not be called: " + origin, e);
                 terminated = false;
             } finally {
                 if (terminated && afterShutdownAction != null) {
                     try {
                         afterShutdownAction.call();
                     } catch (Exception e) {
-                        CLog.e(this, "Problem during afterShutdownAction after successful workerExecutorService.shutdown: " + origin, e);
+                        RCLog.e(this, "Problem during afterShutdownAction after successful workerExecutorService.shutdown: " + origin, e);
                         terminated = false;
                     }
                 }
@@ -346,7 +346,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
             @Nullable final IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
             @Nullable final IAction<IN> actionOnDedicatedThreadIfTimeout,
             long timeoutMillis) {
-        CLog.i(this, "shutdownNow: reason=" + reason);
+        RCLog.i(this, "shutdownNow: reason=" + reason);
         final List<Runnable> pendingActions = executorService.shutdownNow();
 
         if (actionOnDedicatedThreadAfterAlreadyStartedTasksComplete != null) {

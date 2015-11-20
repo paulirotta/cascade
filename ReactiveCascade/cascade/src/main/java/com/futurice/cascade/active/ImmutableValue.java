@@ -18,7 +18,7 @@ import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.ISafeGettable;
 import com.futurice.cascade.util.AbstractAltFuture;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -100,7 +100,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         if (success) {
             doThenActions(value);
         } else {
-            CLog.d(this, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + safeGet());
+            RCLog.d(this, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + safeGet());
         }
 
         return success;
@@ -142,7 +142,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
                 try {
                     call(value, action);
                 } catch (Exception e) {
-                    CLog.e(this, "Can not do .subscribe() mOnFireAction after ImmutableValue was set to from=" + value, e);
+                    RCLog.e(this, "Can not do then() actions after ImmutableValue was set to from=" + value, e);
                 }
             }
         }
@@ -166,6 +166,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         } else if (action instanceof IActionR) {
             return ((IActionR<IN, OUT>) action).call();
         }
+
         throw new UnsupportedOperationException("Not sure how to call this IBaseAction type: " + action.getClass());
     }
 

@@ -13,7 +13,7 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.Locale;
 
@@ -72,7 +72,7 @@ public class ReactiveString extends ReactiveValue<String> {
             if (compareAndSet(currentValue, concat)) {
                 return concat;
             }
-            CLog.d(this, "Collision in concurrent concat(" + string + "), will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent concat(" + string + "), will try again: " + currentValue);
         }
     }
 
@@ -94,7 +94,7 @@ public class ReactiveString extends ReactiveValue<String> {
             if (compareAndSet(currentValue, replace)) {
                 return replace;
             }
-            CLog.d(this, "Collision in concurrent replace(" + oldChar + ", " + newChar + "), will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent replace(" + oldChar + ", " + newChar + "), will try again: " + currentValue);
         }
     }
 
@@ -116,7 +116,7 @@ public class ReactiveString extends ReactiveValue<String> {
             if (compareAndSet(currentValue, replace)) {
                 return replace;
             }
-            CLog.d(this, "Collision in concurrent replace(" + oldChars + ", " + newChars + "), will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent replace(" + oldChars + ", " + newChars + "), will try again: " + currentValue);
         }
     }
 
@@ -136,7 +136,7 @@ public class ReactiveString extends ReactiveValue<String> {
             if (compareAndSet(currentValue, lowerCase)) {
                 return lowerCase;
             }
-            CLog.d(this, "Collision in concurrent toLowerCase(" + locale + "), will try again: " + currentValue);
+            RCLog.d(this, "Collision in concurrent toLowerCase(" + locale + "), will try again: " + currentValue);
         }
     }
 }

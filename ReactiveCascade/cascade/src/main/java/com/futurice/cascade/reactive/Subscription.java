@@ -18,7 +18,7 @@ import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltWeakReference;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 import com.futurice.cascade.util.Origin;
 
 import java.lang.ref.WeakReference;
@@ -99,7 +99,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         this.mThreadType = threadType != null ? threadType : UI;
         this.mOnFireAction = onFireAction;
         this.mOnError = onError != null ? onError : e ->
-                CLog.e(this, "Problem firing subscription, mName=" + getName(), e);
+                RCLog.e(this, "Problem firing subscription, mName=" + getName(), e);
 
         /*
          * Singleton executor - there is only one which is never queued more than once at any time
@@ -141,9 +141,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveTarget
     public void subscribeSource(@NonNull final String reason, @NonNull final IReactiveSource<IN> reactiveSource) {
         if (!mReactiveSources.addIfAbsent(reactiveSource)) {
-            CLog.d(this, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            RCLog.d(this, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         } else {
-            CLog.v(this, reactiveSource.getName() + " says hello: reason=" + reason);
+            RCLog.v(this, reactiveSource.getName() + " says hello: reason=" + reason);
         }
     }
 
@@ -151,9 +151,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NotCallOrigin
     public void unsubscribeSource(@NonNull final String reason, @NonNull final IReactiveSource<IN> reactiveSource) {
         if (mReactiveSources.remove(reactiveSource)) {
-            CLog.v(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason);
+            RCLog.v(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason);
         } else {
-            CLog.i(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason + "\nWARNING: This source is not current. Probably this is a garbage collection/weak reference side effect");
+            RCLog.i(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason + "\nWARNING: This source is not current. Probably this is a garbage collection/weak reference side effect");
         }
     }
 
@@ -179,7 +179,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
             if (reactiveTarget != null) {
                 result |= action.call(reactiveTarget);
             } else {
-                CLog.v(this, getName() + " A .subscribe(IReactiveTarget) mLatestFireIn the reactive chain is an expired WeakReference- that leaf node of this Binding chain has be garbage collected.");
+                RCLog.v(this, getName() + " A .subscribe(IReactiveTarget) mLatestFireIn the reactive chain is an expired WeakReference- that leaf node of this Binding chain has be garbage collected.");
                 mReactiveTargets.remove(weakReference);
             }
         }
@@ -212,7 +212,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NotCallOrigin
     @Override // IReactiveTarget
     public void fire(@NonNull final IN in) {
-        CLog.v(this, "fire mLatestFireIn=" + in);
+        RCLog.v(this, "fire mLatestFireIn=" + in);
         mLatestFireInIsFireNext.set(false);
         /*
          There is a race at this point between mLatestFireIn and mLatestFireInIsFireNext.
@@ -232,7 +232,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveTarget
     //TODO This looks a mess- can we clean up to eliminate this method entirely?
     public void fireNext(@NonNull final IN in) {
-        CLog.v(this, "fireNext mLatestFireIn=" + in);
+        RCLog.v(this, "fireNext mLatestFireIn=" + in);
         if (mLatestFireIn.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
             // Only mQueue for execution if not already queued
             mThreadType.runNext(mFireRunnable);
@@ -249,7 +249,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         try {
             doDownchainActions(in, out);
         } catch (Exception e) {
-            CLog.e(this, "Can not doDownchainActions mLatestFireIn=" + in, e);
+            RCLog.e(this, "Can not doDownchainActions mLatestFireIn=" + in, e);
         }
     }
 
@@ -259,7 +259,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NotCallOrigin
     @NonNull
     private OUT doAction(@NonNull final IN in) throws Exception {
-        CLog.v(this, "doReceiveFire \"" + getName() + " from=" + in);
+        RCLog.v(this, "doReceiveFire \"" + getName() + " from=" + in);
 //        visualize(getName(), mLatestFireIn.toString(), "AbstractBinding");
 
         return mOnFireAction.call(in);
@@ -271,12 +271,12 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NotCallOrigin
     private void doDownchainActions(@NonNull final IN in, @NonNull final OUT out) throws Exception {
         forEachReactiveTarget(reactiveTarget -> {
-            CLog.v(this, "Fire down-chain reactive target " + reactiveTarget.getName() + ", from=" + out);
+            RCLog.v(this, "Fire down-chain reactive target " + reactiveTarget.getName() + ", from=" + out);
             reactiveTarget.fireNext(out);
             return false;
         });
         if (mReactiveTargets.size() == 0) {
-            CLog.v(this, "Fire down-chain reactive targets, but there are zero targets for " + getName() + ", from=" + out);
+            RCLog.v(this, "Fire down-chain reactive targets, but there are zero targets for " + getName() + ", from=" + out);
         }
     }
 
@@ -286,13 +286,13 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public boolean unsubscribe(@NonNull final String reason, @NonNull final IReactiveTarget<OUT> reactiveTarget) {
         try {
             return searchReactiveTargets(reactiveTarget, wr -> {
-                        CLog.v(this, "unsubscribeSource(IReactiveTarget) reason=" + reason + " reactiveTarget=" + reactiveTarget);
+                        RCLog.v(this, "unsubscribeSource(IReactiveTarget) reason=" + reason + " reactiveTarget=" + reactiveTarget);
                         //TODO Annotate to remove the following warning. The action is safe due to AltWeakReference behavior
                         mReactiveTargets.remove(reactiveTarget);
                     }
             );
         } catch (Exception e) {
-            CLog.e(this, "Can not remove IReactiveTarget reason=" + reason + " reactiveTarget=" + reactiveTarget, e);
+            RCLog.e(this, "Can not remove IReactiveTarget reason=" + reason + " reactiveTarget=" + reactiveTarget, e);
             return false;
         }
     }
@@ -301,7 +301,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public void unsubscribeAllSources(@NonNull final String reason) {
         final Iterator<IReactiveSource<IN>> iterator = mReactiveSources.iterator();
 
-        CLog.v(this, "Unsubscribing all sources, reason=" + reason);
+        RCLog.v(this, "Unsubscribing all sources, reason=" + reason);
         while (iterator.hasNext()) {
             iterator.next().unsubscribeAll(reason);
         }
@@ -309,7 +309,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     public void unsubscribeAll(@NonNull final String reason) {
-        CLog.d(this, "unsubscribeAll() reason=" + reason);
+        RCLog.d(this, "unsubscribeAll() reason=" + reason);
 
         try {
             forEachReactiveTarget(reactiveTarget -> {
@@ -319,7 +319,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                 return false;
             });
         } catch (Exception e) {
-            CLog.e(this, "Can not unsubscribeAll, reason=" + reason, e);
+            RCLog.e(this, "Can not unsubscribeAll, reason=" + reason, e);
         }
     }
 
@@ -392,9 +392,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public IReactiveSource<OUT> subscribe(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
         if (mReactiveTargets.addIfAbsent(new AltWeakReference<>(reactiveTarget))) {
             reactiveTarget.subscribeSource("Reference to keep reactive chain from being garbage collected", this);
-            CLog.v(this, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
+            RCLog.v(this, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
         } else {
-            CLog.i(this, "IGNORED duplicate subscribe of down-chain IReactiveTarget \"" + reactiveTarget.getName());
+            RCLog.i(this, "IGNORED duplicate subscribe of down-chain IReactiveTarget \"" + reactiveTarget.getName());
         }
 
         return this;

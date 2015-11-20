@@ -25,7 +25,7 @@ public class OnCancelledAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
     @NonNull
     @Override // IAltFuture
     public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
-        CLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
+        RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
         this.mStateAR.set(stateCancelled);
 
         if (oe != null) {

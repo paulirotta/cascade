@@ -141,9 +141,9 @@ public final class NetUtil extends Origin {
             @NonNull final T url,
             @Nullable final Collection<Header> headers) throws IOException {
         if (headers == null) {
-            CLog.d(getOrigin(), "get " + url);
+            RCLog.d(getOrigin(), "get " + url);
         } else {
-            CLog.d(getOrigin(), "get " + url + " with " + headers.size() + " custom headers");
+            RCLog.d(getOrigin(), "get " + url + " with " + headers.size() + " custom headers");
         }
 
         return execute(setupCall(url, builder -> {
@@ -256,7 +256,7 @@ public final class NetUtil extends Origin {
             @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) throws IOException {
-        CLog.d(getOrigin(), "put " + url + " headers=" + headers + " body=" + body);
+        RCLog.d(getOrigin(), "put " + url + " headers=" + headers + " body=" + body);
 
         return execute(setupCall(url, builder -> {
             addHeaders(builder, headers);
@@ -384,7 +384,7 @@ public final class NetUtil extends Origin {
             @NonNull final T url,
             @Nullable final Collection<Header> headers,
             @NonNull final RequestBody body) throws IOException {
-        CLog.d(getOrigin(), "post " + url);
+        RCLog.d(getOrigin(), "post " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.post(body);
@@ -435,7 +435,7 @@ public final class NetUtil extends Origin {
     public <T> Response delete(
             @NonNull final T url,
             @Nullable final Collection<Header> headers) throws IOException {
-        CLog.d(getOrigin(), "delete " + url);
+        RCLog.d(getOrigin(), "delete " + url);
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();
@@ -487,14 +487,14 @@ public final class NetUtil extends Origin {
         if (response.isRedirect()) {
             final String location = response.headers().get("Location");
 
-            CLog.d(getOrigin(), "Following HTTP redirect to " + location);
+            RCLog.d(getOrigin(), "Following HTTP redirect to " + location);
             return get(location);
         }
         if (!response.isSuccessful()) {
             final String s = "Unexpected response code " + response;
             final IOException e = new IOException(s);
 
-            CLog.e(getOrigin(), s, e);
+            RCLog.e(getOrigin(), s, e);
             throw e;
         }
 

@@ -47,14 +47,14 @@ public final class UIExecutorService extends Origin implements ExecutorService {
 
     @Override // ExecutorService
     public void shutdown() {
-        CLog.i(this, "shutdown() called on UiAsync default ExecutorService");
+        RCLog.i(this, "shutdown() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("Shutdown() called on UiAsync default ExecutorService");
     }
 
     @NonNull
     @Override // ExecutorService
     public List<Runnable> shutdownNow() {
-        CLog.i(this, "shutdownNow() called on UiAsync default ExecutorService");
+        RCLog.i(this, "shutdownNow() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("ShutdownNow() called on UiAsync default ExecutorService");
     }
 
@@ -73,7 +73,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
             final long timeout,
             @NonNull final TimeUnit unit)
             throws InterruptedException {
-        CLog.i(this, "awaitTermination() called on UiAsync default ExecutorService");
+        RCLog.i(this, "awaitTermination() called on UiAsync default ExecutorService");
         throw new UnsupportedOperationException("awaitTermination() called on UiAsync default ExecutorService");
     }
 
@@ -138,7 +138,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get();
             } catch (ExecutionException e) {
-                CLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
+                RCLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
             }
         }
 
@@ -162,9 +162,9 @@ public final class UIExecutorService extends Origin implements ExecutorService {
             try {
                 futures.get(futures.size() - 1).get(timeout, unit);
             } catch (ExecutionException e) {
-                CLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
+                RCLog.throwRuntimeException(this, "Can not get() last element of invokeAll()", e);
             } catch (TimeoutException e) {
-                CLog.throwRuntimeException(this, "Timeout waiting to get() last element of invokeAll()", e);
+                RCLog.throwRuntimeException(this, "Timeout waiting to get() last element of invokeAll()", e);
             }
         }
 
@@ -209,7 +209,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
     @Override // ExecutorService
     public void execute(@NonNull final Runnable command) {
         if (!mHandler.post(command)) {
-            CLog.throwIllegalStateException(this, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
+            RCLog.throwIllegalStateException(this, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }
     }
 }

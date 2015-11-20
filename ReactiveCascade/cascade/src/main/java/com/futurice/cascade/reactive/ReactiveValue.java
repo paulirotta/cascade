@@ -18,7 +18,7 @@ import com.futurice.cascade.i.IReactiveValue;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -94,7 +94,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         try {
             set(initialValue);
         } catch (Exception e) {
-            CLog.e(getOrigin(), "Can not set initial ReactiveValue from=" + initialValue, e);
+            RCLog.e(getOrigin(), "Can not set initial ReactiveValue from=" + initialValue, e);
         }
     }
 
@@ -168,11 +168,11 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
                 || previousValue.equals(value));
 
         if (valueChanged) {
-            CLog.v(this, "Successful set(" + value + "), about to fire()");
+            RCLog.v(this, "Successful set(" + value + "), about to fire()");
             fire(value);
         } else {
             // The from has not changed
-            CLog.v(this, "set() from=" + value + " was already the from, so no change");
+            RCLog.v(this, "set() from=" + value + " was already the from, so no change");
         }
     }
 
@@ -183,15 +183,15 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
         if (success) {
             if (update != null) {
-                CLog.v(this, "Successful compareAndSet(" + expected + ", " + update + "), will fire");
+                RCLog.v(this, "Successful compareAndSet(" + expected + ", " + update + "), will fire");
                 fire(update);
             } else {
-                CLog.v(this, "Successful compareAndSet(" + expected + ", null). "
+                RCLog.v(this, "Successful compareAndSet(" + expected + ", null). "
                         + Class.class.getSimpleName()
                         + " is now 'cold' and will not fire until set to a non-null from");
             }
         } else {
-            CLog.d(this, "compareAndSet(" + expected + ", " + update + ") FAILED. The current from is " + get());
+            RCLog.d(this, "compareAndSet(" + expected + ", " + update + ") FAILED. The current from is " + get());
         }
 
         return success;

@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -130,14 +131,14 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @CallSuper
     public boolean cancel(@NonNull final String reason) {
         if (mStateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
-            CLog.d(this, "Cancelled: reason=" + reason);
+            RCLog.d(this, "Cancelled: reason=" + reason);
             return true;
         } else {
             final Object state = mStateAR.get();
             if (state instanceof StateCancelled) {
-                CLog.d(this, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted cancellation reason=" + state);
+                RCLog.d(this, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted cancellation reason=" + state);
             } else {
-                CLog.d(this, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted successful completion from=" + state);
+                RCLog.d(this, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted successful completion from=" + state);
             }
             return false;
         }
@@ -148,7 +149,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public boolean cancel(@NonNull final StateError stateError) {
         final Object state = this.mStateAR.get();
         final StateCancelled stateCancelled = new StateCancelled() {
-            private final ImmutableValue<String> mOrigin = CLog.originAsync();
+            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
             @NonNull
             @Override
@@ -170,14 +171,14 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         };
 
         if (mStateAR.compareAndSet(ZEN, stateCancelled) || mStateAR.compareAndSet(FORKED, stateCancelled)) {
-                CLog.d(this, "Cancelled from state " + state);
+                RCLog.d(this, "Cancelled from state " + state);
                 forEachThen(ignore ->
                         doOnCancelled(stateCancelled));
 
                 return true;
         }
 
-        CLog.d(this, "Ignoring cancel(). The ignored stateError=" + stateError + ".\nThe previously determined state=" + safeGet());
+        RCLog.d(this, "Ignoring cancel(). The ignored stateError=" + stateError + ".\nThe previously determined state=" + safeGet());
 
         return false;
     }
@@ -215,7 +216,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         final IAltFuture<?, IN> previousAltFuture = getUpchain();
 
         if (previousAltFuture != null && !previousAltFuture.isDone()) {
-            CLog.v(this, "Previous IAltFuture not forked, searching upchain: " + previousAltFuture);
+            RCLog.v(this, "Previous IAltFuture not forked, searching upchain: " + previousAltFuture);
             previousAltFuture.fork();
             return this;
         }
@@ -226,10 +227,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
                 s = mStateAR.get();
             }
             if (s instanceof StateCancelled || s instanceof StateError) {
-                CLog.v(getOrigin(), "Can not fork(), RunnableAltFuture was cancelled: " + s);
+                RCLog.v(getOrigin(), "Can not fork(), RunnableAltFuture was cancelled: " + s);
                 return this;
             }
-            CLog.i(getOrigin(), "Possibly a legitimate race condition. Ignoring duplicate fork(), already fork()ed or set(): " + s);
+            RCLog.i(getOrigin(), "Possibly a legitimate race condition. Ignoring duplicate fork(), already fork()ed or set(): " + s);
             return this;
         }
         doFork();
@@ -245,7 +246,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         final boolean set = this.mPreviousAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
-            CLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
+            RCLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
             return await(altFuture);
         }
 
@@ -283,10 +284,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         final Object state = mStateAR.get();
 
         if (!isDone(state)) {
-            CLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is not yet finished. state=" + state);
+            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is not yet finished. state=" + state);
         }
         if (isCancelled(state)) {
-            CLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is cancelled: state=" + state);
+            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is cancelled: state=" + state);
         }
 
         return (OUT) state;
@@ -315,9 +316,9 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override // IAltFuture
     public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
-        CLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
+        RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
         if (!this.mStateAR.compareAndSet(ZEN, stateCancelled) && !this.mStateAR.compareAndSet(FORKED, stateCancelled)) {
-            CLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + mStateAR.get());
+            RCLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + mStateAR.get());
             return;
         }
 
@@ -343,7 +344,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
                 if (exception == null) {
                     exception = e;
                 }
-                CLog.e(this, "Problem with forEachThen(): " + e);
+                RCLog.e(this, "Problem with forEachThen(): " + e);
             }
         }
 
@@ -368,10 +369,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NotCallOrigin
     @Override // IAltFuture
     public void doOnError(@NonNull final StateError stateError) throws Exception {
-        CLog.d(this, "Handling doOnError(): " + stateError);
+        RCLog.d(this, "Handling doOnError(): " + stateError);
 
         if (!this.mStateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateError))) {
-            CLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
+            RCLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
             return;
         }
 
@@ -509,6 +510,24 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return mergeAltFuture;
     }
 
+    @NonNull
+    @Override
+    @SuppressWarnings("unchecked")
+    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT>... actions) {
+        AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length == 0);
+        AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length == 1);
+
+        final IAltFuture<IN, OUT>[] altFutures = new RunnableAltFuture[actions.length];
+
+        for (int i = 0; i < actions.length; i++) {
+            final IAction a = actions[i];
+
+            altFutures[i] = then(new RunnableAltFuture<>(mThreadType, a));
+        }
+
+        return await(altFutures);
+    }
+
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -537,20 +556,17 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @NonNull
     @Override
-    @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT>... actions) {
-        AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length == 0);
-        AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length == 1);
+    public IAltFuture<IN, OUT> sleep(final long sleepTime,
+                                     @NonNull final TimeUnit timeUnit) {
+        return then(() -> {
+            final SettableAltFuture<IN, OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
 
-        final IAltFuture<IN, OUT>[] altFutures = new RunnableAltFuture[actions.length];
+            Async.TIMER.schedule(() -> {
+                settableAltFuture.set(getUpchain().get());
+            });
 
-        for (int i = 0; i < actions.length; i++) {
-            final IAction a = actions[i];
-
-            altFutures[i] = then(new RunnableAltFuture<>(mThreadType, a));
-        }
-
-        return await(altFutures);
+            return await(settableAltFuture);
+        });
     }
 
     @NonNull
@@ -563,6 +579,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         final SettableAltFuture<IN, OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
         final AtomicInteger downCounter = new AtomicInteger(altFutures.length);
 
+        outAltFuture.setUpchain(getUpchain());
         for (final IAltFuture<?, OUT> upchainAltFuture : altFutures) {
             final IAltFuture<?, ?> ignore = upchainAltFuture
                     .then(() -> {
@@ -653,7 +670,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
                 throw new IllegalArgumentException("You must specify the cancellation reason to keep debugging sane");
             }
             this.reason = reason;
-            CLog.d(this, "Moving to StateCancelled:\n" + this.reason);
+            com.futurice.cascade.util.RCLog.d(this, "Moving to StateCancelled:\n" + this.reason);
         }
 
         /**
@@ -700,7 +717,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
                                    @NonNull Exception e) {
             this.reason = reason;
             this.e = e;
-            CLog.e(this, "Moving to StateError:\n" + this.reason, e);
+            RCLog.e(this, "Moving to StateError:\n" + this.reason, e);
         }
 
         @Override // State

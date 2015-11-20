@@ -22,7 +22,8 @@ import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
+import com.futurice.cascade.util.RCLog;
 
 import static com.futurice.cascade.Async.UI;
 
@@ -35,7 +36,7 @@ import static com.futurice.cascade.Async.UI;
 @NotCallOrigin
 public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     @NonNull
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? CLog.DEFAULT_ORIGIN : CLog.originAsync();
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
     public volatile ReactiveValue<String> mReactiveValue;
     private TextWatcher mTextWatcher;
 
@@ -155,7 +156,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
         final String currentText = mReactiveValue.get();
         setText(currentText);
 
-        CLog.v(this, "onAttachedToWindow " + getName() + ", from=" + currentText);
+        RCLog.v(this, "onAttachedToWindow " + getName() + ", from=" + currentText);
 
         mReactiveValue.subscribe(UI, this::setText);
 
@@ -191,7 +192,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     @UiThread
     public void onDetachedFromWindow() {
         AssertUtil.assertNotNull(mOrigin);
-        CLog.v(this, "onDetachedFromWindow " + getName() + ", current from=" + getText());
+        RCLog.v(this, "onDetachedFromWindow " + getName() + ", current from=" + getText());
         mReactiveValue.unsubscribeAll("onDetachedFromWindow");
 
         super.onDetachedFromWindow();

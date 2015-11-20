@@ -14,7 +14,7 @@ import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AbstractAltFuture;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 /**
  * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
@@ -61,14 +61,14 @@ public class SettableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
     public void set(@NonNull final OUT value) {
         if (mStateAR.compareAndSet(ZEN, value) || mStateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
-            CLog.v(this, "SettableAltFuture set, from= " + value);
+            RCLog.v(this, "SettableAltFuture set, from= " + value);
             doFork();
             clearPreviousAltFuture();
             return;
         }
 
         // Already set, cancelled or error state
-        CLog.throwIllegalArgumentException(this, "Attempted to set " + this + " to from=" + value + ", but the from can only be set once and was already set to from=" + get());
+        RCLog.throwIllegalArgumentException(this, "Attempted to set " + this + " to from=" + value + ", but the from can only be set once and was already set to from=" + get());
     }
 
     protected void doFork() {
@@ -76,7 +76,7 @@ public class SettableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         try {
             doThen();
         } catch (Exception e) {
-            CLog.e(this, "Can not doFork()", e);
+            RCLog.e(this, "Can not doFork()", e);
         }
     }
 }

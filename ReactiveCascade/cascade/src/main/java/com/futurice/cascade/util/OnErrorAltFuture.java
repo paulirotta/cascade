@@ -13,6 +13,8 @@ import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * The on-error action
  */
@@ -32,10 +34,10 @@ public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
     @NotCallOrigin
     @Override // AbstractAltFuture
     public void doOnError(@NonNull final StateError stateError) throws Exception {
-        CLog.d(this, "Handling doOnError(): " + stateError);
+        RCLog.d(this, "Handling doOnError(): " + stateError);
 
         if (!this.mStateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateError))) {
-            CLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
+            RCLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
             return;
         }
 
@@ -45,7 +47,7 @@ public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
                 .then((IAction<Exception>) this);
 
         final StateCancelled stateCancelled = new StateCancelled() {
-            private final ImmutableValue<String> mOrigin = CLog.originAsync();
+            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
             @NonNull
             @Override

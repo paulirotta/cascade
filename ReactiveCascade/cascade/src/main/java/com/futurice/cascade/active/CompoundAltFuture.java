@@ -13,11 +13,12 @@ import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 import com.futurice.cascade.util.Origin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A chain of two or more {@link com.futurice.cascade.i.IAltFuture}s merged into a single logical entity.
@@ -47,7 +48,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
         } while (!foundHeadUpchainFromTail && previous != null);
         mSubchain.add(0, head);
         if (!foundHeadUpchainFromTail) {
-            CLog.throwIllegalArgumentException(head, "Head of CompoundAltFuture must be upchain from tail");
+            RCLog.throwIllegalArgumentException(head, "Head of CompoundAltFuture must be upchain from tail");
         }
     }
 
@@ -82,7 +83,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     public boolean cancel(@NonNull StateError stateError) {
         for (final IAltFuture<?, ?> altFuture : mSubchain) {
             if (altFuture.cancel(stateError)) {
-                CLog.d(this, "Cancelled task within CompountAltFuture");
+                RCLog.d(this, "Cancelled task within CompountAltFuture");
                 return true;
             }
         }
@@ -94,7 +95,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     public boolean isCancelled() {
         for (IAltFuture<?, ?> altFuture : mSubchain) {
             if (altFuture.isCancelled()) {
-                CLog.d(this, "CompountAltFuture is cancelled");
+                RCLog.d(this, "CompountAltFuture is cancelled");
                 return true;
             }
         }
@@ -193,6 +194,21 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @SuppressWarnings("unchecked")
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT>[] map(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT>... actions) {
         return mTail.map(actions);
+    }
+
+    /**
+     * Pause execution of this chain for a fixed time interval
+     * <p>
+     * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
+     *
+     * @param sleepTime
+     * @param timeUnit
+     * @return
+     */
+    @NonNull
+    @Override
+    public IAltFuture<IN, OUT> sleep(final long sleepTime, @NonNull final TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("Not yet implemented"); //TODO sleep a compound alt future
     }
 
     @NonNull

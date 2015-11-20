@@ -24,7 +24,7 @@ public class TypedThread extends Thread {
     public static final ThreadGroup THREAD_GROUP = new ThreadGroup("ThreadTypeThreadGroup") {
         @Override
         public void uncaughtException(@NonNull final Thread t, @NonNull final Throwable throwable) {
-            CLog.e(this, "uncaughtException in " + t, throwable);
+            RCLog.e(this, "uncaughtException in " + t, throwable);
         }
     };
     /*
@@ -121,7 +121,7 @@ public class TypedThread extends Thread {
         if (currentThreadTypes.size() == 1) {
             currentThreadType = currentThreadTypes.get(0);
         } else {
-            CLog.v(this, currentThreadTypes.size() + " threadTypes for this Thread, can not disambiguate");
+            RCLog.v(this, currentThreadTypes.size() + " threadTypes for this Thread, can not disambiguate");
         }
 
         return currentThreadType;

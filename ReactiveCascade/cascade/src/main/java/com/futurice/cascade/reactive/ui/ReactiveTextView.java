@@ -22,7 +22,7 @@ import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 import static com.futurice.cascade.Async.UI;
 
@@ -42,7 +42,7 @@ import static com.futurice.cascade.Async.UI;
 @NotCallOrigin
 public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     @NonNull
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? CLog.DEFAULT_ORIGIN : CLog.originAsync();
+    private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
     private IReactiveSource<String> mReactiveSource; // Access only from UI thread
     private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
 
@@ -121,7 +121,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
             if (mReactiveSource != null) {
                 reactiveValue.unsubscribeSource(s, mReactiveSource);
             }
-            CLog.v(this, s);
+            RCLog.v(this, s);
             this.mReactiveValue = reactiveValue;
             subscribe();
             if (fire) {

@@ -14,6 +14,7 @@ import com.futurice.cascade.active.RunnableAltFuture;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * One of many possible futures in the multiverse. {@link java.util.concurrent.Future}.
@@ -251,47 +252,25 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT>[] map(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT>... actions);
 
     /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
+     * Pause execution of this chain for a fixed time interval
      *
-     * @param threadType
-     * @param action
-     * @param <DOWNCHAIN_OUT>
+     * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
+     *
+     * @param sleepTime
+     * @param timeUnit
      * @return
      */
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(
-//            @NonNull IThreadType threadType,
-//            @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
-
-//    /**
-//     * Combine several AltFutures into a single from.
-//     * <p>
-//     * The joinAction will be execute on the IThreadType of the <em>first</em> altFuture in the parameter list.
-//     * If your joinAction produces side-effects (is not a "pure function"), this first altFuture should be
-//     * from a single-threaded IThreadType. TODO See .on()
-//     * <p>
-//     * The await operation will be cancelled or exception state and trigger {@link #onError(IOnErrorAction)}
-//     * if <em>any</em> of the joined operations have a problem running to completion.
-//     * <p>
-//     * Example: Multiply all the upchain values
-//     *
-//     * @param action           combine the previous OUT from with a new result from one of the upchain altFuturesToJoin
-//     * @param altFuturesToJoin two or more results to be combined
-//     * @return an RunnableAltFuture which will realize when all upchain altFuturesToJoin have been combined
-//     */
-//    @NonNull
-//    @SuppressWarnings("unchecked")
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    <OTHER_IN> IAltFuture<?, OUT> await(@NonNull IActionTwoR<IN, OTHER_IN, OUT> action,
-//                                       @NonNull IAltFuture<?, OTHER_IN>... altFuturesToJoin);
+    @NonNull
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    IAltFuture<IN, OUT> sleep(long sleepTime,
+                              @NonNull TimeUnit timeUnit);
 
     /**
      * Continue to next step(s) in the chain only after the {@link IAltFuture} being waited for is complete. The from
      * is not propaged in the chain, but if there is an error that will be adopted into this chain.
      *
-     * @param altFuture
-     * @return
+     * @param altFuture to pause this chain until it <code>{@link #isDone()}</code>
+     * @return the upchain value of this chain, execution held until the other alt future completes
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -303,61 +282,13 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * The await operation will be cancelled or exception state and trigger {@link #onError(IOnErrorAction)}
      * if <em>any</em> of the joined operations have a problem running to completion.
      *
-     * @param altFuturesToJoin
-     * @return
+     * @param altFutures to pause this chain until they are done (<code>{@link #isDone()}</code>)
+     * @return the upchain value of this chain, execution held until other alt futures complete
      */
     @NonNull
     @SuppressWarnings("unchecked")
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, OUT>... altFuturesToJoin);
-
-//    /**
-//     * A list of values is transformed using the mapping function provided
-//     *
-//     * @param action
-//     * @return
-//     */
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    IAltFuture<List<IN>, List<OUT>> map(@NonNull IActionOneR<IN, OUT> action);
-
-    /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
-     * <p>
-     * A list of transformations is provided by an injected RunnableAltFuture.
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    IAltFuture<List<IN>, List<OUT>> map(
-//            @NonNull IThreadType threadType,
-//            @NonNull IActionOneR<IN, OUT> action);
-
-//    /**
-//     * Pass through to the next function only elements of the list which meet a logic test
-//     *
-//     * @param action
-//     * @return
-//     */
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    IAltFuture<List<IN>, List<IN>> filter(@NonNull IActionOneR<IN, Boolean> action);
-
-    /**
-     * Pass through to the next function only elements of the list which meet a logic test
-     *
-     * @param threadType
-     * @param action
-     * @return
-     */
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    IAltFuture<List<IN>, List<IN>> filter(
-//            @NonNull IThreadType threadType,
-//            @NonNull IActionOneR<IN, Boolean> action);
+    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, OUT>... altFutures);
 
     /**
      * Pass through to the next function if element meet a logic test, otherwise {@link #cancel(String)}

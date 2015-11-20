@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.util.CLog;
+import com.futurice.cascade.util.RCLog;
 
 /**
  * An {@link Integer} which can be updated in an atomic, thread-safe manner.
@@ -67,7 +67,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
             if (compareAndSet(currentValue, currentValue + i)) {
                 return currentValue;
             }
-            CLog.d(this, "Collision concurrent add, will try again: " + currentValue);
+            RCLog.d(this, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
@@ -85,7 +85,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
             if (compareAndSet(currentValue, currentValue * i)) {
                 return currentValue;
             }
-            CLog.d(this, "Collision concurrent add, will try again: " + currentValue);
+            RCLog.d(this, "Collision concurrent add, will try again: " + currentValue);
         }
     }
 
