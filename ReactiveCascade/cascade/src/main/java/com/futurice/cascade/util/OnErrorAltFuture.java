@@ -9,11 +9,8 @@ import com.futurice.cascade.active.RunnableAltFuture;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * The on-error action

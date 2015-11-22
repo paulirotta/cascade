@@ -556,17 +556,18 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @NonNull
     @Override
+    @SuppressWarnings("unchecked")
     public IAltFuture<IN, OUT> sleep(final long sleepTime,
                                      @NonNull final TimeUnit timeUnit) {
-        return then(() -> {
-            final SettableAltFuture<IN, OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
+        final SettableAltFuture<IN, OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
 
+        then(in -> {
             Async.TIMER.schedule(() -> {
-                settableAltFuture.set(getUpchain().get());
-            });
-
-            return await(settableAltFuture);
+                settableAltFuture.set((IN) in);
+            }, sleepTime, timeUnit);
         });
+
+        return await(settableAltFuture);
     }
 
     @NonNull
@@ -581,12 +582,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
         outAltFuture.setUpchain(getUpchain());
         for (final IAltFuture<?, OUT> upchainAltFuture : altFutures) {
-            final IAltFuture<?, ?> ignore = upchainAltFuture
-                    .then(() -> {
-                        if (downCounter.decrementAndGet() == 0) {
-                            outAltFuture.set(altFutures[0].get());
-                        }
-                    });
+            final IAltFuture<?, ?> ignore = upchainAltFuture.then(() -> {
+                if (downCounter.decrementAndGet() == 0) {
+                    outAltFuture.set((IN) altFutures[0].get());
+                }
+            });
         }
 
         return outAltFuture;
@@ -594,12 +594,13 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @SuppressWarnings("unchecked")
     @Override // IAltFuture
     public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
         final SettableAltFuture<IN, OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
 
         final IAltFuture<?, ?> ignore = altFuture.then(() -> {
-            outAltFuture.set(AbstractAltFuture.this.get());
+            outAltFuture.set((IN) AbstractAltFuture.this.get());
         });
 
         return outAltFuture;

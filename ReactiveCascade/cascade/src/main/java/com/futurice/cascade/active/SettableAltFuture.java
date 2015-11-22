@@ -52,13 +52,13 @@ public class SettableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param value
      */
     public SettableAltFuture(@NonNull final IThreadType threadType,
-                             @NonNull final OUT value) {
+                             @NonNull final IN value) {
         this(threadType);
         set(value);
     }
 
     @Override // ISettable
-    public void set(@NonNull final OUT value) {
+    public void set(@NonNull final IN value) {
         if (mStateAR.compareAndSet(ZEN, value) || mStateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
