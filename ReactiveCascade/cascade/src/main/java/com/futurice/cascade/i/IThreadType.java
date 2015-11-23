@@ -234,7 +234,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action);
+    <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action);
 
     /**
      * Perform several actions which need no input from (except perhaps values from closure escape),
@@ -248,7 +248,7 @@ public interface IThreadType extends INamed {
     @SuppressWarnings("unchecked")
     @NonNull
 //    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions);
+    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions);
 
     /**
      * Transform input A to output T, possibly with other input which may be fetched directly in the function.

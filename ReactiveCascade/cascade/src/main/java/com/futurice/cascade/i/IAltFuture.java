@@ -222,7 +222,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
      * Complete an mOnFireAction after this <code>RunnableAltFuture</code>
@@ -288,7 +288,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     @NonNull
     @SuppressWarnings("unchecked")
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, OUT>... altFutures);
+    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFutures);
 
     /**
      * Pass through to the next function if element meet a logic test, otherwise {@link #cancel(String)}

@@ -11,5 +11,5 @@ package com.futurice.cascade.i;
  * Implementing this interface indicates a primary mOnFireAction, usually one executed asynchronously on
  * an {@link com.futurice.cascade.i.IThreadType}
  */
-public interface IBaseAction<PHANTOM_IN> {
+public interface IBaseAction<PHANTOM_OUT> {
 }

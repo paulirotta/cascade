@@ -3,7 +3,6 @@ package com.futurice.cascade.active;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;
@@ -15,11 +14,14 @@ import com.futurice.cascade.util.RCLog;
  * <p>
  * Cancelled notifications are not consumed. All downchain items will also receive the
  * {@link #doOnCancelled(StateCancelled)} notification call synchronously.
- *
+ * <p>
  * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #doOnCancelled(StateCancelled)}
  * will be called exactly one time.
  */
-public class OnCancelledAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
+public class OnCancelledAltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> {
+    @NonNull
+    private final IActionOne<String> mOnCancelledAction;
+
     /**
      * Constructor
      *
@@ -29,7 +31,9 @@ public class OnCancelledAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
     @SuppressWarnings("unchecked")
     public OnCancelledAltFuture(@NonNull IThreadType threadType,
                                 @NonNull IActionOne<String> action) {
-        super(threadType, (IActionOne<IN>) action);
+        super(threadType);
+
+        this.mOnCancelledAction = action;
     }
 
     @NotCallOrigin
@@ -45,7 +49,7 @@ public class OnCancelledAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
         @SuppressWarnings("unchecked")
         final IAltFuture<?, String> altFuture = mThreadType
                 .from(stateCancelled.getReason())
-                .then((IAction<String>) this);
+                .then(mOnCancelledAction);
 
         final Exception e = forEachThen(af -> {
             af.doOnCancelled(stateCancelled);

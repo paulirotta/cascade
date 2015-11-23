@@ -83,7 +83,7 @@ import java.util.concurrent.CancellationException;
  */
 @NotCallOrigin
 public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> implements IRunnableAltFuture<IN, OUT> {
-    private final IActionR<IN, OUT> mAction;
+    private final IActionR<OUT> mAction;
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
@@ -145,7 +145,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      */
     public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IActionR<IN, OUT> mAction) {
+            @NonNull final IActionR<OUT> mAction) {
         super(threadType);
 
         this.mAction = mAction;

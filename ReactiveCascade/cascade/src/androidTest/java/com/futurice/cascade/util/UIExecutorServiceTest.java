@@ -8,7 +8,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.active.SettableAltFuture;
-import com.futurice.cascade.i.IAltFuture;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.WORKER;
 import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.util.AssertUtil.assertEqual;
-import static com.futurice.cascade.Async.v;
+import static com.futurice.cascade.Async.WORKER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MediumTest
@@ -80,7 +77,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         synchronized (looperFlushMutex) {
             uiExecutorService.execute(() -> {
                 synchronized (looperFlushMutex) {
-                    v("TEST", "Looper flushed");
+                    RCLog.v(UIExecutorServiceTest.this, "Looper flushed");
                     looperFlushMutex.notifyAll();
                 }
             });
@@ -127,7 +124,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -151,7 +148,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -175,7 +172,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAnyCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -199,7 +196,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAnyCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<?, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);

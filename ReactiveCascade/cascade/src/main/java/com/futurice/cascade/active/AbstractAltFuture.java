@@ -316,20 +316,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return this.mThreadType;
     }
 
-    @NonNull
-    @Override // IAltFuture
-    public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
-        RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
-        if (!this.mStateAR.compareAndSet(ZEN, stateCancelled) && !this.mStateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + mStateAR.get());
-            return;
-        }
-
-        forEachThen(altFuture -> {
-            altFuture.doOnCancelled(stateCancelled);
-        });
-    }
-
     /**
      * Perform some action on an instantaneous snapshot of the list of .subscribe() down-chain actions
      *
@@ -357,16 +343,20 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     protected static abstract class AbstractState extends Origin implements IAltFuture.State {
     }
 
+    @NotCallOrigin
     @NonNull
+    @SuppressWarnings("unchecked")
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> action) {
-        return then(new OnErrorAltFuture<>(mThreadType, action));
+    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
+        return (IAltFuture<IN, OUT>) then(new OnErrorAltFuture<OUT, OUT>(mThreadType, onErrorAction));
     }
 
+    @NotCallOrigin
     @NonNull
+    @SuppressWarnings("unchecked")
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> action) {
-        return then(new OnCancelledAltFuture<>(mThreadType, action));
+    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
+        return (IAltFuture<IN, OUT>) then(new OnCancelledAltFuture<OUT, OUT>(mThreadType, onCancelledAction));
     }
 
     @NotCallOrigin
@@ -386,6 +376,20 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         if (e != null) {
             throw e;
         }
+    }
+
+    @NonNull
+    @Override // IAltFuture
+    public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
+        RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
+        if (!this.mStateAR.compareAndSet(ZEN, stateCancelled) && !this.mStateAR.compareAndSet(FORKED, stateCancelled)) {
+            RCLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + mStateAR.get());
+            return;
+        }
+
+        forEachThen(altFuture -> {
+            altFuture.doOnCancelled(stateCancelled);
+        });
     }
 
     //----------------------------------- .then() actions ---------------------------------------------
@@ -492,7 +496,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IActionR<DOWNCHAIN_OUT> action) {
         return then(new RunnableAltFuture<>(mThreadType, action));
     }
 
@@ -563,8 +567,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public IAltFuture<IN, OUT> sleep(final long sleepTime,
                                      @NonNull final TimeUnit timeUnit) {
         final SettableAltFuture<IN, OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
-
-        then(in -> {
+        final IAltFuture<IN, OUT> scheduleAltFuture = then(in -> {
             Async.TIMER.schedule(() -> {
                 settableAltFuture.set((IN) in);
             }, sleepTime, timeUnit);
@@ -576,7 +579,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override // IAltFuture
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, OUT>... altFutures) {
+    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFutures) {
         AssertUtil.assertTrue("await(IAltFuture...) with empty list of upchain things to await makes no sense", altFutures.length > 0);
         AssertUtil.assertTrue("await(IAltFuture...) with single item in the list of upchain things to await is confusing. Use .then() instead", altFutures.length != 1);
 
@@ -584,10 +587,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         final AtomicInteger downCounter = new AtomicInteger(altFutures.length);
 
         outAltFuture.setUpchain(getUpchain());
-        for (final IAltFuture<?, OUT> upchainAltFuture : altFutures) {
-            final IAltFuture<?, ?> ignore = upchainAltFuture.then(() -> {
+        for (final IAltFuture<?, ?> upchainAltFuture : altFutures) {
+            final IAltFuture<?, ?> ignore = upchainAltFuture.then(in -> {
                 if (downCounter.decrementAndGet() == 0) {
-                    outAltFuture.set((IN) altFutures[0].get());
+                    outAltFuture.set((IN) in);
                 }
             });
         }

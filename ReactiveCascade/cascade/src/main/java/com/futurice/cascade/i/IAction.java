@@ -10,7 +10,7 @@ package com.futurice.cascade.i;
  * similar to {@link java.lang.Runnable}. The differences is that an explicit <code>Exception</code>
  * may be thrown which helps facilitate asynchronous exception handling in a lambda-friendly manner.
  */
-public interface IAction<PHANTOM_IN> extends IBaseAction<PHANTOM_IN> {
+public interface IAction<PHANTOM_OUT> extends IBaseAction<PHANTOM_OUT> {
     /**
      * Execute the mOnFireAction
      * <p>

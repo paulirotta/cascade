@@ -224,7 +224,7 @@ public final class Async {
          */
         @NonNull
         @Override
-        public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<IN, OUT> action) {
+        public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -236,7 +236,7 @@ public final class Async {
         @NonNull
         @Override
         @SuppressWarnings("unchecked")
-        public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<IN, OUT>... actions) {
+        public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 

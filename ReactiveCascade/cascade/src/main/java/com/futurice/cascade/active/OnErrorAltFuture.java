@@ -17,17 +17,22 @@ import com.futurice.cascade.util.RCLog;
  * The error is consumed by this chain link. All downchain items will be notified synchronously
  * as {@link #doOnCancelled(StateCancelled)}
  */
-public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
+public class OnErrorAltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> {
+    @NonNull
+    private final IActionOne<Exception> mOnErrorAction;
+
     /**
      * Constructor
      *
      * @param threadType the thread pool to run this command on
-     * @param action     a function that receives one input and no return from
+     * @param onErrorAction     a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public OnErrorAltFuture(@NonNull IThreadType threadType,
-                            @NonNull IActionOne<Exception> action) {
-        super(threadType, (IActionOne<IN>) action);
+                            @NonNull IActionOne<Exception> onErrorAction) {
+        super(threadType);
+
+        this.mOnErrorAction = onErrorAction;
     }
 
     @NotCallOrigin
@@ -43,7 +48,7 @@ public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
         @SuppressWarnings("unchecked")
         final IAltFuture<?, Exception> altFuture = mThreadType
                 .from(stateError.getException())
-                .then((IAction<Exception>) this);
+                .then(mOnErrorAction);
 
         final StateCancelled stateCancelled = new StateCancelled() {
             private final ImmutableValue<String> mOrigin = RCLog.originAsync();

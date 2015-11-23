@@ -52,7 +52,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     private final AtomicReference<T> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
     private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
     @Nullable
-    private final IActionR<?, T> action;
+    private final IActionR<T> action;
 
     /**
      * Create but do not yet set the from of an underlying {@link java.util.concurrent.atomic.AtomicReference}
@@ -78,7 +78,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         action = null;
     }
 
-    public ImmutableValue(@Nullable IActionR<?, T> action) {
+    public ImmutableValue(@Nullable IActionR<T> action) {
         this.action = action;
     }
 
@@ -163,7 +163,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         } else if (action instanceof IActionOneR) {
             return ((IActionOneR<IN, OUT>) action).call(in);
         } else if (action instanceof IActionR) {
-            return ((IActionR<IN, OUT>) action).call();
+            return ((IActionR<OUT>) action).call();
         }
 
         throw new UnsupportedOperationException("Not sure how to call this IBaseAction type: " + action.getClass());

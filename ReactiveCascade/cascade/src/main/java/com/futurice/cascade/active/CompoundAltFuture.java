@@ -170,7 +170,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<DOWNCHAIN_OUT> action) {
         return mTail.then(action);
     }
 
@@ -223,7 +223,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, OUT>... altFuturesToJoin) {
+    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFuturesToJoin) {
         final IAltFuture<TAIL_IN, OUT> ignore = mTail.await(altFuturesToJoin);
         return this;
     }
@@ -257,8 +257,15 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
 
     @NonNull
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(@NonNull IOnErrorAction action) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.onError(action);
+    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
+        final IAltFuture<TAIL_IN, OUT> ignore = mTail.onError(onErrorAction);
+        return this;
+    }
+
+    @NonNull
+    @Override // IAltFuture
+    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
+        final IAltFuture<TAIL_IN, OUT> ignore = mTail.onCancelled(onCancelledAction);
         return this;
     }
 

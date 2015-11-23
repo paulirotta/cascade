@@ -202,7 +202,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final IActionR<IN, OUT> action) {
+    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final IActionR<OUT> action) {
         return runAltFuture(new RunnableAltFuture<>(this, action));
     }
 
@@ -241,11 +241,11 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull final IActionR<IN, OUT>... actions) {
+    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull final IActionR<OUT>... actions) {
         RCLog.v(this, "map(List[" + actions.length + "])");
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
-        for (final IActionR<IN, OUT> action : actions) {
+        for (final IActionR<OUT> action : actions) {
             altFutures.add(then(action));
         }
 

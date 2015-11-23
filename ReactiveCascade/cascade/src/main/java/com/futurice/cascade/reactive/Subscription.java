@@ -402,14 +402,14 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IActionR<DOWNCHAIN_OUT> action) {
         return subscribe(mThreadType, action);
     }
 
     @Override // IReactiveSource
     @NonNull
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IThreadType threadType,
-                                                                    @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+                                                                    @NonNull final IActionR<DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
                 getName(), this, threadType,
                 t -> {
