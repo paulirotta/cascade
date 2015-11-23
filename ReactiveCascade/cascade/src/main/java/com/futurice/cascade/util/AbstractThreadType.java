@@ -12,15 +12,14 @@ import android.util.Log;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.BuildConfig;
-import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.active.RunnableAltFuture;
-import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.functional.RunnableAltFuture;
+import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
@@ -109,7 +108,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NotCallOrigin
     public <IN> Runnable wrapActionWithErrorProtection(
             @NonNull final IAction<IN> action,
-            @NonNull final IOnErrorAction onErrorAction) {
+            @NonNull final IActionOne<Exception> onErrorAction) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -140,7 +139,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NotCallOrigin
     public <IN> void run(
             @NonNull final IAction<IN> action,
-            @NonNull final IOnErrorAction onErrorAction) {
+            @NonNull final IActionOne<Exception> onErrorAction) {
         run(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
@@ -173,7 +172,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NotCallOrigin
     public <IN> void runNext(
             @NonNull final IAction<IN> action,
-            @NonNull final IOnErrorAction onErrorAction) {
+            @NonNull final IActionOne<Exception> onErrorAction) {
     RCLog.v(this, "runNext()");
         runNext(wrapActionWithErrorProtection(action, onErrorAction));
     }

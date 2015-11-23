@@ -9,7 +9,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.active.RunnableAltFuture;
+import com.futurice.cascade.functional.RunnableAltFuture;
 import com.futurice.cascade.util.UIExecutorService;
 
 import java.util.List;
@@ -63,10 +63,11 @@ public interface IThreadType extends INamed {
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
-     * @param <IN>          the type of input argument expected by the action
+     * @param <OUT>          the type of input argument expected by the action
      */
     @NotCallOrigin
-    <IN> void run(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
+    <OUT> void run(@NonNull IAction<OUT> action,
+                  @NonNull IActionOne<Exception> onErrorAction);
 
     /**
      * If this ThreadType permits out-of-order execution, run this mOnFireAction before any previously
@@ -76,11 +77,11 @@ public interface IThreadType extends INamed {
      * If this ThreadType does not permit out-of-order execution, this will become a {@link #execute(IAction)}
      * FIFO mOnFireAction.
      *
-     * @param <IN>   the type of input argument expected by the action
+     * @param <OUT>   the type of input argument expected by the action
      * @param action the work to be performed
      */
     @NotCallOrigin
-    <IN> void runNext(@NonNull IAction<IN> action);
+    <OUT> void runNext(@NonNull IAction<OUT> action);
 
     /**
      * Like {@link #run(Runnable)} but the task is queued LIFO as the first item of the
@@ -131,9 +132,10 @@ public interface IThreadType extends INamed {
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
-     * @param <IN>          the type of input argument expected by the action
+     * @param <OUT>          the type of input argument expected by the action
      */
-    <IN> void runNext(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction);
+    <OUT> void runNext(@NonNull IAction<OUT> action,
+                       @NonNull IActionOne<Exception> onErrorAction);
 
     /**
      * Convert this action into a runnable which will catch and handle
@@ -158,7 +160,7 @@ public interface IThreadType extends INamed {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN> Runnable wrapActionWithErrorProtection(
             @NonNull IAction<IN> action,
-            @NonNull IOnErrorAction onErrorAction);
+            @NonNull IActionOne<Exception> onErrorAction);
 
     /**
      * Complete the action asynchronously.

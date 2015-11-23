@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.BuildConfig;
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;

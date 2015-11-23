@@ -1,4 +1,4 @@
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.CallSuper;
 import android.test.suitebuilder.annotation.SmallTest;

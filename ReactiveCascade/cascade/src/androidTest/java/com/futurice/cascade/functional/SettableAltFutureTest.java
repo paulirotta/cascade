@@ -1,4 +1,4 @@
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.CallSuper;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -13,7 +13,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SmallTest
-public class SettableRunnableAltFutureTest extends AsyncAndroidTestCase {
+public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Before
     @CallSuper

@@ -1,4 +1,4 @@
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
@@ -9,7 +9,6 @@ import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.AssertUtil;

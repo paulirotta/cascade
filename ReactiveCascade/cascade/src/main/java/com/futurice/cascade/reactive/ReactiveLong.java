@@ -9,8 +9,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.RCLog;
 
@@ -49,7 +49,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
             final long initialValue,
             @NonNull  final IThreadType threadType,
             @Nullable  final IActionOneR<Long, Long> inputMapping,
-            @NonNull  final IOnErrorAction onErrorAction) {
+            @NonNull  final IActionOne<Exception> onErrorAction) {
         super(name, initialValue, threadType, inputMapping, onErrorAction);
     }
 

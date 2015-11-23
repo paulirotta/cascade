@@ -9,8 +9,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.RCLog;
 
@@ -49,7 +49,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
             @NonNull  final String name,
             final int initialValue,
             @Nullable  final IActionOneR<Integer, Integer> onFireAction,
-            @NonNull  final IOnErrorAction onError) {
+            @NonNull  final IActionOne<Exception> onError) {
         super(name, initialValue, threadType, onFireAction, onError);
     }
 

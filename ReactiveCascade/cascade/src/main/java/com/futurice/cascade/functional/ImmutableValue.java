@@ -3,7 +3,7 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Note that <code>null</code> is not a permissible from
  * <p>
  * This uses a free thread model (any calling thread is used for all chained functions). This is a
- * main difference from the similar {@link com.futurice.cascade.active.SettableAltFuture} which forces
+ * main difference from the similar {@link com.futurice.cascade.functional.SettableAltFuture} which forces
  * the specified evaluation thread group.
  *
  * @param <T>

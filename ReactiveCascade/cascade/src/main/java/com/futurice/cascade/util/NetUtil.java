@@ -19,8 +19,8 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
-import com.futurice.cascade.active.RunnableAltFuture;
-import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.functional.RunnableAltFuture;
+import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.IGettable;

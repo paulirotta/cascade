@@ -14,7 +14,6 @@ import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
@@ -64,7 +63,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public boolean isInOrderExecutor() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -74,7 +73,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public <IN> void execute(@NonNull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -84,7 +83,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public void run(@NonNull Runnable runnable) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -94,8 +93,9 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
-        public <IN> void run(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction) {
+        @Override // IThreadType
+        public <IN> void run(@NonNull IAction<IN> action,
+                             @NonNull IActionOne<Exception> onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -104,7 +104,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public <IN> void runNext(@NonNull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -114,7 +114,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public void runNext(@NonNull Runnable runnable) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -124,7 +124,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public boolean moveToHeadOfQueue(@NonNull Runnable runnable) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -134,8 +134,9 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
-        public <IN> void runNext(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction) {
+        @Override // IThreadType
+        public <IN> void runNext(@NonNull IAction<IN> action,
+                                 @NonNull IActionOne<Exception> onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -145,7 +146,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -156,8 +157,9 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
-        public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action, @NonNull IOnErrorAction onErrorAction) {
+        @Override // IThreadType
+        public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action,
+                                                           @NonNull IActionOne<Exception> onErrorAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -167,7 +169,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -178,7 +180,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -189,7 +191,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         @SuppressWarnings("unchecked")
         public <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
@@ -201,8 +203,8 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
-        public <OUT> ISettableAltFuture<?, OUT> from(OUT value) {
+        @Override // IThreadType
+        public <OUT> ISettableAltFuture<?, OUT> from(@NonNull OUT value) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -212,7 +214,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <OUT> ISettableAltFuture<?, OUT> from() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -223,7 +225,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -234,7 +236,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         @SuppressWarnings("unchecked")
         public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
@@ -246,7 +248,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -257,7 +259,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         @SuppressWarnings("unchecked")
         public <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
@@ -268,7 +270,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -278,7 +280,7 @@ public final class Async {
          *
          * @throws UnsupportedOperationException
          */
-        @Override
+        @Override // IThreadType
         public boolean isShutdown() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -289,7 +291,7 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable IAction<IN> afterShutdownAction) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -300,19 +302,18 @@ public final class Async {
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // IThreadType
         public <IN> List<Runnable> shutdownNow(@NonNull String reason, @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
         /**
-         /**
          * This is a marker class only.
          *
          * @throws UnsupportedOperationException
          */
         @NonNull
-        @Override
+        @Override // INamed
         public String getName() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -460,6 +461,7 @@ public final class Async {
 //            signalVisualizerClient.sendEventMessage(getTag(tag), System.currentTimeMillis(), from.toString(), extraInfo);
 //        }
 //    }
+
     /**
      * If the current thread belongs to more than one <code>ThreadType</>, subscribe the returned ThreadType will be the one
      * which created the Thread

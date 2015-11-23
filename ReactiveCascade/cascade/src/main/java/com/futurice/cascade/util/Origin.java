@@ -2,7 +2,7 @@ package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.NotCallOrigin;
 

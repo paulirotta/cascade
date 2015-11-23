@@ -4,7 +4,7 @@ import android.support.annotation.RequiresPermission;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
-import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;

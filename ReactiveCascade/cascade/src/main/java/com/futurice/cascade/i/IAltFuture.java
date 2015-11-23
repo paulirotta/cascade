@@ -9,7 +9,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.active.RunnableAltFuture;
+import com.futurice.cascade.functional.RunnableAltFuture;
 
 import java.util.List;
 import java.util.concurrent.CancellationException;

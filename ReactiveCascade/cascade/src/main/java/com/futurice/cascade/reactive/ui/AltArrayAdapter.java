@@ -20,8 +20,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.active.RunnableAltFuture;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.functional.RunnableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.NotCallOrigin;

@@ -3,7 +3,7 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
@@ -12,10 +12,10 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.BuildConfig;
-import com.futurice.cascade.active.CompoundAltFuture;
-import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.active.RunnableAltFuture;
-import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.functional.CompoundAltFuture;
+import com.futurice.cascade.functional.ImmutableValue;
+import com.futurice.cascade.functional.RunnableAltFuture;
+import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
@@ -25,7 +25,6 @@ import com.futurice.cascade.i.IActionTwoR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.ICancellable;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;

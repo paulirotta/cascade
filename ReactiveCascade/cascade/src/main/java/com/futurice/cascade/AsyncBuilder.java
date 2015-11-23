@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.CallOrigin;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;

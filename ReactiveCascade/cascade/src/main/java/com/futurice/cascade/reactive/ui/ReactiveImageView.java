@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.active.ImmutableValue;
+import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;

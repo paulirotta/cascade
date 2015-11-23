@@ -3,17 +3,16 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.active;
+package com.futurice.cascade.functional;
 
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.ICancellable;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.active.AbstractAltFuture;
+import com.futurice.cascade.functional.AbstractAltFuture;
 import com.futurice.cascade.util.RCLog;
 
 /**

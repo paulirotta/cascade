@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltFutureFuture;
@@ -83,7 +82,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             @NonNull T defaultValueIfNoPersistedValue,
             @NonNull IThreadType threadType,
             @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable IOnErrorAction onError,
+            @Nullable IActionOne<Exception> onError,
             @NonNull Context context) {
         super(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError);
 
@@ -147,7 +146,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             @NonNull final TT defaultValueIfNoPersistedValue,
             @NonNull final IThreadType threadType,
             @Nullable final IActionOneR<TT, TT> inputMapping,
-            @Nullable final IOnErrorAction onError,
+            @Nullable final IActionOne<Exception> onError,
             @NonNull final Context context) {
         final IActionOne<Exception> errorAction = onError != null ? onError : defaultOnErrorAction;
 

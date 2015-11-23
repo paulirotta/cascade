@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * in the stack trace.
  * <p>
  * See for example {@link com.futurice.cascade.Async#d(String, String)} for where this is
- * used to create clear logs. See {@link com.futurice.cascade.active.SettableAltFuture} constructors
+ * used to create clear logs. See {@link com.futurice.cascade.functional.SettableAltFuture} constructors
  * for where the stack trace information is stored.
  */
 @Inherited

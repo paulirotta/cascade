@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.futurice.cascade.AsyncAndroidTestCase;
-import com.futurice.cascade.active.SettableAltFuture;
+import com.futurice.cascade.functional.SettableAltFuture;
 
 import org.junit.Before;
 import org.junit.Test;
