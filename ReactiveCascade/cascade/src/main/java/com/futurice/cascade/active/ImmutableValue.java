@@ -17,7 +17,6 @@ import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IBaseAction;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.ISafeGettable;
-import com.futurice.cascade.util.AbstractAltFuture;
 import com.futurice.cascade.util.RCLog;
 
 import java.util.Iterator;

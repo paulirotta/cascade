@@ -3,7 +3,7 @@ This file is part of Reactive Cascade which is released under The MIT License.
 See license.txt or http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-package com.futurice.cascade.util;
+package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
@@ -30,6 +30,9 @@ import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.util.AssertUtil;
+import com.futurice.cascade.util.Origin;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -354,16 +357,16 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     protected static abstract class AbstractState extends Origin implements IAltFuture.State {
     }
 
-//    @Override
-//    public void doOnError(@NonNull StateError stateError) throws Exception {
-//        TODO
-//    }
+    @NonNull
+    @Override // IAltFuture
+    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> action) {
+        return then(new OnErrorAltFuture<>(mThreadType, action));
+    }
 
     @NonNull
-    @Override
-    public IAltFuture<IN, OUT> onError(@NonNull IOnErrorAction action) {
-        // TODO
-        return null;
+    @Override // IAltFuture
+    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> action) {
+        return then(new OnCancelledAltFuture<>(mThreadType, action));
     }
 
     @NotCallOrigin

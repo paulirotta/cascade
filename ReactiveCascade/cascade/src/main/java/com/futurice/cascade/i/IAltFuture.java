@@ -310,7 +310,19 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     IAltFuture<IN, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
 
     /**
-     * Add an mOnFireAction which will be performed if this RunnableAltFuture or any RunnableAltFuture up-chain either has
+     * Add an action which will be performed if this AltFuture or any AltFuture up-chain either has
+     * a runtime error or is {@link #cancel(String)}ed.
+     * <p>
+     * This is typically a user notification or cleanup such as removing an ongoing process indicator (spinner).
+     *
+     * @param action
+     * @return
+     */
+    @NonNull
+    IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> action);
+
+    /**
+     * Add an action which will be performed if this AltFuture or any AltFuture up-chain either has
      * a runtime error or is {@link #cancel(String)}ed.
      * <p>
      * This is typically used for cleanup such as changing the screen to notify the user or remove
@@ -320,5 +332,5 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return
      */
     @NonNull
-    IAltFuture<IN, OUT> onError(@NonNull IOnErrorAction action);
+    IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> action);
 }

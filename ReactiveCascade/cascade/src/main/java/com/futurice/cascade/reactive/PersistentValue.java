@@ -12,6 +12,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
@@ -53,7 +54,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static final ConcurrentHashMap<String, AltWeakReference<PersistentValue<?>>> PERSISTENT_VALUES = new ConcurrentHashMap<>();
     // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
     private static final IThreadType persistentValueThreadType = new DefaultThreadType("PersistentValueThreadType", Executors.newSingleThreadExecutor(), new LinkedBlockingQueue<>());
-    private static final IOnErrorAction defaultOnErrorAction = e -> {
+    private static final IActionOne<Exception> defaultOnErrorAction = e -> {
         RCLog.e(PersistentValue.class.getSimpleName(), "Internal error", e);
     };
     protected final SharedPreferences sharedPreferences; // Once changes from an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
@@ -111,7 +112,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static <TT> PersistentValue<TT> getAlreadyInitializedPersistentValue(
             @NonNull String name,
             @NonNull Context context,
-            @NonNull IOnErrorAction onErrorAction) {
+            @NonNull IActionOne<Exception> onErrorAction) {
         final AltWeakReference<PersistentValue<?>> wr = PERSISTENT_VALUES.get(getKey(context, name));
         if (wr == null) {
             return null;
@@ -148,7 +149,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             @Nullable final IActionOneR<TT, TT> inputMapping,
             @Nullable final IOnErrorAction onError,
             @NonNull final Context context) {
-        final IOnErrorAction errorAction = onError != null ? onError : defaultOnErrorAction;
+        final IActionOne<Exception> errorAction = onError != null ? onError : defaultOnErrorAction;
 
         PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(name, context, errorAction);
 

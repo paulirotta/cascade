@@ -1,19 +1,21 @@
-package com.futurice.cascade.util;
+package com.futurice.cascade.active;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.active.RunnableAltFuture;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.util.RCLog;
 
 /**
- * The on-error action
+ * The on-error action in a chain will be launched asynchronously
+ *
+ * The error is consumed by this chain link. All downchain items will be notified synchronously
+ * as {@link #doOnCancelled(StateCancelled)}
  */
 public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
     /**
@@ -29,12 +31,12 @@ public class OnErrorAltFuture<IN, OUT> extends RunnableAltFuture<IN, OUT> {
     }
 
     @NotCallOrigin
-    @Override // AbstractAltFuture
+    @Override // IAltFuture
     public void doOnError(@NonNull final StateError stateError) throws Exception {
         RCLog.d(this, "Handling doOnError(): " + stateError);
 
         if (!this.mStateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateError))) {
-            RCLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + mStateAR.get());
+            RCLog.i(this, "Will not doOnError() because IAltFuture state is already determined: " + mStateAR.get());
             return;
         }
 

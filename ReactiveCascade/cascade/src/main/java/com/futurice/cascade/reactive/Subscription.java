@@ -52,7 +52,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NonNull
     protected final IThreadType mThreadType;
     @NonNull
-    protected final IOnErrorAction mOnError;
+    protected final IActionOne<Exception> mOnError;
     @NonNull
     protected final CopyOnWriteArrayList<AltWeakReference<IReactiveTarget<OUT>>> mReactiveTargets = new CopyOnWriteArrayList<>(); // Holding a strong reference is optional, depending on the binding type
     @NonNull
@@ -90,7 +90,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                         @Nullable final IReactiveSource<IN> upchainReactiveSource,
                         @Nullable final IThreadType threadType,
                         @NonNull final IActionOneR<IN, OUT> onFireAction,
-                        @Nullable final IOnErrorAction onError) {
+                        @Nullable final IActionOne<Exception> onError) {
         this.mName = name;
         this.upchainReactiveSource = upchainReactiveSource;
         if (upchainReactiveSource != null) {
@@ -408,7 +408,8 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IThreadType threadType, @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull final IThreadType threadType,
+                                                                    @NonNull final IActionR<OUT, DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
                 getName(), this, threadType,
                 t -> {

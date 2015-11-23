@@ -13,7 +13,7 @@ import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.util.AbstractAltFuture;
+import com.futurice.cascade.active.AbstractAltFuture;
 import com.futurice.cascade.util.RCLog;
 
 /**
