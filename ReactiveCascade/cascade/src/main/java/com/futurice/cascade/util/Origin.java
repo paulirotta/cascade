@@ -13,7 +13,7 @@ import com.futurice.cascade.i.NotCallOrigin;
  * not be performed until <code>{@link #mOrigin}.get()</code> is called.
  */
 @NotCallOrigin
-public class Origin implements IAsyncOrigin {
+public abstract class Origin implements IAsyncOrigin {
     private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
     @NonNull

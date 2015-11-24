@@ -270,6 +270,9 @@ public class RCLog {
         if (tag instanceof INamed) {
             return tag.getClass().getSimpleName() + '-' + ((INamed) tag).getName();
         }
+        if (tag instanceof Class) {
+            return ((Class) tag).getSimpleName();
+        }
 
         return tag.getClass().getSimpleName();
     }
