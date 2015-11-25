@@ -60,16 +60,6 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testIsConsumed() throws Exception {
-
-    }
-
-    @Test
-    public void testIsConsumed1() throws Exception {
-
-    }
-
-    @Test
     public void testIsForked() throws Exception {
         final SettableAltFuture<Integer, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertFalse(settableAltFuture.isForked());

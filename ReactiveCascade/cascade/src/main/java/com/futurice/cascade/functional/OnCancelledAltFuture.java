@@ -18,7 +18,7 @@ import com.futurice.cascade.util.RCLog;
  * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #doOnCancelled(StateCancelled)}
  * will be called exactly one time.
  */
-public class OnCancelledAltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> {
+public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
     @NonNull
     private final IActionOne<String> mOnCancelledAction;
 

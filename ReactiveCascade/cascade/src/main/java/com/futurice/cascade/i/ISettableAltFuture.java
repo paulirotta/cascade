@@ -5,5 +5,5 @@ package com.futurice.cascade.i;
  *
  * See also {@link IRunnableAltFuture}
  */
-public interface ISettableAltFuture<IN, OUT> extends IAltFuture<IN, OUT>, ISettable<IN> {
+public interface ISettableAltFuture<T> extends IAltFuture<T, T>, ISettable<T> {
 }

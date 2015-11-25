@@ -204,7 +204,7 @@ public final class Async {
          */
         @NonNull
         @Override // IThreadType
-        public <OUT> ISettableAltFuture<?, OUT> from(@NonNull OUT value) {
+        public <OUT> ISettableAltFuture<OUT> from(@NonNull OUT value) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -215,7 +215,7 @@ public final class Async {
          */
         @NonNull
         @Override // IThreadType
-        public <OUT> ISettableAltFuture<?, OUT> from() {
+        public <OUT> ISettableAltFuture<OUT> from() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 

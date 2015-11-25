@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;
@@ -17,7 +16,7 @@ import com.futurice.cascade.util.RCLog;
  * The error is consumed by this chain link. All downchain items will be notified synchronously
  * as {@link #doOnCancelled(StateCancelled)}
  */
-public class OnErrorAltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> {
+public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
     @NonNull
     private final IActionOne<Exception> mOnErrorAction;
 

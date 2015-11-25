@@ -27,6 +27,7 @@ import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
+import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AssertUtil;
@@ -346,16 +347,16 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
-        return (IAltFuture<IN, OUT>) then(new OnErrorAltFuture<OUT, OUT>(mThreadType, onErrorAction));
+    public ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
+        return (ISettableAltFuture<OUT>) then(new OnErrorAltFuture<OUT>(mThreadType, onErrorAction));
     }
 
     @NotCallOrigin
     @NonNull
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
-        return (IAltFuture<IN, OUT>) then(new OnCancelledAltFuture<OUT, OUT>(mThreadType, onCancelledAction));
+    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
+        return (ISettableAltFuture<OUT>) then(new OnCancelledAltFuture<OUT>(mThreadType, onCancelledAction));
     }
 
     @NotCallOrigin
@@ -565,7 +566,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @SuppressWarnings("unchecked")
     public IAltFuture<IN, OUT> sleep(final long sleepTime,
                                      @NonNull final TimeUnit timeUnit) {
-        final SettableAltFuture<IN, OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
+        final ISettableAltFuture<OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
         final IAltFuture<IN, OUT> scheduleAltFuture = then(in -> {
             Async.TIMER.schedule(() -> {
                 settableAltFuture.set((IN) in);
@@ -582,7 +583,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         AssertUtil.assertTrue("await(IAltFuture...) with empty list of upchain things to await makes no sense", altFutures.length > 0);
         AssertUtil.assertTrue("await(IAltFuture...) with single item in the list of upchain things to await is confusing. Use .then() instead", altFutures.length != 1);
 
-        final SettableAltFuture<IN, OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
+        final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
         final AtomicInteger downCounter = new AtomicInteger(altFutures.length);
 
         outAltFuture.setUpchain(getUpchain());
@@ -602,7 +603,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
     public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-        final SettableAltFuture<IN, OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
+        final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
 
         final IAltFuture<?, ?> ignore = altFuture.then(() -> {
             outAltFuture.set((IN) AbstractAltFuture.this.get());

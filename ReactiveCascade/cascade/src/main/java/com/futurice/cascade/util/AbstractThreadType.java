@@ -208,14 +208,14 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <OUT> ISettableAltFuture<?, OUT> from(@NonNull final OUT value) {
+    public <OUT> ISettableAltFuture<OUT> from(@NonNull final OUT value) {
         return new SettableAltFuture<>(this, value);
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <OUT> ISettableAltFuture<?, OUT> from() {
+    public <OUT> ISettableAltFuture<OUT> from() {
         return new SettableAltFuture<>(this);
     }
 

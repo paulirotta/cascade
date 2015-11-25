@@ -279,7 +279,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Continue chain execution once all upchain futures realize and have completed their side effects.
      * <p>
-     * The await operation will be cancelled or exception state and trigger {@link #onError(IOnErrorAction)}
+     * The await operation will be cancelled or exception state and trigger {@link #onError(IActionOne)}
      * if <em>any</em> of the joined operations have a problem running to completion.
      *
      * @param altFutures to pause this chain until they are done (<code>{@link #isDone()}</code>)
@@ -319,7 +319,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return
      */
     @NonNull
-    IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> action);
+    ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> action);
 
     /**
      * Add an action which will be performed if this AltFuture or any AltFuture up-chain either has
@@ -332,5 +332,5 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return
      */
     @NonNull
-    IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> action);
+    ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> action);
 }

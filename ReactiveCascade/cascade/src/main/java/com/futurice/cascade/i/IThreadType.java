@@ -212,7 +212,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <OUT> ISettableAltFuture<?, OUT> from(@NonNull OUT value);
+    <OUT> ISettableAltFuture<OUT> from(@NonNull OUT value);
 
     /**
      * Set the chain to start with a value which will be set in the future.
@@ -224,7 +224,7 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <OUT> ISettableAltFuture<?, OUT> from();
+    <OUT> ISettableAltFuture<OUT> from();
 
     /**
      * Complete the mOnFireAction asynchronously

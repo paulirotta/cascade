@@ -8,11 +8,9 @@ package com.futurice.cascade.functional;
 import android.support.annotation.NonNull;
 
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.functional.AbstractAltFuture;
 import com.futurice.cascade.util.RCLog;
 
 /**
@@ -34,7 +32,7 @@ import com.futurice.cascade.util.RCLog;
  * TODO Would it be helpful for debugging to store and pass forward a reference to the object which originally detected the problem? It might help with filtering what mOnFireAction you want to do mOnError
  */
 @NotCallOrigin
-public class SettableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> implements ISettableAltFuture<IN, OUT> {
+public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISettableAltFuture<T> {
     /**
      * Create, from is not yet determined
      *
@@ -51,13 +49,13 @@ public class SettableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param value
      */
     public SettableAltFuture(@NonNull final IThreadType threadType,
-                             @NonNull final IN value) {
+                             @NonNull final T value) {
         this(threadType);
         set(value);
     }
 
     @Override // ISettable
-    public void set(@NonNull final IN value) {
+    public void set(@NonNull final T value) {
         if (mStateAR.compareAndSet(ZEN, value) || mStateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
