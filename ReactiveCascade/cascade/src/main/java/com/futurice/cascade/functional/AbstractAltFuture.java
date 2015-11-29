@@ -147,7 +147,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
     }
 
-
     @Override
     public boolean cancel(@NonNull final StateError stateError) {
         final Object state = this.mStateAR.get();

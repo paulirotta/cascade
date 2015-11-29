@@ -713,7 +713,7 @@ public class AsyncBuilder {
      */
     @NonNull
     public AsyncBuilder setUiExecutorService(@NonNull final ExecutorService uiExecutorService) {
-        Log.d(TAG, "setUiExecutorService(" + uiExecutorService + ")");
+        Log.d(TAG, "setUiExecutorService()");
         this.mUiExecutorService = uiExecutorService;
         return this;
     }
