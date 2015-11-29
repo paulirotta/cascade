@@ -124,7 +124,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -148,7 +148,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -172,7 +172,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAnyCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
@@ -196,7 +196,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     public void testInvokeAnyCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String, String> saf = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);

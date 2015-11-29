@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.functional.RunnableAltFuture;
 
-import java.util.List;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -148,7 +146,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return <code>this</code>
      */
     @NonNull
-    <UPCHAIN_IN> IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<UPCHAIN_IN, IN> altFuture);
+    void setUpchain(@NonNull IAltFuture<?, IN> altFuture);
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
@@ -197,7 +195,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    IAltFuture<IN, OUT> then(@NonNull IAction<OUT>... actions);
+    ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions);
 
     /**
      * Execute the action after this <code>RunnableAltFuture</code> finishes.
@@ -212,7 +210,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    IAltFuture<IN, OUT> then(@NonNull IActionOne<OUT>... actions);
+    ISettableAltFuture<OUT> then(@NonNull IActionOne<OUT>... actions);
 
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
@@ -253,7 +251,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
 
     /**
      * Pause execution of this chain for a fixed time interval
-     *
+     * <p>
      * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
      *
      * @param sleepTime
@@ -262,8 +260,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> sleep(long sleepTime,
-                              @NonNull TimeUnit timeUnit);
+    ISettableAltFuture<OUT> sleep(long sleepTime,
+                                  @NonNull TimeUnit timeUnit);
 
     /**
      * Continue to next step(s) in the chain only after the {@link IAltFuture} being waited for is complete. The from
@@ -274,7 +272,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?> altFuture);
+    ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture);
 
     /**
      * Continue chain execution once all upchain futures realize and have completed their side effects.
@@ -288,7 +286,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     @NonNull
     @SuppressWarnings("unchecked")
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFutures);
+    ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?>... altFutures);
 
     /**
      * Pass through to the next function if element meet a logic test, otherwise {@link #cancel(String)}

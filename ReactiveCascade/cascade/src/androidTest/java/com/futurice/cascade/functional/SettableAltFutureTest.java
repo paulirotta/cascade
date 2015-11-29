@@ -23,7 +23,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testCancel() throws Exception {
-        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertTrue(settableAltFuture.cancel("Just because"));
         assertEquals((Object) IAltFuture.VALUE_NOT_AVAILABLE, (Object) settableAltFuture.safeGet());
         try {
@@ -36,7 +36,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testIsCancelled() throws Exception {
-        final SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertFalse(settableAltFuture.isCancelled());
         assertTrue(settableAltFuture.cancel("Just because"));
         assertTrue(settableAltFuture.isCancelled());
@@ -44,7 +44,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testIsDone() throws Exception {
-        final SettableAltFuture<Integer, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertFalse(settableAltFuture.isDone());
         settableAltFuture.set(42);
         assertTrue(settableAltFuture.isDone());
@@ -52,7 +52,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testForkIsDone() throws Exception {
-        final SettableAltFuture<Integer, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         settableAltFuture.fork();
         assertFalse(settableAltFuture.isDone());
         settableAltFuture.set(42);
@@ -61,7 +61,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testIsForked() throws Exception {
-        final SettableAltFuture<Integer, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertFalse(settableAltFuture.isForked());
         settableAltFuture.fork();
         assertTrue(settableAltFuture.isForked());
@@ -71,7 +71,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Test
     public void testForkAfterSet() throws Exception {
-        final SettableAltFuture<Integer, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         settableAltFuture.set(42);
         assertTrue(settableAltFuture.isForked());
         settableAltFuture.fork();

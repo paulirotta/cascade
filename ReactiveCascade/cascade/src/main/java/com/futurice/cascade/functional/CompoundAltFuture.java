@@ -10,6 +10,7 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IReactiveTarget;
+import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
@@ -117,9 +118,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
 
     @NonNull
     @Override // IAltFuture
-    public <UPCHAIN_IN> IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<UPCHAIN_IN, IN> altFuture) {
+    public void setUpchain(@NonNull IAltFuture<?, IN> altFuture) {
         mHead.setUpchain(altFuture);
-        return this;
     }
 
     @Override // IAltFuture
@@ -144,9 +144,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT>... actions) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.then(actions);
-        return this;
+    public ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions) {
+        return mTail.then(actions);
     }
 
     @NonNull
@@ -161,9 +160,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IActionOne<OUT>... actions) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.then(actions);
-        return this;
+    public ISettableAltFuture<OUT> then(@NonNull IActionOne<OUT>... actions) {
+        return mTail.then(actions);
     }
 
     @NonNull
@@ -206,25 +204,24 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
      */
     @NonNull
     @Override
-    public IAltFuture<IN, OUT> sleep(final long sleepTime, @NonNull final TimeUnit timeUnit) {
+    public ISettableAltFuture<OUT> sleep(final long sleepTime,
+                                         @NonNull final TimeUnit timeUnit) {
         throw new UnsupportedOperationException("Not yet implemented"); //TODO sleep a compound alt future
     }
 
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.await(altFuture);
-        return this;
+    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
+        return mTail.await(altFuture);
     }
 
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFuturesToJoin) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.await(altFuturesToJoin);
-        return this;
+    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?>... altFuturesToJoin) {
+        return mTail.await(altFuturesToJoin);
     }
 
     @NonNull
@@ -256,16 +253,14 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
 
     @NonNull
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.onError(onErrorAction);
-        return this;
+    public ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
+        return mTail.onError(onErrorAction);
     }
 
     @NonNull
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.onCancelled(onCancelledAction);
-        return this;
+    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
+        return mTail.onCancelled(onCancelledAction);
     }
 
     @NonNull

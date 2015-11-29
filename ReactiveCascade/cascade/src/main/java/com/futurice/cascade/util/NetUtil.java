@@ -19,11 +19,13 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
+import com.futurice.cascade.functional.CompoundAltFuture;
 import com.futurice.cascade.functional.RunnableAltFuture;
 import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.IGettable;
+import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
@@ -208,8 +210,8 @@ public final class NetUtil extends Origin {
     public <T> IAltFuture<T, Response> getAsync(
             @NonNull final IGettable<T> urlGettable,
             final IGettable<Collection<Header>> headersGettable) {
-        final IAltFuture<T, Response> headOfChain = new SettableAltFuture<>(mNetReadThreadType);
-        IAltFuture<T, Response> chainedAltFuture = headOfChain;
+        final ISettableAltFuture<Response> headOfChain = new SettableAltFuture<>(mNetReadThreadType);
+        IAltFuture<Response, Response> chainedAltFuture = headOfChain;
         boolean chained = false;
 
         if (urlGettable instanceof IAltFuture) {
@@ -222,13 +224,14 @@ public final class NetUtil extends Origin {
             chained = true;
         }
 
-        if (chained) {
-            final IAltFuture<Response, Response> tailOfChain = chainedAltFuture.then(() ->
-                    get(urlGettable.get(), headersGettable.get()));
-
-//            FIXME We need to return the chain as a single entity, or does forking fire up this alternate chain and back down?
-            return headOfChain;
-        }
+        //TODO Compound chaining
+//        if (chained) {
+//            final IAltFuture<Response, Response> tailOfChain = chainedAltFuture.then(() ->
+//                    get(urlGettable.get(), headersGettable.get()));
+//
+////            FIXME We need to return the chain as a single entity, or does forking fire up this alternate chain and back down?
+//            return new CompoundAltFuture<>(headOfChain, tailOfChain);
+//        }
 
         return new RunnableAltFuture<>(mNetReadThreadType, () ->
                 get(urlGettable.get(), headersGettable.get()));

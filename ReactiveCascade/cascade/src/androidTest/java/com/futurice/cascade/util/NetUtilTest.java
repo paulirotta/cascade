@@ -96,7 +96,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));
-        SettableAltFuture<Collection<Header>, Collection<Header>> altFuture = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<Collection<Header>> altFuture = new SettableAltFuture<>(WORKER);
         altFuture.set(headers);
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")

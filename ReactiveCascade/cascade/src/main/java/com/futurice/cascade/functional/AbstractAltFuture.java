@@ -118,7 +118,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> mDownchainAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions to start after this mOnFireAction completes
     @NonNull
-    private final AtomicReference<IAltFuture<?, IN>> mPreviousAltFutureAR = new AtomicReference<>(null);
+    private final AtomicReference<IAltFuture<?, IN>> mPreviousAltFutureAR = new AtomicReference<>();
 
     /**
      * Create, from is not yet determined
@@ -133,11 +133,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @CallOrigin
     @CallSuper
     public boolean cancel(@NonNull final String reason) {
-        if (mStateAR.compareAndSet(ZEN, new AltFutureStateCancelled(reason))) {
+        final AltFutureStateCancelled state = new AltFutureStateCancelled(reason);
+        if (mStateAR.compareAndSet(ZEN, state) || mStateAR.compareAndSet(FORKED, state)) {
             RCLog.d(this, "Cancelled: reason=" + reason);
             return true;
         } else {
-            final Object state = mStateAR.get();
             if (state instanceof StateCancelled) {
                 RCLog.d(this, "Ignoring duplicate cancel. The ignored reason=" + reason + ". The previously accepted cancellation reason=" + state);
             } else {
@@ -245,15 +245,12 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @Override // IAltFuture
     @NonNull
-    public final <P> IAltFuture<IN, OUT> setUpchain(@NonNull final IAltFuture<P, IN> altFuture) {
+    public void setUpchain(@NonNull final IAltFuture<?, IN> altFuture) {
         final boolean set = this.mPreviousAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
             RCLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
-            return await(altFuture);
         }
-
-        return this;
     }
 
     /**
@@ -266,7 +263,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      */
     protected final void clearPreviousAltFuture() {
         AssertUtil.assertTrue(isDone());
-        this.mPreviousAltFutureAR.set(null);
+        this.mPreviousAltFutureAR.lazySet(null);
     }
 
     @Override // IAltFuture
@@ -477,7 +474,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IActionOne<OUT>... actions) {
+    public ISettableAltFuture<OUT> then(@NonNull IActionOne<OUT>... actions) {
         AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length > 0);
         AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length != 1);
 
@@ -504,23 +501,23 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull final IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
-        final IAltFuture<OUT, DOWNCHAIN_OUT> mergeAltFuture = altFuture.setUpchain(this);
+        altFuture.setUpchain(this);
 
-        this.mDownchainAltFutureList.add(mergeAltFuture);
+        this.mDownchainAltFutureList.add(altFuture);
         if (isDone()) {
 //            altFuture.map((IActionOne) v -> {
 //                visualize(mOrigin.getName(), v.toString(), "RunnableAltFuture");
 //            });
-            mergeAltFuture.fork();
+            altFuture.fork();
         }
 
-        return mergeAltFuture;
+        return altFuture;
     }
 
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT>... actions) {
+    public ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions) {
         AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length == 0);
         AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length == 1);
 
@@ -554,8 +551,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         for (int i = 0; i < actions.length; i++) {
             final IActionOneR<OUT, DOWNCHAIN_OUT> a = actions[i];
 
-            altFutures[i] = new RunnableAltFuture<>(mThreadType,
-                    a::call);
+            altFutures[i] = new RunnableAltFuture<OUT, DOWNCHAIN_OUT>(mThreadType, a);
         }
 
         return altFutures;
@@ -564,12 +560,12 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> sleep(final long sleepTime,
+    public ISettableAltFuture<OUT> sleep(final long sleepTime,
                                      @NonNull final TimeUnit timeUnit) {
         final ISettableAltFuture<OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
-        final IAltFuture<IN, OUT> scheduleAltFuture = then(in -> {
+        final IAltFuture<IN, OUT> scheduleAltFuture = then(t -> {
             Async.TIMER.schedule(() -> {
-                settableAltFuture.set((IN) in);
+                settableAltFuture.set(t);
             }, sleepTime, timeUnit);
         });
 
@@ -579,18 +575,18 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override // IAltFuture
     @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?>... altFutures) {
+    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?>... altFutures) {
         AssertUtil.assertTrue("await(IAltFuture...) with empty list of upchain things to await makes no sense", altFutures.length > 0);
         AssertUtil.assertTrue("await(IAltFuture...) with single item in the list of upchain things to await is confusing. Use .then() instead", altFutures.length != 1);
 
         final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
         final AtomicInteger downCounter = new AtomicInteger(altFutures.length);
 
-        outAltFuture.setUpchain(getUpchain());
+        outAltFuture.setUpchain(this);
         for (final IAltFuture<?, ?> upchainAltFuture : altFutures) {
-            final IAltFuture<?, ?> ignore = upchainAltFuture.then(in -> {
+            final IAltFuture<?, ?> ignore = upchainAltFuture.then(t -> {
                 if (downCounter.decrementAndGet() == 0) {
-                    outAltFuture.set((IN) in);
+                    outAltFuture.set((OUT) t);
                 }
             });
         }
@@ -602,11 +598,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
-    public IAltFuture<IN, OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
+    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
         final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
 
         final IAltFuture<?, ?> ignore = altFuture.then(() -> {
-            outAltFuture.set((IN) AbstractAltFuture.this.get());
+            outAltFuture.set(get());
         });
 
         return outAltFuture;

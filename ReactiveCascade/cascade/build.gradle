@@ -58,7 +58,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.1.1"
     compile "com.android.support:support-annotations:23.1.1"
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'org.assertj:assertj-core:2.2.0'
 }
 
