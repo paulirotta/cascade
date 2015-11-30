@@ -520,7 +520,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length == 0);
         AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length == 1);
 
-        final IAltFuture<IN, OUT>[] altFutures = new RunnableAltFuture[actions.length];
+        final IAltFuture<?, OUT>[] altFutures = new RunnableAltFuture[actions.length];
 
         for (int i = 0; i < actions.length; i++) {
             final IAction a = actions[i];
