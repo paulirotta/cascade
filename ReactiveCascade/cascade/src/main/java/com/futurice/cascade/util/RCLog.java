@@ -425,15 +425,15 @@ public class RCLog {
 
         if (Async.WORKER != null) {
             Async.WORKER.run(() -> {
-                final List<StackTaceLine> o = origin(traceElementsArray);
+                final List<StackTraceLine> o = origin(traceElementsArray);
                 AssertUtil.assertTrue(o.size() > 0);
-                final StackTaceLine line = o.get(0);
+                final StackTraceLine line = o.get(0);
                 final String s = prettyFormat(line.stackTraceElement);
                 immutableValue.set(s);
             });
         } else {
             // During bootstrapping of the ThreadTypes
-            final List<StackTaceLine> list = origin(traceElementsArray);
+            final List<StackTraceLine> list = origin(traceElementsArray);
             immutableValue.set(prettyFormat(list.get(0).stackTraceElement));
         }
 
@@ -459,13 +459,13 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> origin(@NonNull final StackTraceElement[] traceElementsArray) {
+    private static List<StackTraceLine> origin(@NonNull final StackTraceElement[] traceElementsArray) {
         final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
 
         allStackTraceElements.addAll(Arrays.asList(traceElementsArray).subList(3, traceElementsArray.length));
 
         // Remove uninteresting stack trace elements in least-interesting-removed-first order, but step back to the previous state if everything is removed by one of these filters
-        List<StackTaceLine> previousList = findClassAndMethod(allStackTraceElements);
+        List<StackTraceLine> previousList = findClassAndMethod(allStackTraceElements);
 
         try {
             previousList = filterListByClass(previousList, claz ->
@@ -491,15 +491,15 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
-        final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
+    private static List<StackTraceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
+        final List<StackTraceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
         for (final StackTraceElement ste : stackTraceElementList) {
             final String s = ste.toString();
 
             if (!s.contains("Native Method") && !s.contains("Unknown Source")) {
                 try {
-                    lines.add(new StackTaceLine(ste));
+                    lines.add(new StackTraceLine(ste));
                 } catch (ClassNotFoundException e) {
                     e(Async.class.getSimpleName(), "Can not find method " + ste.getMethodName() + " when introspecting stack trace class: " + ste.getClassName(), e);
                 }
@@ -510,12 +510,12 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> filterListByClass(
-            @NonNull final List<StackTaceLine> list,
+    private static List<StackTraceLine> filterListByClass(
+            @NonNull final List<StackTraceLine> list,
             @NonNull final IActionOneR<Class, Boolean> classFilter) throws Exception {
-        final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
-        for (final StackTaceLine line : list) {
+        for (final StackTraceLine line : list) {
             if (classFilter.call(line.claz)) {
                 filteredList.add(line);
             }
@@ -528,14 +528,14 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> filterListByClassAnnotation(
-            @NonNull final List<StackTaceLine> list,
+    private static List<StackTraceLine> filterListByClassAnnotation(
+            @NonNull final List<StackTraceLine> list,
             @NonNull final Class<? extends Annotation> annotation,
             final boolean mustBeAbsent)
             throws Exception {
-        final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
-        for (final StackTaceLine line : list) {
+        for (final StackTraceLine line : list) {
             if (line.claz.isAnnotationPresent(annotation) ^ mustBeAbsent) {
                 filteredList.add(line);
             }
@@ -548,12 +548,12 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> filterListPreferCallOriginMethodAnnotation(
-            @NonNull final List<StackTaceLine> list)
+    private static List<StackTraceLine> filterListPreferCallOriginMethodAnnotation(
+            @NonNull final List<StackTraceLine> list)
             throws Exception {
-        final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
-        for (final StackTaceLine line : list) {
+        for (final StackTraceLine line : list) {
             if (line.isAnnotated) {
                 filteredList.add(line);
             }
@@ -566,13 +566,13 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTaceLine> filterListByPackage(
-            @NonNull final List<StackTaceLine> list,
+    private static List<StackTraceLine> filterListByPackage(
+            @NonNull final List<StackTraceLine> list,
             @NonNull final IActionOneR<String, Boolean> packageFilter)
             throws Exception {
-        final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
-        for (final StackTaceLine line : list) {
+        for (final StackTraceLine line : list) {
             if (packageFilter.call(line.claz.getPackage().getName())) {
                 filteredList.add(line);
             }
@@ -593,12 +593,12 @@ public class RCLog {
     }
 
 
-    private static final class StackTaceLine {
+    private static final class StackTraceLine {
         final Class<?> claz;
         final StackTraceElement stackTraceElement;
         final boolean isAnnotated;
 
-        StackTaceLine(@NonNull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
+        StackTraceLine(@NonNull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
             this.stackTraceElement = stackTraceElement;
             final String className = stackTraceElement.getClassName();
             Class<?> c = sClassNameMap.get(className);
