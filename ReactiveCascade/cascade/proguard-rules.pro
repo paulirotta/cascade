@@ -43,3 +43,6 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+-dontnote com.google.vending.licensing.ILicensingService
+-dontnote com.android.vending.licensing.ILicensingService
