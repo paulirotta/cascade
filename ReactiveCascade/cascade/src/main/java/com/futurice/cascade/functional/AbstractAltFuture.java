@@ -80,6 +80,19 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
     };
 
+    /**
+     * The state returned by a function which has no value, but is finished running.
+     *
+     * In some functional styles this is (somewhat confusingly) a "Null" object passed along the chain.
+     * We prefer to name each state explicity for debuggability and disambiguation.
+     */
+    public static final State COMPLETE = new AbstractState() {
+        @Override
+        public String toString() {
+            return "COMPLETE";
+        }
+    };
+
     /*
      * TODO It should be possible to refactor and eliminate the FORKED state in production builds for performance, using only ZEN plus a single state change
      * This would however result in more debugging difficulty and the loss of certain broken logic tests so
@@ -363,7 +376,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
     }
 
-    @NonNull
     @Override // IAltFuture
     public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
         RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
@@ -372,17 +384,20 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             return;
         }
 
-        forEachThen(altFuture -> {
+        final Exception e = forEachThen(altFuture -> {
             altFuture.doOnCancelled(stateCancelled);
         });
+
+        if (e != null) {
+            throw e;
+        }
     }
 
     //----------------------------------- .then() actions ---------------------------------------------
     protected void doThen() {
-        AssertUtil.assertTrue(isDone());
-        final Exception e = forEachThen(af -> {
-            af.fork();
-        });
+        AssertUtil.assertTrue("doThen(): state=" + mStateAR.get(), isDone());
+
+        final Exception e = forEachThen(IAltFuture::fork);
         if (e != null) {
             throw new IllegalStateException("Problem completing downchain actions", e);
         }

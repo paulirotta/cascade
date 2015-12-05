@@ -181,7 +181,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <IN> IAltFuture<IN, IN> then(@NonNull final IAction<IN> action) {
-        return runAltFuture(new RunnableAltFuture<IN, IN>(this, action));
+        return runAltFuture(new RunnableAltFuture<>(this, action));
     }
 
     @Override // IThreadType

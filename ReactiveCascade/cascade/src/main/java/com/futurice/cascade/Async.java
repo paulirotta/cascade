@@ -374,14 +374,15 @@ public final class Async {
      * coherent.
      */
     public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
-    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
+    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
     public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
     private static volatile boolean sExitWithErrorCodeStarted = false;
 
     static {
         if (!AsyncBuilder.isInitialized()) {
-            Exception e = new IllegalStateException(AsyncBuilder.NOT_INITIALIZED);
-            Log.e(Async.class.getSimpleName(), AsyncBuilder.NOT_INITIALIZED, e);
+            Log.e(Async.class.getSimpleName(),
+                    AsyncBuilder.NOT_INITIALIZED,
+                    new IllegalStateException(AsyncBuilder.NOT_INITIALIZED));
         }
     }
 
@@ -399,12 +400,12 @@ public final class Async {
         if (sExitWithErrorCodeStarted) {
             Log.v(tag, "Already existing, ignoring exit with error code (" + errorCode + "): " + message + "-" + t);
         } else {
+            sExitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             if (t != null) {
                 Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
             } else {
                 Log.i(tag, "Exit, no error code : " + message);
             }
-            sExitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             WORKER.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NET_READ.shutdownNow("exitWithErrorCode: " + message, null, null, 0);
             NET_WRITE.shutdownNow("exitWithErrorCode: " + message, null, null, 0);

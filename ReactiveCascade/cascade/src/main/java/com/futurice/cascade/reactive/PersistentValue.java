@@ -56,6 +56,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static final IActionOne<Exception> defaultOnErrorAction = e -> {
         RCLog.e(PersistentValue.class.getSimpleName(), "Internal error", e);
     };
+    @NonNull
     protected final SharedPreferences sharedPreferences; // Once changes from an Editor are committed, they are guaranteed to be written even if the parent Context starts to go down
     protected final String key;
     protected final Class classOfPersistentValue;

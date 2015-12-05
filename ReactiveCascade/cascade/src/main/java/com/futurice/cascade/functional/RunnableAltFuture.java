@@ -102,7 +102,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             final OUT out;
 
             if (paf == null) {
-                out = (OUT) ZEN;
+                out = (OUT) COMPLETE;
             } else {
                 AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", paf.isDone());
                 out = (OUT) paf.get();
@@ -201,36 +201,48 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
     @Override
     @NotCallOrigin
     public final void run() {
+        boolean stateChanged = false;
+
         try {
             if (isCancelled()) {
                 RCLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + mStateAR.get());
                 throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
             }
             final OUT out = mAction.call();
-            if (!(mStateAR.compareAndSet(FORKED, out) || mStateAR.compareAndSet(ZEN, out))) {
+
+            if (!(mStateAR.compareAndSet(ZEN, out) || mStateAR.compareAndSet(FORKED, out))) {
                 RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
                 throw new CancellationException(mStateAR.get().toString());
             }
+            stateChanged = true;
         } catch (CancellationException e) {
-            this.cancel("RunnableAltFuture threw a CancellationException (accepted behavior, will not fail fast): " + e);
+            stateChanged = cancel("RunnableAltFuture threw a CancellationException (accepted behavior, will not fail fast): " + e);
+            stateChanged = true;
         } catch (InterruptedException e) {
-            this.cancel("RunnableAltFuture was interrupted (may be normal but NOT RECOMMENDED as behaviour is non-deterministic, but app will not fail fast): " + e);
+            stateChanged = cancel("RunnableAltFuture was interrupted (may be normal but NOT RECOMMENDED as behaviour is non-deterministic, but app will not fail fast): " + e);
         } catch (Exception e) {
             final AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
             if (!(mStateAR.compareAndSet(ZEN, stateError) && !(mStateAR.compareAndSet(FORKED, stateError)))) {
                 RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
+                stateChanged = true;
             }
         } finally {
-            try {
-                doThen();
-            } catch (Exception e) {
-                RCLog.e(this, "RunnableAltFuture.run() changed from, but problem in resulting .doThen()", e);
-            }
-            try {
-                clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
-            } catch (Exception e) {
-                RCLog.e(this, "RunnableAltFuture.run() changed from, but can not clearPreviousAltFuture()", e);
+            if (stateChanged) {
+                if (!isDone()) {
+                    RCLog.e(this, "Not done");
+                }
+                try {
+                    doThen();
+                } catch (Exception e) {
+                    RCLog.e(this, "RunnableAltFuture.run() state=" + mStateAR.get() + "\nProblem in resulting .doThen()", e);
+                }
+
+                try {
+                    clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
+                } catch (Exception e) {
+                    RCLog.e(this, "RunnableAltFuture.run() state=\" + mStateAR.get() + \"\nCan not clearPreviousAltFuture()", e);
+                }
             }
         }
     }

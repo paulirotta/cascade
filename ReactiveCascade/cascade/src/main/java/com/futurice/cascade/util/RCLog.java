@@ -134,7 +134,10 @@ public class RCLog {
                         Log.e("Async", "Problem with logging: " + tag + " : " + message, e);
                     }
                 } else {
-                    log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message + " " + t), Log::d);
+                    log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message + " " + t), Log::e);
+                }
+                if (Async.FAIL_FAST && !((t instanceof InterruptedException) || (t instanceof CancellationException))) {
+                    Async.exitWithErrorCode(getTag(tag), message, t);
                 }
             });
         });
@@ -446,6 +449,7 @@ public class RCLog {
      *
      * @param action to be performed when the current stack trace is resolved asynchronously
      */
+    @NotCallOrigin
     private static void debugOriginThen(@NonNull final IActionOne<String> action) {
         try {
             if (Async.TRACE_ASYNC_ORIGIN && Async.WORKER != null) {

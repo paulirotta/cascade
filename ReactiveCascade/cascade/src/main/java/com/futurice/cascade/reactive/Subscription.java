@@ -113,6 +113,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
             @NotCallOrigin
             public void call() throws Exception {
                 final Object latestValueFired = mLatestFireIn.get();
+                
                 doReceiveFire((IN) latestValueFired); // This step may take some time
                 if (!mLatestFireIn.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
                     if (mLatestFireInIsFireNext.getAndSet(true)) {
