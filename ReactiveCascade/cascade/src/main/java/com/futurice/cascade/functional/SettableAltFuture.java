@@ -11,6 +11,7 @@ import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
+import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
 
 /**
@@ -69,11 +70,12 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
     }
 
     protected void doFork() {
-        // This is not an IRunnableAltFuture, so nothing to run(). But RunnableAltFuture overrides this and does more
-        try {
-            doThen();
-        } catch (Exception e) {
-            RCLog.e(this, "Can not doFork()", e);
-        }
+        // This is not an IRunnableAltFuture, so nothing to fork() or run(). But RunnableAltFuture overrides this and does more
+//        AssertUtil.assertTrue(isDone());
+//        try {
+//            doThen();
+//        } catch (Exception e) {
+//            RCLog.e(this, "Can not doFork()", e);
+//        }
     }
 }
