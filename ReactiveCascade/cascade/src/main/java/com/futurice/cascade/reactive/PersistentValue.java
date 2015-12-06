@@ -18,6 +18,7 @@ import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltFutureFuture;
 import com.futurice.cascade.util.AltWeakReference;
+import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.RCLog;
 
@@ -89,7 +90,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
 
         this.defaultValue = defaultValueIfNoPersistedValue;
         this.classOfPersistentValue = defaultValueIfNoPersistedValue.getClass();
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
         this.key = getKey(context, name);
 
         try {
@@ -358,7 +359,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
 
         RCLog.v(this, "PersistentValue \"" + getName() + "\" persist soon, from=" + value);
         persistentValueThreadType.then(() -> {
-            final SharedPreferences.Editor editor = sharedPreferences.edit();
+            final SharedPreferences.Editor editor = AssertUtil.assertNotNull(sharedPreferences, "Shared preferences are null").edit();
 
             if (value instanceof String) {
                 editor.putString(key, (String) value);
