@@ -3,13 +3,16 @@ package com.futurice.cascade.util;
 import android.support.annotation.RequiresPermission;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.functional.SettableAltFuture;
+import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.internal.framed.Header;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -59,8 +62,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Test
     public void testGetAsync() throws Exception {
-        IAltFuture<?, Response> iaf = getNetUtil()
-                .getAsync("http://httpbin.org/get")
+        IAltFuture<?, Response> iaf = getNetUtil().getAsync("http://httpbin.org/get")
                 .fork();
         assertThat(awaitDone(iaf).isSuccessful()).isTrue();
     }

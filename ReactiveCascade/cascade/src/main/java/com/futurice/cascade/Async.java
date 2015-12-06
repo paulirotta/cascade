@@ -5,6 +5,7 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade;
 
+import android.app.ActivityManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -389,10 +390,31 @@ public final class Async {
     Async() {
     }
 
+    /**
+     * Ugly hack from http://stackoverflow.com/questions/21367646/how-to-determine-if-android-application-is-started-with-junit-testing-instrument
+     *
+     * @return true if this is a test, or false if this is a production app
+     */
+    private static boolean isTestMode() {
+        boolean result;
+        try {
+            Class.forName("com.futurice.cascade.AsyncBuilderTest");
+            result = true;
+        } catch (final Exception e) {
+            result = false;
+        }
+        return result;
+    }
+
     public static void exitWithErrorCode(
             @NonNull final String tag,
             @NonNull final String message,
             @Nullable final Throwable t) {
+        if (isTestMode()) {
+            // Some integration tests fail without this- the test harness is disturbed by app shutdown
+            return;
+        }
+
         final int errorCode = 1;
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
@@ -423,6 +445,7 @@ public final class Async {
                     .start();
         }
     }
+
 //    /**
 //     * Pass a signal to the JavaScript visualizer client running on the LAN
 //     *

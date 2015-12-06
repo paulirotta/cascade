@@ -101,8 +101,9 @@ public final class NetUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> getAsync(@NonNull final T url) {
-        return new RunnableAltFuture<>(mNetReadThreadType, () ->
-                get(url, null));
+        return new RunnableAltFuture<>(mNetReadThreadType, () -> {
+                return get(url, null);
+        });
     }
 
     /**

@@ -10,6 +10,7 @@ import com.futurice.cascade.i.IAltFuture;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SmallTest
@@ -26,11 +27,15 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
         final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertTrue(settableAltFuture.cancel("Just because"));
         assertEquals((Object) IAltFuture.VALUE_NOT_AVAILABLE, (Object) settableAltFuture.safeGet());
+
+        SHOW_ERROR_STACK_TRACES = false;
         try {
             settableAltFuture.get();
             failBecauseExceptionWasNotThrown(IllegalStateException.class);
         } catch (IllegalStateException e) {
             assertTrue(e.getMessage().contains("Just because"));
+        } finally {
+            SHOW_ERROR_STACK_TRACES = true;
         }
     }
 
