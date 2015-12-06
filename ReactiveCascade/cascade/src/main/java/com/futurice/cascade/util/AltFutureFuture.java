@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.util;
 
 import android.support.annotation.NonNull;
@@ -59,7 +40,7 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     /**
      * Create a new {@link Future} which wraps an {@link IAltFuture} to allow use of blocking
      * operations.
-     *
+     * <p>
      * Note that generally we do not wish to use this except for special circumstances such as synchronizing
      * the system test thread with the items being tested. They may exist other special cases, but most
      * often you can re-factor your code as a pure non-blocking chain instead of using this class.
@@ -86,7 +67,8 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     }
 
     @Override // Future
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     public OUT get() throws InterruptedException, ExecutionException {
         final OUT out;
 
@@ -110,7 +92,8 @@ public class AltFutureFuture<IN, OUT> implements Future<OUT> {
     }
 
     @Override // Future
-    @NonNull @nonnull
+    @NonNull
+    @nonnull
     public OUT get(
             final long timeout,
             @NonNull @nonnull final TimeUnit unit)

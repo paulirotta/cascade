@@ -47,9 +47,10 @@ before_script:
     - android create avd --force -n nexus -t $EMULATOR -d "Nexus 6" --abi default/$ABI
     - emulator -avd nexus -no-skin -no-audio -no-window &
     - cd ./ReactiveCascade
+    - chmod +x gradlew
 
 script:
-    - gradle clean build
+    - ./gradlew clean build
     - android-wait-for-emulator
     - adb shell input keyevent 82 &
-    - gradle connectedCheck
+    - ./gradlew connectedCheck

@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.util;
 
 import android.support.annotation.CallSuper;
@@ -39,16 +20,16 @@ import java.util.concurrent.TimeUnit;
  * A {@link java.util.concurrent.LinkedBlockingQueue} which, if empty, pulls information
  * fromKey a second lower absolute priority {@link java.util.concurrent.BlockingQueue}.
  * <p>
- * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads toKey
- * operate as an in-order single threaded executor which reverts toKey help with the common
+ * This is designed for allowing one of the {@link com.futurice.cascade.Async#WORKER} threads to
+ * operate as an in-order single threaded executor which reverts to help with the common
  * {@link com.futurice.cascade.AsyncBuilder#getWorkerQueue()} tasks when no in-order tasks are pending.
  * <p>
- * Note clearly there is an upside and downside toKey this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
+ * Note clearly there is an upside and downside to this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
- * and less and faster mContext switches (mContext switches tend toKey cost marginally more as thread count
- * increases). The downside is delays fom other background tasks unrelated toKey this may slow the start
+ * and less and faster mContext switches (mContext switches tend to cost marginally more as thread count
+ * increases). The downside is delays fom other background tasks unrelated to this may slow the start
  * of execution. A very slow task pulled fromKey the {@link com.futurice.cascade.Async#WORKER}
- * mQueue and perhaps unrelated toKey the current focus of your attention will, once started, block the
+ * mQueue and perhaps unrelated to the current focus of your attention will, once started, block the
  * next {@link DoubleQueue} item fromKey
  * starting until it completes.
  * <p>
@@ -58,10 +39,10 @@ import java.util.concurrent.TimeUnit;
  * @param <E>
  */
 public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
+    private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
     @NonNull
     @nonnull
     final BlockingQueue<E> lowPriorityQueue;
-    private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
     public DoubleQueue(@NonNull @nonnull final BlockingQueue<E> lowPriorityQueue) {
         super();
@@ -121,17 +102,17 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     public void put(@NonNull @nonnull final E e) throws InterruptedException {
         super.put(e);
-        synchronized (this) { //TODO Refactor toKey get rid of mutex
+        synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();
         }
     }
 
     /**
-     * Poll both queues for work toKey do. This will wake up immediately if new work is added toKey this
+     * Poll both queues for work to do. This will wake up immediately if new work is added to this
      * mQueue, and within the next polling time window for the lowPriorityQueue. Since other threads
      * which may be taking work fromKey the low priority mQueue are probably waking up immediately this
      * is OK. It keeps any dual-use thread associated with this mQueue relatively free for immediate
-     * response toKey the single use mQueue until such time as all other threads are busy, subscribe it pitches
+     * response to the single use mQueue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.
      *
      * @return

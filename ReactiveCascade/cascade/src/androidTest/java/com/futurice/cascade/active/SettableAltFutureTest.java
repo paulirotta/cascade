@@ -4,15 +4,16 @@ import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.futurice.cascade.Async;
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Created by phou on 6/4/2015.
- */
+import static org.assertj.core.api.Assertions.*;
+
 @SmallTest
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
@@ -22,9 +23,19 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
         super.setUp();
     }
 
+    @Ignore
     @Test
     public void testCancel() throws Exception {
-
+        SettableAltFuture<?, Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        assertTrue(settableAltFuture.cancel("Just because"));
+        assertTrue(settableAltFuture.isCancelled());
+        assertEquals(null, settableAltFuture.safeGet());
+        try {
+            settableAltFuture.get();
+            failBecauseExceptionWasNotThrown(IllegalStateException.class);
+        } catch (IllegalStateException e) {
+            assertTrue(e.getMessage().contains("Just because"));
+        }
     }
 
     @Test

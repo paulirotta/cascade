@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.util;
 
 import android.support.annotation.CheckResult;
@@ -39,7 +20,6 @@ import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
-import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
@@ -71,12 +51,11 @@ import static com.futurice.cascade.Async.vv;
  * For more specialized behaviour a class may choose to replace this.
  * <p>
  */
-// TODO Add a DEBUG build timer which notifies you of dangling forks (.subscribe() which you forget to call .fork() on after some time period)
-public abstract class AbstractThreadType implements IThreadType, INamed {
+public abstract class AbstractThreadType implements IThreadType {
     protected final ExecutorService executorService;
-    private final String name;
     protected final BlockingQueue<Runnable> mQueue;
     protected final ImmutableValue<String> mOrigin;
+    private final String name;
 
     /**
      * Create an asynchronous mOnFireAction handler that embodies certain rules for threading split concurrency
@@ -98,6 +77,13 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     }
 
 //============================= Internal Utility Methods =========================================
+
+    private static boolean isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary() {
+        //TODO This check doesn't really allow 3rd party implementations. Not testing would mean unsafe/less obvious problems can come later. Package hiding would disallow replacement implementations that follow the interface contracts. What we have here is a half measure to guide people since currently there are no alternate implementations.
+        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        assertTrue("Stack trace[3] is AbstractThreadType.fork(IRunnableAltFuture)", ste[3].getMethodName().contains("fork"));
+        return !ste[4].getClassName().startsWith("com.futurice.cascade");
+    }
 
     @NotCallOrigin
     public abstract void run(@NonNull @nonnull Runnable runnable);
@@ -143,13 +129,6 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
                 }
             }
         };
-    }
-
-    private static boolean isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary() {
-        //TODO This check doesn't really allow 3rd party implementations. Not testing would mean unsafe/less obvious problems can come later. Package hiding would disallow replacement implementations that follow the interface contracts. What we have here is a half measure to guide people since currently there are no alternate implementations.
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        assertTrue("Stack trace[3] is AbstractThreadType.fork(IRunnableAltFuture)", ste[3].getMethodName().contains("fork"));
-        return !ste[4].getClassName().startsWith("com.futurice.cascade");
     }
 
 //========================== .subscribe() and .run() Methods ================================
@@ -205,7 +184,8 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IAction<IN> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<IN, IN>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -213,7 +193,8 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN> IAltFuture<IN, IN> then(@NonNull @nonnull final IActionOne<IN> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<IN, IN>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -221,7 +202,8 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull final IActionOneR<IN, OUT> action) {
-        return new AltFuture<>(this, action);
+        return (new AltFuture<>(this, action))
+                .fork();
     }
 
     @Override // IThreadType
@@ -229,7 +211,8 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
     public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull final IActionR<IN, OUT> action) {
-        return new AltFuture<IN, OUT>(this, action);
+        return (new AltFuture<IN, OUT>(this, action))
+                .fork();
     }
 
     //======================= .subscribe() List Operations =========================================
@@ -299,7 +282,7 @@ public abstract class AbstractThreadType implements IThreadType, INamed {
 
     @Override // IThreadType
     public <IN, OUT> void fork(@NonNull @nonnull final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-        assertTrue("AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
+        assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked() && !runnableAltFuture.isDone());
         if (Async.DEBUG && isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
             throw new UnsupportedOperationException("Method for internal use only. Please call your IRunnableAltFuture " + runnableAltFuture + ".fork() on instead of calling IThreadType.fork(IRunnableAltFuture)");
         }

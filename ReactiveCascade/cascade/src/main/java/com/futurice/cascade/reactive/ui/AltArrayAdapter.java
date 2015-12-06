@@ -63,51 +63,45 @@ import static com.futurice.cascade.Async.vv;
 public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     protected final ImmutableValue<String> mOrigin;
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource) {
         super(context, resource, 0, new ArrayList<>());
         mOrigin = originAsync();
     }
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource,
-            @IdRes final int textViewResourceId) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource,
+                           @IdRes final int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<>());
         mOrigin = originAsync();
     }
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource,
-            @NonNull @nonnull final T[] objects) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource,
+                           @NonNull @nonnull final T[] objects) {
         super(context, resource, 0, Arrays.asList(objects));
         mOrigin = originAsync();
     }
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource,
-            @IdRes final int textViewResourceId,
-            @NonNull @nonnull final T[] objects) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource,
+                           @IdRes final int textViewResourceId,
+                           @NonNull @nonnull final T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
         mOrigin = originAsync();
     }
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource,
-            @NonNull @nonnull final List<T> objects) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource,
+                           @NonNull @nonnull final List<T> objects) {
         super(context, resource, 0, objects);
         mOrigin = originAsync();
     }
 
-    public AltArrayAdapter(
-            @NonNull @nonnull final Context context,
-            @LayoutRes final int resource,
-            @IdRes final int textViewResourceId,
-            @NonNull @nonnull final List<T> objects) {
+    public AltArrayAdapter(@NonNull @nonnull final Context context,
+                           @LayoutRes final int resource,
+                           @IdRes final int textViewResourceId,
+                           @NonNull @nonnull final List<T> objects) {
         super(context, resource, textViewResourceId, objects);
         mOrigin = originAsync();
     }
@@ -141,7 +135,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, T> addAsync(@NonNull @nonnull final T value, final boolean ifAbsent) {
+    public IAltFuture<?, T> addAsync(@NonNull @nonnull final T value,
+                                     final boolean ifAbsent) {
         return UI.then(
                 () -> {
                     if (ifAbsent) {
@@ -234,9 +229,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <A, TT extends T> IAltFuture<A, A> addAllAsync(
-            @NonNull @nonnull final Collection<TT> collection,
-            final boolean addIfUnique) {
+    public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull @nonnull final Collection<TT> collection,
+                                                          final boolean addIfUnique) {
         vv(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
         if (addIfUnique) {
             return UI.then(() -> {
@@ -395,10 +389,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @Override
-    public View getView(
-            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-            @Nullable @nullable final View convertView,
-            @NonNull @nonnull final ViewGroup parent) {
+    public View getView(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
+                        @Nullable @nullable final View convertView,
+                        @NonNull @nonnull final ViewGroup parent) {
         return super.getView(position, convertView, parent);
     }
 
@@ -416,10 +409,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public <A> IAltFuture<A, View> getViewAsync(
-            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-            @NonNull @nonnull final View convertView,
-            @NonNull @nonnull final ViewGroup parent) {
+    public <A> IAltFuture<A, View> getViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
+                                                @NonNull @nonnull final View convertView,
+                                                @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getView(position, convertView, parent));
     }
 
@@ -427,10 +419,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @Override
-    public View getDropDownView(
-            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-            @NonNull @nonnull final View convertView,
-            @NonNull @nonnull final ViewGroup parent) {
+    public View getDropDownView(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
+                                @NonNull @nonnull final View convertView,
+                                @NonNull @nonnull final ViewGroup parent) {
         return super.getDropDownView(position, convertView, parent);
     }
 
@@ -438,10 +429,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> {
     @NonNull
     @nonnull
     @CheckResult(suggest = "IAltFuture#fork()")
-    public IAltFuture<?, View> getDropDownViewAsync(
-            @IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-            @NonNull @nonnull final View convertView,
-            @NonNull @nonnull final ViewGroup parent) {
+    public IAltFuture<?, View> getDropDownViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
+                                                    @NonNull @nonnull final View convertView,
+                                                    @NonNull @nonnull final ViewGroup parent) {
         return UI.then(() -> getDropDownView(position, convertView, parent));
     }
 

@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade;
 
 import android.content.Context;
@@ -71,20 +52,18 @@ public class AsyncBuilder {
     public static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     public static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
     static final String NOT_INITIALIZED = "Please init with new AsyncBuilder(this).build() in for example Activity.onCreate() _before_ the classloader touches Async.class";
-    private final String TAG = AsyncBuilder.class.getSimpleName();
     private final static AtomicInteger sThreadNumber = new AtomicInteger();
-    private final AtomicBoolean mWorkerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
-    static Thread sSerialWorkerThread;
-
     public static volatile AsyncBuilder sAsyncBuilder = null;
-    public Thread mUiThread;
+    static Thread sSerialWorkerThread;
     public final Context mContext;
+    private final String TAG = AsyncBuilder.class.getSimpleName();
+    private final AtomicBoolean mWorkerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
+    public Thread mUiThread;
     public ExecutorService mUiExecutorService;
-    public boolean mDebug = BuildConfig.DEBUG;
+    public boolean mDebug = false; //BuildConfig.DEBUG;
+    public final boolean mStrictMode = mDebug;
     public boolean mFailFast = mDebug;
     public boolean mShowErrorStackTraces = mDebug;
-    public final boolean mStrictMode = mDebug;
-
     private IThreadType mWorkerThreadType;
     private IThreadType mSerialWorkerThreadType;
     private IThreadType mUiThreadType;
@@ -102,13 +81,6 @@ public class AsyncBuilder {
     private ExecutorService mFileWriteExecutorService;
     private ExecutorService mNetReadExecutorService;
     private ExecutorService mNetWriteExecutorService;
-
-    /**
-     * @return
-     */
-    public static boolean isInitialized() {
-        return sAsyncBuilder != null;
-    }
 
     /**
      * Create a new <code>AsyncBuilder</code> that will run as long as the specified
@@ -136,6 +108,13 @@ public class AsyncBuilder {
     /**
      * @return
      */
+    public static boolean isInitialized() {
+        return sAsyncBuilder != null;
+    }
+
+    /**
+     * @return
+     */
     @NonNull
     @nonnull
     @NotCallOrigin
@@ -152,6 +131,19 @@ public class AsyncBuilder {
         }
 
         return mWorkerThreadType;
+    }
+
+    /**
+     * @param workerThreadType
+     * @return the builder, for chaining
+     */
+    @NonNull
+    @nonnull
+    public AsyncBuilder setWorkerThreadType(@NonNull final IThreadType workerThreadType) {
+        Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
+        this.mWorkerThreadType = workerThreadType;
+
+        return this;
     }
 
     /**
@@ -173,19 +165,6 @@ public class AsyncBuilder {
         }
 
         return mSerialWorkerThreadType;
-    }
-
-    /**
-     * @param workerThreadType
-     * @return the builder, for chaining
-     */
-    @NonNull
-    @nonnull
-    public AsyncBuilder setWorkerThreadType(@NonNull final IThreadType workerThreadType) {
-        Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
-        this.mWorkerThreadType = workerThreadType;
-
-        return this;
     }
 
     /**
@@ -418,30 +397,6 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param queue
-     * @return the builder, for chaining
-     */
-    @NonNull
-    @nonnull
-    public AsyncBuilder setWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setWorkerQueue(" + queue + ")");
-        mWorkerQueue = queue;
-        return this;
-    }
-
-    /**
-     * @param queue
-     * @return the builder, for chaining
-     */
-    @NonNull
-    @nonnull
-    public AsyncBuilder setSerialWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setSerialWorkerQueue(" + queue + ")");
-        mSerialWorkerQueue = queue;
-        return this;
-    }
-
-    /**
      * @return the builder, for chaining
      */
     @NonNull
@@ -454,6 +409,18 @@ public class AsyncBuilder {
         }
 
         return mWorkerQueue;
+    }
+
+    /**
+     * @param queue
+     * @return the builder, for chaining
+     */
+    @NonNull
+    @nonnull
+    public AsyncBuilder setWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+        Log.d(TAG, "setWorkerQueue(" + queue + ")");
+        mWorkerQueue = queue;
+        return this;
     }
 
     /**
@@ -480,9 +447,9 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-    public AsyncBuilder setFileQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setFileQueue(" + queue + ")");
-        this.mFileQueue = queue;
+    public AsyncBuilder setSerialWorkerQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+        Log.d(TAG, "setSerialWorkerQueue(" + queue + ")");
+        mSerialWorkerQueue = queue;
         return this;
     }
 
@@ -507,21 +474,9 @@ public class AsyncBuilder {
      */
     @NonNull
     @nonnull
-    public AsyncBuilder setNetReadQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setNetReadQueue(" + queue + ")");
-        this.mNetReadQueue = queue;
-        return this;
-    }
-
-    /**
-     * @param queue
-     * @return the builder, for chaining
-     */
-    @NonNull
-    @nonnull
-    public AsyncBuilder setNetWriteQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setNetWriteQueue(" + queue + ")");
-        this.mNetWriteQueue = queue;
+    public AsyncBuilder setFileQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+        Log.d(TAG, "setFileQueue(" + queue + ")");
+        this.mFileQueue = queue;
         return this;
     }
 
@@ -541,6 +496,18 @@ public class AsyncBuilder {
     }
 
     /**
+     * @param queue
+     * @return the builder, for chaining
+     */
+    @NonNull
+    @nonnull
+    public AsyncBuilder setNetReadQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+        Log.d(TAG, "setNetReadQueue(" + queue + ")");
+        this.mNetReadQueue = queue;
+        return this;
+    }
+
+    /**
      * @return the builder, for chaining
      */
     @NonNull
@@ -553,6 +520,18 @@ public class AsyncBuilder {
         }
 
         return mNetWriteQueue;
+    }
+
+    /**
+     * @param queue
+     * @return the builder, for chaining
+     */
+    @NonNull
+    @nonnull
+    public AsyncBuilder setNetWriteQueue(@NonNull @nonnull final BlockingQueue<Runnable> queue) {
+        Log.d(TAG, "setNetWriteQueue(" + queue + ")");
+        this.mNetWriteQueue = queue;
+        return this;
     }
 
     /**

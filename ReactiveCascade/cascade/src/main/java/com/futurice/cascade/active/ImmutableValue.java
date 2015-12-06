@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
@@ -46,15 +27,15 @@ import static com.futurice.cascade.Async.ee;
 import static com.futurice.cascade.Async.throwIllegalStateException;
 
 /**
- * This can be useful for referring in a lambda expression toKey the the lambda expression.
+ * This can be useful for referring in a lambda expression to the the lambda expression.
  * <p>
- * This can also be useful for removing all references toKey an intermediate value such that is may be
+ * This can also be useful for removing all references to an intermediate value such that is may be
  * garbage collected if needed. Intermediate values in a active chain may be consuming
  * a lot of memory. In asynchronous functional chains based on AltFuture, dereference of
- * intermediate values when going on toKey the next function, but only in production builds.
+ * intermediate values when going on to the next function, but only in production builds.
  * <p>
- * Note that there is no mutator method which allows toKey re-enter the initial {@link SettableAltFuture#ZEN}
- * state once it is lost. Thus one can not abuse the system toKey make an immutable mutable by moving back
+ * Note that there is no mutator method which allows to re-enter the initial {@link SettableAltFuture#ZEN}
+ * state once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
  * through this intermediate state. Once you leave the temple, you can never go back.
  * <p>
  * Note that <code>null</code> is not a permissible value
@@ -88,9 +69,9 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     }
 
     /**
-     * This constructor creates and initialized the value toKey its final value.
+     * This constructor creates and initialized the value to its final value.
      * <p>
-     * It can be useful toKey create for example default values.
+     * It can be useful to create for example default values.
      *
      * @param value
      */
@@ -163,7 +144,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
                 try {
                     call(value, action);
                 } catch (Exception e) {
-                    ee(this, "Can not do .subscribe() mOnFireAction after ImmutableValue was set toKey value=" + value, e);
+                    ee(this, "Can not do .subscribe() mOnFireAction after ImmutableValue was set to value=" + value, e);
                 }
             }
         }
@@ -188,15 +169,15 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
         } else if (action instanceof IActionR) {
             return ((IActionR<IN, OUT>) action).call();
         }
-        throw new UnsupportedOperationException("Not sure how toKey call this IBaseAction type: " + action.getClass());
+        throw new UnsupportedOperationException("Not sure how to call this IBaseAction type: " + action.getClass());
     }
 
     /**
      * Check if the immutable value has been asserted yet.
      * <p>
-     * Note that if you think you need this for your core logic, you may want toKey ask yourself if you can
+     * Note that if you think you need this for your core logic, you may want to ask yourself if you can
      * be better served by using the dependency mechanism of {@link AltFuture#then(IAltFuture)}
-     * and similar calls. It is often better toKey let the preconditions for a {@link #get()} be set by the functional
+     * and similar calls. It is often better to let the preconditions for a {@link #get()} be set by the functional
      * chain. If still needed, you may inserting your own atomic or non-atomic logic such as
      * <pre>
      * <code>
@@ -216,9 +197,9 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      * Get the value, or throw {@link java.lang.IllegalStateException} if you are getting the value
      * before it has been set.
      * <p>
-     * Generally you want toKey use this method instead of {@link #safeGet()} when you can use dependency
+     * Generally you want to use this method instead of {@link #safeGet()} when you can use dependency
      * mechanisms properly. If you think have problems, ask if you should be doing some of your logic
-     * in a <code>.subscribe()</code> clause toKey guarantee the execution order.
+     * in a <code>.subscribe()</code> clause to guarantee the execution order.
      *
      * @return
      * @throws IllegalStateException if the supplied lazy evaluation IAction throws an error during evaluation
@@ -250,7 +231,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     /**
      * Get the value, or return <code>null</code> if the value is not yet set.
      * <p>
-     * Usually you will have a better design with {@link #get()} instead. This is fine toKey use
+     * Usually you will have a better design with {@link #get()} instead. This is fine to use
      * if other parts of your application is reactive and will update the value again when it has
      * been finally set.
      *
@@ -285,7 +266,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
     @nonnull
     public T set(@NonNull @nonnull final T value) {
         if (!compareAndSet(ZEN, value)) {
-            throwIllegalStateException(this, "ImmutableReference can not be set multiple times. It is already set toKey " + safeGet() + " so we can not assert new value=" + value);
+            throwIllegalStateException(this, "ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new value=" + value);
         }
 
         return value;
@@ -296,7 +277,7 @@ public class ImmutableValue<T extends Object> implements IGettable<T> {
      * <p>
      * In other cases marker text "(ImmutableValue not yet set)" will be returned. If you see
      * this text, consider using a {@link #then(IActionOne)} mOnFireAction
-     * toKey make your logic run when this value is set.
+     * to make your logic run when this value is set.
      *
      * @return
      */

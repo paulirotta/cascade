@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.active;
 
 import android.support.annotation.CallSuper;
@@ -65,36 +46,36 @@ import static com.futurice.cascade.Async.ee;
  * <code>mOnError</code> arguments.
  * <p>
  * The recommended use is: provide <code>onSuccess</code> split
- * <code>mOnError</code> as a lambda expression toKey {@link com.futurice.cascade.i.IThreadType} or
- * {@link com.futurice.cascade.Async}. Only use this token toKey call <code>cancel(String reason)</code> toKey cancel
+ * <code>mOnError</code> as a lambda expression to {@link com.futurice.cascade.i.IThreadType} or
+ * {@link com.futurice.cascade.Async}. Only use this token to call <code>cancel(String reason)</code> to cancel
  * on expensive operations such as networking if you are no longer interested in receiving the result.
  * <p>
- * In most cases it is not recommended toKey block your calling thread with a <code>get()</code>. It is
- * similarly not recommended toKey sendEventMessage an interrupt by calling <code>cancel(true)</code>. There may be legitimate
- * cases toKey use these techniques where your algorithm becomes simpler or an underlying library is
- * unresponsive toKey cooperative cancellation. For these reasons the traditional
+ * In most cases it is not recommended to block your calling thread with a <code>get()</code>. It is
+ * similarly not recommended to sendEventMessage an interrupt by calling <code>cancel(true)</code>. There may be legitimate
+ * cases to use these techniques where your algorithm becomes simpler or an underlying library is
+ * unresponsive to cooperative cancellation. For these reasons the traditional
  * {@link java.util.concurrent.FutureTask} methods are left exposed.
  * <p>
- * This is a debugOrigin-build-only fail fast check toKey see if you are re-submitting an
- * <code>AltFuture</code> which has already been sent toKey its {@link com.futurice.cascade.i.IThreadType}'s
+ * This is a debugOrigin-build-only fail fast check to see if you are re-submitting an
+ * <code>AltFuture</code> which has already been sent to its {@link com.futurice.cascade.i.IThreadType}'s
  * {@link java.util.concurrent.ExecutorService}. Here were are following the following principles:
  * <p>
  * fail fast - check for problems as they are created split halt debugOrigin build runs immediately
  * <p>
  * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no mOnFireAction is taken
  * <p>
- * fail here - directly at the point in the code where the mistake is most likely toKey be
+ * fail here - directly at the point in the code where the mistake is most likely to be
  * <p>
- * fail why - with full mContext information such as the subscribe call stack so that you need toKey resolve track the
- * problem toKey a remote source quickly
+ * fail why - with full mContext information such as the subscribe call stack so that you need to resolve track the
+ * problem to a remote source quickly
  * <p>
  * fail next - with an instructive message of what is the most likely solution rather than a
  * simple statement of fact
  * <p>
- * fail smart - distinguish clearly what conditions you expect toKey occur in your system that are
+ * fail smart - distinguish clearly what conditions you expect to occur in your system that are
  * normal run states split not design failures
  * <p>
- * unfail production - run past any remaining problems in production builds sending silently toKey analytics instead
+ * unfail production - run past any remaining problems in production builds sending silently to analytics instead
  *
  * @param <IN>
  * @param <OUT>
@@ -105,9 +86,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
-     * @param threadType the thread pool toKey run this command on
+     * @param threadType the thread pool to run this command on
      * @param action     a function that receives one input and no return value
      */
     @SuppressWarnings("unchecked")
@@ -120,7 +101,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
             final IAltFuture<?, IN> paf = getPreviousAltFuture();
             OUT out = null;            //TODO do not init to null, define a marker value instead
             if (paf != null) {
-                assertTrue("The previous AltFuture toKey Iaction is not finished", paf.isDone());
+                assertTrue("The previous AltFuture to Iaction is not finished", paf.isDone());
                 out = (OUT) paf.get();
             }
             action.call();
@@ -131,7 +112,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * Constructor
      *
-     * @param threadType the thread pool toKey run this command on
+     * @param threadType the thread pool to run this command on
      * @param action     a function that receives one input and no return value
      */
     @SuppressWarnings("unchecked")
@@ -152,9 +133,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
-     * @param threadType the thread pool toKey run this command on
+     * @param threadType the thread pool to run this command on
      * @param action     a function that does not vary with the input value
      */
     public AltFuture(
@@ -167,9 +148,9 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
 
     /**
      * Create a {@link java.lang.Runnable} which will be executed one time on the
-     * {@link com.futurice.cascade.i.IThreadType} implementation toKey perform an {@link IBaseAction}
+     * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
-     * @param threadType the thread pool toKey run this command on
+     * @param threadType the thread pool to run this command on
      * @param action     a mapping function
      */
     public AltFuture(
@@ -194,7 +175,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
      * <p>
      * Note that cancel(reason) may show up as mOnError() errors in the near future on operations that
      * have already started but detect cancellation only after completion with any possible side effects.
-     * If needed, it is the responsibility of the mOnError mOnFireAction toKey possibly unwind the side effects.
+     * If needed, it is the responsibility of the mOnError mOnFireAction to possibly unwind the side effects.
      *
      * @param reason Debug-friendly explanation why this was cancelled
      * @return <code>true</code> if the state changed as a result, otherwise the call had no effect on further execution
@@ -210,7 +191,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
                 dd(this, mOrigin, "Cancelled, reason=" + reason);
                 return true;
             } else {
-                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due toKey a concurrent state change during cancellation\nstate=" + state);
+                dd(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
             }
         }
         return false;
@@ -219,7 +200,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * The {@link java.util.concurrent.ExecutorService} of this <code>AltFuture</code>s {@link com.futurice.cascade.i.IThreadType}
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
-     * toKey <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
+     * to <code>{@link #isDone()} == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
      * chain, subscribe it will be forked for you when the prerequisites have finished.
      * <p>
      * This is called fromKey the executor as part of IRunnableAltFuture
@@ -255,7 +236,7 @@ public class AltFuture<IN, OUT> extends SettableAltFuture<IN, OUT> implements IR
     /**
      * Called fromKey {@link SettableAltFuture#fork()} if preconditions for forking are met.
      * <p>
-     * Non-atomic check-do race conditions must still guard fromKey this point on against concurrent fork()
+     * Non-atomic check-do race conditions must still guard from this point on against concurrent fork()
      */
     @CallSuper
     @NotCallOrigin

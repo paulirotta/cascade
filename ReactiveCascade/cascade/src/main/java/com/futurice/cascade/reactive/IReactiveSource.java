@@ -109,12 +109,12 @@ public interface IReactiveSource<OUT> extends INamed {
      * @param reactiveTarget
      * @return <code>true</code> if the branch was found and removed
      */
-    boolean unsubscribe(String reason, IReactiveTarget<OUT> reactiveTarget);
+    boolean unsubscribe(@NonNull @nonnull String reason, @NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
 
     /**
      * Remove all down-chain branches from this node of the reactive function tree
      */
-    void unsubscribeAll(String reason);
+    void unsubscribeAll(@NonNull @nonnull String reason);
 
     /**
      * Attach a downstream <code>.subscribe()</code> like {@link #split(IReactiveTarget)}
@@ -124,7 +124,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @param reactiveTarget
      * @return
      */
-    IReactiveSource<OUT> split(IReactiveTarget<OUT> reactiveTarget);
+    IReactiveSource<OUT> split(@NonNull @nonnull IReactiveTarget<OUT> reactiveTarget);
 
     //TODO revisit the use cases for a merge function in async (Not the same as RX zip)
 //    /**
@@ -198,7 +198,8 @@ public interface IReactiveSource<OUT> extends INamed {
      */
     @NonNull
     @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IAction<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType,
+                                   @NonNull @nonnull IAction<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -209,7 +210,8 @@ public interface IReactiveSource<OUT> extends INamed {
      */
     @NonNull
     @nonnull
-    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionOne<OUT> action);
+    IReactiveSource<OUT> subscribe(@NonNull @nonnull IThreadType threadType,
+                                   @NonNull @nonnull IActionOne<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -232,7 +234,8 @@ public interface IReactiveSource<OUT> extends INamed {
      */
     @NonNull
     @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull @nonnull IThreadType threadType,
+                                                             @NonNull @nonnull IActionR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -244,7 +247,8 @@ public interface IReactiveSource<OUT> extends INamed {
      */
     @NonNull
     @nonnull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IThreadType threadType, @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull @nonnull IThreadType threadType,
+                                                                @NonNull @nonnull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.

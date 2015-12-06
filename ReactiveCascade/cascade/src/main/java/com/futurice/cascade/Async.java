@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade;
 
 import android.support.annotation.CheckResult;
@@ -29,13 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.futurice.cascade.active.IAltFuture;
-import com.futurice.cascade.active.IRunnableAltFuture;
 import com.futurice.cascade.active.ImmutableValue;
-import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
-import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IActionTwo;
 import com.futurice.cascade.i.INamed;
 import com.futurice.cascade.i.IOnErrorAction;
@@ -44,6 +21,7 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.i.nonnull;
 import com.futurice.cascade.i.nullable;
 import com.futurice.cascade.util.AbstractThreadType;
+import com.futurice.cascade.util.AutoforkThreadType;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.TypedThread;
 
@@ -55,7 +33,6 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
@@ -81,17 +58,13 @@ import java.util.concurrent.TimeoutException;
  * {@link DefaultThreadType} for managing tasks in one section of your architecture.
  */
 public final class Async {
+    public static final ScheduledExecutorService TIMER = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Timer"));
+    /**
+     * A marker value returned when a thread is not part of Cascade
+     */
+    public static final IThreadType NON_CASCADE_THREAD = new AutoforkThreadType();
     private static final ConcurrentHashMap<String, Class> sClassNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
     private static final ConcurrentHashMap<String, Method> sMethodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
-    private static volatile boolean sExitWithErrorCodeStarted = false;
-
-    static {
-        if (!AsyncBuilder.isInitialized()) {
-            Exception e = new IllegalStateException(AsyncBuilder.NOT_INITIALIZED);
-            Log.e(Async.class.getSimpleName(), AsyncBuilder.NOT_INITIALIZED, e);
-        }
-    }
-
     private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.sAsyncBuilder; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
     public static final boolean DEBUG = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mDebug; //BuildConfig.DEBUG; // true in debugOrigin builds, false in production builds, determined at build time to help JAVAC and PROGUARD clean out debugOrigin-only support code for speed and size
     //TODO Periodically check if recent Android updates have fixed this gradle bug, https://code.google.com/p/android/issues/detail?id=52962
@@ -102,11 +75,6 @@ public final class Async {
     // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services from Async
     public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.mUiThread; // The main system thread for this Context
     public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mFailFast; // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
-    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
-
-    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
-    private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No mOrigin provided in production builds");
-
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
      * guaranteed asynchronous operations that will cooperate (mQueue) when all device cores are busy.
@@ -122,7 +90,6 @@ public final class Async {
      */
     public static final IThreadType WORKER = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getWorkerThreadType();
     public static final IThreadType SERIAL_WORKER = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getSerialWorkerThreadType();
-
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation which gives uniform access
      * to the system's {@link #UI_THREAD}. Example use:
@@ -135,7 +102,6 @@ public final class Async {
      */
     public static final IThreadType UI = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getUiThreadType();
     public static final IThreadType FILE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getFileThreadType();
-
     /**
      * A group of background thread for concurrently reading from the network
      * <p>
@@ -150,7 +116,17 @@ public final class Async {
      * coherent.
      */
     public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
-    public static final ScheduledExecutorService TIMER = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Timer"));
+    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 5000; // Only if FAIL_FAST is true. The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app a bit too fast to see what was happening
+    private static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No mOrigin provided in production builds");
+    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.mShowErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
+    private static volatile boolean sExitWithErrorCodeStarted = false;
+
+    static {
+        if (!AsyncBuilder.isInitialized()) {
+            Exception e = new IllegalStateException(AsyncBuilder.NOT_INITIALIZED);
+            Log.e(Async.class.getSimpleName(), AsyncBuilder.NOT_INITIALIZED, e);
+        }
+    }
 
     Async() {
     }
@@ -190,7 +166,8 @@ public final class Async {
         }
     }
 
-    private static String tagWithAspectAndThreadName(@NonNull @nonnull final String message) {
+    @NonNull
+    private static String tagWithAspectAndThreadName(@NonNull final String message) {
         if (!DEBUG || message.contains("at .")) {
             return message;
         }
@@ -224,10 +201,9 @@ public final class Async {
      * @param t       the {@link Throwable} which triggered this error message
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
-    public static boolean e(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean e(@NonNull @nonnull final Object tag,
+                            @NonNull @nonnull final String message,
+                            @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 log(tag, message, (ta, m) -> {
@@ -261,9 +237,8 @@ public final class Async {
      * @return <code>false</code> always, for simple error chaining without consuming the error
      */
     @NotCallOrigin
-    public static boolean e(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static boolean e(@NonNull @nonnull final Object tag,
+                            @NonNull @nonnull final String message) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 e(tag, message, new Exception("(Exception created to generate a stack trace)"));
@@ -283,9 +258,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void v(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void v(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.v("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -299,9 +273,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void d(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void d(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.d("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -315,9 +288,8 @@ public final class Async {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void i(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void i(@NonNull @nonnull final Object tag,
+                         @NonNull @nonnull final String message) {
         log(tag, message, (ta, m) -> {
             Log.i("", tagWithAspectAndThreadName(m + getTag(ta)));
         });
@@ -349,10 +321,9 @@ public final class Async {
      * @param origin  where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the debug log
      */
-    public static void dd(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void dd(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -362,22 +333,21 @@ public final class Async {
         }
     }
 
+    //TODO If the object requesting this debug line implements INamed and (create) IOrigin and (create) IReasonCancelled, add these decorations automatically
+    //TODO Shift to StringBuilder to reduce heavy logging overhead (mostly reflection, but...)
+
     /**
      * Log at the debug level, including where in your code this line was called from.
      *
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the debug log
      */
-    public static void dd(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void dd(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> d(tag, message + origin));
         }
     }
-
-    //TODO If the object requesting this debug line implements INamed and (create) IOrigin and (create) IReasonCancelled, add these decorations automatically
-    //TODO Shift to StringBuilder to reduce heavy logging overhead (mostly reflection, but...)
 
     /**
      * Log at the verbose level, including where in your code this line was called from.
@@ -386,10 +356,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the verbose log
      */
-    public static void vv(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void vv(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -405,9 +374,8 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the verbose log
      */
-    public static void vv(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void vv(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> v(tag, message + origin));
         }
@@ -422,11 +390,10 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull @nonnull final Object tag,
+                             @NonNull @nonnull final ImmutableValue<String> origin,
+                             @NonNull @nonnull final String message,
+                             @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(ccOrigin -> {
@@ -454,10 +421,9 @@ public final class Async {
      * @param t       the throwable which triggered this error
      * @return <code>false</code> always, for simple error chaining without consuming the error, see {@link IOnErrorAction}
      */
-    public static boolean ee(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t) {
+    public static boolean ee(@NonNull @nonnull final Object tag,
+                             @NonNull @nonnull final String message,
+                             @NonNull @nonnull final Throwable t) {
         if (DEBUG) {
             if (SHOW_ERROR_STACK_TRACES) {
                 debugOriginThen(origin -> e(tag, message + origin, t));
@@ -476,10 +442,9 @@ public final class Async {
      * @param origin  Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.
      * @param message a message to display in the info log
      */
-    public static void ii(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message) {
+    public static void ii(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final ImmutableValue<String> origin,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(ccOrigin -> {
                 origin.then(o -> {
@@ -495,44 +460,21 @@ public final class Async {
      * @param tag     a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
      * @param message a message to display in the info log
      */
-    public static void ii(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message) {
+    public static void ii(@NonNull @nonnull final Object tag,
+                          @NonNull @nonnull final String message) {
         if (DEBUG) {
             debugOriginThen(origin -> i(tag, message + origin));
         }
     }
 
-    private static String combineOriginStringsRemoveDuplicates(
-            @NonNull @nonnull final String origin1,
-            @NonNull @nonnull final String origin2,
-            @NonNull @nonnull final String message) {
+    private static String combineOriginStringsRemoveDuplicates(@NonNull final String origin1,
+                                                               @NonNull final String origin2,
+                                                               @NonNull final String message) {
         if (origin1.equals(origin2)) {
             return message + origin1;
         }
 
         return message + origin1 + origin2;
-    }
-
-    /**
-     * A nicely printable object INamed:name or classname or the provided string to add to the log
-     *
-     * @param tag a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
-     * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
-     */
-    @NonNull
-    private static String getTag(@NonNull @nonnull final Object tag) {
-        if (tag instanceof String) {
-            return (String) tag;
-        }
-        if (tag instanceof INamed) {
-            return tag.getClass().getSimpleName() + '-' + ((INamed) tag).getName();
-        }
-//        if (tag instanceof ImmutableValue) {
-//            return ((ImmutableValue) tag).get().toString();
-//        }
-
-        return tag.getClass().getSimpleName();
     }
 
 //    /**
@@ -576,6 +518,27 @@ public final class Async {
 //    }
 
     /**
+     * A nicely printable object INamed:name or classname or the provided string to add to the log
+     *
+     * @param tag a {@link String}, {@link INamed} or other {@link Object} used to categorize this log line
+     * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
+     */
+    @NonNull
+    private static String getTag(@NonNull @nonnull final Object tag) {
+        if (tag instanceof String) {
+            return (String) tag;
+        }
+        if (tag instanceof INamed) {
+            return tag.getClass().getSimpleName() + '-' + ((INamed) tag).getName();
+        }
+//        if (tag instanceof ImmutableValue) {
+//            return ((ImmutableValue) tag).get().toString();
+//        }
+
+        return tag.getClass().getSimpleName();
+    }
+
+    /**
      * Generate an easy-to-debug stop signal at this point in a debug build
      *
      * @param tag     a log line to aid with filtering such as the mOrigin from which the object throwing
@@ -584,9 +547,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
+                                                  @NonNull @nonnull final String message)
             throws RuntimeException {
         throwRuntimeException(tag, message, new IllegalStateException(message));
     }
@@ -601,10 +563,9 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message)
+    public static void throwIllegalStateException(@NonNull @nonnull final Object tag,
+                                                  @NonNull @nonnull final ImmutableValue<String> origin,
+                                                  @NonNull @nonnull final String message)
             throws RuntimeException {
         throwRuntimeException(tag, origin, message, new IllegalStateException(message));
     }
@@ -653,10 +614,9 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final String message,
+                                             @NonNull @nonnull final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -676,9 +636,8 @@ public final class Async {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwTimeoutException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final String message)
+    public static void throwTimeoutException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final String message)
             throws RuntimeException {
         TimeoutException e = new TimeoutException(message);
         ee(tag, message, e);
@@ -696,11 +655,10 @@ public final class Async {
      * @param t       the throwable which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(
-            @NonNull @nonnull final Object tag,
-            @NonNull @nonnull final ImmutableValue<String> origin,
-            @NonNull @nonnull final String message,
-            @NonNull @nonnull final Throwable t)
+    public static void throwRuntimeException(@NonNull @nonnull final Object tag,
+                                             @NonNull @nonnull final ImmutableValue<String> origin,
+                                             @NonNull @nonnull final String message,
+                                             @NonNull @nonnull final Throwable t)
             throws RuntimeException {
         RuntimeException e;
 
@@ -782,34 +740,7 @@ public final class Async {
         }
     }
 
-//    /**
-//     * Perform an action once both the async-resolved object creation call stack mOrigin and
-//     * async current call stack mOrigin are settled
-//     *
-//     * @param objectCreationOrigin a text pointer to the line where the calling object as originally constructed
-//     * @param action               to be performed when the objectCreationOrigin is resolved (possibly not yet and on a concurrent thread)
-//     */
-//    private static void debugOriginThen(
-//            @NonNull @nonnull final ImmutableValue<String> objectCreationOrigin,
-//            @NonNull @nonnull final IActionTwo<String, String> action) {
-//        if (TRACE_ASYNC_ORIGIN) {
-//            final ImmutableValue<String> currentCallOrigin = originAsync();
-//            objectCreationOrigin.then(
-//                    creationOrigin -> {
-//                        currentCallOrigin.then(
-//                                callOrigin -> action.call(creationOrigin, callOrigin));
-//                    });
-//        } else if (DEBUG) {
-//            try {
-//                action.call("", "");
-//            } catch (Exception e) {
-//                Log.e(Async.class.getSimpleName(), "Problem in debugOriginThen()", e);
-//            }
-//        }
-//    }
-
     @NonNull
-    @nonnull
     private static List<StackTaceLine> origin(@NonNull @nonnull final StackTraceElement[] traceElementsArray) {
         final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
 
@@ -835,8 +766,7 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
-    private static List<StackTaceLine> findClassAndMethod(@NonNull @nonnull final List<StackTraceElement> stackTraceElementList) {
+    private static List<StackTaceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
         final List<StackTaceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
         for (final StackTraceElement ste : stackTraceElementList) {
@@ -854,11 +784,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByClass(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<Class, Boolean> classFilter) throws
-            Exception {
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<Class, Boolean> classFilter) throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTaceLine line : list) {
@@ -874,10 +802,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByClassAnnotation(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final Class<? extends Annotation> annotation,
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final Class<? extends Annotation> annotation,
             final boolean mustBeAbsent)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
@@ -895,10 +822,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByMethod(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<Method, Boolean> methodFilter)
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<Method, Boolean> methodFilter)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
@@ -916,10 +842,9 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
     private static List<StackTaceLine> filterListByPackage(
-            @NonNull @nonnull final List<StackTaceLine> list,
-            @NonNull @nonnull final IActionOneR<String, Boolean> packageFilter)
+            @NonNull final List<StackTaceLine> list,
+            @NonNull final IActionOneR<String, Boolean> packageFilter)
             throws Exception {
         final List<StackTaceLine> filteredList = new ArrayList<>(list.size());
 
@@ -936,8 +861,7 @@ public final class Async {
     }
 
     @NonNull
-    @nonnull
-    private static String prettyFormat(@NonNull @nonnull final StackTraceElement stackTraceElement) {
+    private static String prettyFormat(@NonNull final StackTraceElement stackTraceElement) {
         final String s = stackTraceElement.toString();
         final int i = stackTraceElement.getClassName().length();
 
@@ -959,15 +883,14 @@ public final class Async {
     @nonnull
     public static IThreadType currentThreadType() {
         final Thread thread = Thread.currentThread();
-        IThreadType threadType = NON_CASCADE_THREAD;
 
         if (thread instanceof TypedThread) {
-            threadType = ((TypedThread) thread).getThreadType();
+            return ((TypedThread) thread).getThreadType();
         } else if (isUiThread()) {
-            threadType = UI;
+            return UI;
         }
 
-        return threadType;
+        return NON_CASCADE_THREAD;
     }
 
     /**
@@ -980,62 +903,104 @@ public final class Async {
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation errorMessage.
+     * In DEBUG builds only, check the assertion and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param testResult the result of the test, <code>true</code> if the assertion condition is met
+     */
+    @NotCallOrigin
+    public static void assertTrue(
+            final boolean testResult) {
+        if (DEBUG && !testResult) {
+            throw new IllegalStateException("assertTrue failed");
+        }
+    }
+
+    /**
+     * In DEBUG builds only, check the assertion and possibly throw an {@link java.lang.IllegalStateException}
      *
      * @param errorMessage a message to display when the assertion fails. It should indicate the
      *                     reason which was not true and, if possible, the likely corrective action
      * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
-    public static void assertTrue(
-            @NonNull @nonnull final String errorMessage,
-            final boolean testResult) {
+    public static void assertTrue(@NonNull @nonnull final String errorMessage,
+                                  final boolean testResult) {
         if (DEBUG && !testResult) {
             throw new IllegalStateException(errorMessage);
         }
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
      *
-     * @param expected
-     * @param actual
-     * @param <T>
+     * @param expected value
+     * @param actual   value
+     * @param <T>      expected type
+     * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T> void assertEqual(
-            @Nullable @nullable final T expected,
-            @Nullable @nullable final T actual) {
+    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
+                                                    @Nullable @nullable final U actual) {
+        if (DEBUG) {
+            assertEqual(expected, actual, "assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+        }
+    }
+
+    /**
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param expected value
+     * @param actual   value
+     * @param <T>      type
+     */
+    @NotCallOrigin
+    public static <T, U extends T> void assertEqual(@Nullable @nullable final T expected,
+                                                    @Nullable @nullable final U actual,
+                                                    @NonNull @nonnull final String message) {
         if (DEBUG
                 && actual != expected
-                && ((actual == null && !expected.equals(actual)) || !actual.equals(expected))) {
-            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+                && (expected != null && !expected.equals(actual))) {
+            throw new IllegalStateException(message);
         }
     }
 
     /**
-     * In DEBUG builds only, check the condition specified. If that is not satisfied, abort the current
-     * active chain by throwing an {@link java.lang.IllegalStateException} with the explanation  error message
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
      *
-     * @param expected
-     * @param actual
-     * @param <T>
+     * @param expected value
+     * @param actual   value
+     * @param <T>      expected type
+     * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T> void assertNotEqual(
-            @Nullable @nullable final T expected,
-            @Nullable @nullable final T actual) {
-        if (DEBUG
-                && actual == expected
-                && ((actual == null && expected.equals(actual)) || actual.equals(expected))) {
-            throw new IllegalStateException("assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
+    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
+                                                       @Nullable @nullable final U actual) {
+        if (DEBUG) {
+            assertNotNull("assertNotEqual failed: expected ´'" + expected + "' was equal to '" + actual + "'");
         }
     }
 
     /**
-     * In debug and production builds, throw {@link NullPointerException} if the argumen is null
+     * In DEBUG builds only, test equality and possibly throw an {@link java.lang.IllegalStateException}
+     *
+     * @param expected value
+     * @param actual   value
+     * @param message  error message
+     * @param <T>      expected type
+     * @param <U>      actual type
+     */
+    @NotCallOrigin
+    public static <T, U extends T> void assertNotEqual(@Nullable @nullable final T expected,
+                                                       @Nullable @nullable final U actual,
+                                                       @NonNull @nonnull final String message) {
+        if (DEBUG
+                && (actual == expected || (expected != null && expected.equals(actual)))) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
+     * In debug and production builds, throw {@link NullPointerException} if the argument is null
      *
      * @param t   the argument
      * @param <T> the type
@@ -1045,163 +1010,28 @@ public final class Async {
     @nonnull
     @NotCallOrigin
     public static <T> T assertNotNull(@Nullable @nullable final T t) {
+        return assertNotNull(t, "assertNotNull failed");
+    }
+
+    /**
+     * In debug and production builds, throw {@link NullPointerException} if the argument is null
+     *
+     * @param t   the argument
+     * @param <T> the type
+     * @return the value, guaranteed to be non-null and annotated at <code>@NonNull @nonnull</code> for rapidly catching errors in the IDE
+     */
+    @NonNull
+    @nonnull
+    @NotCallOrigin
+    public static <T> T assertNotNull(@Nullable @nullable final T t,
+                                      @NonNull @nonnull final String message) {
         if (t == null) {
-            throw new NullPointerException();
+            throw new NullPointerException(message);
         }
         return t;
     }
 
-    /**
-     * A marker value returned when a thread is not part of Cascade
-     */
-    public static final IThreadType NON_CASCADE_THREAD = new IThreadType() {
-        @Override
-        public final boolean isInOrderExecutor() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void execute(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final void run(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void run(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void runNext(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final void runNext(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final boolean moveToHeadOfQueue(@NonNull @nonnull Runnable runnable) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN> void runNext(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> Runnable wrapActionWithErrorProtection(@NonNull @nonnull IAction<IN> action, @NonNull @nonnull IOnErrorAction onErrorAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IAction<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<IN, IN> then(@NonNull @nonnull IActionOne<IN> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN> List<IAltFuture<IN, IN>> then(@NonNull @nonnull IAction<IN>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> IAltFuture<?, IN> from(@NonNull @nonnull IN value) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN, OUT> IAltFuture<IN, OUT> then(@NonNull @nonnull IActionR<IN, OUT> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull @nonnull IActionR<IN, OUT>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN, OUT> IAltFuture<IN, OUT> map(@NonNull @nonnull IActionOneR<IN, OUT> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        @SafeVarargs
-        public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull @nonnull IActionOneR<IN, OUT>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public final <IN, OUT> void fork(@NonNull @nonnull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @Override
-        public boolean isShutdown() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable @nullable IAction<IN> afterShutdownAction) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final <IN> List<Runnable> shutdownNow(@NonNull @nonnull String reason, @Nullable @nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable @nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        @NonNull
-        @nonnull
-        @Override
-        public final String getName() {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-    };
-
     private static final class StackTaceLine {
-
         final Class<?> claz;
         final ImmutableValue<Method> method;
         final StackTraceElement stackTraceElement;
@@ -1220,18 +1050,21 @@ public final class Async {
             final String key = className + methodName;
             this.method = new ImmutableValue<>(
                     () -> {
-                        Method meth = sMethodNameMap.get(key);
+                        final Method meth = sMethodNameMap.get(key);
 
                         if (meth == null) {
                             final Method[] methods = claz.getMethods();
                             for (final Method m : methods) {
                                 sMethodNameMap.putIfAbsent(key, m);
                                 if (m.getName().equals(methodName)) {
-                                    meth = m;
-                                    break;
+                                    return m;
                                 }
                             }
                         }
+                        if (meth == null) {
+                            throw new NullPointerException();
+                        }
+
                         return meth;
                     });
         }

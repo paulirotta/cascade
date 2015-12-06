@@ -1,27 +1,8 @@
 /*
-The MIT License (MIT)
-
-Copyright (c) 2015 Futurice Oy and individual contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.txt or http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paul.houghton@futurice.com
 */
-
 package com.futurice.cascade.active;
 
 import android.support.annotation.CheckResult;
@@ -59,7 +40,7 @@ import java.util.concurrent.Future;
  * <code>Future</code> @see <a href="http://www.scala-lang.org/files/archive/nightly/docs/library/index.html#scala.concurrent.Future">Scala Future</a>.
  * All three of these solutions are suitable for server development. Guava configured with appropriate Proguard
  * minimization is suitable for Android.
- *
+ * <p>
  * <code>AltFuture</code> differs from the above alternatives by providing an execution model and strictly defined inter-thread
  * communication and error handling contract. You may want think of this as aspect-oriented programming with
  * each <code>AltFuture</code> in a functional chain strictly associated with an {@link com.futurice.cascade.i.IThreadType}.
@@ -143,7 +124,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Find if the final, immutable state has been entered either with a successful result or an error
      * code
      *
-     * @return
+     * @return <code>true</code> once final state has been determined
      */
     boolean isDone();
 
@@ -151,17 +132,17 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
      * Find if this object has already been submitted to an executor. Execution may finish at any time,
      * or already have finished if this is true.
      *
-     * @return
+     * @return <code>true</code> once queued for execution
      */
     boolean isForked();
 
-    /**
-     * Find if an error condition exists and has been consumed such that it will no longer propagate
-     * down-chain to notify others.
-     *
-     * @return
-     */
-    boolean isConsumed();
+//    /**
+//     * Find if an error condition exists and has been marked to indicate that it will no longer propagate
+//     * down-chain to notify others.
+//     *
+//     * @return <code>true</code> if the error state should no longer continue to bubble down the chain
+//     */
+//    boolean isConsumed();
 
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking
@@ -176,20 +157,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     IAltFuture<IN, OUT> fork();
 
     /**
-     * This is done for you when you .subscribe() into a chain. You do not need to call it yourself.
-     * <p>
-     * This can only be done one time otherwise an assertion will fail in debugOrigin builds. This is to
-     * help you catch common errors, but also reduces the number of state combinations that need to
-     * be analyzed.
-     *
-     * @param altFuture
-     * @return
-     */
-    @NonNull
-    @nonnull
-    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull IAltFuture<UPCHAIN_OUT, IN> altFuture);
-
-    /**
      * Find the previous step in the chain.
      * <p>
      * Once {@link #isDone()}, this may return <code>null</code> even if there was a previous alt future
@@ -202,6 +169,20 @@ public interface IAltFuture<IN, OUT> extends ICancellable {
     @Nullable
     @nullable
     <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getPreviousAltFuture();
+
+    /**
+     * This is done for you when you .subscribe() into a chain. You do not need to call it yourself.
+     * <p>
+     * This can only be done one time otherwise an assertion will fail in debugOrigin builds. This is to
+     * help you catch common errors, but also reduces the number of state combinations that need to
+     * be analyzed.
+     *
+     * @param altFuture
+     * @return
+     */
+    @NonNull
+    @nonnull
+    <UPCHAIN_OUT> IAltFuture<IN, OUT> setPreviousAltFuture(@NonNull @nonnull IAltFuture<UPCHAIN_OUT, IN> altFuture);
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
