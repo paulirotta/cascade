@@ -39,18 +39,16 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * Create a new atomic long
      *
      * @param name
-     * @param initialValue
      * @param threadType
      * @param inputMapping  a mapping for incoming values, for example <code>l -> Math.max(0, l)</code>
      * @param onErrorAction
      */
     public ReactiveLong(
             @NonNull  final String name,
-            final long initialValue,
             @NonNull  final IThreadType threadType,
             @Nullable  final IActionOneR<Long, Long> inputMapping,
             @NonNull  final IActionOne<Exception> onErrorAction) {
-        super(name, initialValue, threadType, inputMapping, onErrorAction);
+        super(name, threadType, inputMapping, onErrorAction);
     }
 
     /**

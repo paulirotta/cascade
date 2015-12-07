@@ -12,6 +12,7 @@ import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
@@ -222,7 +223,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
          This design is more efficient than the memory thrash at every reactive evaluation step that
          would explicitly atomically couple the signals into a new Pair(in, boolean) structure.
          */
-        if (mLatestFireIn.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
+        if (mLatestFireIn.getAndSet(in) == FIRE_ACTION_NOT_QUEUED && in != IAltFuture.VALUE_NOT_AVAILABLE) {
             // Only mQueue for execution if not already queued
             mThreadType.run(getFireRunnable());
         }

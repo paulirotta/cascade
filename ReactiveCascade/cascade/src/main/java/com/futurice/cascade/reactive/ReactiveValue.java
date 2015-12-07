@@ -54,7 +54,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      */
     public ReactiveValue(
             @NonNull final String name) {
-        this(name, null, null, null, null);
+        this(name, null, null, null);
     }
 
     /**
@@ -66,14 +66,13 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     public ReactiveValue(
             @NonNull final String name,
             @Nullable final T initialValue) {
-        this(name, initialValue, null, null, null);
+        this(name, null, null, null);
     }
 
     /**
      * Create a new AtomicValue
      *
      * @param name
-     * @param initialValue
      * @param threadType
      * @param inputMapping
      * @param onError
@@ -81,20 +80,12 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @SuppressWarnings("unchecked")
     public ReactiveValue(
             @NonNull final String name,
-            @Nullable T initialValue,
             @Nullable final IThreadType threadType,
             @Nullable final IActionOneR<T, T> inputMapping,
             @Nullable final IActionOne<Exception> onError) {
         super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
-        if (initialValue == null) {
-            initialValue = (T) IAltFuture.VALUE_NOT_AVAILABLE;
-        }
-        try {
-            set(initialValue);
-        } catch (Exception e) {
-            RCLog.e(getOrigin(), "Can not set initial ReactiveValue from=" + initialValue, e);
-        }
+        fire((T) IAltFuture.VALUE_NOT_AVAILABLE);
     }
 
     /**

@@ -43,17 +43,15 @@ public class ReactiveString extends ReactiveValue<String> {
      *
      * @param threadType
      * @param name
-     * @param initialValue
      * @param onFireAction a mapping for incoming values, for example <code>i -> Math.max(0, i)</code>
      * @param onError action
      */
     public ReactiveString(
             @NonNull final IThreadType threadType,
             @NonNull final String name,
-            @Nullable final String initialValue,
             @Nullable final IActionOneR<String, String> onFireAction,
             @NonNull final IActionOne<Exception> onError) {
-        super(name, initialValue, threadType, onFireAction, onError);
+        super(name, threadType, onFireAction, onError);
     }
 
     /**

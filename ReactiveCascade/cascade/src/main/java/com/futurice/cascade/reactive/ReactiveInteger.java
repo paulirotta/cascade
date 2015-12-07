@@ -40,17 +40,15 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      *
      * @param threadType
      * @param name
-     * @param initialValue
      * @param onFireAction a mapping for incoming values, for example <code>i -> Math.max(0, i)</code>
      * @param onError
      */
     public ReactiveInteger(
             @NonNull  final IThreadType threadType,
             @NonNull  final String name,
-            final int initialValue,
             @Nullable  final IActionOneR<Integer, Integer> onFireAction,
             @NonNull  final IActionOne<Exception> onError) {
-        super(name, initialValue, threadType, onFireAction, onError);
+        super(name, threadType, onFireAction, onError);
     }
 
     /**

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IActionOne;
 import com.futurice.cascade.i.IActionOneR;
+import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AltFutureFuture;
@@ -21,6 +22,7 @@ import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.RCLog;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -73,28 +75,6 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         }
         persistentValue.onSharedPreferenceChanged();
     };
-
-    protected PersistentValue(
-            @NonNull final String name,
-            @NonNull final T defaultValueIfNoPersistedValue,
-            @NonNull final IThreadType threadType,
-            @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable final IActionOne<Exception> onError,
-            @NonNull final Context context) {
-        super(name, defaultValueIfNoPersistedValue, threadType, inputMapping, onError);
-
-        this.defaultValue = defaultValueIfNoPersistedValue;
-        this.classOfPersistentValue = defaultValueIfNoPersistedValue.getClass();
-        this.context = AssertUtil.assertNotNull(context, "Context can not be null");
-//        this.sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
-        this.key = getKey(context, name);
-
-        try {
-            init(context);
-        } catch (Exception e) {
-            RCLog.e(this, "Can not initialize", e);
-        }
-    }
 
     private static String getKey(@NonNull final Class claz,
                                  @NonNull final String name) {
@@ -294,6 +274,55 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return floats;
     }
 
+    protected PersistentValue(
+            @NonNull final String name,
+            @NonNull final T defaultValueIfNoPersistedValue,
+            @NonNull final IThreadType threadType,
+            @Nullable final IActionOneR<T, T> inputMapping,
+            @Nullable final IActionOne<Exception> onError,
+            @NonNull final Context context) {
+        super(name, threadType, inputMapping, onError);
+
+        this.defaultValue = defaultValueIfNoPersistedValue;
+        this.classOfPersistentValue = defaultValueIfNoPersistedValue.getClass();
+        this.context = AssertUtil.assertNotNull(context, "Context can not be null");
+//        this.sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+        this.key = getKey(context, name);
+
+        try {
+            final T initialValue = init(context)
+                    .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+            if (initialValue == IAltFuture.VALUE_NOT_AVAILABLE) {
+                fire(defaultValueIfNoPersistedValue);
+            }
+        } catch (Exception e) {
+            RCLog.e(this, "Can not initialize", e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private AltFutureFuture<T, T> init(final Context context) {
+        // Always access SharedPreferences from the same thread
+        // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
+        return new AltFutureFuture<T, T>((IAltFuture<T, T>) persistentValueThreadType.then(() -> {
+            final PersistentValue<T> previouslyInitializedPersistentValue = (PersistentValue<T>) PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), this);
+            final SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+
+            if (previouslyInitializedPersistentValue != null) {
+                return previouslyInitializedPersistentValue.safeGet();
+            }
+            sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
+
+            return (T) IAltFuture.VALUE_NOT_AVAILABLE;
+//            if (sharedPreferences.contains(key)) {
+//                RCLog.v(this, "PersistentValue from loadeded from flash memory");
+//                onSharedPreferenceChanged();
+//            }
+        })
+                .fork());
+    }
+
     @CallSuper
     @SuppressWarnings("unchecked")
     protected void onSharedPreferenceChanged() {
@@ -324,29 +353,6 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         } else {
             throw new UnsupportedOperationException(classOfPersistentValue + " is not supported. Only native types and arrays like String and int[] are supported in PersistentValue. You could override set(), compareAndSet() and get()...");
         }
-    }
-
-    private void init(final Context context) throws InterruptedException, ExecutionException, TimeoutException {
-        // Always access SharedPreferences from the same thread
-        // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
-        new AltFutureFuture<>(persistentValueThreadType.then(() -> {
-            final PersistentValue<?> previouslyInitializedPersistentValue = PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), this);
-            final SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
-
-            if (previouslyInitializedPersistentValue != null) {
-                RCLog.i(this, "WARNING: PersistentValue has already been initialized, a possible race condition resulting in indeterminate initial from may exist");
-            }
-            sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
-
-            if (sharedPreferences.contains(key)) {
-                RCLog.v(this, "PersistentValue from loadeded from flash memory");
-                onSharedPreferenceChanged();
-            }
-        })
-//                .onError(mOnError)
-                .fork()
-        )
-                .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS); // Wait for initialization on the other thread
     }
 
     @NotCallOrigin
