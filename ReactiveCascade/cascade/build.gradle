@@ -38,6 +38,9 @@ android {
         exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
     }
 
+    dexOptions {
+        incremental false
+    }
 //    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
 }
 
