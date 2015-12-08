@@ -89,12 +89,12 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
      * @param threadType the thread pool to run this command on
-     * @param mAction    a function that receives one input and no return from
+     * @param action    a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IAction<IN> mAction) {
+            @NonNull final IAction<? extends IN> action) {
         super(threadType);
 
         this.mAction = () -> {
@@ -107,7 +107,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
                 AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", previousAltFuture.isDone());
                 out = (OUT) previousAltFuture.get();
             }
-            mAction.call();
+            action.call();
             return out; // T and A are the same when there is no return type from the mOnFireAction
         };
     }
@@ -116,12 +116,12 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * Constructor
      *
      * @param threadType the thread pool to run this command on
-     * @param mAction    a function that receives one input and no return from
+     * @param action    a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public RunnableAltFuture(
             @NonNull final IThreadType threadType,
-            @NonNull final IActionOne<IN> mAction) {
+            @NonNull final IActionOne<IN> action) {
         super(threadType);
 
         this.mAction = () -> {
@@ -130,7 +130,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             AssertUtil.assertNotNull(paf);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished", paf.isDone());
             final IN in = paf.get();
-            mAction.call(in);
+            action.call(in);
 
             return (OUT) in; // T and A are the same when there is no return type from the mOnFireAction
         };

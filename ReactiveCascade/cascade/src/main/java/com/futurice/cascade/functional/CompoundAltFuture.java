@@ -146,7 +146,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions) {
+    public ISettableAltFuture<OUT> then(@NonNull IAction<? extends OUT>... actions) {
         return mTail.then(actions);
     }
 

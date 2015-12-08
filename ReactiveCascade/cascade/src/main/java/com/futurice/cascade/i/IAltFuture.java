@@ -186,7 +186,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions);
+    ISettableAltFuture<OUT> then(@NonNull IAction<? extends OUT>... actions);
 
     /**
      * Execute the action after this <code>RunnableAltFuture</code> finishes.
@@ -299,7 +299,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * Set the reactiveTarget (one time only) when this is asserted
      *
      * @param reactiveTarget
-     * @return
+     * @return <code>this</code>
      */
     @NonNull
     IAltFuture<IN, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
@@ -311,7 +311,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * This is typically a user notification or cleanup such as removing an ongoing process indicator (spinner).
      *
      * @param action function to be performed, often a lambda statement
-     * @return this
+     * @return <code>this</code>
      */
     @NonNull
     ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> action);
@@ -324,7 +324,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * an ongoing process indicator (spinner).
      *
      * @param action function to be performed, often a lambda statement
-     * @return this
+     * @return <code>this</code>
      */
     @NonNull
     ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> action);

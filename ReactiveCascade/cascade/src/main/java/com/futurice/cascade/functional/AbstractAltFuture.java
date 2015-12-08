@@ -518,14 +518,14 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
-    public ISettableAltFuture<OUT> then(@NonNull IAction<OUT>... actions) {
+    public ISettableAltFuture<OUT> then(@NonNull IAction<? extends OUT>... actions) {
         AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length == 0);
         AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length == 1);
 
-        final IAltFuture<?, OUT>[] altFutures = new RunnableAltFuture[actions.length];
+        final IAltFuture<?, ? extends OUT>[] altFutures = new RunnableAltFuture[actions.length];
 
         for (int i = 0; i < actions.length; i++) {
-            final IAction a = actions[i];
+            final IAction<? extends OUT> a = actions[i];
 
             altFutures[i] = then(new RunnableAltFuture<>(mThreadType, a));
         }
