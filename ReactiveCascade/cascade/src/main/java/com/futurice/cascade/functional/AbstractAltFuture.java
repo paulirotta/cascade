@@ -262,9 +262,8 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @Override // IAltFuture
     @Nullable
-    @SuppressWarnings("unchecked")
-    public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, ? extends IN> getUpchain() {
-        return (IAltFuture<UPCHAIN_IN, IN>) this.mPreviousAltFutureAR.get();
+    public final IAltFuture<?, ? extends IN> getUpchain() {
+        return this.mPreviousAltFutureAR.get();
     }
 
     @Override // IAltFuture

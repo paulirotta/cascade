@@ -119,12 +119,11 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * at one point. This is done to allow a chain to reduce peak load and increase memory throughput
      * by freeing memory of previous steps as it goes.
      *
-     * @param <UPCHAIN_IN>
      * @return the previous {@link IAltFuture} in the chain, or <code>null</code> if this is currently
      * the head of the chain
      */
     @Nullable
-    <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, ? extends IN> getUpchain();
+    IAltFuture<?, ? extends IN> getUpchain();
 
     /**
      * This is done for you when you add functions to a chain. You do not need to call it yourself.
@@ -134,7 +133,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * a new chain link stopping the merged chain section which might start burning before the merger
      * is created to not burn past the merger point until the primary chain reaches that point also.
      *
-     * @param altFuture
+     * @param altFuture the previous alt future in the chain to which this is attached
      * @return <code>this</code>
      */
     @NonNull
@@ -165,7 +164,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
 
     /**
-     * Continue downchain actions on the specified {@link IThreadType}
+     * Switch downchain actions to continue on the specified {@link IThreadType}
      *
      * @param theadType the thread execution group to change to for the next chain operation
      * @return the previous chain link alt future from continuing the chain on the new {@link IThreadType}
