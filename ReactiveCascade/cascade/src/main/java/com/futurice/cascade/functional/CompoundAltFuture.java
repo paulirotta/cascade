@@ -116,10 +116,12 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
         return mHead.getUpchain();
     }
 
-    @NonNull
     @Override // IAltFuture
-    public void setUpchain(@NonNull IAltFuture<?, IN> altFuture) {
+    @NonNull
+    public IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture) {
         mHead.setUpchain(altFuture);
+
+        return this;
     }
 
     @Override // IAltFuture

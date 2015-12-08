@@ -82,7 +82,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     /**
      * The state returned by a function which has no value, but is finished running.
-     *
+     * <p>
      * In some functional styles this is (somewhat confusingly) a "Null" object passed along the chain.
      * We prefer to name each state explicity for debuggability and disambiguation.
      */
@@ -116,7 +116,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> mDownchainAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions to start after this mOnFireAction completes
     @NonNull
-    private final AtomicReference<IAltFuture<?, IN>> mPreviousAltFutureAR = new AtomicReference<>();
+    private final AtomicReference<IAltFuture<?, ? extends IN>> mPreviousAltFutureAR = new AtomicReference<>();
 
     /**
      * Create, from is not yet determined
@@ -269,12 +269,14 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @Override // IAltFuture
     @NonNull
-    public void setUpchain(@NonNull final IAltFuture<?, IN> altFuture) {
+    public IAltFuture<IN, OUT> setUpchain(@NonNull final IAltFuture<?, ? extends IN> altFuture) {
         final boolean set = this.mPreviousAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
             RCLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
         }
+
+        return this;
     }
 
     protected void assertNotDone() {

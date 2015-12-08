@@ -100,14 +100,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     boolean isForked();
 
-//    /**
-//     * Find if an error condition exists and has been marked to indicate that it will no longer propagate
-//     * down-chain to notify others.
-//     *
-//     * @return <code>true</code> if the error state should no longer continue to bubble down the chain
-//     */
-//    boolean isConsumed();
-
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking
      * mQueue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getUpchain()}
@@ -146,7 +138,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return <code>this</code>
      */
     @NonNull
-    void setUpchain(@NonNull IAltFuture<?, IN> altFuture);
+    IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture);
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
