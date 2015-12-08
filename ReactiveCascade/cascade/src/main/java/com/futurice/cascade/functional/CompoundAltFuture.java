@@ -112,7 +112,7 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
 
     @Nullable
     @Override // IAltFuture
-    public <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getUpchain() {
+    public <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, ? extends IN> getUpchain() {
         return mHead.getUpchain();
     }
 

@@ -124,7 +124,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * the head of the chain
      */
     @Nullable
-    <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getUpchain();
+    <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, ? extends IN> getUpchain();
 
     /**
      * This is done for you when you add functions to a chain. You do not need to call it yourself.

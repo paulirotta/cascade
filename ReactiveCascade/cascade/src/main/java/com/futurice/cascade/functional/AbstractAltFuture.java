@@ -121,7 +121,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     /**
      * Create, from is not yet determined
      *
-     * @param threadType
+     * @param threadType on which this alt future will evaluate and fire downchain events
      */
     public AbstractAltFuture(@NonNull final IThreadType threadType) {
         this.mThreadType = threadType;
@@ -220,7 +220,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     @NonNull
     public IAltFuture<IN, OUT> fork() {
-        final IAltFuture<?, IN> previousAltFuture = getUpchain();
+        final IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
 
         if (previousAltFuture != null && !previousAltFuture.isDone()) {
             RCLog.v(this, "Previous IAltFuture not forked, searching upchain: " + previousAltFuture);
@@ -263,7 +263,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     @Nullable
     @SuppressWarnings("unchecked")
-    public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, IN> getUpchain() {
+    public final <UPCHAIN_IN> IAltFuture<UPCHAIN_IN, ? extends IN> getUpchain() {
         return (IAltFuture<UPCHAIN_IN, IN>) this.mPreviousAltFutureAR.get();
     }
 
@@ -277,10 +277,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
 
         return this;
-    }
-
-    protected void assertNotDone() {
-        AssertUtil.assertTrue("assertNotDone failed: SettableFuture already finished or entered canceled/error state", !isDone());
     }
 
     @Override // IAltFuture

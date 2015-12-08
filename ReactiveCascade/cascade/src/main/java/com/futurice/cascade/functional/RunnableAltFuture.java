@@ -98,14 +98,14 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, IN> paf = getUpchain();
+            final IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
             final OUT out;
 
-            if (paf == null) {
+            if (previousAltFuture == null) {
                 out = (OUT) COMPLETE;
             } else {
-                AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", paf.isDone());
-                out = (OUT) paf.get();
+                AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", previousAltFuture.isDone());
+                out = (OUT) previousAltFuture.get();
             }
             mAction.call();
             return out; // T and A are the same when there is no return type from the mOnFireAction
@@ -125,7 +125,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, IN> paf = getUpchain();
+            final IAltFuture<?, ? extends IN> paf = getUpchain();
+
             AssertUtil.assertNotNull(paf);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished", paf.isDone());
             final IN in = paf.get();
@@ -163,10 +164,12 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, IN> paf = getUpchain();
-            AssertUtil.assertNotNull(paf);
-            AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished:" + getOrigin(), paf.isDone());
-            return mAction.call(paf.get());
+            final IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
+
+            AssertUtil.assertNotNull(previousAltFuture);
+            AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished:" + getOrigin(), previousAltFuture.isDone());
+
+            return mAction.call(previousAltFuture.get());
         };
     }
 
