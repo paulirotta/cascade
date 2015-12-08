@@ -150,7 +150,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * {@link #doOnCancelled(StateCancelled)} instead.
      *
      * @param stateError
-     * @throws Exception
+     * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void doOnError(@NonNull StateError stateError) throws Exception;
 
@@ -160,7 +160,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * All down-chain AltFutures will similarly be notified that they were cancelled.
      *
      * @param stateCancelled
-     * @throws Exception
+     * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
 
@@ -177,8 +177,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
      *
-     * @param action
-     * @return
+     * @param action function to be performed, often a lambda statement
+     * @return an alt future representing the eventual output value of the action
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -192,8 +192,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Execute the action after this <code>RunnableAltFuture</code> finishes.
      *
-     * @param action
-     * @return new {@link IAltFuture}
+     * @param action function to be performed, often a lambda statement
+     * @return an alt future representing the eventual output value of the action
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -207,18 +207,23 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
      *
-     * @param action
-     * @return
+     * @param action function to be performed, often a lambda statement
+     * @return an alt future representing the eventual output value of the action
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
-     * Complete an mOnFireAction after this <code>RunnableAltFuture</code>
+     * Start an action wrapped as an alt futre after this alt future completes. This next alt future
+     * may be on a different {@link IThreadType} thread pool.
+     * <p>
+     * Multiple altFutures may be chained after the current alt future. They will be fork()ed in the
+     * orderin which they were attached. Depending on their thread type, the resulting execution may
+     * be concurrent or serial.
      *
-     * @param altFuture
-     * @param <DOWNCHAIN_OUT>
+     * @param altFuture       the next action in the chain
+     * @param <DOWNCHAIN_OUT> the type that the OUT value will be mapped to. This may not be a mapping alt future, in which case the type DOWNCHAIN_OUT = OUT and the value is also identical
      * @return altFuture
      */
     @NonNull
@@ -228,9 +233,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
      *
-     * @param action
-     * @param <DOWNCHAIN_OUT>
-     * @return
+     * @param action          function to be performed, often a lambda statement
+     * @param <DOWNCHAIN_OUT> the type that the OUT value will be mapped to
+     * @return an alt future value representing the eventual output from the mapping function
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -242,13 +247,14 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT>[] map(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT>... actions);
 
     /**
-     * Pause execution of this chain for a fixed time interval
+     * Pause execution of this chain for a fixed time interval. Other chains will be able to execute
+     * in the meanwhile- no theads are blocked.
      * <p>
      * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
      *
-     * @param sleepTime
-     * @param timeUnit
-     * @return
+     * @param sleepTime to pause the chain, in timeUnit values
+     * @param timeUnit  to pause
+     * @return the input value from upchain
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -281,10 +287,10 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?>... altFutures);
 
     /**
-     * Pass through to the next function if element meet a logic test, otherwise {@link #cancel(String)}
+     * Pass through to the next function only if element meet a logic test, otherwise {@link #cancel(String)}
      *
-     * @param action
-     * @return
+     * @param action function to be performed, often a lambda statement
+     * @return the input value, now guaranteed to meet the logic test
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -305,8 +311,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * <p>
      * This is typically a user notification or cleanup such as removing an ongoing process indicator (spinner).
      *
-     * @param action
-     * @return
+     * @param action function to be performed, often a lambda statement
+     * @return this
      */
     @NonNull
     ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> action);
@@ -318,8 +324,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * This is typically used for cleanup such as changing the screen to notify the user or remove
      * an ongoing process indicator (spinner).
      *
-     * @param action
-     * @return
+     * @param action function to be performed, often a lambda statement
+     * @return this
      */
     @NonNull
     ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> action);
