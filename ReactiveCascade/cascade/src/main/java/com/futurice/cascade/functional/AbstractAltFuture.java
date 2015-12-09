@@ -267,15 +267,12 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     @Override // IAltFuture
-    @NonNull
-    public IAltFuture<IN, OUT> setUpchain(@NonNull final IAltFuture<?, ? extends IN> altFuture) {
+    public void setUpchain(@NonNull final IAltFuture<?, ? extends IN> altFuture) {
         final boolean set = this.mPreviousAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
             RCLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
         }
-
-        return this;
     }
 
     @Override // IAltFuture
@@ -409,34 +406,25 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     @Override
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> on(@NonNull IThreadType theadType) {
+    public IAltFuture<?, OUT> on(@NonNull final IThreadType theadType) {
         if (theadType == mThreadType) {
             return this;
         }
 
-        return then(() -> {
-        });
+        return then(new SettableAltFuture<>(theadType));
     }
 
-    /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
-     *
-     * @param action
-     * @return
-     */
     @NonNull
     @Override
-    @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT> action) {
-        return (IAltFuture<IN, OUT>) then(new RunnableAltFuture<OUT, OUT>(mThreadType, action));
+    public IAltFuture<OUT, OUT> then(@NonNull IAction<OUT> action) {
+        return then(new RunnableAltFuture<OUT, OUT>(mThreadType, action));
     }
 
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    @SuppressWarnings("unchecked")
-    public IAltFuture<IN, OUT> then(@NonNull final IActionOne<OUT> action) {
-        return (IAltFuture<IN, OUT>) then(new RunnableAltFuture<OUT, OUT>(mThreadType, action));
+    public IAltFuture<OUT, OUT> then(@NonNull final IActionOne<OUT> action) {
+        return then(new RunnableAltFuture<OUT, OUT>(mThreadType, action));
     }
 
 //    @NonNull
@@ -563,19 +551,34 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @SuppressWarnings("unchecked")
     public ISettableAltFuture<OUT> sleep(final long sleepTime,
                                          @NonNull final TimeUnit timeUnit) {
-        final ISettableAltFuture<OUT> settableAltFuture = new SettableAltFuture<>(mThreadType);
-        final IAltFuture<IN, OUT> scheduleAltFuture = then(t -> {
+        final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
+
+        outAltFuture.setUpchain(this);
+        final IAltFuture<?, ?> ignore = this.then(() -> {
             Async.TIMER.schedule(() -> {
-                settableAltFuture.set(t);
+                outAltFuture.set(get());
             }, sleepTime, timeUnit);
         });
 
-        return await(settableAltFuture);
+        return outAltFuture;
+    }
+
+    @NonNull
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @Override // IAltFuture
+    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
+        final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
+
+        outAltFuture.setUpchain(this);
+        final IAltFuture<?, ?> ignore = altFuture.then(() -> {
+            outAltFuture.set(get());
+        });
+
+        return outAltFuture;
     }
 
     @NonNull
     @Override // IAltFuture
-    @SuppressWarnings("unchecked")
     public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?>... altFutures) {
         AssertUtil.assertTrue("await(IAltFuture...) with empty list of upchain things to await makes no sense", altFutures.length > 0);
         AssertUtil.assertTrue("await(IAltFuture...) with single item in the list of upchain things to await is confusing. Use .then() instead", altFutures.length != 1);
@@ -595,25 +598,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return outAltFuture;
     }
 
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    @SuppressWarnings("unchecked")
-    @Override // IAltFuture
-    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-        final ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
-
-        final IAltFuture<?, ?> ignore = altFuture.then(() -> {
-            outAltFuture.set(get());
-        });
-
-        return outAltFuture;
-    }
-
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<IN, IN> filter(@NonNull final IActionOneR<IN, Boolean> action) {
-        return new RunnableAltFuture<IN, IN>(mThreadType, in -> {
+        return new RunnableAltFuture<>(mThreadType, in -> {
             if (!action.call(in)) {
                 cancel("Filtered: " + in);
             }
@@ -659,7 +648,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> set(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
+    public IAltFuture<OUT, OUT> set(@NonNull final IReactiveTarget<OUT> reactiveTarget) {
         return then(reactiveTarget::fire);
     }
 

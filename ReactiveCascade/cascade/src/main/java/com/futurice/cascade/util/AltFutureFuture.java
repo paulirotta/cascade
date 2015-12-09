@@ -114,7 +114,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
-            final IAltFuture<IN, OUT> iaf = altFuture.then(() -> {
+            final IAltFuture<OUT, OUT> iaf = altFuture.then(() -> {
                 // Attach this to speed up and notify to continue the Future when the RunnableAltFuture finishes
                 // For speed, we don't normally notify after RunnableAltFuture end
                 synchronized (mutex) {

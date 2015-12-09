@@ -134,10 +134,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * is created to not burn past the merger point until the primary chain reaches that point also.
      *
      * @param altFuture the previous alt future in the chain to which this is attached
-     * @return <code>this</code>
      */
-    @NonNull
-    IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture);
+    void setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture);
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
@@ -148,7 +146,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * (returns <code>true</code>), subscribe anything else down-chain methods will be notified with
      * {@link #doOnCancelled(StateCancelled)} instead.
      *
-     * @param stateError
+     * @param stateError the state indicating the reason and origin of the exception
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void doOnError(@NonNull StateError stateError) throws Exception;
@@ -158,7 +156,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * This RunnableAltFuture will be set to a cancelled state and not be given a chance to complete normally.
      * All down-chain AltFutures will similarly be notified that they were cancelled.
      *
-     * @param stateCancelled
+     * @param stateCancelled the state indicating the reason and origin of cancellation
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
@@ -171,7 +169,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> on(@NonNull IThreadType theadType);
+    IAltFuture<?, OUT> on(@NonNull IThreadType theadType);
 
     /**
      * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
@@ -181,7 +179,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> then(@NonNull IAction<OUT> action);
+    IAltFuture<OUT, OUT> then(@NonNull IAction<OUT> action);
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -196,7 +194,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    IAltFuture<IN, OUT> then(@NonNull IActionOne<OUT> action);
+    IAltFuture<OUT, OUT> then(@NonNull IActionOne<OUT> action);
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
@@ -302,7 +300,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @return <code>this</code>
      */
     @NonNull
-    IAltFuture<IN, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
+    IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget);
 
     /**
      * Add an action which will be performed if this AltFuture or any AltFuture up-chain either has

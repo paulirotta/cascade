@@ -13,8 +13,8 @@ import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.util.AssertUtil;
-import com.futurice.cascade.util.RCLog;
 import com.futurice.cascade.util.Origin;
+import com.futurice.cascade.util.RCLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,13 @@ import java.util.concurrent.TimeUnit;
  * This is useful for returning a single logical entity from an async method such that it can receive values
  * at the head and output values to next chain steps at the mTail.
  */
-public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
+public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
     protected final List<IAltFuture<?, ?>> mSubchain = new ArrayList<>();
-    protected final IAltFuture<IN, HEAD_OUT> mHead;
-    protected final IAltFuture<TAIL_IN, OUT> mTail;
+    protected final IAltFuture<IN, ?> mHead;
+    protected final IAltFuture<?, OUT> mTail;
 
-    public CompoundAltFuture(@NonNull final IAltFuture<IN, HEAD_OUT> head,
-                             @NonNull final IAltFuture<TAIL_IN, OUT> tail) {
+    public CompoundAltFuture(@NonNull final IAltFuture<IN, ?> head,
+                             @NonNull final IAltFuture<?, OUT> tail) {
         AssertUtil.assertTrue("Head of CompoundAltFuture must not be downchain from an existing chain", head.getUpchain() == null);
         AssertUtil.assertNotEqual(head, tail);
 
@@ -117,11 +117,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     }
 
     @Override // IAltFuture
-    @NonNull
-    public IAltFuture<IN, OUT> setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture) {
+    public void setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture) {
         mHead.setUpchain(altFuture);
-
-        return this;
     }
 
     @Override // IAltFuture
@@ -137,9 +134,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> then(@NonNull IAction<OUT> action) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.then(action);
-        return this;
+    public IAltFuture<OUT, OUT> then(@NonNull IAction<OUT> action) {
+        return mTail.then(action);
     }
 
     @NonNull
@@ -153,9 +149,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> then(@NonNull IActionOne<OUT> action) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.then(action);
-        return this;
+    public IAltFuture<OUT, OUT> then(@NonNull IActionOne<OUT> action) {
+        return mTail.then(action);
     }
 
     @NonNull
@@ -229,13 +224,12 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> on(@NonNull IThreadType theadType) {
+    public IAltFuture<?, OUT> on(@NonNull IThreadType theadType) {
         if (theadType == mTail.getThreadType()) {
             return this;
         }
 
-        return then(() -> {
-        });
+        return mTail.on(theadType);
     }
 
     @NonNull
@@ -248,9 +242,8 @@ public class CompoundAltFuture<IN, HEAD_OUT, TAIL_IN, OUT> extends Origin implem
     @NonNull
     @Override // IAltFuture
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<IN, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget) {
-        final IAltFuture<TAIL_IN, OUT> ignore = mTail.set(reactiveTarget);
-        return this;
+    public IAltFuture<OUT, OUT> set(@NonNull IReactiveTarget<OUT> reactiveTarget) {
+        return mTail.set(reactiveTarget);
     }
 
     @NonNull
