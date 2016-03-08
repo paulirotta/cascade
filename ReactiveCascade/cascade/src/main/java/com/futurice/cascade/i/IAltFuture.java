@@ -162,7 +162,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
 
     /**
-     * Switch downchain actions to continue on the specified {@link IThreadType}
+     * Switch actions chained to the value to continue on the specified {@link IThreadType}
      *
      * @param theadType the thread execution group to change to for the next chain operation
      * @return the previous chain link alt future from continuing the chain on the new {@link IThreadType}
