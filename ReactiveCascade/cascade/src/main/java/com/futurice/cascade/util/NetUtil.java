@@ -59,17 +59,23 @@ import static com.futurice.cascade.Async.NET_WRITE;
  * OkHttp convenience wrapper methods
  */
 public final class NetUtil extends Origin {
+    public static enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G, NET_5G}
+
     private static final int MAX_NUMBER_OF_WIFI_NET_CONNECTIONS = 6;
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
     @NonNull
     private final OkHttpClient mOkHttpClient;
+
     @NonNull
     private final TelephonyManager mTelephonyManager;
+
     @NonNull
     private final WifiManager mWifiManager;
+
     @NonNull
     private final IThreadType mNetReadThreadType;
+
     @NonNull
     private final IThreadType mNetWriteThreadType;
 
@@ -80,10 +86,9 @@ public final class NetUtil extends Origin {
         this(context, NET_READ, NET_WRITE);
     }
 
-    public NetUtil(
-            @NonNull final Context context,
-            @NonNull final IThreadType netReadThreadType,
-            @NonNull final IThreadType netWriteThreadType) {
+    public NetUtil(@NonNull Context context,
+                   @NonNull IThreadType netReadThreadType,
+                   @NonNull IThreadType netWriteThreadType) {
         this.mNetReadThreadType = netReadThreadType;
         this.mNetWriteThreadType = netWriteThreadType;
         mOkHttpClient = new OkHttpClient();
@@ -93,7 +98,7 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @WorkerThread
-    public <T> Response get(@NonNull final T url) throws IOException {
+    public <T> Response get(@NonNull T url) throws IOException {
         return get(url, null);
     }
 
@@ -139,9 +144,8 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @WorkerThread
-    public <T> Response get(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers) throws IOException {
+    public <T> Response get(@NonNull T url,
+                            @Nullable Collection<Header> headers) throws IOException {
         if (headers == null) {
             RCLog.d(getOrigin(), "get " + url);
         } else {
@@ -164,9 +168,8 @@ public final class NetUtil extends Origin {
      */
     @NonNull
     @WorkerThread
-    public <T> Response get(
-            @NonNull final IGettable<T> urlGettable,
-            @Nullable final Collection<Header> headers) throws IOException {
+    public <T> Response get(@NonNull final IGettable<T> urlGettable,
+                            @Nullable final Collection<Header> headers) throws IOException {
         return get(urlGettable.get(), headers);
     }
 
@@ -207,9 +210,8 @@ public final class NetUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @SuppressWarnings("unchecked")
-    public <T> IAltFuture<T, Response> getAsync(
-            @NonNull final IGettable<T> urlGettable,
-            final IGettable<Collection<Header>> headersGettable) {
+    public <T> IAltFuture<T, Response> getAsync(@NonNull IGettable<T> urlGettable,
+                                                @NonNull IGettable<Collection<Header>> headersGettable) {
         final ISettableAltFuture<Response> headOfChain = new SettableAltFuture<>(mNetReadThreadType);
         IAltFuture<Response, Response> chainedAltFuture = headOfChain;
         boolean chained = false;
@@ -233,8 +235,9 @@ public final class NetUtil extends Origin {
 //            return new CompoundAltFuture<>(headOfChain, tailOfChain);
 //        }
 
-        return new RunnableAltFuture<>(mNetReadThreadType, () ->
-                get(urlGettable.get(), headersGettable.get()));
+        return new RunnableAltFuture<>(mNetReadThreadType,
+                () -> get(urlGettable.get(),
+                        headersGettable.get()));
     }
 
     @NonNull
@@ -247,18 +250,16 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @WorkerThread
-    public <T> Response put(
-            @NonNull final T url,
-            @NonNull final RequestBody body) throws IOException {
+    public <T> Response put(@NonNull T url,
+                            @NonNull RequestBody body) throws IOException {
         return put(url, null, body);
     }
 
     @NonNull
     @WorkerThread
-    public <T> Response put(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) throws IOException {
+    public <T> Response put(@NonNull T url,
+                            @Nullable Collection<Header> headers,
+                            @NonNull RequestBody body) throws IOException {
         RCLog.d(getOrigin(), "put " + url + " headers=" + headers + " body=" + body);
 
         return execute(setupCall(url, builder -> {
@@ -269,125 +270,112 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> putAsync(
-            @NonNull final T url,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<?, Response> putAsync(@NonNull T url,
+                                                @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<RequestBody, Response> putAsync(
-            @NonNull final T url) {
+    public <T> IAltFuture<RequestBody, Response> putAsync(@NonNull T url) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
                 put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<T, Response> putAsync(
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<T, Response> putAsync(@NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
                 put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> putAsync(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<?, Response> putAsync(@NonNull T url,
+                                                @Nullable Collection<Header> headers,
+                                                @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 put(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<T, Response> putAsync(
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<T, Response> putAsync(@Nullable Collection<Header> headers,
+                                                @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
                 put(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<RequestBody, Response> putAsync(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers) {
+    public <T> IAltFuture<RequestBody, Response> putAsync(@NonNull T url,
+                                                          @Nullable Collection<Header> headers) {
         return new RunnableAltFuture<RequestBody, Response>(mNetWriteThreadType, (RequestBody body) ->
                 put(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
-    public <T> Response post(
-            @NonNull final T url,
-            @NonNull final RequestBody body) throws IOException {
+    public <T> Response post(@NonNull T url,
+                             @NonNull RequestBody body) throws IOException {
         return post(url, null, body);
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> postAsync(
-            @NonNull final T url,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<?, Response> postAsync(@NonNull T url,
+                                                 @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<T, Response> postAsync(
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<T, Response> postAsync(@NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
                 post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<RequestBody, Response> postAsync(
-            @NonNull final T url) {
+    public <T> IAltFuture<RequestBody, Response> postAsync(@NonNull T url) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
                 post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> postAsync(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<?, Response> postAsync(@NonNull T url,
+                                                 @Nullable Collection<Header> headers,
+                                                 @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 post(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<T, Response> postAsync(
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) {
+    public <T> IAltFuture<T, Response> postAsync(@Nullable Collection<Header> headers,
+                                                 @NonNull RequestBody body) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
                 post(url, headers, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<RequestBody, Response> postAsync(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers) {
+    public <T> IAltFuture<RequestBody, Response> postAsync(@NonNull T url,
+                                                           @Nullable Collection<Header> headers) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
                 post(url, headers, body));
     }
 
     @NonNull
     @WorkerThread
-    public <T> Response post(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers,
-            @NonNull final RequestBody body) throws IOException {
+    public <T> Response post(@NonNull T url,
+                             @Nullable Collection<Header> headers,
+                             @NonNull RequestBody body) throws IOException {
         RCLog.d(getOrigin(), "post " + url);
+
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.post(body);
@@ -398,7 +386,7 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> deleteAsync(@NonNull final T url) {
+    public <T> IAltFuture<?, Response> deleteAsync(@NonNull T url) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 delete(url, null));
     }
@@ -412,33 +400,31 @@ public final class NetUtil extends Origin {
 
     @NonNull
     @WorkerThread
-    public <T> Response delete(@NonNull final T url) throws IOException {
+    public <T> Response delete(@NonNull T url) throws IOException {
         return delete(url, null);
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<?, Response> deleteAsync(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers) {
+    public <T> IAltFuture<?, Response> deleteAsync(@NonNull final T url,
+                                                   @Nullable final Collection<Header> headers) {
         return new RunnableAltFuture<>(mNetWriteThreadType, () ->
                 delete(url, headers));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <T> IAltFuture<T, Response> deleteAsync(
-            @Nullable final Collection<Header> headers) {
+    public <T> IAltFuture<T, Response> deleteAsync(@Nullable Collection<Header> headers) {
         return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
                 delete(url, headers));
     }
 
     @NonNull
     @WorkerThread
-    public <T> Response delete(
-            @NonNull final T url,
-            @Nullable final Collection<Header> headers) throws IOException {
+    public <T> Response delete(@NonNull T url,
+                               @Nullable Collection<Header> headers) throws IOException {
         RCLog.d(getOrigin(), "delete " + url);
+
         final Call call = setupCall(url, builder -> {
             addHeaders(builder, headers);
             builder.delete();
@@ -447,9 +433,8 @@ public final class NetUtil extends Origin {
         return execute(call);
     }
 
-    private void addHeaders(
-            @NonNull final Request.Builder builder,
-            @Nullable final Collection<Header> headers) {
+    private void addHeaders(@NonNull Request.Builder builder,
+                            @Nullable Collection<Header> headers) {
         if (headers == null) {
             return;
         }
@@ -460,11 +445,10 @@ public final class NetUtil extends Origin {
     }
 
     @NonNull
-    private <T> Call setupCall(
-            @NonNull final T url,
-            @Nullable final BuilderModifier builderModifier) throws IOException {
-        final Request.Builder builder = new Request.Builder()
-                .url(url.toString());
+    private <T> Call setupCall(@NonNull T url,
+                               @Nullable BuilderModifier builderModifier) throws IOException {
+        final Request.Builder builder = new Request.Builder().url(url.toString());
+
         if (builderModifier != null) {
             builderModifier.modify(builder);
         }
@@ -484,7 +468,7 @@ public final class NetUtil extends Origin {
      */
     @NonNull
     @WorkerThread
-    private Response execute(@NonNull final Call call) throws IOException {
+    private Response execute(@NonNull Call call) throws IOException {
         final Response response = call.execute();
 
         if (response.isRedirect()) {
@@ -494,8 +478,8 @@ public final class NetUtil extends Origin {
             return get(location);
         }
         if (!response.isSuccessful()) {
-            final String s = "Unexpected response code " + response;
-            final IOException e = new IOException(s);
+            String s = "Unexpected response code " + response;
+            IOException e = new IOException(s);
 
             RCLog.e(getOrigin(), s, e);
             throw e;
@@ -532,8 +516,8 @@ public final class NetUtil extends Origin {
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-        final SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
-        final NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
+         SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
+         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
         return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
     }
@@ -570,8 +554,6 @@ public final class NetUtil extends Origin {
                 return NetType.NET_4G;
         }
     }
-
-    public enum NetType {NET_2G, NET_2_5G, NET_3G, NET_3_5G, NET_4G, NET_5G}
 
     /**
      * Functional interface to do something to an OkHttp request builder before dispatch

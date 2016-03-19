@@ -39,16 +39,16 @@ public class DefaultThreadType extends AbstractThreadType {
      *                        case {@link #isInOrderExecutor()} will return <code>false</code>
      */
     public DefaultThreadType(
-            @NonNull final String name,
-            @NonNull final ExecutorService executorService,
-            @NonNull final BlockingQueue<Runnable> queue) {
+            @NonNull String name,
+            @NonNull ExecutorService executorService,
+            @NonNull BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
         this.inOrderExecution = queue instanceof BlockingDeque;
     }
 
     @Override // IThreadType
-    public void run(@NonNull final Runnable runnable) {
+    public void run(@NonNull Runnable runnable) {
         if (executorService.isShutdown()) {
             return;
         }

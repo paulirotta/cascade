@@ -8,7 +8,6 @@ package com.futurice.cascade.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IGettable;
 
@@ -54,7 +53,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
     }
 
     @Override // Future
-    public boolean cancel(final boolean mayInterruptIfRunning) {
+    public boolean cancel(boolean mayInterruptIfRunning) {
         return altFuture.cancel("DoneFuture was cancelled");
     }
 
@@ -77,7 +76,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
             RCLog.throwRuntimeException(this, "Timeout waiting for RunnableAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
         }
 
-        return null; //FIXME null return
+        return null;
     }
 
     /**
@@ -102,9 +101,8 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
      */
     @Override // Future
     @Nullable
-    public OUT get(
-            final long timeout,
-            @NonNull final TimeUnit unit)
+    public OUT get(long timeout,
+                   @NonNull TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();

@@ -46,7 +46,7 @@ public class RCLog {
     private static final ConcurrentHashMap<String, Method> sMethodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
 
     @NonNull
-    private static String tagWithAspectAndThreadName(@NonNull final String message) {
+    private static String tagWithAspectAndThreadName(@NonNull String message) {
         if (!BuildConfig.DEBUG || message.contains("at .")) {
             return message;
         }
@@ -71,8 +71,8 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      */
     @NotCallOrigin
-    public static void e(@NonNull final Object tag,
-                         @NonNull final String message) {
+    public static void e(@NonNull Object tag,
+                         @NonNull String message) {
         if (BuildConfig.DEBUG) {
             e(tag, message, new Exception("(Exception created to generate a stack trace)"));
         }
@@ -98,9 +98,9 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      * @param t       the {@link Throwable} which triggered this error message
      */
-    public static void e(@NonNull final Object tag,
-                         @NonNull final String message,
-                         @NonNull final Throwable t) {
+    public static void e(@NonNull Object tag,
+                         @NonNull String message,
+                         @NonNull Throwable t) {
         if (BuildConfig.DEBUG) {
             if (tag instanceof IAsyncOrigin) {
                 e(tag, ((IAsyncOrigin) tag).getOrigin(), message, t);
@@ -119,10 +119,10 @@ public class RCLog {
         }
     }
 
-    private static void e(@NonNull final Object tag,
-                          @NonNull final ImmutableValue<String> origin,
-                          @NonNull final String message,
-                          @NonNull final Throwable t) {
+    private static void e(@NonNull Object tag,
+                          @NonNull ImmutableValue<String> origin,
+                          @NonNull String message,
+                          @NonNull Throwable t) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
         debugOriginThen(ccOrigin -> {
@@ -151,8 +151,8 @@ public class RCLog {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void v(@NonNull final Object tag,
-                         @NonNull final String message) {
+    public static void v(@NonNull Object tag,
+                         @NonNull String message) {
         if (BuildConfig.DEBUG) {
             if (tag instanceof IAsyncOrigin) {
                 v(tag, ((IAsyncOrigin) tag).getOrigin(), message);
@@ -162,9 +162,9 @@ public class RCLog {
         }
     }
 
-    private static void v(@NonNull final Object tag,
-                          @NonNull final ImmutableValue<String> origin,
-                          @NonNull final String message) {
+    private static void v(@NonNull Object tag,
+                          @NonNull ImmutableValue<String> origin,
+                          @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
         debugOriginThen(ccOrigin -> {
@@ -182,8 +182,8 @@ public class RCLog {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void d(@NonNull final Object tag,
-                         @NonNull final String message) {
+    public static void d(@NonNull Object tag,
+                         @NonNull String message) {
         if (BuildConfig.DEBUG) {
             if (tag instanceof IAsyncOrigin) {
                 d(tag, ((IAsyncOrigin) tag).getOrigin(), message);
@@ -193,9 +193,9 @@ public class RCLog {
         }
     }
 
-    private static void d(@NonNull final Object tag,
-                          @NonNull final ImmutableValue<String> origin,
-                          @NonNull final String message) {
+    private static void d(@NonNull Object tag,
+                          @NonNull ImmutableValue<String> origin,
+                          @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
         debugOriginThen(ccOrigin -> {
@@ -213,8 +213,8 @@ public class RCLog {
      *                {@link ImmutableValue<String>} or other {@link Object} used to categorize this log line
      * @param message to display and help the developer resolve the issue
      */
-    public static void i(@NonNull final Object tag,
-                         @NonNull final String message) {
+    public static void i(@NonNull Object tag,
+                         @NonNull String message) {
         if (BuildConfig.DEBUG) {
             if (tag instanceof IAsyncOrigin) {
                 i(tag, ((IAsyncOrigin) tag).getOrigin(), message);
@@ -224,9 +224,9 @@ public class RCLog {
         }
     }
 
-    private static void i(@NonNull final Object tag,
-                          @NonNull final ImmutableValue<String> origin,
-                          @NonNull final String message) {
+    private static void i(@NonNull Object tag,
+                          @NonNull ImmutableValue<String> origin,
+                          @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
         debugOriginThen(ccOrigin -> {
@@ -237,9 +237,9 @@ public class RCLog {
     }
 
     @SuppressWarnings("unchecked")
-    private static void log(@NonNull final Object tag,
-                            @NonNull final String message,
-                            @NonNull final IActionTwo<String, String> action) {
+    private static void log(@NonNull Object tag,
+                            @NonNull String message,
+                            @NonNull IActionTwo<String, String> action) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
         try {
@@ -249,9 +249,9 @@ public class RCLog {
         }
     }
 
-    private static String combineOriginStringsRemoveDuplicates(@NonNull final String origin1,
-                                                               @NonNull final String origin2,
-                                                               @NonNull final String message) {
+    private static String combineOriginStringsRemoveDuplicates(@NonNull String origin1,
+                                                               @NonNull String origin2,
+                                                               @NonNull String message) {
         if (origin1.equals(origin2)) {
             return message + origin1;
         }
@@ -266,7 +266,7 @@ public class RCLog {
      * @return a string representation of the object, ideally in a clear form such as the developer-assigned name
      */
     @NonNull
-    private static String getTag(@NonNull final Object tag) {
+    private static String getTag(@NonNull Object tag) {
         if (tag instanceof String) {
             return (String) tag;
         }
@@ -289,8 +289,8 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(@NonNull final IAsyncOrigin origin,
-                                                  @NonNull final String message) throws RuntimeException {
+    public static void throwIllegalStateException(@NonNull IAsyncOrigin origin,
+                                                  @NonNull String message) throws RuntimeException {
         throwRuntimeException(origin, message, new IllegalStateException(message));
     }
 
@@ -304,9 +304,9 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalStateException(@NonNull final Object tag,
-                                                  @NonNull final ImmutableValue<String> origin,
-                                                  @NonNull final String message) throws RuntimeException {
+    public static void throwIllegalStateException(@NonNull Object tag,
+                                                  @NonNull ImmutableValue<String> origin,
+                                                  @NonNull String message) throws RuntimeException {
         throwRuntimeException(tag, origin, message, new IllegalStateException(message));
     }
 
@@ -317,9 +317,8 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwIllegalArgumentException(
-            @NonNull final IAsyncOrigin origin,
-            @NonNull final String message) throws RuntimeException {
+    public static void throwIllegalArgumentException(@NonNull IAsyncOrigin origin,
+                                                     @NonNull String message) throws RuntimeException {
         throwRuntimeException(origin, message, new IllegalArgumentException(message));
     }
 
@@ -333,9 +332,9 @@ public class RCLog {
      * @param e       the exception  which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(@NonNull final IAsyncOrigin origin,
-                                             @NonNull final String message,
-                                             @NonNull final Exception e) throws RuntimeException {
+    public static void throwRuntimeException(@NonNull IAsyncOrigin origin,
+                                             @NonNull String message,
+                                             @NonNull Exception e) throws RuntimeException {
         RuntimeException runtimeException;
 
         if (e instanceof RuntimeException) {
@@ -354,8 +353,8 @@ public class RCLog {
      * @param message to display and help the developer resolve the issue
      * @throws RuntimeException
      */
-    public static void throwTimeoutException(@NonNull final Object tag,
-                                             @NonNull final String message)
+    public static void throwTimeoutException(@NonNull Object tag,
+                                             @NonNull String message)
             throws RuntimeException {
         final TimeoutException e = new TimeoutException(message);
         e(tag, message, e);
@@ -373,10 +372,10 @@ public class RCLog {
      * @param e       the exception which triggered this new {@link RuntimeException}
      * @throws RuntimeException
      */
-    public static void throwRuntimeException(@NonNull final Object tag,
-                                             @NonNull final ImmutableValue<String> origin,
-                                             @NonNull final String message,
-                                             @NonNull final Exception e) throws RuntimeException {
+    public static void throwRuntimeException(@NonNull Object tag,
+                                             @NonNull ImmutableValue<String> origin,
+                                             @NonNull String message,
+                                             @NonNull Exception e) throws RuntimeException {
         RuntimeException runtimeException;
 
         if (e instanceof RuntimeException) {
@@ -423,8 +422,8 @@ public class RCLog {
             return DEFAULT_ORIGIN;
         }
 
-        final StackTraceElement[] traceElementsArray = Thread.currentThread().getStackTrace();
-        final ImmutableValue<String> immutableValue = new ImmutableValue<>();
+        StackTraceElement[] traceElementsArray = Thread.currentThread().getStackTrace();
+        ImmutableValue<String> immutableValue = new ImmutableValue<>();
 
         if (Async.WORKER != null) {
             Async.WORKER.run(() -> {
@@ -450,7 +449,7 @@ public class RCLog {
      * @param action to be performed when the current stack trace is resolved asynchronously
      */
     @NotCallOrigin
-    private static void debugOriginThen(@NonNull final IActionOne<String> action) {
+    private static void debugOriginThen(@NonNull IActionOne<String> action) {
         try {
             if (Async.TRACE_ASYNC_ORIGIN && Async.WORKER != null) {
                 originAsync().then(action);
@@ -495,11 +494,11 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> findClassAndMethod(@NonNull final List<StackTraceElement> stackTraceElementList) {
+    private static List<StackTraceLine> findClassAndMethod(@NonNull List<StackTraceElement> stackTraceElementList) {
         final List<StackTraceLine> lines = new ArrayList<>(stackTraceElementList.size());
 
-        for (final StackTraceElement ste : stackTraceElementList) {
-            final String s = ste.toString();
+        for (StackTraceElement ste : stackTraceElementList) {
+            String s = ste.toString();
 
             if (!s.contains("Native Method") && !s.contains("Unknown Source")) {
                 try {
@@ -514,10 +513,9 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> filterListByClass(
-            @NonNull final List<StackTraceLine> list,
-            @NonNull final IActionOneR<Class, Boolean> classFilter) throws Exception {
-        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+    private static List<StackTraceLine> filterListByClass(@NonNull List<StackTraceLine> list,
+                                                          @NonNull IActionOneR<Class, Boolean> classFilter) throws Exception {
+        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (classFilter.call(line.claz)) {
@@ -532,12 +530,11 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> filterListByClassAnnotation(
-            @NonNull final List<StackTraceLine> list,
-            @NonNull final Class<? extends Annotation> annotation,
-            final boolean mustBeAbsent)
+    private static List<StackTraceLine> filterListByClassAnnotation(@NonNull List<StackTraceLine> list,
+                                                                    @NonNull Class<? extends Annotation> annotation,
+                                                                    boolean mustBeAbsent)
             throws Exception {
-        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (line.claz.isAnnotationPresent(annotation) ^ mustBeAbsent) {
@@ -552,10 +549,9 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> filterListPreferCallOriginMethodAnnotation(
-            @NonNull final List<StackTraceLine> list)
+    private static List<StackTraceLine> filterListPreferCallOriginMethodAnnotation(@NonNull List<StackTraceLine> list)
             throws Exception {
-        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (line.isAnnotated) {
@@ -570,11 +566,10 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> filterListByPackage(
-            @NonNull final List<StackTraceLine> list,
-            @NonNull final IActionOneR<String, Boolean> packageFilter)
+    private static List<StackTraceLine> filterListByPackage(@NonNull List<StackTraceLine> list,
+                                                            @NonNull IActionOneR<String, Boolean> packageFilter)
             throws Exception {
-        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (packageFilter.call(line.claz.getPackage().getName())) {
@@ -589,20 +584,20 @@ public class RCLog {
     }
 
     @NonNull
-    private static String prettyFormat(@NonNull final StackTraceElement stackTraceElement) {
-        final String s = stackTraceElement.toString();
-        final int i = stackTraceElement.getClassName().length();
+    private static String prettyFormat(@NonNull StackTraceElement stackTraceElement) {
+        String s = stackTraceElement.toString();
+        int i = stackTraceElement.getClassName().length();
 
         return '\n' + s.substring(i);
     }
 
 
     private static final class StackTraceLine {
-        final Class<?> claz;
-        final StackTraceElement stackTraceElement;
-        final boolean isAnnotated;
+        Class<?> claz;
+        StackTraceElement stackTraceElement;
+        boolean isAnnotated;
 
-        StackTraceLine(@NonNull final StackTraceElement stackTraceElement) throws ClassNotFoundException {
+        StackTraceLine(@NonNull StackTraceElement stackTraceElement) throws ClassNotFoundException {
             this.stackTraceElement = stackTraceElement;
             final String className = stackTraceElement.getClassName();
             Class<?> c = sClassNameMap.get(className);

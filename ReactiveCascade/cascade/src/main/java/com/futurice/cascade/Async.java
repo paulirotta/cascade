@@ -5,7 +5,6 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.futurice.cascade;
 
-import android.app.ActivityManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -406,10 +405,9 @@ public final class Async {
         return result;
     }
 
-    public static void exitWithErrorCode(
-            @NonNull final String tag,
-            @NonNull final String message,
-            @Nullable final Throwable t) {
+    public static void exitWithErrorCode(@NonNull String tag,
+                                         @NonNull String message,
+                                         @Nullable Throwable t) {
         if (isTestMode()) {
             // Some integration tests fail without this- the test harness is disturbed by app shutdown
             return;

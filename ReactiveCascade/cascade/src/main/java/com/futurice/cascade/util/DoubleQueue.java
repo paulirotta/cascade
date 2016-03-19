@@ -40,7 +40,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @NonNull
     final BlockingQueue<E> lowPriorityQueue;
 
-    public DoubleQueue(@NonNull  final BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull final BlockingQueue<E> lowPriorityQueue) {
         super();
 
         this.lowPriorityQueue = lowPriorityQueue;
@@ -75,7 +75,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E poll(final long timeout, @NonNull  final TimeUnit unit) throws InterruptedException {
+    public E poll(long timeout,
+                  @NonNull TimeUnit unit) throws InterruptedException {
         E e = super.poll(timeout, unit);
 
         if (e == null) {
@@ -87,13 +88,13 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public boolean remove(@Nullable  final Object o) {
+    public boolean remove(@Nullable Object o) {
         return super.remove(o) || lowPriorityQueue.remove(o);
     }
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public void put(@NonNull  final E e) throws InterruptedException {
+    public void put(@NonNull E e) throws InterruptedException {
         super.put(e);
         synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();

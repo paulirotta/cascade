@@ -37,10 +37,8 @@ public class TestUtil {
      * @return
      * @throws Exception
      */
-    public <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
-            final long timeoutMillis)
-            throws Exception {
+    public <IN, OUT> OUT awaitDone(@NonNull IAltFuture<IN, OUT> altFuture,
+                                   long timeoutMillis) throws Exception {
         return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
@@ -56,10 +54,8 @@ public class TestUtil {
      * @return
      * @throws Exception
      */
-    public <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
-            final long timeoutMillis)
-            throws Exception {
+    public <IN, OUT> OUT awaitDoneNoErrorStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
+                                                     long timeoutMillis) throws Exception {
         SHOW_ERROR_STACK_TRACES = false;
         try {
             return awaitDone(altFuture, timeoutMillis);

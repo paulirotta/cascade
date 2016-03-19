@@ -8,7 +8,7 @@ import com.futurice.cascade.i.NotCallOrigin;
 
 /**
  * Runtime assertions to make contracts explicit and code self-documenting
- *
+ * <p>
  * These assertions have no impact on performance in a production build as they are disabled. You can configure
  * this in your {@link com.futurice.cascade.AsyncBuilder}.
  */
@@ -19,8 +19,7 @@ public class AssertUtil {
      * @param testResult the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
-    public static void assertTrue(
-            final boolean testResult) {
+    public static void assertTrue(boolean testResult) {
         if (Async.RUNTIME_ASSERTIONS && !testResult) {
             throw new IllegalStateException("assertTrue failed");
         }
@@ -34,8 +33,8 @@ public class AssertUtil {
      * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
-    public static void assertTrue(@NonNull final String errorMessage,
-                                  final boolean testResult) {
+    public static void assertTrue(@NonNull String errorMessage,
+                                  boolean testResult) {
         if (Async.RUNTIME_ASSERTIONS && !testResult) {
             throw new IllegalStateException(errorMessage);
         }
@@ -50,8 +49,8 @@ public class AssertUtil {
      * @param <U>      actual type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertEqual(@Nullable final T expected,
-                                                    @Nullable final U actual) {
+    public static <T, U extends T> void assertEqual(@Nullable T expected,
+                                                    @Nullable U actual) {
         if (Async.RUNTIME_ASSERTIONS) {
             assertEqual(expected, actual, "assertEqual failed: expected ´'" + expected + "' but was '" + actual + "'");
         }
@@ -65,9 +64,9 @@ public class AssertUtil {
      * @param <T>      type
      */
     @NotCallOrigin
-    public static <T, U extends T> void assertEqual(@Nullable final T expected,
-                                                    @Nullable final U actual,
-                                                    @NonNull final String message) {
+    public static <T, U extends T> void assertEqual(@Nullable T expected,
+                                                    @Nullable U actual,
+                                                    @NonNull String message) {
         if (Async.RUNTIME_ASSERTIONS
                 && actual != expected
                 && (expected != null && !expected.equals(actual))) {
@@ -119,7 +118,7 @@ public class AssertUtil {
      */
     @NonNull
     @NotCallOrigin
-    public static <T> T assertNotNull(@Nullable final T t) {
+    public static <T> T assertNotNull(@Nullable T t) {
         return assertNotNull(t, "assertNotNull failed");
     }
 
@@ -132,8 +131,8 @@ public class AssertUtil {
      */
     @NonNull
     @NotCallOrigin
-    public static <T> T assertNotNull(@Nullable final T t,
-                                      @NonNull final String message) {
+    public static <T> T assertNotNull(@Nullable T t,
+                                      @NonNull String message) {
         if (t == null) {
             throw new IllegalStateException(message);
         }

@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IAsyncOrigin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -28,20 +27,20 @@ public final class FileUtil extends Origin {
     private static final int BUFFER_SIZE = 16384;
     @NonNull
     private final Context mContext;
+
     @FileMode
     private final int mMode;
-    public FileUtil(
-            @NonNull final Context context,
-            @FileMode final int mode) {
+
+    public FileUtil(@NonNull Context context,
+                    @FileMode int mode) {
         this.mContext = context;
         this.mMode = mode;
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN> IAltFuture<IN, IN> writeAsync(
-            @NonNull final String fileName,
-            @NonNull final byte[] bytes) {
+    public <IN> IAltFuture<IN, IN> writeAsync(@NonNull String fileName,
+                                              @NonNull byte[] bytes) {
         return FILE.then(() -> {
             write(fileName, bytes);
         });
@@ -49,8 +48,7 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<String, byte[]> writeAsync(
-            @NonNull final byte[] bytes) {
+    public IAltFuture<String, byte[]> writeAsync(@NonNull byte[] bytes) {
         return FILE.map(fileName -> {
             write(fileName, bytes);
             return bytes;
@@ -59,17 +57,15 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<byte[], byte[]> writeAsync(
-            @NonNull final String fileName) {
+    public IAltFuture<byte[], byte[]> writeAsync(@NonNull String fileName) {
         return FILE.then(bytes -> {
             write(fileName, bytes);
         });
     }
 
     @WorkerThread
-    public void write(
-            @NonNull final String fileName,
-            @NonNull final byte[] bytes) {
+    public void write(@NonNull String fileName,
+                      @NonNull byte[] bytes) {
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -102,7 +98,7 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, byte[]> readAsync(@NonNull final String fileName) {
+    public IAltFuture<?, byte[]> readAsync(@NonNull String fileName) {
         return FILE.then(() -> {
             return read(fileName);
         });
@@ -110,7 +106,7 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @WorkerThread
-    public byte[] read(@NonNull final String fileName) {
+    public byte[] read(@NonNull String fileName) {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -144,7 +140,7 @@ public final class FileUtil extends Origin {
     }
 
     @WorkerThread
-    public boolean delete(@NonNull final String fileName) {
+    public boolean delete(@NonNull String fileName) {
         return mContext.deleteFile(fileName);
     }
 

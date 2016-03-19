@@ -15,11 +15,12 @@ import android.support.annotation.NonNull;
  * The contract is that these exceptions should not be thrown in production builds.
  */
 public class RuntimeAssertionException extends RuntimeException {
-    public RuntimeAssertionException(@NonNull  final String message) {
+    public RuntimeAssertionException(@NonNull String message) {
         super(message);
     }
 
-    public RuntimeAssertionException(@NonNull  final String message, @NonNull  final Exception e) {
+    public RuntimeAssertionException(@NonNull String message,
+                                     @NonNull final Exception e) {
         super(message, e);
     }
 }
