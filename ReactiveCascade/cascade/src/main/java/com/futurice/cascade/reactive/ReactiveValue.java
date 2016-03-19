@@ -52,8 +52,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      *
      * @param name
      */
-    public ReactiveValue(
-            @NonNull final String name) {
+    public ReactiveValue(@NonNull String name) {
         this(name, null, null, null);
     }
 
@@ -63,9 +62,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param name
      * @param initialValue
      */
-    public ReactiveValue(
-            @NonNull final String name,
-            @Nullable final T initialValue) {
+    public ReactiveValue(@NonNull String name,
+                         @Nullable final T initialValue) {
         this(name, null, null, null);
     }
 
@@ -78,11 +76,10 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param onError
      */
     @SuppressWarnings("unchecked")
-    public ReactiveValue(
-            @NonNull final String name,
-            @Nullable final IThreadType threadType,
-            @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable final IActionOne<Exception> onError) {
+    public ReactiveValue(@NonNull String name,
+                         @Nullable IThreadType threadType,
+                         @Nullable IActionOneR<T, T> inputMapping,
+                         @Nullable IActionOne<Exception> onError) {
         super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
 
         fire((T) IAltFuture.VALUE_NOT_AVAILABLE);
@@ -125,7 +122,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @NonNull
     @Override // IAtomicValue, IGettable
     public T get() {
-        final T t = safeGet();
+         T t = safeGet();
 
         if (t == IAltFuture.VALUE_NOT_AVAILABLE) {
             throw new IllegalStateException("Can not get(), ReactiveValue is not yet asserted");
@@ -151,9 +148,9 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      */
     @CallSuper
     @Override // ISettable
-    public void set(@NonNull final T value) {
-        final T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
-        final boolean valueChanged = !(value == previousValue
+    public void set(@NonNull  T value) {
+         T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
+         boolean valueChanged = !(value == previousValue
                 || (value.equals(previousValue))
                 || previousValue.equals(value));
 
@@ -168,7 +165,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean compareAndSet(@Nullable final T expected, @Nullable final T update) {
+    public boolean compareAndSet(@Nullable  T expected,
+                                 @Nullable  T update) {
         final boolean success = this.mValueAR.compareAndSet(expected, update);
 
         if (success) {

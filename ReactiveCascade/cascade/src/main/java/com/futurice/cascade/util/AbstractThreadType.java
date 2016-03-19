@@ -59,10 +59,9 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
      *                        reduces mContext switching and peak memory load it may delay the start of execution
      *                        of tasks in one thread type by tasks in another thread type
      */
-    public AbstractThreadType(
-            @NonNull final String name,
-            @NonNull final ExecutorService executorService,
-            @NonNull final BlockingQueue<Runnable> queue) {
+    public AbstractThreadType(@NonNull String name,
+                              @NonNull ExecutorService executorService,
+                              @NonNull BlockingQueue<Runnable> queue) {
         this.name = name;
         this.executorService = executorService;
         this.mQueue = queue;
@@ -80,7 +79,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NotCallOrigin
     public abstract void run(@NonNull Runnable runnable);
 
-    private <IN, OUT> IAltFuture<IN, OUT> runAltFuture(@NonNull final IRunnableAltFuture<IN, OUT> altFuture) {
+    private <IN, OUT> IAltFuture<IN, OUT> runAltFuture(@NonNull IRunnableAltFuture<IN, OUT> altFuture) {
         run(altFuture);
 
         return altFuture;
@@ -89,7 +88,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @Override
     @NonNull
     @NotCallOrigin
-    public <IN> Runnable wrapActionWithErrorProtection(@NonNull final IAction<IN> action) {
+    public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -106,9 +105,8 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @Override
     @NonNull
     @NotCallOrigin
-    public <IN> Runnable wrapActionWithErrorProtection(
-            @NonNull final IAction<IN> action,
-            @NonNull final IActionOne<Exception> onErrorAction) {
+    public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action,
+                                                       @NonNull IActionOne<Exception> onErrorAction) {
         return new Runnable() {
             @Override
             @NotCallOrigin
@@ -131,27 +129,26 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void execute(@NonNull final IAction<IN> action) {
+    public <IN> void execute(@NonNull IAction<IN> action) {
         run(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void run(
-            @NonNull final IAction<IN> action,
-            @NonNull final IActionOne<Exception> onErrorAction) {
+    public <IN> void run(@NonNull IAction<IN> action,
+                         @NonNull IActionOne<Exception> onErrorAction) {
         run(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void runNext(@NonNull final IAction<IN> action) {
+    public <IN> void runNext(@NonNull IAction<IN> action) {
         runNext(wrapActionWithErrorProtection(action));
     }
 
     @Override // IThreadType
     @SuppressWarnings("unchecked")
-    public boolean moveToHeadOfQueue(@NonNull final Runnable runnable) {
+    public boolean moveToHeadOfQueue(@NonNull Runnable runnable) {
         //TODO Analyze if this non-atomic operation is a risk for closing a ThreadType and moving all pending actions to a new thread type as we would like to do for NET_READ when the available bandwdith changes
 
         if (mQueue instanceof Deque) {
@@ -170,45 +167,44 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
 
     @Override // IThreadType
     @NotCallOrigin
-    public <IN> void runNext(
-            @NonNull final IAction<IN> action,
-            @NonNull final IActionOne<Exception> onErrorAction) {
-    RCLog.v(this, "runNext()");
+    public <IN> void runNext(@NonNull IAction<IN> action,
+                             @NonNull IActionOne<Exception> onErrorAction) {
+        RCLog.v(this, "runNext()");
         runNext(wrapActionWithErrorProtection(action, onErrorAction));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN> IAltFuture<IN, IN> then(@NonNull final IAction<IN> action) {
+    public <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action) {
         return runAltFuture(new RunnableAltFuture<>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN> IAltFuture<IN, IN> then(@NonNull final IActionOne<IN> action) {
+    public <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action) {
         return runAltFuture(new RunnableAltFuture<IN, IN>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull final IActionOneR<IN, OUT> action) {
+    public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action) {
         return runAltFuture(new RunnableAltFuture<>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull final IActionR<OUT> action) {
+    public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action) {
         return runAltFuture(new RunnableAltFuture<>(this, action));
     }
 
     @Override // IThreadType
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <OUT> ISettableAltFuture<OUT> from(@NonNull final OUT value) {
+    public <OUT> ISettableAltFuture<OUT> from(@NonNull OUT value) {
         return new SettableAltFuture<>(this, value);
     }
 
@@ -225,8 +221,8 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN> List<IAltFuture<IN, IN>> then(@NonNull final IAction<IN>... actions) {
-        final List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
+    public final <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
+        List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
 
         RCLog.v(this, "map(List[" + actions.length + "])");
         for (final IAction<IN> action : actions) {
@@ -240,10 +236,10 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull final IActionR<OUT>... actions) {
-        RCLog.v(this, "map(List[" + actions.length + "])");
-        final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
+    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
+        List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
+        RCLog.v(this, "map(List[" + actions.length + "])");
         for (final IActionR<OUT> action : actions) {
             altFutures.add(then(action));
         }
@@ -255,7 +251,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @SafeVarargs
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull final IActionOneR<IN, OUT>... actions) {
+    public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
         final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
 
         for (final IActionOneR<IN, OUT> action : actions) {
@@ -273,7 +269,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     //TODO public <A> RunnableAltFuture<A> flush()  - current thread type - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
 
     @Override // IThreadType
-    public <IN, OUT> void fork(@NonNull final IRunnableAltFuture<IN, OUT> runnableAltFuture) {
+    public <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
         AssertUtil.assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked());
         if (BuildConfig.DEBUG) {
             if (isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
@@ -294,9 +290,8 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
 
     @Override // IThreadType
     @NonNull
-    public <IN> Future<Boolean> shutdown(
-            final long timeout,
-            @Nullable final IAction<IN> afterShutdownAction) {
+    public <IN> Future<Boolean> shutdown(long timeout,
+                                         @Nullable IAction<IN> afterShutdownAction) {
         if (timeout < 1) {
             RCLog.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
@@ -340,11 +335,10 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
 
     @Override // IThreadType
     @NonNull
-    public <IN> List<Runnable> shutdownNow(
-            @NonNull final String reason,
-            @Nullable final IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-            @Nullable final IAction<IN> actionOnDedicatedThreadIfTimeout,
-            long timeoutMillis) {
+    public <IN> List<Runnable> shutdownNow(@NonNull String reason,
+                                           @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+                                           @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
+                                           long timeoutMillis) {
         RCLog.i(this, "shutdownNow: reason=" + reason);
         final List<Runnable> pendingActions = executorService.shutdownNow();
 

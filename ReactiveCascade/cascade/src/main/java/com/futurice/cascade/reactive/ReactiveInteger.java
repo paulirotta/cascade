@@ -29,9 +29,8 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param name
      * @param initialValue
      */
-    public ReactiveInteger(
-            @NonNull  final String name,
-            final int initialValue) {
+    public ReactiveInteger(@NonNull String name,
+                           int initialValue) {
         super(name, initialValue);
     }
 
@@ -43,11 +42,10 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @param onFireAction a mapping for incoming values, for example <code>i -> Math.max(0, i)</code>
      * @param onError
      */
-    public ReactiveInteger(
-            @NonNull  final IThreadType threadType,
-            @NonNull  final String name,
-            @Nullable  final IActionOneR<Integer, Integer> onFireAction,
-            @NonNull  final IActionOne<Exception> onError) {
+    public ReactiveInteger(@NonNull IThreadType threadType,
+                           @NonNull String name,
+                           @Nullable IActionOneR<Integer, Integer> onFireAction,
+                           @NonNull IActionOne<Exception> onError) {
         super(name, threadType, onFireAction, onError);
     }
 
@@ -58,7 +56,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @return
      */
     @CallSuper
-    public int addAndGet(final int i) {
+    public int addAndGet(int i) {
         while (true) {
             final int currentValue = get();
 
@@ -76,7 +74,7 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * @return
      */
     @CallSuper
-    public int multiplyAndGet(final int i) {
+    public int multiplyAndGet(int i) {
         while (true) {
             final int currentValue = get();
 

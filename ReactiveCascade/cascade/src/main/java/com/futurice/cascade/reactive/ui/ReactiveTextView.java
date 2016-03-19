@@ -14,7 +14,6 @@ import android.support.annotation.UiThread;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.INamed;
@@ -46,35 +45,32 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     private IReactiveSource<String> mReactiveSource; // Access only from UI thread
     private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
 
-    public ReactiveTextView(@NonNull final Context context) {
+    public ReactiveTextView(@NonNull Context context) {
         super(context);
 
         mReactiveValue.set(getText().toString());
     }
 
-    public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs) {
+    public ReactiveTextView(@NonNull Context context,
+                            @NonNull AttributeSet attrs) {
         super(context, attrs);
 
         mReactiveValue.set(getText().toString());
     }
 
-    public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
-            @StyleRes final int defStyle) {
+    public ReactiveTextView(@NonNull Context context,
+                            @NonNull AttributeSet attrs,
+                            @StyleRes int defStyle) {
         super(context, attrs, defStyle);
 
         mReactiveValue.set(getText().toString());
     }
 
     @TargetApi(21)
-    public ReactiveTextView(
-            @NonNull final Context context,
-            @NonNull final AttributeSet attrs,
-            @AttrRes final int defStyleAttr,
-            @StyleRes final int defStyleRes) {
+    public ReactiveTextView(@NonNull Context context,
+                            @NonNull AttributeSet attrs,
+                            @AttrRes int defStyleAttr,
+                            @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         mReactiveValue.set(getText().toString());
@@ -113,7 +109,8 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
      * @param reactiveValue the new view model
      * @param fire          push the current from of the view model to the screen after this action completes on the UI thread
      */
-    public void setReactiveValue(@NonNull final ReactiveValue<String> reactiveValue, final boolean fire) {
+    public void setReactiveValue(@NonNull ReactiveValue<String> reactiveValue,
+                                 boolean fire) {
         AssertUtil.assertNotNull(mOrigin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 

@@ -29,9 +29,8 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @param name
      * @param initialValue
      */
-    public ReactiveLong(
-            @NonNull  final String name,
-            final long initialValue) {
+    public ReactiveLong(@NonNull String name,
+                        final long initialValue) {
         super(name, initialValue);
     }
 
@@ -43,11 +42,10 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @param inputMapping  a mapping for incoming values, for example <code>l -> Math.max(0, l)</code>
      * @param onErrorAction
      */
-    public ReactiveLong(
-            @NonNull  final String name,
-            @NonNull  final IThreadType threadType,
-            @Nullable  final IActionOneR<Long, Long> inputMapping,
-            @NonNull  final IActionOne<Exception> onErrorAction) {
+    public ReactiveLong(@NonNull String name,
+                        @NonNull IThreadType threadType,
+                        @Nullable IActionOneR<Long, Long> inputMapping,
+                        @NonNull IActionOne<Exception> onErrorAction) {
         super(name, threadType, inputMapping, onErrorAction);
     }
 
@@ -58,9 +56,9 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @return
      */
     @CallSuper
-    public long addAndGet(final long l) {
+    public long addAndGet(long l) {
         while (true) {
-            final long currentValue = get();
+            long currentValue = get();
 
             if (compareAndSet(currentValue, currentValue + l)) {
                 return currentValue;
@@ -76,7 +74,7 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * @return the updated from
      */
     @CallSuper
-    public long multiplyAndGet(final long l) {
+    public long multiplyAndGet(long l) {
         while (true) {
             final long currentValue = get();
             if (compareAndSet(currentValue, currentValue * l)) {
