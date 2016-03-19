@@ -7,14 +7,15 @@ import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.reactive.ReactiveValue;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.framed.Header;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import okhttp3.Response;
+import okhttp3.internal.framed.Header;
 
 import static com.futurice.cascade.Async.WORKER;
 import static org.assertj.core.api.Assertions.assertThat;
