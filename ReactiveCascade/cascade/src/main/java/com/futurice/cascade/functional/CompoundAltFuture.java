@@ -31,8 +31,8 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     protected final IAltFuture<IN, ?> mHead;
     protected final IAltFuture<?, OUT> mTail;
 
-    public CompoundAltFuture(@NonNull final IAltFuture<IN, ?> head,
-                             @NonNull final IAltFuture<?, OUT> tail) {
+    public CompoundAltFuture(@NonNull IAltFuture<IN, ?> head,
+                             @NonNull IAltFuture<?, OUT> tail) {
         AssertUtil.assertTrue("Head of CompoundAltFuture must not be downchain from an existing chain", head.getUpchain() == null);
         AssertUtil.assertNotEqual(head, tail);
 
@@ -70,7 +70,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
 
     @Override // IAltFuture
     public boolean cancel(@NonNull String reason) {
-        for (final IAltFuture<?, ?> altFuture : mSubchain) {
+        for (IAltFuture<?, ?> altFuture : mSubchain) {
             if (altFuture.cancel(reason)) {
                 return true;
             }
@@ -81,7 +81,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
 
     @Override // IAltFuture
     public boolean cancel(@NonNull StateError stateError) {
-        for (final IAltFuture<?, ?> altFuture : mSubchain) {
+        for (IAltFuture<?, ?> altFuture : mSubchain) {
             if (altFuture.cancel(stateError)) {
                 RCLog.d(this, "Cancelled task within CompountAltFuture");
                 return true;
@@ -201,7 +201,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
      */
     @NonNull
     @Override
-    public ISettableAltFuture<OUT> sleep(final long sleepTime,
+    public ISettableAltFuture<OUT> sleep(long sleepTime,
                                          @NonNull final TimeUnit timeUnit) {
         throw new UnsupportedOperationException("Not yet implemented"); //TODO sleep a compound alt future
     }
