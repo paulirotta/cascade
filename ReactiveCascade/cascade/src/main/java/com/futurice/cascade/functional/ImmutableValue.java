@@ -93,7 +93,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * @return if <code>false</code> is returned, you may try again as the from as needed since the
      * final from has not been set.
      */
-    private boolean compareAndSet(@NonNull final T expected, @NonNull final T value) {
+    private boolean compareAndSet(@NonNull T expected,
+                                  @NonNull T value) {
         boolean success = mValueAR.compareAndSet(expected, value);
 
         if (success) {
@@ -114,7 +115,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * @return
      */
     @NonNull
-    public ImmutableValue<T> then(@NonNull final IActionOne<T> action) {
+    public ImmutableValue<T> then(@NonNull IActionOne<T> action) {
         mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -123,7 +124,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     }
 
     @NonNull
-    public ImmutableValue<T> then(@NonNull final IAction<T> action) {
+    public ImmutableValue<T> then(@NonNull IAction<T> action) {
         mThenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
@@ -131,7 +132,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         return this;
     }
 
-    private void doThenActions(@NonNull final T value) {
+    private void doThenActions(@NonNull T value) {
         final Iterator<IBaseAction<T>> iterator = mThenActions.iterator();
 
         while (iterator.hasNext()) {
@@ -258,7 +259,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      */
     @CallSuper
     @NonNull
-    public T set(@NonNull final T value) {
+    public T set(@NonNull T value) {
         if (!compareAndSet(ZEN, value)) {
             throw new IllegalStateException("ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new from=" + value);
         }

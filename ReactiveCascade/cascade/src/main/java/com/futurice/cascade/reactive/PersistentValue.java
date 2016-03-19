@@ -22,13 +22,10 @@ import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.DefaultThreadType;
 import com.futurice.cascade.util.RCLog;
 
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A {@link com.futurice.cascade.reactive.ReactiveValue} which retains state between stops and
@@ -68,7 +65,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             return;
         }
 
-        final PersistentValue<?> persistentValue = PERSISTENT_VALUES.get(key);
+        PersistentValue<?> persistentValue = PERSISTENT_VALUES.get(key);
         if (persistentValue == null) {
             RCLog.d(TAG, "SharedPreference " + key + " has changed, but the PersistentValue is an expired WeakReference. Probably this is PersistentValue which has gone out of scope before the from persisted. Ignoring this change");
             return;
@@ -76,13 +73,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         persistentValue.onSharedPreferenceChanged();
     };
 
-    private static String getKey(@NonNull final Class claz,
-                                 @NonNull final String name) {
+    private static String getKey(@NonNull Class claz,
+                                 @NonNull String name) {
         return claz.getPackage().getName() + name;
     }
 
-    private static String getKey(@NonNull final Context context,
-                                 @NonNull final String name) {
+    private static String getKey(@NonNull Context context,
+                                 @NonNull String name) {
         return getKey(context.getClass(), name);
     }
 
@@ -92,7 +89,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             @NonNull String name,
             @NonNull Context context,
             @NonNull IActionOne<Exception> onErrorAction) {
-        final PersistentValue<TT> pv = (PersistentValue<TT>) PERSISTENT_VALUES.get(getKey(context, name));
+        PersistentValue<TT> pv = (PersistentValue<TT>) PERSISTENT_VALUES.get(getKey(context, name));
+
         if (pv == null) {
             return null;
         }
@@ -117,13 +115,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
      * @return
      */
     public static synchronized <TT> PersistentValue<TT> getPersistentValue(
-            @NonNull final String name,
-            @NonNull final TT defaultValueIfNoPersistedValue,
-            @NonNull final IThreadType threadType,
-            @Nullable final IActionOneR<TT, TT> inputMapping,
-            @Nullable final IActionOne<Exception> onError,
-            @NonNull final Context context) {
-        final IActionOne<Exception> errorAction = onError != null ? onError : defaultOnErrorAction;
+            @NonNull String name,
+            @NonNull TT defaultValueIfNoPersistedValue,
+            @NonNull IThreadType threadType,
+            @Nullable IActionOneR<TT, TT> inputMapping,
+            @Nullable IActionOne<Exception> onError,
+            @NonNull Context context) {
+        IActionOne<Exception> errorAction = onError != null ? onError : defaultOnErrorAction;
 
         PersistentValue<TT> persistentValue = getAlreadyInitializedPersistentValue(name, context, errorAction);
 
@@ -137,8 +135,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return persistentValue;
     }
 
-    private static String toStringSet(@NonNull final long[] value) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toStringSet(@NonNull long[] value) {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -150,13 +148,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
-    private static long[] toLongArray(@NonNull final String value) {
+    private static long[] toLongArray(@NonNull String value) {
         if (value.trim().length() == 0) {
             return new long[0];
         }
 
-        final String[] vals = value.split("\n");
-        final long[] longs = new long[vals.length];
+        String[] vals = value.split("\n");
+        long[] longs = new long[vals.length];
         int i = 0;
 
         for (String v : vals) {
@@ -166,8 +164,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return longs;
     }
 
-    private static String toStringSet(@NonNull final int[] value) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toStringSet(@NonNull int[] value) {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -179,7 +177,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
-    private static String[] toStringArray(@NonNull final String value) {
+    private static String[] toStringArray(@NonNull String value) {
         if (value.trim().length() == 0) {
             return new String[0];
         }
@@ -187,13 +185,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return value.split("\n");
     }
 
-    private static int[] toIntegerArray(@NonNull final String value) {
+    private static int[] toIntegerArray(@NonNull String value) {
         if (value.trim().length() == 0) {
             return new int[0];
         }
 
-        final String[] vals = value.split("\n");
-        final int[] ints = new int[vals.length];
+        String[] vals = value.split("\n");
+        int[] ints = new int[vals.length];
         int i = 0;
 
         for (String v : vals) {
@@ -203,8 +201,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return ints;
     }
 
-    private static String toStringSet(@NonNull final boolean[] value) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toStringSet(@NonNull boolean[] value) {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -216,13 +214,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
-    private static boolean[] toBooleanArray(@NonNull final String value) {
+    private static boolean[] toBooleanArray(@NonNull String value) {
         if (value.trim().length() == 0) {
             return new boolean[0];
         }
 
-        final String[] vals = value.split(",");
-        final boolean[] bools = new boolean[vals.length];
+        String[] vals = value.split(",");
+        boolean[] bools = new boolean[vals.length];
         int i = 0;
 
         for (String v : vals) {
@@ -232,8 +230,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return bools;
     }
 
-    private static String toStringSet(@NonNull final float[] value) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toStringSet(@NonNull float[] value) {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -245,8 +243,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
-    private static String toStringSet(final String[] value) {
-        final StringBuilder sb = new StringBuilder();
+    private static String toStringSet(@NonNull String[] value) {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < value.length; i++) {
             sb.append(value[i]);
@@ -258,13 +256,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         return sb.toString();
     }
 
-    private static float[] toFloatArray(final String value) {
+    private static float[] toFloatArray(@NonNull String value) {
         if (value.trim().length() == 0) {
             return new float[0];
         }
 
-        final String[] vals = value.split(",");
-        final float[] floats = new float[vals.length];
+        String[] vals = value.split(",");
+        float[] floats = new float[vals.length];
         int i = 0;
 
         for (final String v : vals) {
@@ -275,12 +273,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     protected PersistentValue(
-            @NonNull final String name,
-            @NonNull final T defaultValueIfNoPersistedValue,
-            @NonNull final IThreadType threadType,
-            @Nullable final IActionOneR<T, T> inputMapping,
-            @Nullable final IActionOne<Exception> onError,
-            @NonNull final Context context) {
+            @NonNull String name,
+            @NonNull T defaultValueIfNoPersistedValue,
+            @NonNull IThreadType threadType,
+            @Nullable IActionOneR<T, T> inputMapping,
+            @Nullable IActionOne<Exception> onError,
+            @NonNull Context context) {
         super(name, threadType, inputMapping, onError);
 
         this.defaultValue = defaultValueIfNoPersistedValue;
@@ -302,12 +300,12 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private AltFutureFuture<T, T> init(final Context context) {
+    private AltFutureFuture<T, T> init(Context context) {
         // Always access SharedPreferences from the same thread
         // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
         return new AltFutureFuture<T, T>((IAltFuture<T, T>) persistentValueThreadType.then(() -> {
-            final PersistentValue<T> previouslyInitializedPersistentValue = (PersistentValue<T>) PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), this);
-            final SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+            PersistentValue<T> previouslyInitializedPersistentValue = (PersistentValue<T>) PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), this);
+            SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
 
             if (previouslyInitializedPersistentValue != null) {
                 return previouslyInitializedPersistentValue.safeGet();
@@ -328,7 +326,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     protected void onSharedPreferenceChanged() {
         RCLog.v(this, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
 
-        final SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+        SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
 
         if (classOfPersistentValue == String.class) {
             super.set((T) sharedPreferences.getString(key, (String) defaultValue));
@@ -358,13 +356,13 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     @NotCallOrigin
     @CallSuper
     @Override
-    public void set(@NonNull final T value) {
+    public void set(@NonNull T value) {
         super.set(value);
 
         RCLog.v(this, "PersistentValue \"" + getName() + "\" persist soon, from=" + value);
         persistentValueThreadType.then(() -> {
-            final SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
-            final SharedPreferences.Editor editor = AssertUtil.assertNotNull(sharedPreferences, "Shared preferences are null").edit();
+            SharedPreferences sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+            SharedPreferences.Editor editor = AssertUtil.assertNotNull(sharedPreferences, "Shared preferences are null").edit();
 
             if (value instanceof String) {
                 editor.putString(key, (String) value);

@@ -12,7 +12,7 @@ import com.futurice.cascade.util.RCLog;
 
 /**
  * The on-error action in a chain will be launched asynchronously
- *
+ * <p>
  * The error is consumed by this chain link. All downchain items will be notified synchronously
  * as {@link #doOnCancelled(StateCancelled)}
  */
@@ -23,8 +23,8 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
     /**
      * Constructor
      *
-     * @param threadType the thread pool to run this command on
-     * @param onErrorAction     a function that receives one input and no return from
+     * @param threadType    the thread pool to run this command on
+     * @param onErrorAction a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public OnErrorAltFuture(@NonNull IThreadType threadType,
@@ -36,7 +36,7 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doOnError(@NonNull final StateError stateError) throws Exception {
+    public void doOnError(@NonNull StateError stateError) throws Exception {
         RCLog.d(this, "Handling doOnError(): " + stateError);
 
         if (!this.mStateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateError))) {

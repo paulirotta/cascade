@@ -38,7 +38,7 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doOnCancelled(@NonNull final StateCancelled stateCancelled) throws Exception {
+    public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
         RCLog.d(this, "Handling doOnCancelled(): " + stateCancelled);
 
         if (!this.mStateAR.compareAndSet(ZEN, stateCancelled) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateCancelled))) {

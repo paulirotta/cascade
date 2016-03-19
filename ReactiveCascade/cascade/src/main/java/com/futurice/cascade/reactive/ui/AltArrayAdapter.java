@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.ImmutableValue;
 import com.futurice.cascade.functional.RunnableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
@@ -68,49 +67,49 @@ import static com.futurice.cascade.Async.UI;
 public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin {
     private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource) {
         super(context, resource, 0, new ArrayList<>());
     }
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource,
-                           @IdRes final int textViewResourceId) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource,
+                           @IdRes int textViewResourceId) {
         super(context, resource, textViewResourceId, new ArrayList<>());
     }
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource,
-                           @NonNull final T[] objects) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource,
+                           @NonNull T[] objects) {
         super(context, resource, 0, Arrays.asList(objects));
     }
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource,
-                           @IdRes final int textViewResourceId,
-                           @NonNull final T[] objects) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource,
+                           @IdRes int textViewResourceId,
+                           @NonNull T[] objects) {
         super(context, resource, textViewResourceId, Arrays.asList(objects));
     }
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource,
-                           @NonNull final List<T> objects) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource,
+                           @NonNull List<T> objects) {
         super(context, resource, 0, objects);
     }
 
-    public AltArrayAdapter(@NonNull final Context context,
-                           @LayoutRes final int resource,
-                           @IdRes final int textViewResourceId,
-                           @NonNull final List<T> objects) {
+    public AltArrayAdapter(@NonNull Context context,
+                           @LayoutRes int resource,
+                           @IdRes int textViewResourceId,
+                           @NonNull List<T> objects) {
         super(context, resource, textViewResourceId, objects);
     }
 
     @NonNull
     public static AltArrayAdapter<CharSequence> createFromResource(
-            @NonNull final Context context,
-            @LayoutRes final int textArrayResId,
-            @IdRes final int textViewResId) {
-        final CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
+            @NonNull Context context,
+            @LayoutRes int textArrayResId,
+            @IdRes int textViewResId) {
+        CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
 
         return new AltArrayAdapter<>(context, textViewResId, strings);
     }
@@ -118,10 +117,10 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @Override
     @UiThread
-    public void add(@NonNull final T value) {
+    public void add(@NonNull T value) {
         super.add(value);
-        RCLog.v(mOrigin, "Add to AltArrayAdapter: " + value);
 
+        RCLog.v(mOrigin, "Add to AltArrayAdapter: " + value);
     }
 
     /**
@@ -133,8 +132,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, T> addAsync(@NonNull final T value,
-                                     final boolean ifAbsent) {
+    public IAltFuture<?, T> addAsync(@NonNull T value,
+                                     boolean ifAbsent) {
         return UI.then(() -> {
             if (ifAbsent) {
                 remove(value);
@@ -147,7 +146,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
 
     @CallSuper
     @NotCallOrigin
-    public void remove(@NonNull final T value) {
+    public void remove(@NonNull T value) {
         super.remove(value);
 
         RCLog.v(mOrigin, "Remove from AltArrayAdapter: " + value);
@@ -163,7 +162,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, T> removeAsync(@NonNull final T object) {
+    public IAltFuture<?, T> removeAsync(@NonNull T object) {
         return new RunnableAltFuture<>(UI, () -> {
             remove(object);
 
@@ -181,7 +180,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <A> IAltFuture<A, A> sortAsync(@NonNull final Comparator<? super T> comparator) {
+    public <A> IAltFuture<A, A> sortAsync(@NonNull Comparator<? super T> comparator) {
         RCLog.v(mOrigin, "Sort AltArrayAdapter: " + comparator);
 
         return new RunnableAltFuture<>(UI, () ->
@@ -229,8 +228,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull final Collection<TT> collection,
-                                                          final boolean addIfUnique) {
+    public <A, TT extends T> IAltFuture<A, A> addAllAsync(@NonNull Collection<TT> collection,
+                                                          boolean addIfUnique) {
         RCLog.v(mOrigin, "Add all async to AltArrayAdapter: addCount=" + collection.size());
         if (addIfUnique) {
             return new RunnableAltFuture<>(UI, () -> {
@@ -249,8 +248,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <TT extends T> IAltFuture<?, List<TT>> addAllAsync(@NonNull final TT... items) {
-        final ArrayList<TT> list = new ArrayList<>(items.length);
+    public final <TT extends T> IAltFuture<?, List<TT>> addAllAsync(@NonNull TT... items) {
+        ArrayList<TT> list = new ArrayList<>(items.length);
 
         for (final TT item : items) {
             add(item);
@@ -292,8 +291,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @NonNull
     @UiThread
     public List<T> getAll() {
-        final int n = getCount();
-        final List<T> list = new ArrayList<>(n);
+        int n = getCount();
+        List<T> list = new ArrayList<>(n);
 
         for (int i = 0; i < n; i++) {
             list.add(getItem(i));
@@ -304,21 +303,21 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
 
     @CallSuper
     @NonNull
-    public T getItem(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+    public T getItem(@IntRange(from = 0, to = Integer.MAX_VALUE) int position) {
         return super.getItem(position);
     }
 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, T> getItemAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+    public IAltFuture<?, T> getItemAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) int position) {
         return new RunnableAltFuture<>(UI, () ->
                 getItem(position));
     }
 
     @CallSuper
     @IntRange(from = -1, to = Integer.MAX_VALUE)
-    public int getPosition(@NonNull final T item) {
+    public int getPosition(@NonNull T item) {
         return super.getPosition(item);
     }
 
@@ -332,7 +331,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, Integer> getPositionAsync(@NonNull final T item) {
+    public IAltFuture<?, Integer> getPositionAsync(@NonNull T item) {
         return new RunnableAltFuture<>(UI, () ->
                 getPosition(item));
     }
@@ -366,7 +365,7 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, Long> getItemIdAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position) {
+    public IAltFuture<?, Long> getItemIdAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) int position) {
         return new RunnableAltFuture<>(UI, () ->
                 getItemId(position));
     }
@@ -374,14 +373,14 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @Override
-    public void setDropDownViewResource(@LayoutRes final int resource) {
+    public void setDropDownViewResource(@LayoutRes int resource) {
         super.setDropDownViewResource(resource);
     }
 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <A> IAltFuture<A, A> setDropDownViewResourceAsync(@LayoutRes final int resource) {
+    public <A> IAltFuture<A, A> setDropDownViewResourceAsync(@LayoutRes int resource) {
         return new RunnableAltFuture<>(UI, () ->
                 setDropDownViewResource(resource));
     }
@@ -389,9 +388,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @Override
-    public View getView(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-                        @Nullable final View convertView,
-                        @NonNull final ViewGroup parent) {
+    public View getView(@IntRange(from = 0, to = Integer.MAX_VALUE) int position,
+                        @Nullable View convertView,
+                        @NonNull ViewGroup parent) {
         return super.getView(position, convertView, parent);
     }
 
@@ -408,9 +407,9 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public <A> IAltFuture<A, View> getViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-                                                @NonNull final View convertView,
-                                                @NonNull final ViewGroup parent) {
+    public <A> IAltFuture<A, View> getViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) int position,
+                                                @NonNull View convertView,
+                                                @NonNull ViewGroup parent) {
         return new RunnableAltFuture<>(UI, () ->
                 getView(position, convertView, parent));
     }
@@ -418,18 +417,18 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @CallSuper
     @NonNull
     @Override
-    public View getDropDownView(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-                                @NonNull final View convertView,
-                                @NonNull final ViewGroup parent) {
+    public View getDropDownView(@IntRange(from = 0, to = Integer.MAX_VALUE) int position,
+                                @NonNull View convertView,
+                                @NonNull ViewGroup parent) {
         return super.getDropDownView(position, convertView, parent);
     }
 
     @CallSuper
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public IAltFuture<?, View> getDropDownViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) final int position,
-                                                    @NonNull final View convertView,
-                                                    @NonNull final ViewGroup parent) {
+    public IAltFuture<?, View> getDropDownViewAsync(@IntRange(from = 0, to = Integer.MAX_VALUE) int position,
+                                                    @NonNull View convertView,
+                                                    @NonNull ViewGroup parent) {
         return new RunnableAltFuture<>(UI, () ->
                 getDropDownView(position, convertView, parent));
     }

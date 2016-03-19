@@ -11,7 +11,6 @@ import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
 
 /**
@@ -39,7 +38,7 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
      *
      * @param threadType on which downchain actions continue
      */
-    public SettableAltFuture(@NonNull final IThreadType threadType) {
+    public SettableAltFuture(@NonNull IThreadType threadType) {
         super(threadType);
     }
 
@@ -49,14 +48,14 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
      * @param threadType on which downchain actions continue
      * @param value
      */
-    public SettableAltFuture(@NonNull final IThreadType threadType,
-                             @NonNull final T value) {
+    public SettableAltFuture(@NonNull IThreadType threadType,
+                             @NonNull T value) {
         this(threadType);
         set(value);
     }
 
     @Override // ISettable
-    public void set(@NonNull final T value) {
+    public void set(@NonNull T value) {
         if (mStateAR.compareAndSet(ZEN, value) || mStateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);

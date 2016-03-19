@@ -14,11 +14,9 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IBaseAction;
-import com.futurice.cascade.i.ICancellable;
 import com.futurice.cascade.i.IRunnableAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.functional.AbstractAltFuture;
 import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
 
@@ -89,7 +87,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * {@link com.futurice.cascade.i.IThreadType} implementation to perform an {@link IBaseAction}
      *
      * @param threadType the thread pool to run this command on
-     * @param action    a function that receives one input and no return from
+     * @param action     a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public RunnableAltFuture(
@@ -116,7 +114,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * Constructor
      *
      * @param threadType the thread pool to run this command on
-     * @param action    a function that receives one input and no return from
+     * @param action     a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
     public RunnableAltFuture(
