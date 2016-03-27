@@ -4,7 +4,8 @@ apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 23
     buildToolsVersion '24.0.0 rc2'
-    publishNonDefault true  // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
+    publishNonDefault true
+    // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
         minSdkVersion 15
@@ -41,7 +42,6 @@ android {
     dexOptions {
         incremental false
     }
-//    preBuild.dependsOn('clean') // Allow normal 'run' to force clean of just the modified modules to keep retrolambda happy
 }
 
 // Lint configuration
