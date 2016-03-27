@@ -23,46 +23,36 @@ notifications:
 
 env:
   global:
-    - INSTALL_PKGS='build-tools-23.0.1,android-23'
-    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
+#    - INSTALL_PKGS='build-tools-23.0.2,android-23'
+#    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
     - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
     - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
-    - AVD_DEBUG='init,avd_config,nand_limits,keys,adb,adbserver,adbclient'
-    - ANDROID_LOG_TAGS='NetworkStats:S dalvikvm:S Zygote:S Resources:S *:D'
-    - ANDROID_SERIAL='emulator-5554'
-
-matrix:
-  include:
-    - env: AVD_TARGET=android-15
-    - env: AVD_TARGET=android-17
-    - env: AVD_TARGET=android-19
-    - env: AVD_TARGET=android-21
-    - env: AVD_TARGET=android-23
-           TARGET_PKGS=sys-img-armeabi-v7a-android-23
-#    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
-#           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
-  allow_failures:
-    - env: AVD_TARGET=android-23
-           TARGET_PKGS=sys-img-armeabi-v7a-android-23
-#    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
-#           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
-  fast_finish: true
+#    - AVD_DEBUG='init,avd_config,nand_limits,keys,adb,adbserver,adbclient'
+#    - ANDROID_LOG_TAGS='NetworkStats:S dalvikvm:S Zygote:S Resources:S *:D'
+  matrix:
+    - AVD_TARGET=android-15
+    - AVD_TARGET=android-17
+    - AVD_TARGET=android-19
+    - AVD_TARGET=android-21
+    - AVD_TARGET=android-23 TARGET_PKGS=sys-img-armeabi-v7a-android-23
 
 before_install:
   - cd ./ReactiveCascade
-  - chmod +x execute
-  - chmod +x scripts/acib
-  - ./execute install-and-update-sdk
-  - ./execute create-and-start-device wait-for-device-online &
 
 install:
-  - chmod +x gradlew
+  - ./execute install-and-update-sdk # install and update the SDK based on env vars or Acib defaults
+  - ./execute create-and-start-device # create and start a device based on env vars or Acib defaults
+  - ./execute wait-for-device-online # start adbd, wait for device connected and show android serial
   - ./gradlew --version # show version and download Gradle Wrapper when is not present in cache
   - ./gradlew clean # clean project and download Android dependencies when are not present in cache
   - ./gradlew assemble --stacktrace
+  - ./gradlew test
 
 before_script:
   - ./execute wait-for-device-ready
 
 script:
   - ./gradlew connectedCheck
+
+after_script:
+  - ./execute show-android-test-results
