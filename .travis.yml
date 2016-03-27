@@ -61,7 +61,8 @@ before_script:
 
 script:
 #   - mvn install -Pintegration-tests -Dandroid.device=test
-   - ./gradlew connectedCheck -x library:signArchives -PdisablePreDex 
+   - ./gradlew connectedCheck  
+   # -x library:signArchives -PdisablePreDex 
 
 #env:
 #  global:
