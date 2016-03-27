@@ -65,8 +65,8 @@ before_script:
   - adb shell input keyevent 82 &
 
 script:
-#   - mvn install -Pintegration-tests -Dandroid.device=test
-   - ./gradlew connectedCheck -x library:signArchives -PdisablePreDex 
+   - mvn install -Pintegration-tests -Dandroid.device=test
+#   - ./gradlew connectedCheck -x library:signArchives -PdisablePreDex 
 
 #env:
 #  global:
