@@ -1,10 +1,10 @@
 jdk: oraclejdk8
 
 # Update to the lastest JDK8
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+#addons:
+#  apt:
+#    packages:
+#      - oracle-java8-installer
 
 language: android
 
@@ -48,9 +48,9 @@ android:
 #    - ${TRAVIS_BUILD_DIR}/gradle/caches/
 #    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
-notifications:
-  email:
-    -  paulirotta@gmail.com 
+#notifications:
+#  email:
+#    -  paulirotta@gmail.com 
 
 #before_install:
   - cd ./ReactiveCascade
