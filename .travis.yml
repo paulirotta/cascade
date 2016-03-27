@@ -48,11 +48,11 @@ android:
 #    - ${TRAVIS_BUILD_DIR}/gradle/caches/
 #    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 
-#notifications:
-#  email:
-#    -  paulirotta@gmail.com 
+notifications:
+  email:
+    -  paulirotta@gmail.com 
 
-#before_install:
+before_install:
   - cd ./ReactiveCascade
 
 before_script:
