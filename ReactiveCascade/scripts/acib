@@ -29,7 +29,7 @@ function install-and-update-sdk {
         ${UPDATE_PKGS:-'platform-tools,tools,extra-android-m2repository,extra-google-m2repository'}
     # Install or reinstall SDK packages (if empty, all packages are installed).
     ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | android update sdk -a -u -t \
-        ${INSTALL_PKGS:-'build-tools-23.0.2,android-23'},${TARGET_PKGS:-}
+        ${INSTALL_PKGS:-'build-tools-23.0.3,android-23'},${TARGET_PKGS:-}
 }
 
 # Read pre-dexing option from targets

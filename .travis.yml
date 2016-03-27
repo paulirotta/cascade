@@ -23,7 +23,7 @@ notifications:
 
 env:
   global:
-#    - INSTALL_PKGS='build-tools-23.0.2,android-23'
+#    - INSTALL_PKGS='build-tools-23.0.3,android-23'
 #    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
     - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
     - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
