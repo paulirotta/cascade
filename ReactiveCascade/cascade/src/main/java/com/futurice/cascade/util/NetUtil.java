@@ -19,23 +19,22 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
 import android.telephony.TelephonyManager;
 
-import com.futurice.cascade.functional.CompoundAltFuture;
 import com.futurice.cascade.functional.RunnableAltFuture;
 import com.futurice.cascade.functional.SettableAltFuture;
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IAsyncOrigin;
 import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.ISettableAltFuture;
 import com.futurice.cascade.i.IThreadType;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.framed.Header;
 
 import java.io.IOException;
 import java.util.Collection;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.internal.framed.Header;
 
 import static android.telephony.TelephonyManager.NETWORK_TYPE_1xRTT;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_CDMA;
@@ -102,7 +101,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> getAsync(@NonNull final T url) {
         return new RunnableAltFuture<>(mNetReadThreadType, () -> {
-                return get(url, null);
+            return get(url, null);
         });
     }
 

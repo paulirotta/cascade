@@ -11,26 +11,76 @@ function create-and-start-device {
     # Create device
     echo n | android create avd -f \
         -n "${AVD_NAME:-test}" \
-        -t "${AVD_TARGET:-android-21}" \
+        -t "${AVD_TARGET:-android-23}" \
         -b "${AVD_ABI:-armeabi-v7a}" \
         -g "${AVD_TAG:-default}"
     # Start device
     emulator -avd "${AVD_NAME:-test}" \
-        -no-skin \
         -no-audio \
         -no-window \
-        -no-boot-anim \
-        -debug "${AVD_DEBUG:-avd_config}" &
+        -debug "${AVD_DEBUG:-init}" &
 }
+#        -no-boot-anim \    # wait-for-device-ready depends on bootanim. If disabled, add sleep time
 
 # Install and update SDK
 function install-and-update-sdk {
     # Keep SDK packages up-to-date (only missing suggested updates are installed).
-    echo y | android update sdk -u -t \
+    ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | android update sdk -u -t \
         ${UPDATE_PKGS:-'platform-tools,tools,extra-android-m2repository,extra-google-m2repository'}
     # Install or reinstall SDK packages (if empty, all packages are installed).
-    echo y | android update sdk -a -u -t \
-        ${INSTALL_PKGS:-'build-tools-23.0.1,android-23'},${TARGET_PKGS:-}
+    ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | android update sdk -a -u -t \
+        ${INSTALL_PKGS:-'build-tools-23.0.3,android-23'},${TARGET_PKGS:-}
+}
+
+# Read pre-dexing option from targets
+function read-pre-dexing-option {
+    if [[ "${ARGS:-}" == *-PdisablePreDex* ]]; then export PREDEX_OPT="-PdisablePreDex"; fi;
+}
+
+# Set permission android.permission.SET_ANIMATION_SCALE for each device.
+function set-animation-permissions {
+    adb=$ANDROID_HOME/platform-tools/adb # Source https://github.com/zielmicha/adb-wrapper
+    package=$1 # Source https://gist.github.com/danielgomezrico/9371a79a7222a156ddad
+    if [ -z "$1" ] ; then # if zero args, show usage.
+        print-format red "No parameter found, run with execute set-animation-permissions <package>"
+        print-format cyan "Usage: `basename ${0}` set-animation-permissions <package>"
+    fi
+    # set permissions to all devices for apk package.
+    devices=$($adb devices | grep -v 'List of devices' | cut -f1 | grep '.')
+    for device in $devices; do
+        echo "Setting permissions to device" $device "for package" $package
+        $adb -s $device shell pm grant $package android.permission.SET_ANIMATION_SCALE
+    done
+}
+
+# Show debug unit test results
+function show-debug-unit-test-results {
+    echo
+    print-format cyan "Unit Tests:"
+    echo
+    cat ${TRAVIS_BUILD_DIR}/*/*/build/test-results/debug/*
+    print-format reset
+    echo
+}
+
+# Show release unit test results
+function show-release-unit-test-results {
+    echo
+    print-format cyan "Unit Tests:"
+    echo
+    cat ${TRAVIS_BUILD_DIR}/*/*/build/test-results/release/*
+    print-format reset
+    echo
+}
+
+# Show instrumentation test results
+function show-android-test-results {
+    echo
+    print-format cyan "Android Tests:"
+    echo
+    cat ${TRAVIS_BUILD_DIR}/*/*/build/outputs/androidTest-results/connected/*
+    print-format reset
+    echo
 }
 
 # Wait for device online
@@ -43,21 +93,28 @@ function wait-for-device-ready {
     local bootanim=""
     local failcounter=0
     until [[ "$bootanim" =~ "stopped" ]]; do
-       bootanim=`adb hell getprop init.svc.bootanim 2>&1`
-       echo "$bootanim"
-       if [[ "$bootanim" =~ "not found" ]]; then
-          let "failcounter += 1"
-          if [[ ${failcounter} -gt 30 ]]; then
-            echo "Failed to start emulator"
-            exit 1
-          fi
-       fi
-       sleep 1
+        bootanim=`adb hell getprop init.svc.bootanim 2>&1`
+        echo "$bootanim"
+        if [[ "$bootanim" =~ "not found" ]]; then
+            let "failcounter += 1"
+            if [[ ${failcounter} -gt 30 ]]; then
+                echo "Failed to start emulator"
+                exit 1
+            fi
+        fi
+        sleep 1
     done
-    sleep 30
+    sleep 10
     adb shell input keyevent 82 &
-    sleep 150
-    echo "Done"
+#    local sleepfactor=18
+#    local sleeptime=10
+#    print-format cyan "Waiting for device ready: "
+#    for ((i=0;i<$sleepfactor;i++));
+#    do
+#        print-format b_red yellow "sleeping... $(($sleepfactor - $i))0 seconds left..."
+#        sleep $sleeptime
+#    done
+    print-format reset green "Ready!!!"
 }
 
 # Get foreground color
@@ -248,6 +305,11 @@ function print-myhelp {
     print-mytext "Actions:"
     print-mytext "\tcreate-and-start-device : Create and start device."
     print-mytext "\tinstall-and-update-sdk : Install and update SDK."
+    print-mytext "\tread-pre-dexing-option : Read pre-dexing option from targets."
+    print-mytext "\tset-animation-permissions : Set animation permissions for all devices."
+    print-mytext "\tshow-debug-unit-test-results : Show debug unit test results."
+    print-mytext "\tshow-release-unit-test-results : Show release unit test results."
+    print-mytext "\tshow-android-test-results : Show android test results."
     print-mytext "\twait-for-device-online : Wait for device online."
     print-mytext "\twait-for-device-ready : Wait for device ready."
     print-mytext "\tprint-mypath : Print and return the full directory name of this script."
@@ -263,9 +325,13 @@ function print-mymenu {
     while [ -n "$1" ] ; do
         print-format yellow "Executing task [ ${1} ]:"
         case "$1" in
-            "export-environment-variables") export-environment-variables;;
             "create-and-start-device") create-and-start-device;;
             "install-and-update-sdk") install-and-update-sdk;;
+            "read-pre-dexing-option") read-pre-dexing-option;;
+            "set-animation-permissions") set-animation-permissions;;
+            "show-debug-unit-test-results") show-debug-unit-test-results;;
+            "show-release-unit-test-results") show-release-unit-test-results;;
+            "show-android-test-results") show-android-test-results;;
             "wait-for-device-online") wait-for-device-online;;
             "wait-for-device-ready") wait-for-device-ready;;
             "print-format") shift; print-format "$@"; break;;
