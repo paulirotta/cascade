@@ -26,7 +26,7 @@ env:
 #    - INSTALL_PKGS='build-tools-23.0.3,android-23'
 #    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
     - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
-    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
+    - ADB_INSTALL_TIMEOUT=14 # minutes (2 minutes by default)
 #    - AVD_DEBUG='init,avd_config,nand_limits,keys,adb,adbserver,adbclient'
 #    - ANDROID_LOG_TAGS='NetworkStats:S dalvikvm:S Zygote:S Resources:S *:D'
   matrix:
