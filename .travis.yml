@@ -16,13 +16,13 @@ android:
 
 sudo: false
 
-notifications:
-  email: paulirotta@gmail.com
+#notifications:
+#  email: paulirotta@gmail.com
 
 # cache between builds
-cache:
-  directories:
-  - $HOME/.m2
+#cache:
+#  directories:
+#  - $HOME/.m2
 
 before_install:
   - cd ./ReactiveCascade
@@ -35,7 +35,7 @@ install:
   - ./execute create-and-start-device wait-for-device-online
 
 script:
-  - ./gradlew assemble
+  - ./gradlew build
 
 
 #env:
