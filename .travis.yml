@@ -26,18 +26,16 @@ cache:
 
 before_install:
   - cd ./ReactiveCascade
-#  - chmod +x execute
-#  - chmod +x scripts/acib
-#  - chmod +x gradlew
-#  - ./execute install-and-update-sdk
-#  - ./execute create-and-start-device wait-for-device-online &
+  - chmod +x execute
+  - chmod +x scripts/acib
+  - chmod +x gradlew
 
 install:
-
+  - ./execute install-and-update-sdk
+  - ./execute create-and-start-device wait-for-device-online &
 
 script:
   - ./gradlew assemble
-
 
 
 #env:
