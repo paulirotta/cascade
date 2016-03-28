@@ -47,6 +47,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Ignore //TODO Check this test
     @Test
+    @Ignore
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         assertThat(getNetUtil().get(value).body().bytes().length).isGreaterThan(20);
@@ -54,6 +55,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @Ignore //TODO Check this test
     @Test
+    @Ignore
     public void testGetFromIGettableWithHeaders() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
@@ -81,7 +83,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
         assertThat(awaitDone(
-                        getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string()
+                getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string()
         ).contains("ValueZ");
     }
 

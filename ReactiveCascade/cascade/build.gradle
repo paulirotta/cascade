@@ -3,7 +3,11 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
+<<<<<<< HEAD
     buildToolsVersion '24.0.0 rc2'
+=======
+    buildToolsVersion '23.0.3'
+>>>>>>> second-travis
     publishNonDefault true
     // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
@@ -57,10 +61,13 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.2.1"
     compile "com.android.support:support-annotations:23.2.1"
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+<<<<<<< HEAD
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:2.3.0'
 
+=======
+>>>>>>> second-travis
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'org.assertj:assertj-core:2.3.0'
 }

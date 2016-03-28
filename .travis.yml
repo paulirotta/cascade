@@ -8,69 +8,48 @@ jdk: oraclejdk8
 
 language: android
 
-env:
-  global:
-    - ANDROID_API_LEVEL=23
-    - EMULATOR_API_LEVEL=21
-    - ANDROID_BUILD_TOOLS_VERSION=23.0.0
-    - ANDROID_ABI=google_apis/armeabi-v7a
-    - ADB_INSTALL_TIMEOUT=20 # minutes (2 minutes by default)
+jdk:
+  - oraclejdk8
+
+# Update to the lastest JDK8
+#addons:
+#  apt:
+#    packages:
+#      - oracle-java8-installer
 
 android:
   components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
-    - platform-tools-preview
-    - tools-preview
+    - android-23
+    - build-tools-23.0.3
 
-    # The BuildTools version used by your project
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+sudo: false
 
-    # The SDK version used to compile your project
-    - android-$ANDROID_API_LEVEL
+#notifications:
+#  email: paulirotta@gmail.com
 
-    # Additional components
-    #- extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - extra-android-support
-    - addon-google_apis-google-$ANDROID_API_LEVEL
-    - addon-google_apis-google-$EMULATOR_API_LEVEL
-    - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
-
-#sudo: false
-
-#before_cache:
-#  - rm -f ${TRAVIS_BUILD_DIR}/gradle/caches/modules-2/modules-2.lock
+# cache between builds
 #cache:
 #  directories:
-#    - ${TRAVIS_BUILD_DIR}/gradle/caches/
-#    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
-
-notifications:
-  email:
-    -  paulirotta@gmail.com 
+#  - $HOME/.m2
 
 before_install:
   - cd ./ReactiveCascade
+  - chmod +x execute
+  - chmod +x scripts/acib
   - chmod +x gradlew
-#  - chmod +x scripts/acib
 
-before_script:
-  # Create and start emulator
-  - echo no | android create avd --force -n test  -t "Google Inc.:Google APIs:"$EMULATOR_API_LEVEL --abi $ANDROID_ABI
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+install:
+  - ./execute install-and-update-sdk
+  - ./execute create-and-start-device wait-for-device-online
 
 script:
+#  - ./gradlew build
    - mvn install -Pintegration-tests -Dandroid.device=test
-#   - ./gradlew connectedCheck -x library:signArchives -PdisablePreDex 
+
 
 #env:
 #  global:
-#    - INSTALL_PKGS='build-tools-23.0.1,android-23'
+#    - INSTALL_PKGS='build-tools-23.0.3,android-23'
 #    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
 #    - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
 #    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
@@ -88,9 +67,6 @@ script:
 #           TARGET_PKGS=sys-img-armeabi-v7a-android-23
 #    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
 #           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
-#  allow_failures:
-#    - env: AVD_TARGET=android-23
-#           TARGET_PKGS=sys-img-armeabi-v7a-android-23
 #    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
 #           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
 #  fast_finish: true

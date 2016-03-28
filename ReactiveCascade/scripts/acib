@@ -30,7 +30,7 @@ function install-and-update-sdk {
         ${UPDATE_PKGS:-'platform-tools,tools,extra-android-m2repository,extra-google-m2repository'}
     # Install or reinstall SDK packages (if empty, all packages are installed).
     echo y | android update sdk -a -u -t \
-        ${INSTALL_PKGS:-'build-tools-23.0.1,android-23'},${TARGET_PKGS:-}
+        ${INSTALL_PKGS:-'build-tools-23.0.3,android-23'},${TARGET_PKGS:-}
 }
 
 # Wait for device online
