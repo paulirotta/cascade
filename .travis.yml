@@ -4,10 +4,10 @@ jdk:
   - oraclejdk8
 
 # Update to the lastest JDK8
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+#addons:
+#  apt:
+#    packages:
+#      - oracle-java8-installer
 
 android:
   components:
@@ -35,12 +35,12 @@ install:
   - ./execute create-and-start-device wait-for-device-online
 
 script:
-  - ./gradlew assemble
+  - ./gradlew connectedCheck
 
 
 #env:
 #  global:
-#    - INSTALL_PKGS='build-tools-23.0.1,android-23'
+#    - INSTALL_PKGS='build-tools-23.0.3,android-23'
 #    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
 #    - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
 #    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
