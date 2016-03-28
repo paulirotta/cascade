@@ -24,15 +24,15 @@ cache:
   directories:
   - $HOME/.m2
 
-#before_install:
-#  - cd ./ReactiveCascade
+before_install:
+  - cd ./ReactiveCascade
 #  - chmod +x execute
 #  - chmod +x scripts/acib
 #  - chmod +x gradlew
 #  - ./execute install-and-update-sdk
 #  - ./execute create-and-start-device wait-for-device-online &
 
-#install:
+install:
 
 
 script:
