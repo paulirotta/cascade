@@ -35,7 +35,7 @@ install:
   - ./execute create-and-start-device wait-for-device-online
 
 script:
-  - ./gradlew build connectedCheck
+  - ./gradlew assemble
 
 
 #env:
