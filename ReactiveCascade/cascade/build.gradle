@@ -2,15 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
-    // buildToolsVersion '24.0.0 rc2'
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 'android-N'
+    buildToolsVersion '24 rc2'
+    //buildToolsVersion '23.0.3'
     publishNonDefault true
     // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion "N"
+        targetSdkVersion 'N'
         versionCode 1
         versionName "0.3.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
