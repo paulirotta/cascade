@@ -8,33 +8,22 @@ addons:
 
 language: android
 
-jdk:
-  - oraclejdk8
-
 android:
   components:
     - tools
     - platform-tools
     - build-tools-23.0.3
     - android-23
-#    - android-N
     - add-on
     - extra
 
 sudo: false
 
-#notifications:
-#  email: paulirotta@gmail.com
-
-# cache between builds
-#cache:
-#  directories:
-#  - $HOME/.m2
+notifications:
+  email: paulirotta@gmail.com
 
 before_install:
   - cd ./ReactiveCascade
-#  - chmod +x execute
-#  - chmod +x scripts/acib
   - chmod +x gradlew
 
 # Emulator Management: Create, Start and Wait
@@ -44,13 +33,8 @@ before_script:
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
-#install:
-#  - ./execute install-and-update-sdk
-#  - ./execute create-and-start-device wait-for-device-online
-
 script:
   - ./gradlew build connectedCheck
-#   - mvn install -Pintegration-tests -Dandroid.device=test
 
 
 #env:
