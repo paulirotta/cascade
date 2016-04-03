@@ -45,7 +45,7 @@ install:
   - ./execute create-and-start-device wait-for-device-online
 
 script:
-  - ./gradlew build connectedCheck
+  - ./gradlew build
 #   - mvn install -Pintegration-tests -Dandroid.device=test
 
 
