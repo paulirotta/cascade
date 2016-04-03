@@ -19,8 +19,10 @@ jdk:
 
 android:
   components:
-    - android-23
+    - tools
+    - platform-tools
     - build-tools-23.0.3
+    - android-23
 
 sudo: false
 
@@ -43,8 +45,8 @@ install:
   - ./execute create-and-start-device wait-for-device-online
 
 script:
-#  - ./gradlew build
-   - mvn install -Pintegration-tests -Dandroid.device=test
+  - ./gradlew build connectedCheck
+#   - mvn install -Pintegration-tests -Dandroid.device=test
 
 
 #env:
