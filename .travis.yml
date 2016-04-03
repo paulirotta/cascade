@@ -1,21 +1,15 @@
 jdk: oraclejdk8
 
 # Update to the lastest JDK8
-#addons:
-#  apt:
-#    packages:
-#      - oracle-java8-installer
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 
 language: android
 
 jdk:
   - oraclejdk8
-
-# Update to the lastest JDK8
-#addons:
-#  apt:
-#    packages:
-#      - oracle-java8-installer
 
 android:
   components:
