@@ -10,9 +10,9 @@ language: android
 
 android:
   components:
-    - tools
-    - platform-tools
-    - build-tools-23.0.3
+    - tools-preview
+    - platform-tools-preview
+    - "build-tools-24 rc2"
     - android-23
     - add-on
     - extra
