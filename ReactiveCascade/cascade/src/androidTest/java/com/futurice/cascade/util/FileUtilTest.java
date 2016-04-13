@@ -8,7 +8,6 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.futurice.cascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -21,12 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
-@LargeTest
 public class FileUtilTest extends AsyncAndroidTestCase {
     private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
     private static final String TEST_CODE = "TESTcode";
 
-    ;
     final AsyncMockContext mockContext = new AsyncMockContext();
     private FileUtil mockFileUtil;
 
@@ -42,14 +39,14 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         mockFileUtil = new FileUtil(mockContext, Context.MODE_PRIVATE);
     }
 
-    @Test
+    @LargeTest
     public void testMockWriteShouldAccessFileSystemOnce() {
         mockFileUtil.write("someFile", "something to write".getBytes());
         assertThat(mockContext.fileOpens).isEqualTo(1);
         assertThat(mockContext.fileWrites).isEqualTo(1);
     }
 
-    @Test
+    @LargeTest
     public void testMockReadFileShouldAccessFileSystemOnce() {
         mockFileUtil.read("someFile");
         assertThat(mockContext.fileOpens).isEqualTo(1);
@@ -57,21 +54,21 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         assertThat(mockContext.fileReads).isEqualTo(2);
     }
 
-    @Test
+    @LargeTest
     public void testMockDeleteOfNonexistantFile() {
         boolean response = mockFileUtil.delete("nonFile");
         assertThat(response).isFalse();
         assertThat(mockContext.fileDeletes).isEqualTo(0);
     }
 
-    @Test
+    @LargeTest
     public void testMockDeleteOfFile() {
         boolean response = mockFileUtil.delete("someFile");
         assertThat(response).isTrue();
         assertThat(mockContext.fileDeletes).isEqualTo(1);
     }
 
-    @Test
+    @LargeTest
     public void testActualWriteReadDelete() {
         getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
         byte[] bytes = getFileUtil().read(TEST_FILE_NAME);

@@ -10,7 +10,6 @@ import com.futurice.cascade.AsyncAndroidTestCase;
 import com.futurice.cascade.functional.SettableAltFuture;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -22,7 +21,6 @@ import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.WORKER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@MediumTest
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     final Object looperFlushMutex = new Object();
 
@@ -85,17 +83,17 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         }
     }
 
-    @Test
+    @MediumTest
     public void testUIIsShutdown() throws Exception {
         assertFalse(UI.isShutdown());
     }
 
-    @Test
+    @MediumTest
     public void testIsTerminated() throws Exception {
         assertFalse(uiExecutorService.isTerminated());
     }
 
-    @Test
+    @MediumTest
     public void testSubmitCallable() throws Exception {
         uiExecutorService.submit(new Callable<Object>() {
             @Override
@@ -107,7 +105,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(sendCount).isEqualTo(2);
     }
 
-    @Test
+    @MediumTest
     public void testSubmitRunnable() throws Exception {
         uiExecutorService.submit(new Runnable() {
                                      @Override
@@ -120,7 +118,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(sendCount).isEqualTo(2);
     }
 
-    @Test
+    @MediumTest
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -144,7 +142,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(ai.get()).isEqualTo(300);
     }
 
-    @Test
+    @MediumTest
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -168,7 +166,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(ai.get()).isEqualTo(300);
     }
 
-    @Test
+    @MediumTest
     public void testInvokeAnyCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -192,7 +190,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(ai.get()).isGreaterThan(0);
     }
 
-    @Test
+    @MediumTest
     public void testInvokeAnyCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -216,7 +214,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertThat(ai.get()).isGreaterThan(0);
     }
 
-    @Test
+    @MediumTest
     public void testExecute() throws Exception {
         final AtomicInteger ai = new AtomicInteger(0);
         WORKER.execute(() -> {

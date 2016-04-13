@@ -24,6 +24,7 @@ import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
  * <p>
  * Created by phou on 6/2/2015.
  */
+@Deprecated
 public class TestUtil {
     public TestUtil() {
     }

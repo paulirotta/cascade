@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
  * <p>
  * Created by Paul Houghton on 23-03-2015.
  */
+@Deprecated
 public class AltWeakReference<T> extends WeakReference<T> {
 
     /**

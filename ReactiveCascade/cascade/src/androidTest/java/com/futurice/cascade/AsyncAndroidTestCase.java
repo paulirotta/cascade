@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.futurice.cascade.i.IAltFuture;
@@ -24,25 +23,30 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * A connectedTest harness which bootstraps the Async class
  * <p>
  * Created by phou on 6/1/2015.
  */
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
-    protected final Context mContext;
     private TestUtil mTestUtil;
-    private FileUtil mFileUtil;
-    private NetUtil mNetUtil;
-    private long mDefaultTimeoutMillis = 5000;
+    private FileUtil fileUtil;
+    private NetUtil netUtil;
+
+    @Deprecated
+    private long defaultTimeoutMillis = 5000;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
 
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-        mContext = InstrumentationRegistry.getContext();
+    }
+
+    public Context getContext() {
+        return InstrumentationRegistry.getContext();
     }
 
     /**
@@ -58,13 +62,11 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
         super.setUp();
 
         if (!AsyncBuilder.isInitialized()) {
-            new AsyncBuilder(mContext)
+            new AsyncBuilder(getContext())
                     .setStrictMode(false)
                     .setShowErrorStackTraces(false)
                     .build();
         }
-
-//        mOrigin = originAsync();
     }
 
     @Test
@@ -73,7 +75,7 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     public final long getDefaultTimeoutMillis() {
-        return this.mDefaultTimeoutMillis;
+        return this.defaultTimeoutMillis;
     }
 
     /**
@@ -81,8 +83,9 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param defaultTimeoutMillis interval before the test is abandoned with a {@link java.util.concurrent.TimeoutException}
      */
-    public final void setDefaultTimeoutMillis(final long defaultTimeoutMillis) {
-        this.mDefaultTimeoutMillis = defaultTimeoutMillis;
+    @Deprecated
+    public final void setDefaultTimeoutMillis(long defaultTimeoutMillis) {
+        this.defaultTimeoutMillis = defaultTimeoutMillis;
     }
 
     /**
@@ -105,16 +108,16 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param testUtil the test util implementation
      */
-    public final void setTestUtil(@NonNull final TestUtil testUtil) {
+    public final void setTestUtil(@NonNull TestUtil testUtil) {
         this.mTestUtil = testUtil;
     }
 
     @NonNull
     public final FileUtil getFileUtil() {
-        if (mFileUtil == null) {
-            setFileUtil(new FileUtil(mContext, Context.MODE_PRIVATE));
+        if (fileUtil == null) {
+            setFileUtil(new FileUtil(getContext(), Context.MODE_PRIVATE));
         }
-        return mFileUtil;
+        return fileUtil;
     }
 
     /**
@@ -124,16 +127,16 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param fileUtil the file util implementation
      */
-    public final void setFileUtil(@NonNull final FileUtil fileUtil) {
-        this.mFileUtil = fileUtil;
+    public final void setFileUtil(@NonNull FileUtil fileUtil) {
+        this.fileUtil = fileUtil;
     }
 
     @NonNull
     public final NetUtil getNetUtil() {
-        if (mNetUtil == null) {
-            setNetUtil(new NetUtil(mContext));
+        if (netUtil == null) {
+            setNetUtil(new NetUtil(getContext()));
         }
-        return mNetUtil;
+        return netUtil;
     }
 
     /**
@@ -143,8 +146,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param netUtil the network utilities implementation
      */
-    public final void setNetUtil(@NonNull final NetUtil netUtil) {
-        this.mNetUtil = netUtil;
+    public final void setNetUtil(@NonNull NetUtil netUtil) {
+        this.netUtil = netUtil;
     }
 
     /**
@@ -161,10 +164,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture)
-            throws Exception {
-        return awaitDoneNoErrorStackTraces(altFuture, mDefaultTimeoutMillis);
+    protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(@NonNull IAltFuture<IN, OUT> altFuture) throws Exception {
+        return awaitDoneNoErrorStackTraces(altFuture, defaultTimeoutMillis);
     }
 
     /**
@@ -179,10 +180,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
-            final long timeoutMillis)
-            throws Exception {
+    protected final <IN, OUT> OUT awaitDoneNoErrorStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
+                                                              long timeoutMillis) throws Exception {
         return getTestUtil().awaitDoneNoErrorStackTraces(altFuture, timeoutMillis);
     }
 
@@ -200,10 +199,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      */
 
     @NonNull
-    protected final <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture)
-            throws Exception {
-        return awaitDone(altFuture, mDefaultTimeoutMillis);
+    protected final <IN, OUT> OUT awaitDone(@NonNull IAltFuture<IN, OUT> altFuture) throws Exception {
+        return awaitDone(altFuture, defaultTimeoutMillis);
     }
 
     /**
@@ -217,10 +214,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      * @throws Exception
      */
     @NonNull
-    protected final <IN, OUT> OUT awaitDone(
-            @NonNull final IAltFuture<IN, OUT> altFuture,
-            final long timeoutMillis)
-            throws Exception {
+    protected final <IN, OUT> OUT awaitDone(@NonNull IAltFuture<IN, OUT> altFuture,
+                                            long timeoutMillis) throws Exception {
         return getTestUtil().awaitDone(altFuture, timeoutMillis);
     }
 }
