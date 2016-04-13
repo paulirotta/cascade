@@ -32,7 +32,6 @@ import static com.futurice.cascade.Async.currentThreadType;
  *
  * @param <OUT>
  */
-@Deprecated
 public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGettable<OUT> {
     private static final long DEFAULT_GET_TIMEOUT = 5000;
     private static final long CHECK_INTERVAL = 50; // This is a fallback in case you for example have an error and fail to altFuture.notifyAll() when finished

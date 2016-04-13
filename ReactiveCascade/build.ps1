@@ -17,7 +17,7 @@ if ($test) {
 }
 
 if ($lint) {
-	ii ./cascade/build/outputs/lint-results.html
+	ii ./cascade/build/outputs/lint-results-debug.html
 }
 
 if ($test) {
