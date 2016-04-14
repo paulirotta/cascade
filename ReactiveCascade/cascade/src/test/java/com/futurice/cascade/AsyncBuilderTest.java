@@ -1,14 +1,24 @@
 package com.futurice.cascade;
 
+import android.content.Context;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import mockit.Mocked;
+
+import static junit.framework.TestCase.assertTrue;
+
 public class AsyncBuilderTest {
+    @Mocked
+    Context context;
+
+    private AsyncBuilder asyncBuilder;
 
     @Before
     public void setUp() throws Exception {
-
+        asyncBuilder = new AsyncBuilder(context);
     }
 
     @After
@@ -18,7 +28,11 @@ public class AsyncBuilderTest {
 
     @Test
     public void testIsInitialized() throws Exception {
-
+        asyncBuilder
+                .setStrictMode(false)
+                .setUI_Thread(Thread.currentThread())
+                .build();
+        assertTrue(AsyncBuilder.isInitialized());
     }
 
     @Test
