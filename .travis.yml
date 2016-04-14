@@ -14,7 +14,6 @@ android:
     - platform-tools
     - build-tools-23.0.3
     - android-23
-    - sys-img-armeabi-v7a-android-21
     - add-on
     - extra
 
@@ -29,7 +28,7 @@ before_install:
 
 # Emulator Management: Create, Start and Wait
 before_script:
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
