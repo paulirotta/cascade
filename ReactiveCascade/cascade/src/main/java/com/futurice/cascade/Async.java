@@ -7,6 +7,7 @@ package com.futurice.cascade;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.futurice.cascade.i.IAction;
@@ -319,7 +320,8 @@ public final class Async {
         }
     };
 
-    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.instance; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
+    @Nullable
+    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.getInstance(); // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
     public static final boolean USE_FORKED_STATE = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isUseForkedState();
     //    public static final boolean VISUALIZE = false;
     public static final boolean RUNTIME_ASSERTIONS = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isRuntimeAssertionsEnabled();
@@ -386,6 +388,7 @@ public final class Async {
         }
     }
 
+    @UiThread
     Async() {
     }
 

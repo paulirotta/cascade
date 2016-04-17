@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import mockit.Mocked;
@@ -27,7 +28,7 @@ public class AsyncBuilderTest {
 
     @After
     public void tearDown() throws Exception {
-        AsyncBuilder.instance = null;
+        AsyncBuilder.resetInstance();
     }
 
     @Test
@@ -45,47 +46,67 @@ public class AsyncBuilderTest {
 
     @Test
     public void testSetRuntimeAssertionsEnabled() throws Exception {
-
+        asyncBuilder
+                .setRuntimeAssertionsEnabled(false)
+                .build();
+        assertFalse(asyncBuilder.isRuntimeAssertionsEnabled());
     }
 
     @Test
     public void testIsUseForkedState() throws Exception {
-
+        asyncBuilder.build();
+        assertEquals(BuildConfig.DEBUG, asyncBuilder.isUseForkedState());
     }
 
     @Test
     public void testSetUseForkedState() throws Exception {
-
+        asyncBuilder
+                .setUseForkedState(false)
+                .build();
+        assertFalse(asyncBuilder.isUseForkedState());
     }
 
     @Test
+    @Ignore
     public void testIsStrictMode() throws Exception {
-
+        asyncBuilder.build();
+        assertEquals(BuildConfig.DEBUG, asyncBuilder.isStrictMode());
     }
 
     @Test
     public void testSetStrictMode() throws Exception {
-
+        asyncBuilder
+                .setStrictMode(false)
+                .build();
+        assertFalse(asyncBuilder.isStrictMode());
     }
 
     @Test
     public void testIsFailFast() throws Exception {
-
+        asyncBuilder.build();
+        assertEquals(BuildConfig.DEBUG, asyncBuilder.isFailFast());
     }
 
     @Test
     public void testSetFailFast() throws Exception {
-
+        asyncBuilder
+                .setFailFast(false)
+                .build();
+        assertFalse(asyncBuilder.isFailFast());
     }
 
     @Test
     public void testIsShowErrorStackTraces() throws Exception {
-
+        asyncBuilder.build();
+        assertEquals(BuildConfig.DEBUG, asyncBuilder.isShowErrorStackTraces());
     }
 
     @Test
     public void testSetShowErrorStackTraces() throws Exception {
-
+        asyncBuilder
+                .setShowErrorStackTraces(false)
+                .build();
+        assertFalse(asyncBuilder.isShowErrorStackTraces());
     }
 
     @Test
