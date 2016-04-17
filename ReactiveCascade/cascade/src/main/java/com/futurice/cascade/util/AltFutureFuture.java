@@ -23,7 +23,7 @@ import static com.futurice.cascade.Async.currentThreadType;
  * from an {@link IAltFuture}.
  * <p>
  * Normally we don't like to hold one thread waiting for the result of another thread. Doing this
- * on a routine basis causes lots of mContext switching and can backlog into either many threads
+ * on a routine basis causes lots of context switching and can backlog into either many threads
  * or deadlock because a limited number of threads are all in use.
  * <p>
  * This can be useful for example to externally and synchronously test the results of an

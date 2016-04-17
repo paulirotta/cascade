@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Note clearly there is an upside and downside to this design vs making your own {@link com.futurice.cascade.i.IThreadType}.
  * The upside is performance and lower peak memory usage. We have fewer threads contending for background work so less resources
- * and less and faster mContext switches (mContext switches tend to cost marginally more as thread count
+ * and less and faster context switches (context switches tend to cost marginally more as thread count
  * increases). The downside is delays fom other background tasks unrelated to this may slow the start
  * of execution. A very slow task pulled from the {@link com.futurice.cascade.Async#WORKER}
  * mQueue and perhaps unrelated to the current focus of your attention will, once started, block the

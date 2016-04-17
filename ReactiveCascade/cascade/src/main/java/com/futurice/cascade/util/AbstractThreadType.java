@@ -56,7 +56,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
      *
      * @param executorService the thread or thread pool for this thread type. Threads and thread pools may be
      *                        shared with other thread types, however note that though this this cooperative execution
-     *                        reduces mContext switching and peak memory load it may delay the start of execution
+     *                        reduces context switching and peak memory load it may delay the start of execution
      *                        of tasks in one thread type by tasks in another thread type
      */
     public AbstractThreadType(@NonNull String name,

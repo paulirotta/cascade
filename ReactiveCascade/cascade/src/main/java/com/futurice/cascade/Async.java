@@ -319,7 +319,7 @@ public final class Async {
         }
     };
 
-    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.sAsyncBuilder; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
+    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.instance; // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
     public static final boolean USE_FORKED_STATE = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isUseForkedState();
     //    public static final boolean VISUALIZE = false;
     public static final boolean RUNTIME_ASSERTIONS = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isRuntimeAssertionsEnabled();
@@ -328,7 +328,7 @@ public final class Async {
      */
     public static final boolean TRACE_ASYNC_ORIGIN = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // This makes finding where in you code a given log line was directly or indirectly called, but slows running
     // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services from Async
-    public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.mUiThread; // The main system thread for this Context
+    public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.uiThread; // The main system thread for this Context
     /**
      * The from of {@link AsyncBuilder#isFailFast()} locked in for performance reasons by the <em>first</em> <code>AsyncBuilder</code>
      */

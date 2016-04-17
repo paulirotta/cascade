@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import mockit.Mocked;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 public class AsyncBuilderTest {
@@ -18,26 +20,27 @@ public class AsyncBuilderTest {
 
     @Before
     public void setUp() throws Exception {
-        asyncBuilder = new AsyncBuilder(context);
+        asyncBuilder = new AsyncBuilder(context)
+                .setStrictMode(false)
+                .setUiThread(Thread.currentThread());
     }
 
     @After
     public void tearDown() throws Exception {
-
+        AsyncBuilder.instance = null;
     }
 
     @Test
     public void testIsInitialized() throws Exception {
-        asyncBuilder
-                .setStrictMode(false)
-                .setUI_Thread(Thread.currentThread())
-                .build();
+        assertFalse(AsyncBuilder.isInitialized());
+        asyncBuilder.build();
         assertTrue(AsyncBuilder.isInitialized());
     }
 
     @Test
     public void testIsRuntimeAssertionsEnabled() throws Exception {
-
+        asyncBuilder.build();
+        assertEquals(BuildConfig.DEBUG, asyncBuilder.isRuntimeAssertionsEnabled());
     }
 
     @Test

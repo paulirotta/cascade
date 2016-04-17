@@ -61,7 +61,7 @@ public class RCLog {
     }
 
     /**
-     * Log an error. During debugOrigin builds, this will fail-fast end the current mContext
+     * Log an error. During debugOrigin builds, this will fail-fast end the current context
      * <p>
      * If you do not want fail fast during debugOrigin build, use the normal {@link android.util.Log} routines
      *

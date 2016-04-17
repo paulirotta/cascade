@@ -150,7 +150,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
 
     @Nullable
     @SuppressWarnings("unchecked")
-    // IN->OUT must be bent to match all cases but the mContext makes this safe
+    // IN->OUT must be bent to match all cases but the context makes this safe
     private <IN, OUT> OUT call(
             @NonNull final IN in,
             @NonNull final IBaseAction<IN> action)
