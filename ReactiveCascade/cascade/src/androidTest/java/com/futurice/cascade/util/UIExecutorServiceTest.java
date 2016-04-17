@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.WORKER;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class UIExecutorServiceTest extends AsyncAndroidTestCase {
     final Object looperFlushMutex = new Object();
@@ -102,7 +101,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             }
         });
         flushLooper();
-        assertThat(sendCount).isEqualTo(2);
+        assertEquals(2, sendCount);
     }
 
     @MediumTest
@@ -115,7 +114,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
                                  }
         );
         flushLooper();
-        assertThat(sendCount).isEqualTo(2);
+        assertEquals(2, sendCount);
     }
 
     @MediumTest
@@ -138,8 +137,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         });
         uiExecutorService.invokeAll(callableList);
         awaitDone(saf);
-        assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isEqualTo(300);
+        assertTrue(sendCount > 0);
+        assertEquals(300, ai.get());
     }
 
     @MediumTest
@@ -162,8 +161,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         });
         uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
         awaitDone(saf);
-        assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isEqualTo(300);
+        assertTrue(sendCount > 0);
+        assertEquals(300, ai.get());
     }
 
     @MediumTest
@@ -186,8 +185,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         });
         uiExecutorService.invokeAny(callableList);
         awaitDone(saf);
-        assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isGreaterThan(0);
+        assertTrue(sendCount > 0);
+        assertTrue(ai.get() > 0);
     }
 
     @MediumTest
@@ -210,8 +209,8 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         });
         uiExecutorService.invokeAny(callableList, 1000, TimeUnit.MILLISECONDS);
         awaitDone(saf);
-        assertThat(sendCount).isGreaterThan(0);
-        assertThat(ai.get()).isGreaterThan(0);
+        assertTrue(sendCount > 0);
+        assertTrue(ai.get() > 0);
     }
 
     @MediumTest

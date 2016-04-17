@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 @SmallTest
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
@@ -31,7 +30,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
         SHOW_ERROR_STACK_TRACES = false;
         try {
             settableAltFuture.get();
-            failBecauseExceptionWasNotThrown(IllegalStateException.class);
+            throw new IllegalStateException("IllegalStateException should have been thrown, but was not");
         } catch (IllegalStateException e) {
             assertTrue(e.getMessage().contains("Just because"));
         } finally {

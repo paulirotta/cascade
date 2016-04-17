@@ -15,8 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
@@ -42,41 +40,39 @@ public class FileUtilTest extends AsyncAndroidTestCase {
     @LargeTest
     public void testMockWriteShouldAccessFileSystemOnce() {
         mockFileUtil.write("someFile", "something to write".getBytes());
-        assertThat(mockContext.fileOpens).isEqualTo(1);
-        assertThat(mockContext.fileWrites).isEqualTo(1);
+        assertEquals(1, mockContext.fileOpens);
+        assertEquals(1, mockContext.fileWrites);
     }
 
     @LargeTest
     public void testMockReadFileShouldAccessFileSystemOnce() {
         mockFileUtil.read("someFile");
-        assertThat(mockContext.fileOpens).isEqualTo(1);
-        assertThat(mockContext.fileBufferReads).isEqualTo(3);
-        assertThat(mockContext.fileReads).isEqualTo(2);
+        assertEquals(1, mockContext.fileOpens);
+        assertEquals(3, mockContext.fileBufferReads);
+        assertEquals(2, mockContext.fileReads);
     }
 
     @LargeTest
     public void testMockDeleteOfNonexistantFile() {
         boolean response = mockFileUtil.delete("nonFile");
-        assertThat(response).isFalse();
-        assertThat(mockContext.fileDeletes).isEqualTo(0);
+        assertFalse(response);
+        assertEquals(0, mockContext.fileDeletes);
     }
 
     @LargeTest
     public void testMockDeleteOfFile() {
         boolean response = mockFileUtil.delete("someFile");
-        assertThat(response).isTrue();
-        assertThat(mockContext.fileDeletes).isEqualTo(1);
+        assertTrue(response);
+        assertEquals(1, mockContext.fileDeletes);
     }
 
     @LargeTest
     public void testActualWriteReadDelete() {
         getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
         byte[] bytes = getFileUtil().read(TEST_FILE_NAME);
-        assertThat(new String(bytes)).isEqualTo(TEST_CODE);
-        boolean deleted = getFileUtil().delete(TEST_FILE_NAME);
-        assertThat(deleted).isTrue();
-        boolean reDeleted = getFileUtil().delete(TEST_FILE_NAME);
-        assertThat(reDeleted).isFalse();
+        assertEquals(TEST_CODE, new String(bytes));
+        assertTrue(getFileUtil().delete(TEST_FILE_NAME));
+        assertFalse(getFileUtil().delete(TEST_FILE_NAME));
     }
 
     public class AsyncMockContext extends MockContext {

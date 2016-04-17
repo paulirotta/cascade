@@ -21,7 +21,6 @@ import okhttp3.Response;
 import okhttp3.internal.framed.Header;
 
 import static com.futurice.cascade.Async.WORKER;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class NetUtilTest extends AsyncAndroidTestCase {
     protected CountDownLatch signal; // Only use with @LargeTest
@@ -57,20 +56,20 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     @LargeTest
     public void testGet() throws Exception {
-        assertThat(getNetUtil().get("http://httpbin.org/").body().bytes().length).isGreaterThan(100);
+        assertTrue(getNetUtil().get("http://httpbin.org/").body().bytes().length > 100);
     }
 
     @LargeTest
     public void testGetWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
-        assertThat(getNetUtil().get("http://httpbin.org/headers", headers).body().string()).contains("ValueZ");
+        assertTrue(getNetUtil().get("http://httpbin.org/headers", headers).body().string().contains("ValueZ"));
     }
 
     @LargeTest
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
-        assertThat(getNetUtil().get(value).body().bytes().length).isGreaterThan(20);
+        assertTrue(getNetUtil().get(value).body().bytes().length > 20);
     }
 
     @LargeTest
@@ -78,7 +77,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueG"));
-        assertThat(getNetUtil().get(value, headers).body().string()).contains("ValueG");
+        assertTrue(getNetUtil().get(value, headers).body().string().contains("ValueG"));
     }
 
     @LargeTest
@@ -96,16 +95,14 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
                 .then(getNetUtil().getAsync());
-        assertThat(awaitDone(iaf).isSuccessful()).isTrue();
+        assertTrue(awaitDone(iaf).isSuccessful());
     }
 
     @LargeTest
     public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
-        assertThat(awaitDone(
-                getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string()
-        ).contains("ValueZ");
+        assertTrue(awaitDone(getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string().contains("ValueZ"));
     }
 
     @LargeTest
@@ -115,7 +112,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/headers")
                 .then(getNetUtil().getAsync(headers));
-        assertThat(awaitDone(iaf).body().string()).contains("ValueT");
+        assertTrue(awaitDone(iaf).body().string().contains("ValueT"));
     }
 
     @LargeTest
@@ -127,7 +124,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
                 .then(getNetUtil().getAsync(altFuture));
-        assertThat(awaitDone(iaf).body().string()).contains("VaGG");
+        assertTrue(awaitDone(iaf).body().string().contains("VaGG"));
     }
 
     @LargeTest
@@ -248,13 +245,13 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     @LargeTest
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testGetMaxNumberOfNetConnections() throws Exception {
-        assertThat(getNetUtil().getMaxNumberOfNetConnections()).isGreaterThan(1);
+        assertTrue(getNetUtil().getMaxNumberOfNetConnections() > 1);
     }
 
     @LargeTest
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testIsWifi() throws Exception {
-        assertThat(getNetUtil().isWifi() || true).isTrue();
+        assertTrue(getNetUtil().isWifi() || true);
     }
 
     @LargeTest

@@ -83,7 +83,6 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
      *
      * @param defaultTimeoutMillis interval before the test is abandoned with a {@link java.util.concurrent.TimeoutException}
      */
-    @Deprecated
     public final void setDefaultTimeoutMillis(long defaultTimeoutMillis) {
         this.defaultTimeoutMillis = defaultTimeoutMillis;
     }
