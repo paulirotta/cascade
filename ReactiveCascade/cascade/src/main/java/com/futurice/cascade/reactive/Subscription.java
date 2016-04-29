@@ -17,11 +17,9 @@ import com.futurice.cascade.i.IReactiveSource;
 import com.futurice.cascade.i.IReactiveTarget;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
-import com.futurice.cascade.util.AltWeakReference;
 import com.futurice.cascade.util.Origin;
 import com.futurice.cascade.util.RCLog;
 
-import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -54,7 +52,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NonNull
     protected final IActionOne<Exception> mOnError;
     @NonNull
-    protected final CopyOnWriteArrayList<AltWeakReference<IReactiveTarget<OUT>>> mReactiveTargets = new CopyOnWriteArrayList<>(); // Holding a strong reference is optional, depending on the binding type
+    protected final CopyOnWriteArrayList<IReactiveTarget<OUT>> mReactiveTargets = new CopyOnWriteArrayList<>(); // Holding a strong reference is optional, depending on the binding type
     @NonNull
     protected final IActionOneR<IN, OUT> mOnFireAction;
     @NonNull
@@ -172,19 +170,11 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
      * @throws Exception
      */
     private boolean forEachReactiveTarget(@NonNull IActionOneR<IReactiveTarget<OUT>, Boolean> action) throws Exception {
-        Iterator<AltWeakReference<IReactiveTarget<OUT>>> iterator = mReactiveTargets.iterator();
+        Iterator<IReactiveTarget<OUT>> iterator = mReactiveTargets.iterator();
         boolean result = false;
 
         while (iterator.hasNext()) {
-            final WeakReference<IReactiveTarget<OUT>> weakReference = iterator.next();
-            final IReactiveTarget<OUT> reactiveTarget = weakReference.get();
-
-            if (reactiveTarget != null) {
-                result |= action.call(reactiveTarget);
-            } else {
-                RCLog.v(this, getName() + " A .subscribe(IReactiveTarget) mLatestFireIn the reactive chain is an expired WeakReference- that leaf node of this Binding chain has be garbage collected.");
-                mReactiveTargets.remove(weakReference);
-            }
+            result |= action.call(iterator.next());
         }
 
         return result;
@@ -397,7 +387,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveSource
     @NonNull
     public IReactiveSource<OUT> subscribe(@NonNull IReactiveTarget<OUT> reactiveTarget) {
-        if (mReactiveTargets.addIfAbsent(new AltWeakReference<>(reactiveTarget))) {
+        if (mReactiveTargets.addIfAbsent(reactiveTarget)) {
             reactiveTarget.subscribeSource("Reference to keep reactive chain from being garbage collected", this);
             RCLog.v(this, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
         } else {

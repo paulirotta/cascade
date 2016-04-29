@@ -11,13 +11,13 @@ import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is a marker class to aid in runtime tests.
+ *
+ * TODO Remove completed thread types from this structure
  */
 @NotCallOrigin
 public class TypedThread extends Thread {
@@ -35,13 +35,13 @@ public class TypedThread extends Thread {
      *
      * TODO A better solution would be to track ThreadTypes split Threads without this potential for confusion. To be determined.
      */
-    private final CopyOnWriteArrayList<AltWeakReference<IThreadType>> threadTypes = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<IThreadType> threadTypes = new CopyOnWriteArrayList<>();
 
     public TypedThread(@NonNull IThreadType threadType,
                        @NonNull Runnable runnable) {
         super(THREAD_GROUP, runnable);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
@@ -49,14 +49,14 @@ public class TypedThread extends Thread {
                        @NonNull String threadName) {
         super(THREAD_GROUP, runnable, threadName);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
                        @NonNull String threadName) {
         super(THREAD_GROUP, threadName);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
@@ -64,7 +64,7 @@ public class TypedThread extends Thread {
                        @NonNull Runnable runnable) {
         super(group, runnable);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
@@ -73,7 +73,7 @@ public class TypedThread extends Thread {
                        @NonNull String threadName) {
         super(group, runnable, threadName);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
@@ -81,7 +81,7 @@ public class TypedThread extends Thread {
                        @NonNull String threadName) {
         super(group, threadName);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     public TypedThread(@NonNull IThreadType threadType,
@@ -91,26 +91,12 @@ public class TypedThread extends Thread {
                        long stackSize) {
         super(group, runnable, threadName, stackSize);
 
-        this.threadTypes.add(new AltWeakReference<>(threadType));
+        this.threadTypes.add(threadType);
     }
 
     @NonNull
     public List<IThreadType> getThreadTypes() {
-        Iterator<AltWeakReference<IThreadType>> iterator = threadTypes.iterator();
-        ArrayList<IThreadType> currentThreadTypes = new ArrayList<>(threadTypes.size());
-
-        while (iterator.hasNext()) {
-            AltWeakReference<IThreadType> wr = iterator.next();
-            IThreadType threadType = wr.get();
-
-            if (threadType != null) {
-                currentThreadTypes.add(threadType);
-            } else {
-                threadTypes.remove(wr);
-            }
-        }
-
-        return currentThreadTypes;
+        return threadTypes;
     }
 
     @NonNull

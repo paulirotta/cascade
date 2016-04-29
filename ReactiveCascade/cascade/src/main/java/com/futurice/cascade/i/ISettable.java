@@ -24,7 +24,7 @@ import android.support.annotation.NonNull;
  */
 public interface ISettable<T> {
     /**
-     * Set the current from of a variable
+     * Set the current value of a variable
      *
      * @param value the asserted from
      * @throws IllegalStateException if the state can not be set, for example a
