@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.futurice.cascade.i.IAltFuture;
-import com.futurice.cascade.i.IGettable;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,7 +31,7 @@ import static com.futurice.cascade.Async.currentThreadType;
  *
  * @param <OUT>
  */
-public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGettable<OUT> {
+public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
     private static final long DEFAULT_GET_TIMEOUT = 5000;
     private static final long CHECK_INTERVAL = 50; // This is a fallback in case you for example have an error and fail to altFuture.notifyAll() when finished
     private final IAltFuture<IN, OUT> altFuture;
@@ -46,7 +45,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
      * the system test thread with the items being tested. They may exist other special cases, but most
      * often you can re-factor your code as a pure non-blocking chain instead of using this class.
      *
-     * @param altFuture
+     * @param altFuture to be wrapped for traditional blocking access
      */
     public AltFutureFuture(@NonNull final IAltFuture<IN, OUT> altFuture) {
         this.altFuture = altFuture;
@@ -68,7 +67,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
     }
 
     @Override // Future
-    @NonNull
+    @Nullable
     public OUT get() {
         try {
             return get(DEFAULT_GET_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -102,8 +101,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT>, IGe
     @Override // Future
     @Nullable
     public OUT get(long timeout,
-                   @NonNull TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
+                   @NonNull TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();
         }
