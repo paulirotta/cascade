@@ -1,31 +1,36 @@
 param (
+    [switch]$clean = $false,
     [switch]$lint = $false,
     [switch]$test = $false,
     [switch]$connectedTest = $false
 )
 
-if ($test) {
-	if ($connectedTest) {
-		./gradlew clean build test connectedCheck --stacktrace 
-	} else {
-		./gradlew clean build test --stacktrace 					
+if ($clean) {
+	./gradlew clean
+	if (-Not $?) {
+		exit
 	}
-} elseif ($connectedTest) {
-	./gradlew clean build connectedCheck --stacktrace 
-} else {
-	./gradlew clean build
 }
 
 if ($lint) {
-	ii ./cascade/build/outputs/lint-results-debug.html
+	./gradlew lint
+	if ($?) {
+		ii ./cascade/build/outputs/lint-results-debug.html
+	} else {
+		exit
+	}
 }
 
 if ($test) {
+	./gradlew test --info
+	if (-Not $?) {
+		ii ./cascade/build/reports/tests/debug/index.html
+		exit
+	}
 	ii ./cascade/build/reports/tests/debug/index.html
-	ii ./cascade/build/reports/tests/release/index.html
 }
 
 if ($connectedTest) {
+	./gradlew connectedCheck --info
 	ii ./cascade/build/reports/androidTests/connected/index.html
 }
-
