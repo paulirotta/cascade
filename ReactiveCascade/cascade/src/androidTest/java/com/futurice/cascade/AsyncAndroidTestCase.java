@@ -6,6 +6,7 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -23,26 +24,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * A connectedTest harness which bootstraps the Async class
  * <p>
  * Created by phou on 6/1/2015.
  */
 @RunWith(AndroidJUnit4.class)
+@SmallTest
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
     private TestUtil mTestUtil;
     private FileUtil fileUtil;
     private NetUtil netUtil;
 
-    @Deprecated
     private long defaultTimeoutMillis = 5000;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);
 
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+        injectInstrumentation(getInstrumentation());
     }
 
     public Context getContext() {
@@ -70,8 +69,8 @@ public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activ
     }
 
     @Test
-    @SmallTest
     public void dummyTest() {
+        assertTrue(true);
     }
 
     public final long getDefaultTimeoutMillis() {
