@@ -92,6 +92,7 @@ public class AsyncBuilderTest {
 
         @NonNull
         @Override
+        @SuppressWarnings("unchecked")
         public <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
             return null;
         }
@@ -116,6 +117,7 @@ public class AsyncBuilderTest {
 
         @NonNull
         @Override
+        @SuppressWarnings("unchecked")
         public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
             return null;
         }
@@ -128,6 +130,7 @@ public class AsyncBuilderTest {
 
         @NonNull
         @Override
+        @SuppressWarnings("unchecked")
         public <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
             return null;
         }
