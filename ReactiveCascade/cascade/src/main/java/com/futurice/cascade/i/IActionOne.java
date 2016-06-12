@@ -20,12 +20,16 @@ import android.support.annotation.NonNull;
  * involve a second thread if needed, however note that with idiomatic usage <code>RunnableResult</code>
  * is a mTail function. The first thread is free at this point split the result can call synchronously on
  * the current thread.
+ *
+ * @param <IN>
  */
 public interface IActionOne<IN> extends IBaseAction<IN> {
     /**
-     * @param value
+     * Execute the action
+     *
+     * @param in input
      * @throws Exception                                  to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
      * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
      */
-    void call(@NonNull IN value) throws Exception;
+    void call(@NonNull IN in) throws Exception;
 }

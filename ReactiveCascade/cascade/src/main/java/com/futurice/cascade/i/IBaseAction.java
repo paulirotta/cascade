@@ -10,6 +10,8 @@ package com.futurice.cascade.i;
  * <p>
  * Implementing this interface indicates a primary mOnFireAction, usually one executed asynchronously on
  * an {@link com.futurice.cascade.i.IThreadType}
+ *
+ * @param <PHANTOM_OUT> is not strictly needed, but helps the IDE tooling with generics
  */
 public interface IBaseAction<PHANTOM_OUT> {
 }

@@ -12,13 +12,13 @@ import android.support.annotation.NonNull;
  *
  * @param <IN1>
  * @param <IN2>
- * @throws Exception
+ * @param <OUT>
  */
 public interface IActionTwoR<IN1, IN2, OUT> extends IBaseAction<OUT> {
     /**
      *
-     * @param in1
-     * @param in2
+     * @param in1 first input
+     * @param in2 second input
      * @return
      * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
      * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}

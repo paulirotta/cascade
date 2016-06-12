@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This is a marker class to aid in runtime tests.
- *
+ * <p>
  * TODO Remove completed thread types from this structure
  */
 @NotCallOrigin

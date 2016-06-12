@@ -31,7 +31,7 @@ import static com.futurice.cascade.Async.UI;
  * Examples:
  * <pre><code>
  *     AtomicTextView view = new AtomicTextView(Activity.this);
- * <p>
+ *
  *     // Inject shared concurrent data from your model
  *     AtomicValue<String> statusAtomicValue = new AtomicValue<>();
  *     AtomicTextView liveView = new AtomicTextView(Activity.this, statusAtomicValue);

@@ -101,12 +101,12 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      *         myAltFuture.subscribe(from -> myAtomicValue.set(from))
      *     </pre>
      * </code>
-     *
+     * <p>
      * Both of these methods will automatically call <code>fire()</code> for you.
-     *
+     * <p>
      * You may want to <code>fire()</code> manually on app startup after all your initial reactive chains are constructed.
      * This will heat up the reactive chain to initial state by flushing current values through the system.
-     *
+     * <p>
      * All methods and receivers within a reactive chain are <em>supposed</em> to be idempotent to
      * multiple firing events. This
      * does not however mean the calls are free or give a good user experience and from as in the
@@ -122,7 +122,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @NonNull
     @Override // IAtomicValue, IGettable
     public T get() {
-         T t = safeGet();
+        T t = safeGet();
 
         if (t == IAltFuture.VALUE_NOT_AVAILABLE) {
             throw new IllegalStateException("Can not get(), ReactiveValue is not yet asserted");
@@ -148,9 +148,9 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      */
     @CallSuper
     @Override // ISettable
-    public void set(@NonNull  T value) {
-         T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
-         boolean valueChanged = !(value == previousValue
+    public void set(@NonNull T value) {
+        T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
+        boolean valueChanged = !(value == previousValue
                 || (value.equals(previousValue))
                 || previousValue.equals(value));
 
@@ -165,8 +165,8 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
 
     @CallSuper
     @Override // IAtomicValue
-    public boolean compareAndSet(@Nullable  T expected,
-                                 @Nullable  T update) {
+    public boolean compareAndSet(@Nullable T expected,
+                                 @Nullable T update) {
         final boolean success = this.mValueAR.compareAndSet(expected, update);
 
         if (success) {

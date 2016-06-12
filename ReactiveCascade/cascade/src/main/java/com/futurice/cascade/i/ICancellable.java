@@ -25,8 +25,8 @@ public interface ICancellable {
      * If the operation has already completed normally, this call may be ignored. A warning may be
      * given to help clean up redundant cancellation.
      *
-     * @param reason
-     * @return
+     * @param reason for easy debugging
+     * @return <code>true</code> if the action was cancelled, otherwise this call had not effect
      */
     @CallOrigin
     boolean cancel(@NonNull String reason);
@@ -35,7 +35,7 @@ public interface ICancellable {
      * A reason, such as an error or manual calling of {@link #cancel(String)}, had trigger the transition
      * to cancelled state upchain. This token is synchonrously passed downchain to inform all other chain
      * step so that they clean up (alter external state such as closing resources or changing UI elements).
-     *
+     * <p>
      * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
      * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
      */
@@ -46,13 +46,13 @@ public interface ICancellable {
      * Check if {@link #cancel(String)} or a similar occurrence such as a {@link java.lang.Exception}
      * have brought the operation to a premature end.
      *
-     * @return
+     * @return <code>true</code> if the action has been cancelled to bring it to an alternate termination state
      */
     boolean isCancelled();
 
     /**
      * An internal-use interface made public to facilitate mixing in alternate implementations.
-     *
+     * <p>
      * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
      * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
      */
@@ -63,7 +63,7 @@ public interface ICancellable {
     /**
      * This is a marker interface. If you return state information, the atomic inner state of your
      * implementation should implement this interface.
-     *
+     * <p>
      * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
      * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
      */
@@ -90,7 +90,7 @@ public interface ICancellable {
     /**
      * This is a marker interface. If you return state information, the atomic inner state of your
      * implementation should implement this interface.
-     *
+     * <p>
      * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
      * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
      */

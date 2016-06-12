@@ -516,8 +516,8 @@ public final class NetUtil extends Origin {
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-         SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
-         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
+        SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
+        NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
         return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
     }

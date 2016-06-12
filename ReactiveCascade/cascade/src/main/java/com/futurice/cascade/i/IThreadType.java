@@ -63,11 +63,11 @@ public interface IThreadType extends INamed {
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
-     * @param <OUT>          the type of input argument expected by the action
+     * @param <OUT>         the type of input argument expected by the action
      */
     @NotCallOrigin
     <OUT> void run(@NonNull IAction<OUT> action,
-                  @NonNull IActionOne<Exception> onErrorAction);
+                   @NonNull IActionOne<Exception> onErrorAction);
 
     /**
      * If this ThreadType permits out-of-order execution, run this mOnFireAction before any previously
@@ -77,7 +77,7 @@ public interface IThreadType extends INamed {
      * If this ThreadType does not permit out-of-order execution, this will become a {@link #execute(IAction)}
      * FIFO mOnFireAction.
      *
-     * @param <OUT>   the type of input argument expected by the action
+     * @param <OUT>  the type of input argument expected by the action
      * @param action the work to be performed
      */
     @NotCallOrigin
@@ -132,7 +132,7 @@ public interface IThreadType extends INamed {
      *
      * @param action        the work to be performed
      * @param onErrorAction work to be performed if the action throws a {@link Throwable}
-     * @param <OUT>          the type of input argument expected by the action
+     * @param <OUT>         the type of input argument expected by the action
      */
     <OUT> void runNext(@NonNull IAction<OUT> action,
                        @NonNull IActionOne<Exception> onErrorAction);
@@ -151,9 +151,9 @@ public interface IThreadType extends INamed {
     /**
      * Convert this action into a runnable
      *
-     * @param action the work to be performed
+     * @param action        the work to be performed
      * @param onErrorAction
-     * @param <IN>   the type of input argument expected by the action
+     * @param <IN>          the type of input argument expected by the action
      * @return
      */
     @NonNull

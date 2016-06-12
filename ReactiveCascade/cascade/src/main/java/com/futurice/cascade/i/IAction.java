@@ -12,11 +12,11 @@ package com.futurice.cascade.i;
  */
 public interface IAction<PHANTOM_OUT> extends IBaseAction<PHANTOM_OUT> {
     /**
-     * Execute the mOnFireAction
+     * Execute the action
      * <p>
      * If parameters need to be passed in, see for example {@link IActionOne}
      *
-     * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * @throws Exception                                  to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
      * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
      */
     void call() throws Exception;

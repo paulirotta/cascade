@@ -50,32 +50,6 @@ import android.support.annotation.NonNull;
 public interface IReactiveSource<OUT> extends INamed {
     //TODO Add .subscribe(mOnFireAction..) list versions for convenience
 
-//    /**
-//     * NOTE: Firing is always asynchronous if the down-chain IThreadType is not the same as this.mThreadType
-//     */
-//    public static enum FireMode {
-//        /**
-//         * Default behaviour
-//         * <p>
-//         * <p>
-//         * Concurrent if there are multiple down-chain {@link com.futurice.cascade.i.IReactiveTarget}s
-//         * <p>
-//         * If there is only one down-chain target and the {@link com.futurice.cascade.i.IThreadType} is the
-//         * same, this will continue on the same worker without context switching overhead. In such as case,
-//         * previous chain steps will not be garbage collectable until the fire completes or reaches
-//         * a down-chain branch.
-//         */
-//        ASYNCHRONOUS,
-//        /**
-//         * Synchronous sequential fire even if there are multiple targets with this same IThreadType.
-//         * <p>
-//         * The calling sequence is the same as the order in which targets were attached to this node.
-//         */
-//        SYNCHRONOUS
-//    }
-//
-//    ;
-
     /**
      * Remove a down-chain branch from the reactive function tree at this node
      *

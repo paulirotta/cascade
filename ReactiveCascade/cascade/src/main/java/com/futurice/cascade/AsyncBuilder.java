@@ -68,7 +68,6 @@ public class AsyncBuilder {
 
     /**
      * Used to reset static state for unit testing
-     *
      */
     @VisibleForTesting
     static void resetInstance() {

@@ -17,8 +17,10 @@ import java.util.concurrent.Callable;
  */
 public interface IActionR<OUT> extends Callable<OUT>, IBaseAction<OUT> {
     /**
-     * @return
-     * @throws Exception to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
+     * Execute the action
+     *
+     * @return the result of the action
+     * @throws Exception                                  to transition to {@link com.futurice.cascade.i.IAltFuture.StateError}
      * @throws java.util.concurrent.CancellationException to {@link com.futurice.cascade.i.IAltFuture.StateCancelled}
      */
     @Override // Callable

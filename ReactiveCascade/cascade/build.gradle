@@ -32,7 +32,7 @@ android {
 
     lintOptions {
         disable 'InvalidPackage' // For Okio, https://github.com/square/okio/issues/58
-        abortOnError false   // For RetroLambda, remove when possible
+//        abortOnError false   // For RetroLambda, remove when possible
     }
 
     packagingOptions {

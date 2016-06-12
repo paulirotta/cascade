@@ -28,7 +28,7 @@ public interface ISettable<T> {
      *
      * @param value the asserted from
      * @throws IllegalStateException if the state can not be set, for example a
-     * {@link com.futurice.cascade.functional.SettableAltFuture} which has already been set and is now immutable
+     *                               {@link com.futurice.cascade.functional.SettableAltFuture} which has already been set and is now immutable
      */
     void set(@NonNull T value);
 }

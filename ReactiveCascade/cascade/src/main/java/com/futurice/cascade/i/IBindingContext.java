@@ -18,7 +18,7 @@ public interface IBindingContext {
 
     /**
      * Trigger end of all binding context actions
-     *
+     * <p>
      * Since a binding context can not be re-opened, you may want to create a new binding context
      * for cases where opening again is required. Items linked to the previous binding context will
      * continue to see the closed state.

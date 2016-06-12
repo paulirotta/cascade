@@ -2,7 +2,6 @@ package com.futurice.cascade.i;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.Async;
 import com.futurice.cascade.functional.ImmutableValue;
 
 /**
