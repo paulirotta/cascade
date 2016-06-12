@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.futurice.cascade;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
