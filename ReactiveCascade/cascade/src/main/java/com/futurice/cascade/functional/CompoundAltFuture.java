@@ -206,12 +206,12 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
         throw new UnsupportedOperationException("Not yet implemented"); //TODO sleep a compound alt future
     }
 
-    @NonNull
-    @Override // IAltFuture
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-        return mTail.await(altFuture);
-    }
+//    @NonNull
+//    @Override // IAltFuture
+//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+//    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
+//        return mTail.await(altFuture);
+//    }
 
     @NonNull
     @Override // IAltFuture

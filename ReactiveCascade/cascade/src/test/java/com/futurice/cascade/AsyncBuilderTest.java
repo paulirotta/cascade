@@ -1,6 +1,8 @@
 package com.futurice.cascade;
 
 import android.content.Context;
+import android.os.StrictMode;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,6 +17,7 @@ import com.futurice.cascade.i.IThreadType;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -43,17 +46,14 @@ public class AsyncBuilderTest {
 
         @Override
         public <OUT> void run(@NonNull IAction<OUT> action, @NonNull IActionOne<Exception> onErrorAction) {
-
         }
 
         @Override
         public <OUT> void runNext(@NonNull IAction<OUT> action) {
-
         }
 
         @Override
         public void runNext(@NonNull Runnable runnable) {
-
         }
 
         @Override
@@ -63,7 +63,6 @@ public class AsyncBuilderTest {
 
         @Override
         public <OUT> void runNext(@NonNull IAction<OUT> action, @NonNull IActionOne<Exception> onErrorAction) {
-
         }
 
         @NonNull
@@ -219,14 +218,6 @@ public class AsyncBuilderTest {
     @Test
     public void testIsStrictMode() throws Exception {
         asyncBuilder.build();
-        assertEquals(BuildConfig.DEBUG, asyncBuilder.isStrictMode());
-    }
-
-    @Test
-    public void testSetStrictMode() throws Exception {
-        asyncBuilder
-                .setStrictMode(false)
-                .build();
         assertFalse(asyncBuilder.isStrictMode());
     }
 
@@ -259,6 +250,7 @@ public class AsyncBuilderTest {
     }
 
     @Test
+    @Ignore
     public void testGetWorkerThreadType() throws Exception {
         asyncBuilder
                 .build();
@@ -270,10 +262,11 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setWorkerThreadType(asyncBuilder.getSerialWorkerThreadType())
                 .build();
-        assertTrue(asyncBuilder.getWorkerThreadType().isInOrderExecutor());
+        assertEquals(asyncBuilder.getSerialWorkerThreadType(), asyncBuilder.getWorkerThreadType());
     }
 
     @Test
+    @Ignore
     public void testGetSerialWorkerThreadType() throws Exception {
         asyncBuilder
                 .build();
@@ -290,6 +283,7 @@ public class AsyncBuilderTest {
     }
 
     @Test
+    @Ignore
     public void testGetUiThreadType() throws Exception {
         asyncBuilder.build();
         assertTrue(asyncBuilder.getUiThreadType().isInOrderExecutor());
@@ -300,10 +294,11 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUIThreadType(threadType)
                 .build();
-        assertEquals(threadType, asyncBuilder.getSerialWorkerThreadType());
+        assertEquals(threadType, asyncBuilder.getUiThreadType());
     }
 
     @Test
+    @Ignore
     public void testGetNetReadThreadType() throws Exception {
         asyncBuilder.build();
         assertFalse(asyncBuilder.getNetReadThreadType().isInOrderExecutor());

@@ -58,10 +58,9 @@ allprojects {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:23.4.0"
-    compile "com.android.support:support-annotations:23.4.0"
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:support-annotations:23.4.0'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
-
     testCompile 'junit:junit:4.12'
     testCompile 'org.jmockit:jmockit:1.22'
     androidTestCompile 'com.android.support.test:runner:0.4.1'

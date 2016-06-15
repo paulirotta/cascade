@@ -563,19 +563,19 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return outAltFuture;
     }
 
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    @Override // IAltFuture
-    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-        ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
-
-        outAltFuture.setUpchain(this);
-        final IAltFuture<?, ?> ignore = altFuture.then(() -> {
-            outAltFuture.set(get());
-        });
-
-        return outAltFuture;
-    }
+//    @NonNull
+//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+//    @Override // IAltFuture
+//    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
+//        ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
+//
+//        outAltFuture.setUpchain(this);
+//        final IAltFuture<?, ?> ignore = altFuture.then(() -> {
+//            outAltFuture.set(get());
+//        });
+//
+//        return outAltFuture;
+//    }
 
     @NonNull
     @Override // IAltFuture

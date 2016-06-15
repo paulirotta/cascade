@@ -120,7 +120,7 @@ public class BindingContextUtils {
         }
     }
 
-    public static class AsyncFragmentActivity extends FragmentActivity {
+    public static abstract class AsyncFragmentActivity extends FragmentActivity {
         private final IBindingContext bindingContext = new DefaultBindingContext();
         private IBindingContext pauseResumeBindingContext;
 

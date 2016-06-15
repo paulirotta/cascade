@@ -77,7 +77,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     String CHECK_RESULT_SUGGESTION = "IAltFuture#fork()";
 
     /**
-     * Find which thread pool and related support functions will be used for completing this mOnFireAction
+     * Find which thread pool and related support functions are used
      *
      * @return thread group
      */
@@ -265,9 +265,9 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @param altFuture to pause this chain until it <code>{@link #isDone()}</code>
      * @return the upchain value of this chain, execution held until the other alt future completes
      */
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture);
+//    @NonNull
+//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+//    ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture);
 
     /**
      * Continue chain execution once all upchain futures realize and have completed their side effects.
