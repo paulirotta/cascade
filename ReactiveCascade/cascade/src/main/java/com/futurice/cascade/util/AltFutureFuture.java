@@ -34,7 +34,10 @@ import static com.futurice.cascade.Async.currentThreadType;
 public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
     private static final long DEFAULT_GET_TIMEOUT = 5000;
     private static final long CHECK_INTERVAL = 50; // This is a fallback in case you for example have an error and fail to altFuture.notifyAll() when finished
+
+    @NonNull
     private final IAltFuture<IN, OUT> altFuture;
+
     private final Object mutex = new Object();
 
     /**
@@ -100,8 +103,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
      */
     @Override // Future
     @Nullable
-    public OUT get(long timeout,
-                   @NonNull TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public OUT get(long timeout, @NonNull TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (!isDone()) {
             assertThreadSafe();
         }

@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
+
     @NonNull
     final BlockingQueue<E> lowPriorityQueue;
 

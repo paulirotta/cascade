@@ -136,6 +136,7 @@ public class AssertUtil {
         if (t == null) {
             throw new IllegalStateException(message);
         }
+
         return t;
     }
 }

@@ -25,6 +25,7 @@ import static com.futurice.cascade.Async.FILE;
 
 public final class FileUtil extends Origin {
     private static final int BUFFER_SIZE = 16384;
+
     @NonNull
     private final Context mContext;
 
@@ -41,26 +42,29 @@ public final class FileUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <IN> IAltFuture<IN, IN> writeAsync(@NonNull String fileName,
                                               @NonNull byte[] bytes) {
-        return FILE.then(() -> {
-            write(fileName, bytes);
-        });
+        return FILE.then(
+                () -> {
+                    write(fileName, bytes);
+                });
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<String, byte[]> writeAsync(@NonNull byte[] bytes) {
-        return FILE.map(fileName -> {
-            write(fileName, bytes);
-            return bytes;
-        });
+        return FILE.map(
+                fileName -> {
+                    write(fileName, bytes);
+                    return bytes;
+                });
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<byte[], byte[]> writeAsync(@NonNull String fileName) {
-        return FILE.then(bytes -> {
-            write(fileName, bytes);
-        });
+        return FILE.then(
+                bytes -> {
+                    write(fileName, bytes);
+                });
     }
 
     @WorkerThread
@@ -99,15 +103,16 @@ public final class FileUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<?, byte[]> readAsync(@NonNull String fileName) {
-        return FILE.then(() -> {
-            return read(fileName);
-        });
+        return FILE.then(
+                () -> {
+                    return read(fileName);
+                });
     }
 
     @NonNull
     @WorkerThread
     public byte[] read(@NonNull String fileName) {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
         try {
@@ -147,9 +152,10 @@ public final class FileUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
-        return FILE.then(() -> {
-            return delete(fileName);
-        });
+        return FILE.then(
+                () -> {
+                    return delete(fileName);
+                });
     }
 
     @NonNull

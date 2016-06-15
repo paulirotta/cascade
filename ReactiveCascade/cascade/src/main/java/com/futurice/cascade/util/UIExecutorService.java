@@ -89,10 +89,11 @@ public final class UIExecutorService extends Origin implements ExecutorService {
     @Override // ExecutorService
     public <T> Future<T> submit(@NonNull Runnable runnable,
                                 @NonNull T result) {
-        FutureTask<T> future = new FutureTask<>(() -> {
-            runnable.run();
-            return result;
-        });
+        FutureTask<T> future = new FutureTask<>(
+                () -> {
+                    runnable.run();
+                    return result;
+                });
         execute(future);
 
         return future;

@@ -78,7 +78,6 @@ public class RCLog {
         }
     }
 
-
     /**
      * Log an error. If {@link Async#FAIL_FAST} during a {@link BuildConfig#DEBUG} all Exceptions except
      * {@link InterruptedException} or {@link CancellationException} will terminate the application.
@@ -167,11 +166,13 @@ public class RCLog {
                           @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
-        debugOriginThen(ccOrigin -> {
-            origin.then(o -> {
-                log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::v);
-            });
-        });
+        debugOriginThen(
+                ccOrigin -> {
+                    origin.then(
+                            o -> {
+                                log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::v);
+                            });
+                });
     }
 
     /**
@@ -198,11 +199,12 @@ public class RCLog {
                           @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
-        debugOriginThen(ccOrigin -> {
-            origin.then(o -> {
-                log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::d);
-            });
-        });
+        debugOriginThen(
+                ccOrigin -> {
+                    origin.then(o -> {
+                        log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::d);
+                    });
+                });
     }
 
     /**
@@ -229,11 +231,13 @@ public class RCLog {
                           @NonNull String message) {
         AssertUtil.assertTrue(BuildConfig.DEBUG);
 
-        debugOriginThen(ccOrigin -> {
-            origin.then(o -> {
-                log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::i);
-            });
-        });
+        debugOriginThen(
+                ccOrigin -> {
+                    origin.then(
+                            o -> {
+                                log(tag, combineOriginStringsRemoveDuplicates(o, ccOrigin, message), Log::i);
+                            });
+                });
     }
 
     @SuppressWarnings("unchecked")
@@ -354,8 +358,7 @@ public class RCLog {
      * @throws RuntimeException
      */
     public static void throwTimeoutException(@NonNull Object tag,
-                                             @NonNull String message)
-            throws RuntimeException {
+                                             @NonNull String message) throws RuntimeException {
         final TimeoutException e = new TimeoutException(message);
         e(tag, message, e);
         throw new RuntimeException(e);
@@ -427,15 +430,15 @@ public class RCLog {
 
         if (Async.WORKER != null) {
             Async.WORKER.run(() -> {
-                final List<StackTraceLine> o = origin(traceElementsArray);
+                List<StackTraceLine> o = origin(traceElementsArray);
                 AssertUtil.assertTrue(o.size() > 0);
-                final StackTraceLine line = o.get(0);
-                final String s = prettyFormat(line.stackTraceElement);
+                StackTraceLine line = o.get(0);
+                String s = prettyFormat(line.stackTraceElement);
                 immutableValue.set(s);
             });
         } else {
             // During bootstrapping of the ThreadTypes
-            final List<StackTraceLine> list = origin(traceElementsArray);
+            List<StackTraceLine> list = origin(traceElementsArray);
             immutableValue.set(prettyFormat(list.get(0).stackTraceElement));
         }
 
@@ -515,7 +518,7 @@ public class RCLog {
     @NonNull
     private static List<StackTraceLine> filterListByClass(@NonNull List<StackTraceLine> list,
                                                           @NonNull IActionOneR<Class, Boolean> classFilter) throws Exception {
-        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (classFilter.call(line.claz)) {
@@ -532,8 +535,7 @@ public class RCLog {
     @NonNull
     private static List<StackTraceLine> filterListByClassAnnotation(@NonNull List<StackTraceLine> list,
                                                                     @NonNull Class<? extends Annotation> annotation,
-                                                                    boolean mustBeAbsent)
-            throws Exception {
+                                                                    boolean mustBeAbsent) throws Exception {
         List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
@@ -549,9 +551,8 @@ public class RCLog {
     }
 
     @NonNull
-    private static List<StackTraceLine> filterListPreferCallOriginMethodAnnotation(@NonNull List<StackTraceLine> list)
-            throws Exception {
-        List<StackTraceLine> filteredList = new ArrayList<>(list.size());
+    private static List<StackTraceLine> filterListPreferCallOriginMethodAnnotation(@NonNull List<StackTraceLine> list) throws Exception {
+        final List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {
             if (line.isAnnotated) {
@@ -567,8 +568,7 @@ public class RCLog {
 
     @NonNull
     private static List<StackTraceLine> filterListByPackage(@NonNull List<StackTraceLine> list,
-                                                            @NonNull IActionOneR<String, Boolean> packageFilter)
-            throws Exception {
+                                                            @NonNull IActionOneR<String, Boolean> packageFilter) throws Exception {
         List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
         for (final StackTraceLine line : list) {

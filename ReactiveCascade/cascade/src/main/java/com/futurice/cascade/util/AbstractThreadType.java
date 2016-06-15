@@ -45,8 +45,10 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NonNull
     protected final ExecutorService executorService;
+
     @NonNull
     protected final BlockingQueue<Runnable> mQueue;
+
     @NonNull
     private final String name;
 
@@ -71,7 +73,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
 
     private static boolean isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary() {
         //TODO This check doesn't really allow 3rd party implementations. Not testing would mean unsafe/less obvious problems can come later. Package hiding would disallow replacement implementations that follow the interface contracts. What we have here is a half measure to guide people since currently there are no alternate implementations.
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        StackTraceElement[] ste = Thread.currentThread().getStackTrace();
         AssertUtil.assertTrue("Stack trace[3] is AbstractThreadType.fork(IRunnableAltFuture)", ste[3].getMethodName().contains("fork"));
         return !ste[4].getClassName().startsWith("com.futurice.cascade");
     }
@@ -340,7 +342,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                                            @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
                                            long timeoutMillis) {
         RCLog.i(this, "shutdownNow: reason=" + reason);
-        final List<Runnable> pendingActions = executorService.shutdownNow();
+        List<Runnable> pendingActions = executorService.shutdownNow();
 
         if (actionOnDedicatedThreadAfterAlreadyStartedTasksComplete != null) {
             new Thread(() -> {
