@@ -23,12 +23,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * A chain of two or more {@link com.futurice.cascade.i.IAltFuture}s merged into a single logical entity.
  * <p>
- * This is useful for returning a single logical entity from an async method such that it can receive values
+ * This is useful for returning a single logical entity from an async method. It allows receiving values
  * at the head and output values to next chain steps at the mTail.
  */
 public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
     protected final List<IAltFuture<?, ?>> mSubchain = new ArrayList<>();
+
+    @NonNull
     protected final IAltFuture<IN, ?> mHead;
+
+    @NonNull
     protected final IAltFuture<?, OUT> mTail;
 
     public CompoundAltFuture(@NonNull IAltFuture<IN, ?> head,

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.futurice.cascade.Async;
 import com.futurice.cascade.i.IActionOne;
-import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IThreadType;
 import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.RCLog;
@@ -44,12 +43,12 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
             return;
         }
 
-        @SuppressWarnings("unchecked")
-        final IAltFuture<?, Exception> altFuture = mThreadType
+        mThreadType
                 .from(stateError.getException())
-                .then(mOnErrorAction);
+                .then(mOnErrorAction)
+                .fork();
 
-        final StateCancelled stateCancelled = new StateCancelled() {
+        StateCancelled stateCancelled = new StateCancelled() {
             private final ImmutableValue<String> mOrigin = RCLog.originAsync();
 
             @NonNull
@@ -71,7 +70,7 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
             }
         };
 
-        final Exception e = forEachThen(af -> {
+        Exception e = forEachThen(af -> {
             af.doOnCancelled(stateCancelled);
         });
 

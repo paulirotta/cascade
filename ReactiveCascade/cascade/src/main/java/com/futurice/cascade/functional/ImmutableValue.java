@@ -51,6 +51,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
 
     private final AtomicReference<T> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
     private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
+
     @Nullable
     private final IActionR<T> action;
 
@@ -153,8 +154,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     // IN->OUT must be bent to match all cases but the context makes this safe
     private <IN, OUT> OUT call(
             @NonNull final IN in,
-            @NonNull final IBaseAction<IN> action)
-            throws Exception {
+            @NonNull final IBaseAction<IN> action) throws Exception {
         if (action instanceof IAction) {
             ((IAction) action).call();
             return null;

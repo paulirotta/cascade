@@ -70,11 +70,5 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
 
     protected void doFork() {
         // This is not an IRunnableAltFuture, so nothing to fork() or run(). But RunnableAltFuture overrides this and does more
-//        AssertUtil.assertTrue(isDone());
-//        try {
-//            doThen();
-//        } catch (Exception e) {
-//            RCLog.e(this, "Can not doFork()", e);
-//        }
     }
 }

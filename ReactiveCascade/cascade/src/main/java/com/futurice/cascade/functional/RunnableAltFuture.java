@@ -96,8 +96,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
-            final OUT out;
+            IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
+            OUT out;
 
             if (previousAltFuture == null) {
                 out = (OUT) COMPLETE;
@@ -123,7 +123,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, ? extends IN> paf = getUpchain();
+            IAltFuture<?, ? extends IN> paf = getUpchain();
 
             AssertUtil.assertNotNull(paf);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished", paf.isDone());
@@ -162,7 +162,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         super(threadType);
 
         this.mAction = () -> {
-            final IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
+            IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
 
             AssertUtil.assertNotNull(previousAltFuture);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished:" + getOrigin(), previousAltFuture.isDone());
@@ -222,7 +222,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         } catch (InterruptedException e) {
             stateChanged = cancel("RunnableAltFuture was interrupted (may be normal but NOT RECOMMENDED as behaviour is non-deterministic, but app will not fail fast): " + e);
         } catch (Exception e) {
-            final AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
+            AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
             if (!(mStateAR.compareAndSet(ZEN, stateError) && !(mStateAR.compareAndSet(FORKED, stateError)))) {
                 RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
