@@ -119,7 +119,7 @@ public interface IThreadType extends INamed {
      * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
      * mQueue. If it is not found in the mQueue, it will not be added.
      * <p>
-     * This is useful as part singleton executor patterns where an action that can be queued multiple
+     * This is useful as part of singleton executor patterns where an action that can be queued multiple
      * times should be executing or queued only once at any given time.
      *
      * @param runnable the work to be performed
@@ -158,9 +158,8 @@ public interface IThreadType extends INamed {
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <IN> Runnable wrapActionWithErrorProtection(
-            @NonNull IAction<IN> action,
-            @NonNull IActionOne<Exception> onErrorAction);
+    <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action,
+                                                @NonNull IActionOne<Exception> onErrorAction);
 
     /**
      * Complete the action asynchronously.
@@ -249,7 +248,7 @@ public interface IThreadType extends INamed {
      */
     @SuppressWarnings("unchecked")
     @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions);
 
     /**
@@ -325,14 +324,13 @@ public interface IThreadType extends INamed {
      * @return a Future that will return true if the shutdown completes within the specified time, otherwise shutdown continues
      */
     @NonNull
-    public <IN> Future<Boolean> shutdown(
-            long timeoutMillis,
-            @Nullable final IAction<IN> afterShutdownAction);
+    <IN> Future<Boolean> shutdown(long timeoutMillis,
+                                  @Nullable final IAction<IN> afterShutdownAction);
 
     /**
      * @return <code>true</code> if thread executor is shutdown
      */
-    public boolean isShutdown();
+    boolean isShutdown();
 
     /**
      * Halt execution of all functional and reactive subscriptions in this mThreadType.
@@ -346,9 +344,8 @@ public interface IThreadType extends INamed {
      * @return a list of work which failed to complete before shutdown
      */
     @NonNull
-    public <IN> List<Runnable> shutdownNow(
-            @NonNull String reason,
-            @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-            @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
-            long timeoutMillis);
+    <IN> List<Runnable> shutdownNow(@NonNull String reason,
+                                    @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+                                    @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
+                                    long timeoutMillis);
 }

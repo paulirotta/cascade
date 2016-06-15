@@ -74,7 +74,8 @@ public interface IReactiveTarget<IN> extends INamed {
      *
      * @param reactiveSource
      */
-    void subscribeSource(@NonNull String reason, @NonNull IReactiveSource<IN> reactiveSource);
+    void subscribeSource(@NonNull String reason,
+                         @NonNull IReactiveSource<IN> reactiveSource);
 
     /**
      * Notification that an {@link IReactiveSource}  will no longer send updates
@@ -85,7 +86,8 @@ public interface IReactiveTarget<IN> extends INamed {
      * @param reason
      * @param reactiveSource
      */
-    void unsubscribeSource(@NonNull String reason, @NonNull IReactiveSource<IN> reactiveSource);
+    void unsubscribeSource(@NonNull String reason,
+                           @NonNull IReactiveSource<IN> reactiveSource);
 
     /**
      * Remove all up-chain branches from this node of the reactive function tree
