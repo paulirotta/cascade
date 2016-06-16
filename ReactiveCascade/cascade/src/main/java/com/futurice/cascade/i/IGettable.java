@@ -33,7 +33,7 @@ public interface IGettable<T> {
         @NonNull
         @Override // IGettable
         public Object get() {
-            return toString();
+            throw new IllegalStateException("Can not get() from IGettable.VALUE_NOT_AVALIABLE. Perhaps you want ISafaGettable.safeGet() instead? You could also safely check the value before getting since you can not return to this state. Another choice is to examine the logic flow and sequence for initializing this variable.");
         }
 
         @NonNull
