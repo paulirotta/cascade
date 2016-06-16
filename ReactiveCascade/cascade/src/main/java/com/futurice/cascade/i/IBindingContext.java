@@ -31,5 +31,5 @@ public interface IBindingContext {
      * @param action
      * @return
      */
-    IBindingContext onClose(@NonNull IAction action);
+    void onClose(@NonNull IAction action);
 }

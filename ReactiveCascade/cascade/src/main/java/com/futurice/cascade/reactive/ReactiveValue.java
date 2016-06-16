@@ -31,8 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * calls may not result in all values
  * </p>
  * <p>
- * Bindings are thread safe. All mReactiveTargets will refire concurrently if the {@link com.futurice.cascade.i.IThreadType}
- * allows, but individual mReactiveTargets will never be called concurrently or out-of-sequence. Multiple
+ * Bindings are thread safe. All reactiveTargets will refire concurrently if the {@link com.futurice.cascade.i.IThreadType}
+ * allows, but individual reactiveTargets will never be called concurrently or out-of-sequence. Multiple
  * changes to the bound getValue within a short time relative to the current speed of the
  * {@link com.futurice.cascade.i.IThreadType} may coalesce into a single headFunctionalChainLink refire of only
  * the most recent getValue. Bound functions must be idempotent. Repeat firing of the same getValue

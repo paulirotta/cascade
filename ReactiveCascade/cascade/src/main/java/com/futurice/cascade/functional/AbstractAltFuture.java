@@ -27,7 +27,7 @@ import com.futurice.cascade.util.Origin;
 import com.futurice.cascade.util.RCLog;
 
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -118,9 +118,9 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     protected final IThreadType mThreadType;
 
-    protected final CopyOnWriteArrayList<IAltFuture<OUT, ?>> mDownchainAltFutureList = new CopyOnWriteArrayList<>(); // Callable split IThreadType actions to start after this mOnFireAction completes
+    protected final CopyOnWriteArraySet<IAltFuture<OUT, ?>> downchainAltFutures = new CopyOnWriteArraySet<>(); // Callable split IThreadType actions to start after this mOnFireAction completes
 
-    private final AtomicReference<IAltFuture<?, ? extends IN>> mPreviousAltFutureAR = new AtomicReference<>();
+    private final AtomicReference<IAltFuture<?, ? extends IN>> upchainAltFutureAR = new AtomicReference<>();
 
     /**
      * Create, from is not yet determined
@@ -261,18 +261,18 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      */
     protected final void clearPreviousAltFuture() {
         AssertUtil.assertTrue(isDone());
-        this.mPreviousAltFutureAR.lazySet(null);
+        this.upchainAltFutureAR.lazySet(null);
     }
 
     @Override // IAltFuture
     @Nullable
     public final IAltFuture<?, ? extends IN> getUpchain() {
-        return this.mPreviousAltFutureAR.get();
+        return this.upchainAltFutureAR.get();
     }
 
     @Override // IAltFuture
     public void setUpchain(@NonNull final IAltFuture<?, ? extends IN> altFuture) {
-        boolean set = this.mPreviousAltFutureAR.compareAndSet(null, altFuture);
+        boolean set = this.upchainAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
             RCLog.v(this, "Second setUpchain(), merging two chains. Neither can proceed past this point until both burn to this point.");
@@ -322,7 +322,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @throws Exception
      */
     protected Exception forEachThen(@NonNull final IActionOne<IAltFuture<OUT, ?>> action) {
-        Iterator<IAltFuture<OUT, ?>> iterator = mDownchainAltFutureList.iterator();
+        Iterator<IAltFuture<OUT, ?>> iterator = downchainAltFutures.iterator();
         Exception exception = null;
 
         while (iterator.hasNext()) {
@@ -463,7 +463,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture) {
         altFuture.setUpchain(this);
 
-        this.mDownchainAltFutureList.add(altFuture);
+        this.downchainAltFutures.add(altFuture);
         if (isDone()) {
 //            altFuture.map((IActionOne) v -> {
 //                visualize(mOrigin.getName(), v.toString(), "RunnableAltFuture");

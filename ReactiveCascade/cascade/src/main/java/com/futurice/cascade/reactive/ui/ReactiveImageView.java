@@ -23,7 +23,7 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static com.futurice.cascade.Async.UI;
 import static com.futurice.cascade.Async.isUiThread;
@@ -34,7 +34,7 @@ import static com.futurice.cascade.Async.isUiThread;
 public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitmap>, IAsyncOrigin {
     @NonNull
     private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
-    private final CopyOnWriteArrayList<IReactiveSource<Bitmap>> mReactiveSources = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArraySet<IReactiveSource<Bitmap>> reactiveSources = new CopyOnWriteArraySet<>();
 
     public ReactiveImageView(@NonNull Context context) {
         super(context);
@@ -87,7 +87,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
             @NonNull IReactiveSource<Bitmap> reactiveSource) {
         RCLog.v(this, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
 
-        if (mReactiveSources.addIfAbsent(reactiveSource)) {
+        if (reactiveSources.add(reactiveSource)) {
             RCLog.v(this, reactiveSource.getName() + " says hello: reason=" + reason);
         } else {
             RCLog.d(this, "Did you say hello several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
@@ -101,7 +101,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
             @NonNull IReactiveSource<Bitmap> reactiveSource) {
         AssertUtil.assertNotNull(mOrigin);
 
-        if (mReactiveSources.remove(reactiveSource)) {
+        if (reactiveSources.remove(reactiveSource)) {
             RCLog.v(this, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());
             reactiveSource.unsubscribe(reason, this);
         } else {
@@ -111,7 +111,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     public void unsubscribeAllSources(@NonNull String reason) {
-        for (final IReactiveSource<Bitmap> reactiveSource : mReactiveSources) {
+        for (final IReactiveSource<Bitmap> reactiveSource : reactiveSources) {
             reactiveSource.unsubscribeAll(reason);
         }
     }

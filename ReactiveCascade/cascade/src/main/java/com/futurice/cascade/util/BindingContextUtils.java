@@ -11,7 +11,7 @@ import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IBindingContext;
 
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -32,14 +32,14 @@ public class BindingContextUtils {
         }
 
         @Override
-        public IBindingContext onClose(@NonNull IAction action) {
+        public void onClose(@NonNull IAction action) {
             throw new UnsupportedOperationException("AppBindingContext can not be closed");
         }
     };
 
     public static class DefaultBindingContext extends Origin implements IBindingContext {
         private final AtomicBoolean open = new AtomicBoolean(true);
-        private final CopyOnWriteArrayList<IAction> onCloseActions = new CopyOnWriteArrayList<>();
+        private final CopyOnWriteArraySet<IAction> onCloseActions = new CopyOnWriteArraySet<>();
 
         @Override
         public final boolean isBindingContextOpen() {
@@ -54,10 +54,8 @@ public class BindingContextUtils {
         }
 
         @CallSuper
-        public IBindingContext onClose(@NonNull IAction action) {
+        public void onClose(@NonNull IAction action) {
             onCloseActions.add(action);
-
-            return this;
         }
 
         @CallSuper
