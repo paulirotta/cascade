@@ -19,7 +19,6 @@ import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.ISafeGettable;
 import com.futurice.cascade.util.RCLog;
 
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,8 +48,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @SuppressWarnings("unchecked")
     protected final T ZEN = (T) AbstractAltFuture.ZEN;
 
-    private final AtomicReference<T> mValueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
-    private final ConcurrentLinkedQueue<IBaseAction<T>> mThenActions = new ConcurrentLinkedQueue<>();
+    private final AtomicReference<T> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
+    private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
 
     @Nullable
     private final IActionR<T> action;
@@ -96,7 +95,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      */
     private boolean compareAndSet(@NonNull T expected,
                                   @NonNull T value) {
-        boolean success = mValueAR.compareAndSet(expected, value);
+        boolean success = valueAR.compareAndSet(expected, value);
 
         if (success) {
             doThenActions(value);
@@ -117,7 +116,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      */
     @NonNull
     public ImmutableValue<T> then(@NonNull IActionOne<T> action) {
-        mThenActions.add(action);
+        thenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
         }
@@ -126,7 +125,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
 
     @NonNull
     public ImmutableValue<T> then(@NonNull IAction<T> action) {
-        mThenActions.add(action);
+        thenActions.add(action);
         if (isSet()) {
             doThenActions(safeGet());
         }
@@ -134,12 +133,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     }
 
     private void doThenActions(@NonNull T value) {
-        final Iterator<IBaseAction<T>> iterator = mThenActions.iterator();
-
-        while (iterator.hasNext()) {
-            final IBaseAction<T> action = iterator.next();
-
-            if (mThenActions.remove(action)) {
+        for (IBaseAction<T> action : thenActions) {
+            if (thenActions.remove(action)) {
                 try {
                     call(value, action);
                 } catch (Exception e) {
@@ -152,9 +147,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @Nullable
     @SuppressWarnings("unchecked")
     // IN->OUT must be bent to match all cases but the context makes this safe
-    private <IN, OUT> OUT call(
-            @NonNull final IN in,
-            @NonNull final IBaseAction<IN> action) throws Exception {
+    private <IN, OUT> OUT call(@NonNull final IN in,
+                               @NonNull final IBaseAction<IN> action) throws Exception {
         if (action instanceof IAction) {
             ((IAction) action).call();
             return null;
@@ -188,7 +182,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * @return
      */
     public final boolean isSet() {
-        return mValueAR.get() != AbstractAltFuture.ZEN;
+        return valueAR.get() != AbstractAltFuture.ZEN;
     }
 
     /**
@@ -207,7 +201,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @SuppressWarnings("unchecked")
     // The response must be cast because of internal atomic state is a non-T class
     public T get() {
-        final T value = mValueAR.get();
+        final T value = valueAR.get();
 
         if (value == ZEN) {
             try {
@@ -238,7 +232,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @SuppressWarnings("unchecked")
     @NonNull
     public T safeGet() {
-        final T value = mValueAR.get();
+        final T value = valueAR.get();
 
         if (value == ZEN) {
             return (T) IAltFuture.VALUE_NOT_AVAILABLE;

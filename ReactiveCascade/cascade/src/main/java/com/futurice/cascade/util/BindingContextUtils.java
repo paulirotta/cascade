@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import com.futurice.cascade.i.IAction;
 import com.futurice.cascade.i.IBindingContext;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -60,12 +59,11 @@ public class BindingContextUtils {
 
         @CallSuper
         protected void onBindingContextClose() {
-            Iterator<IAction> iterator = onCloseActions.iterator();
             Exception caught = null;
 
-            while (iterator.hasNext()) {
+            for (IAction action : onCloseActions) {
                 try {
-                    iterator.next().call();
+                    action.call();
                 } catch (Exception e) {
                     caught = e;
                     RCLog.e(this, "Can not complete all onCloseActions- other onCloseActions will still be attempted", e);

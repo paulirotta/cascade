@@ -20,7 +20,6 @@ import com.futurice.cascade.i.NotCallOrigin;
 import com.futurice.cascade.util.Origin;
 import com.futurice.cascade.util.RCLog;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -170,11 +169,10 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
      * @throws Exception
      */
     private boolean forEachReactiveTarget(@NonNull IActionOneR<IReactiveTarget<OUT>, Boolean> action) throws Exception {
-        Iterator<IReactiveTarget<OUT>> iterator = reactiveTargets.iterator();
         boolean result = false;
 
-        while (iterator.hasNext()) {
-            result |= action.call(iterator.next());
+        for (IReactiveTarget<OUT> target : reactiveTargets) {
+            result |= action.call(target);
         }
 
         return result;
@@ -295,11 +293,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveTarget
     public void unsubscribeAllSources(@NonNull String reason) {
-        final Iterator<IReactiveSource<IN>> iterator = reactiveSources.iterator();
-
         RCLog.v(this, "Unsubscribing all sources, reason=" + reason);
-        while (iterator.hasNext()) {
-            iterator.next().unsubscribeAll(reason);
+        for (IReactiveSource<IN> source : reactiveSources) {
+            source.unsubscribeAll(reason);
         }
     }
 

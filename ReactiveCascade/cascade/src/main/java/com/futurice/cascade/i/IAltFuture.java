@@ -245,7 +245,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
 
     /**
      * Pause execution of this chain for a fixed time interval. Other chains will be able to execute
-     * in the meanwhile- no theads are blocked.
+     * in the meanwhile- no threads are blocked.
      * <p>
      * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
      *

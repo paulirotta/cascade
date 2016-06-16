@@ -26,7 +26,6 @@ import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.Origin;
 import com.futurice.cascade.util.RCLog;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -322,12 +321,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @throws Exception
      */
     protected Exception forEachThen(@NonNull final IActionOne<IAltFuture<OUT, ?>> action) {
-        Iterator<IAltFuture<OUT, ?>> iterator = downchainAltFutures.iterator();
         Exception exception = null;
 
-        while (iterator.hasNext()) {
+        for (IAltFuture<OUT, ?> altFuture : downchainAltFutures) {
             try {
-                action.call(iterator.next());
+                action.call(altFuture);
             } catch (Exception e) {
                 if (exception == null) {
                     exception = e;
