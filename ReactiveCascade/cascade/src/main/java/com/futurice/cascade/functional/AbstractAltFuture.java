@@ -74,6 +74,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * TODO Document ZEN and apply to use to allow collections and arguments that currently might not accept null to accept null as a first class from. Not yet used in many places.
      */
     public static final State ZEN = new AbstractState() {
+        @NonNull
         @Override
         public String toString() {
             return "ZEN";
@@ -87,6 +88,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * We prefer to name each state explicity for debuggability and disambiguation.
      */
     public static final State COMPLETE = new AbstractState() {
+        @NonNull
         @Override
         public String toString() {
             return "COMPLETE";
@@ -104,6 +106,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * might be worth the performance gained.
      */
     protected static final State FORKED = new AbstractState() {
+        @NonNull
         @Override
         public String toString() {
             return "FORKED";

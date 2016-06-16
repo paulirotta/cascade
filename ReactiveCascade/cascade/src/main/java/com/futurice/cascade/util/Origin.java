@@ -23,6 +23,7 @@ public abstract class Origin implements IAsyncOrigin {
         return mOrigin;
     }
 
+    @NonNull
     @Override // Object
     public String toString() {
         return mOrigin.get();

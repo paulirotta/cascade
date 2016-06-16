@@ -57,6 +57,6 @@ public interface IGettable<T> {
      *
      * @return string representation of the current from, or {@link #VALUE_NOT_AVAILABLE}
      */
+    @NonNull
     String toString();
-    //TODO Check all implementations for compliance of toString() returning the get().toString()
 }

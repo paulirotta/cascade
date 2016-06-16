@@ -197,7 +197,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
         return t;
     }
 
-    @Nullable
+    @NonNull
     @Override // ISafeGettable
     public String toString() {
         return safeGet().toString();

@@ -372,6 +372,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
         return name;
     }
 
+    @NonNull
     @Override // Object
     public String toString() {
         return getName();

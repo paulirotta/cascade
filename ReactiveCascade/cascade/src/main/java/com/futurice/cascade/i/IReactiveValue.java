@@ -18,20 +18,6 @@ import android.support.annotation.Nullable;
  */
 public interface IReactiveValue<T> extends ISafeGettable<T>, ISettable<T> {
     /**
-     * Implementations are required to map this from to be <pre><code>
-     * <p>
-     *     T t = safeGet();
-     *     return t != null ? t.toString() : null;
-     * </code>
-     * </pre>
-     *
-     * @return the string representation of the current from
-     */
-    @Override // Object
-    @Nullable
-    String toString();
-
-    /**
      * Replace the current valueAR with an update, but only if the valueAR is the expected valueAR.
      * <p>
      * This is a high performance concurrent atomic compare-split-swap. For more information, see
