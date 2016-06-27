@@ -1,6 +1,6 @@
 /*
 This file is part of Reactive Cascade which is released under The MIT License.
-See license.txt or http://reactivecascade.com for details.
+See license.txt and http://reactivecascade.com for details.
 This is open source for the common good. Please contribute improvements by pull request or contact paulirotta@gmail.com
 */
 package com.futurice.cascade.util;
@@ -33,16 +33,15 @@ public class DefaultThreadType extends AbstractThreadType {
     /**
      * Construct a new thread group
      *
-     * @param name
-     * @param executorService
-     * @param queue           may be null in which
-     *                        case {@link #isInOrderExecutor()} will return <code>true</code>
-     *                        ; may be {@link java.util.concurrent.BlockingDeque} in which
+     * @param name            of this thread type for debug displays
+     * @param executorService for this thread type
+     * @param queue           may be null in which case {@link #isInOrderExecutor()} will return
+     *                        <code>true</code>; may be {@link java.util.concurrent.BlockingDeque} in which
      *                        case {@link #isInOrderExecutor()} will return <code>false</code>
      */
     public DefaultThreadType(@NonNull String name,
-            @NonNull ExecutorService executorService,
-            @NonNull BlockingQueue<Runnable> queue) {
+                             @NonNull ExecutorService executorService,
+                             @NonNull BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
         this.inOrderExecution = queue instanceof BlockingDeque;
