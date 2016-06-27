@@ -40,12 +40,12 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
     public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
         RCLog.d(this, "Handling doOnCancelled(): " + stateCancelled);
 
-        if (!this.mStateAR.compareAndSet(ZEN, stateCancelled) || (Async.USE_FORKED_STATE && !this.mStateAR.compareAndSet(FORKED, stateCancelled))) {
-            RCLog.i(this, "Will not doOnCancelled() because IAltFuture state is already determined: " + mStateAR.get());
+        if (!this.stateAR.compareAndSet(ZEN, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
+            RCLog.i(this, "Will not doOnCancelled() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
 
-        mThreadType
+        threadType
                 .from(stateCancelled.getReason())
                 .then(mOnCancelledAction)
                 .fork();

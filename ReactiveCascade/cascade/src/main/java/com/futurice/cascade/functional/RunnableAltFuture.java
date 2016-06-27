@@ -172,12 +172,12 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
 //    @Override // IAltFuture
 //    public boolean cancel(@NonNull  final String reason) {
 //        assertNotDone();
-//        final Object state = mStateAR.get();
+//        final Object state = stateAR.get();
 //
 //        if (state instanceof AltFutureStateCancelled) {
 //            RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
 //        } else {
-//            if (mStateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
+//            if (stateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
 //                RCLog.d(this, mOrigin, "Cancelled, reason=" + reason);
 //                return true;
 //            } else {
@@ -202,14 +202,14 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
 
         try {
             if (isCancelled()) {
-                RCLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + mStateAR.get());
-                throw new CancellationException("Cancelled before execution started: " + mStateAR.get().toString());
+                RCLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + stateAR.get());
+                throw new CancellationException("Cancelled before execution started: " + stateAR.get().toString());
             }
             final OUT out = mAction.call();
 
-            if (!(mStateAR.compareAndSet(ZEN, out) || mStateAR.compareAndSet(FORKED, out))) {
-                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + mStateAR.get());
-                throw new CancellationException(mStateAR.get().toString());
+            if (!(stateAR.compareAndSet(ZEN, out) || stateAR.compareAndSet(FORKED, out))) {
+                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + stateAR.get());
+                throw new CancellationException(stateAR.get().toString());
             }
             stateChanged = true;
         } catch (CancellationException e) {
@@ -220,7 +220,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         } catch (Exception e) {
             AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
-            if (!(mStateAR.compareAndSet(ZEN, stateError) && !(mStateAR.compareAndSet(FORKED, stateError)))) {
+            if (!(stateAR.compareAndSet(ZEN, stateError) && !(stateAR.compareAndSet(FORKED, stateError)))) {
                 RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
                 stateChanged = true;
             }
@@ -232,13 +232,13 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
                 try {
                     doThen();
                 } catch (Exception e) {
-                    RCLog.e(this, "RunnableAltFuture.run() state=" + mStateAR.get() + "\nProblem in resulting .doThen()", e);
+                    RCLog.e(this, "RunnableAltFuture.run() state=" + stateAR.get() + "\nProblem in resulting .doThen()", e);
                 }
 
                 try {
                     clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
                 } catch (Exception e) {
-                    RCLog.e(this, "RunnableAltFuture.run() state=\" + mStateAR.get() + \"\nCan not clearPreviousAltFuture()", e);
+                    RCLog.e(this, "RunnableAltFuture.run() state=\" + stateAR.get() + \"\nCan not clearPreviousAltFuture()", e);
                 }
             }
         }
@@ -252,6 +252,6 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
     @CallSuper
     @NotCallOrigin
     protected void doFork() {
-        this.mThreadType.fork(this);
+        this.threadType.fork(this);
     }
 }

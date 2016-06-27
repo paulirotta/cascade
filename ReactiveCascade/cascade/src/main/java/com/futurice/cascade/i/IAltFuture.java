@@ -129,7 +129,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * This is done for you when you add functions to a chain. You do not need to call it yourself.
      * <p>
      * The implementation may call this multiple times to support merging chains. This happens most
-     * often when a method returns the mTail of a section of chain. The returned from in this case is
+     * often when a method returns the tail of a section of chain. The returned from in this case is
      * a new chain link stopping the merged chain section which might start burning before the merger
      * is created to not burn past the merger point until the primary chain reaches that point also.
      *

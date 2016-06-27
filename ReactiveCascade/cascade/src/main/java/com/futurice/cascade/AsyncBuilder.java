@@ -36,10 +36,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <code><pre>
- *     public static IThreadType mThreadType;
+ *     public static IThreadType threadType;
  * .. onCreate ..
- * if (mThreadType == null) {
- *    mThreadType = new ThreadTypeBuilder(this.getApplicationContext()).build();
+ * if (threadType == null) {
+ *    threadType = new ThreadTypeBuilder(this.getApplicationContext()).build();
  * } *
  * </pre></code>
  * <p>
@@ -702,7 +702,7 @@ public class AsyncBuilder {
                     runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, createThreadId("FileThread")))
             );
         }
-        //TODO else Warn if mThreadType does match the previously created IThreadType parameter
+        //TODO else Warn if threadType does match the previously created IThreadType parameter
 
         return fileReadExecutorService;
     }

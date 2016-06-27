@@ -333,7 +333,7 @@ public interface IThreadType extends INamed {
     boolean isShutdown();
 
     /**
-     * Halt execution of all functional and reactive subscriptions in this mThreadType.
+     * Halt execution of all functional and reactive subscriptions in this threadType.
      *
      * @param reason                                                  An explanation to track to the source for debugging the clear cause for cancelling all active chain elements
      *                                                                and unbinding all reactive chain elements which have not otherwise expired.

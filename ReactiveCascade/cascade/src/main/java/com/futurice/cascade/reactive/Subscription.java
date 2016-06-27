@@ -65,9 +65,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NonNull
     private final Runnable mFireRunnable;
 
-    //TODO Use to unsubcribe from mTail when IBindingContext is implemented
+    //TODO Use to unsubcribe from tail when IBindingContext is implemented
     @Nullable
-    private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain from being garbage collected until the mTail of the chain is de-referenced
+    private final IReactiveSource<IN> upchainReactiveSource; // This is held to keep the chain from being garbage collected until the tail of the chain is de-referenced
 
     /**
      * Create a new default implementation of a reactive active chain link
