@@ -270,7 +270,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     @Override // IAltFuture
-    public void setUpchain(@NonNull final IAltFuture<?, ? extends IN> altFuture) {
+    public void setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture) {
         boolean set = this.upchainAltFutureAR.compareAndSet(null, altFuture);
 
         if (!set) {
@@ -320,7 +320,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @param action
      * @throws Exception
      */
-    protected Exception forEachThen(@NonNull final IActionOne<IAltFuture<OUT, ?>> action) {
+    protected Exception forEachThen(@NonNull IActionOne<IAltFuture<OUT, ?>> action) {
         Exception exception = null;
 
         for (IAltFuture<OUT, ?> altFuture : downchainAltFutures) {
@@ -363,7 +363,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             return;
         }
 
-        final Exception e = forEachThen(af -> {
+        Exception e = forEachThen(af -> {
             af.doOnError(stateError);
         });
 
@@ -380,7 +380,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             return;
         }
 
-        final Exception e = forEachThen(altFuture -> {
+        Exception e = forEachThen(altFuture -> {
             altFuture.doOnCancelled(stateCancelled);
         });
 
@@ -436,7 +436,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         AssertUtil.assertTrue("then(IActionOne...) with empty list of upchain things to await makes no sense", actions.length > 0);
         AssertUtil.assertTrue("then(IActionOne...) with single item in the list of upchain things to await is confusing. Use .then() instead", actions.length != 1);
 
-        final IAltFuture<OUT, OUT>[] altFutures = new RunnableAltFuture[actions.length];
+        IAltFuture<OUT, OUT>[] altFutures = new RunnableAltFuture[actions.length];
 
         for (int i = 0; i < actions.length; i++) {
             final IActionOne<OUT> a = actions[i];
@@ -519,7 +519,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override
     @SuppressWarnings("unchecked")
     public ISettableAltFuture<OUT> sleep(long sleepTime,
-                                         @NonNull final TimeUnit timeUnit) {
+                                         @NonNull TimeUnit timeUnit) {
         ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(mThreadType);
 
         outAltFuture.setUpchain(this);
@@ -556,8 +556,8 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         AtomicInteger downCounter = new AtomicInteger(altFutures.length);
 
         outAltFuture.setUpchain(this);
-        for (final IAltFuture<?, ?> upchainAltFuture : altFutures) {
-            final IAltFuture<?, ?> ignore = upchainAltFuture.then(() -> {
+        for (IAltFuture<?, ?> upchainAltFuture : altFutures) {
+            IAltFuture<?, ?> ignore = upchainAltFuture.then(() -> {
                 if (downCounter.decrementAndGet() == 0) {
                     outAltFuture.set(get());
                 }
