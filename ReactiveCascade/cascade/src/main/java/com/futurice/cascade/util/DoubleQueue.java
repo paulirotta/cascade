@@ -33,15 +33,15 @@ import java.util.concurrent.TimeUnit;
  * In practice this performs well for most uses since everything is best effort anyway and the single
  * thread has absolute priority. If starting as soon as possible is absolutely critical, use a dedicated {@link com.futurice.cascade.i.IThreadType} instead.
  *
- * @param <E>
+ * @param <T>
  */
-public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
+public class DoubleQueue<T> extends LinkedBlockingQueue<T> {
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues
 
     @NonNull
-    final BlockingQueue<E> lowPriorityQueue;
+    final BlockingQueue<T> lowPriorityQueue;
 
-    public DoubleQueue(@NonNull BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull BlockingQueue<T> lowPriorityQueue) {
         super();
 
         this.lowPriorityQueue = lowPriorityQueue;
@@ -50,8 +50,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E peek() {
-        E e = super.peek();
+    public T peek() {
+        T e = super.peek();
 
         if (e == null) {
             e = lowPriorityQueue.peek();
@@ -63,8 +63,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E poll() {
-        E e = super.poll();
+    public T poll() {
+        T e = super.poll();
 
         if (e == null) {
             e = lowPriorityQueue.poll();
@@ -76,15 +76,15 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Nullable
     @CallSuper
     @Override // LinkedBlockingQueue
-    public E poll(long timeout,
+    public T poll(long timeout,
                   @NonNull TimeUnit unit) throws InterruptedException {
-        E e = super.poll(timeout, unit);
+        T t = super.poll(timeout, unit);
 
-        if (e == null) {
-            e = lowPriorityQueue.poll();
+        if (t == null) {
+            t = lowPriorityQueue.poll();
         }
 
-        return e;
+        return t;
     }
 
     @CallSuper
@@ -95,8 +95,8 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     @CallSuper
     @Override // LinkedBlockingQueue
-    public void put(@NonNull E e) throws InterruptedException {
-        super.put(e);
+    public void put(@NonNull T t) throws InterruptedException {
+        super.put(t);
 
         synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();
@@ -117,19 +117,19 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     @CallSuper
     @NonNull
-    public synchronized E take() throws InterruptedException {
-        E e;
+    public synchronized T take() throws InterruptedException {
+        T t;
 
         do {
-            e = poll();
-            if (e == null) {
-                e = lowPriorityQueue.poll();
+            t = poll();
+            if (t == null) {
+                t = lowPriorityQueue.poll();
             }
-            if (e != null) {
-                e.wait(TAKE_POLL_INTERVAL);
+            if (t != null) {
+                t.wait(TAKE_POLL_INTERVAL);
             }
-        } while (e == null);
+        } while (t == null);
 
-        return e;
+        return t;
     }
 }
