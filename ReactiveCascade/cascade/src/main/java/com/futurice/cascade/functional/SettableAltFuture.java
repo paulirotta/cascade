@@ -56,7 +56,7 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
 
     @Override // ISettable
     public void set(@NonNull T value) {
-        if (stateAR.compareAndSet(ZEN, value) || stateAR.compareAndSet(FORKED, value)) {
+        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, value) || stateAR.compareAndSet(FORKED, value)) {
             // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
             doFork();

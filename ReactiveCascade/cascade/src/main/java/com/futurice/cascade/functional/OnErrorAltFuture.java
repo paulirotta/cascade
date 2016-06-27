@@ -38,7 +38,7 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
     public void doOnError(@NonNull StateError stateError) throws Exception {
         RCLog.d(this, "Handling doOnError(): " + stateError);
 
-        if (!this.stateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
+        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
             RCLog.i(this, "Will not doOnError() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }

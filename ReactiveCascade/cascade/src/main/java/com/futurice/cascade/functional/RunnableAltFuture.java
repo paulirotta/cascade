@@ -207,7 +207,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             }
             final OUT out = mAction.call();
 
-            if (!(stateAR.compareAndSet(ZEN, out) || stateAR.compareAndSet(FORKED, out))) {
+            if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, out) || stateAR.compareAndSet(FORKED, out))) {
                 RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + stateAR.get());
                 throw new CancellationException(stateAR.get().toString());
             }
@@ -220,7 +220,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         } catch (Exception e) {
             AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
-            if (!(stateAR.compareAndSet(ZEN, stateError) && !(stateAR.compareAndSet(FORKED, stateError)))) {
+            if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) && !(stateAR.compareAndSet(FORKED, stateError)))) {
                 RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
                 stateChanged = true;
             }

@@ -48,39 +48,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @NotCallOrigin
 public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
     /**
-     * A null object meaning "no mind", "unasserted" or "state not yet set".
-     * <p>
-     * Many use <code>null</code> instead of a <a href=https://en.wikipedia.org/wiki/Null_Object_pattern">null object</a>
-     * with a specific meaning. Functional and reactive values in Cascade do not allow null as it both pollutes and obfuscates code.
-     * <code>ZEN</code> is true emptiness to future state and explicit choice for a mature object design.
-     * The difference matters. Read about Tony Hoare, the inventor of <code>null</code>, referring to it as "my billion dollar mistake".
-     * <p>
-     * The contract: once the ZEN has been lost, it can not be regained. It may transition to {@link #FORKED},
-     * or a final immutable state.
-     * <p>
-     * <em>A Cup of Tea</em>
-     * <p>
-     * Nan-in, a Japanese master during the Meiji era (1868-1912), received a university
-     * professor who came to inquire about Zen.
-     * <p>
-     * Nan-in served tea. He poured his visitor's cup full, and subscribe kept on pouring.
-     * The professor watched the overflow until he no longer could restrain himself.
-     * "It is overfull. No more will go in! "Like this cup," Nan-in said, "you are full
-     * of your own opinions and speculations. How can I show you Zen unless you first empty your cup?"
-     * <p>
-     * {@link "http://www.lotustemple.us/resources/koansandmondo.html"}
-     * <p>
-     * TODO Document ZEN and apply to use to allow collections and arguments that currently might not accept null to accept null as a first class from. Not yet used in many places.
-     */
-    public static final State ZEN = new AbstractState() {
-        @NonNull
-        @Override
-        public String toString() {
-            return "ZEN";
-        }
-    };
-
-    /**
      * The state returned by a function which has no value, but is finished running.
      * <p>
      * In some functional styles this is (somewhat confusingly) a "Null" object passed along the chain.
@@ -112,7 +79,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
     };
 
-    protected final AtomicReference<Object> stateAR = new AtomicReference<>(ZEN);
+    protected final AtomicReference<Object> stateAR = new AtomicReference<>(VALUE_NOT_AVAILABLE);
 
     @NonNull
     protected final IThreadType threadType;
@@ -136,7 +103,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public boolean cancel(@NonNull String reason) {
         AltFutureStateCancelled state = new AltFutureStateCancelled(reason);
 
-        if (stateAR.compareAndSet(ZEN, state) || stateAR.compareAndSet(FORKED, state)) {
+        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, state) || stateAR.compareAndSet(FORKED, state)) {
             RCLog.d(this, "Cancelled: reason=" + reason);
             return true;
         }
@@ -177,7 +144,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             }
         };
 
-        if (stateAR.compareAndSet(ZEN, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
+        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
             RCLog.d(this, "Cancelled from state " + state);
             final Exception e = forEachThen(ignore ->
                     doOnCancelled(stateCancelled));
@@ -208,7 +175,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     protected boolean isDone(@NonNull Object state) {
-        return state != ZEN && state != FORKED;
+        return state != VALUE_NOT_AVAILABLE && state != FORKED;
     }
 
     @Override // IAltFuture
@@ -217,7 +184,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     protected boolean isForked(@NonNull Object state) {
-        return state != ZEN; // && !(state instanceof AltFutureStateSetButNotYetForked);
+        return state != VALUE_NOT_AVAILABLE;
     }
 
     @Override // IAltFuture
@@ -232,7 +199,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
 
         Object s = null;
-        if (Async.USE_FORKED_STATE ? !stateAR.compareAndSet(ZEN, FORKED) : (s = stateAR.get()) != ZEN) {
+        if (Async.USE_FORKED_STATE ? !stateAR.compareAndSet(VALUE_NOT_AVAILABLE, FORKED) : (s = stateAR.get()) != VALUE_NOT_AVAILABLE) {
             if (s == null) {
                 s = stateAR.get();
             }
@@ -358,7 +325,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public void doOnError(@NonNull StateError stateError) throws Exception {
         RCLog.d(this, "Handling doOnError(): " + stateError);
 
-        if (!this.stateAR.compareAndSet(ZEN, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
+        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
             RCLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
@@ -375,7 +342,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
         RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
-        if (!this.stateAR.compareAndSet(ZEN, stateCancelled) && !this.stateAR.compareAndSet(FORKED, stateCancelled)) {
+        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) && !this.stateAR.compareAndSet(FORKED, stateCancelled)) {
             RCLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
@@ -731,7 +698,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
             RCLog.d(this, "Handling doOnCancelled(): " + stateCancelled);
 
-            if (!this.stateAR.compareAndSet(ZEN, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
+            if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
                 RCLog.i(this, "Will not doOnCancelled() because IAltFuture state is already determined: " + stateAR.get());
                 return;
             }

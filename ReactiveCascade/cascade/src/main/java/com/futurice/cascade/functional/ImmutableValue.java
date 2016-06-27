@@ -15,8 +15,8 @@ import com.futurice.cascade.i.IActionOneR;
 import com.futurice.cascade.i.IActionR;
 import com.futurice.cascade.i.IAltFuture;
 import com.futurice.cascade.i.IBaseAction;
-import com.futurice.cascade.i.IGettable;
 import com.futurice.cascade.i.ISafeGettable;
+import com.futurice.cascade.util.AssertUtil;
 import com.futurice.cascade.util.RCLog;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * a lot of memory. In asynchronous functional chains based on RunnableAltFuture, dereference of
  * intermediate values when going on to the next function, but only in production builds.
  * <p>
- * Note that there is no mutator method which allows to re-enter the initial {@link SettableAltFuture#ZEN}
+ * Note that there is no mutator method which allows to re-enter the initial {@link com.futurice.cascade.i.IGettable#VALUE_NOT_AVAILABLE}
  * state once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
  * through this intermediate state. Once you leave the temple, you can never go back.
  * <p>
@@ -46,9 +46,8 @@ import java.util.concurrent.atomic.AtomicReference;
 //@Deprecated // Delete this and use SettableAltFuture instead for simplicity
 public class ImmutableValue<T> implements ISafeGettable<T> {
     @SuppressWarnings("unchecked")
-    protected final T ZEN = (T) AbstractAltFuture.ZEN;
+    private final AtomicReference<T> valueAR = new AtomicReference<>((T) VALUE_NOT_AVAILABLE);
 
-    private final AtomicReference<T> valueAR = new AtomicReference<>(ZEN); // The "Unasserted" state is different from null
     private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
 
     @Nullable
@@ -71,7 +70,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * <p>
      * It can be useful to create for example default values.
      *
-     * @param value
+     * @param value the value to immediately set
      */
     public ImmutableValue(@NonNull T value) {
         set(value);
@@ -88,8 +87,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * See {@link java.util.concurrent.atomic.AtomicReference#compareAndSet(Object, Object)} for
      * a description and use examples of this pattern.
      *
-     * @param expected
-     * @param value
+     * @param expected value
+     * @param value    to set if expected is the current value
      * @return if <code>false</code> is returned, you may try again as the from as needed since the
      * final from has not been set.
      */
@@ -107,12 +106,12 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     }
 
     /**
-     * Add an mOnFireAction which will be run when {@link #set(Object)} is called.
+     * Add an action which will be run when {@link #set(Object)} is called.
      * <p>
      * If the from is already {@link #set(Object)}, the passed mOnFireAction will be run immediately and
      * synchronously.
      *
-     * @return
+     * @return this
      */
     @NonNull
     public ImmutableValue<T> then(@NonNull IActionOne<T> action) {
@@ -123,6 +122,14 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         return this;
     }
 
+    /**
+     * Add an action which will be run when {@link #set(Object)} is called.
+     * <p>
+     * If the from is already {@link #set(Object)}, the passed mOnFireAction will be run immediately and
+     * synchronously.
+     *
+     * @return this
+     */
     @NonNull
     public ImmutableValue<T> then(@NonNull IAction<T> action) {
         thenActions.add(action);
@@ -179,10 +186,10 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * </code>
      * </pre>
      *
-     * @return
+     * @return <code>true</code> if the value is already asserted
      */
     public final boolean isSet() {
-        return valueAR.get() != AbstractAltFuture.ZEN;
+        return valueAR.get() != VALUE_NOT_AVAILABLE;
     }
 
     /**
@@ -199,15 +206,16 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @CallSuper
     @NonNull
     @SuppressWarnings("unchecked")
-    // The response must be cast because of internal atomic state is a non-T class
     public T get() {
-        final T value = valueAR.get();
+        T value = valueAR.get();
 
-        if (value == ZEN) {
+        if (value == VALUE_NOT_AVAILABLE) {
             try {
                 if (action != null) {
-                    final T t = action.call();
-                    compareAndSet(ZEN, t);
+                    T t = action.call();
+                    if (!compareAndSet((T) VALUE_NOT_AVAILABLE, t)) {
+                        RCLog.d(this, "ImmutableValue was set while calling action during get: ignoring the second value from action \"" + t + "\" in favor of \"" + valueAR.get() + "\"");
+                    }
                     return t;
                 }
                 throw new IllegalStateException("Null action and from has not been set()");
@@ -232,13 +240,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @SuppressWarnings("unchecked")
     @NonNull
     public T safeGet() {
-        final T value = valueAR.get();
-
-        if (value == ZEN) {
-            return (T) IAltFuture.VALUE_NOT_AVAILABLE;
-        }
-
-        return value;
+        return valueAR.get();
     }
 
     /**
@@ -253,8 +255,11 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      */
     @CallSuper
     @NonNull
+    @SuppressWarnings("unchecked")
     public T set(@NonNull T value) {
-        if (!compareAndSet(ZEN, value)) {
+        AssertUtil.assertNotNull(value);
+
+        if (!compareAndSet((T) VALUE_NOT_AVAILABLE, value)) {
             throw new IllegalStateException("ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new from=" + value);
         }
         doThenActions(value);
@@ -269,17 +274,11 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * this text, consider using a {@link #then(IActionOne)} mOnFireAction
      * to make your logic run when this from is set.
      *
-     * @return
+     * @return the string representation, or "Value not available" if not yet determined and can not be determined by an on-get action
      */
     @CallSuper
     @NonNull
     public String toString() {
-        final T t = safeGet();
-
-        if (t == null) {
-            return IGettable.VALUE_NOT_AVAILABLE.toString();
-        }
-
-        return t.toString();
+        return safeGet().toString();
     }
 }
