@@ -337,7 +337,7 @@ public final class Async {
     public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isFailFast(); // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
     /**
      * The default {@link com.futurice.cascade.i.IThreadType} implementation. Usually you can call for
-     * guaranteed asynchronous operations that will cooperate (mQueue) when all device cores are busy.
+     * guaranteed asynchronous operations that will cooperate (queue) when all device cores are busy.
      * Special configurations with {@link AsyncBuilder} may choose to modify this behaviour.
      * <p>
      * <code><pre>

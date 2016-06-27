@@ -49,7 +49,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     private static final int INIT_READ_TIMEOUT_SECONDS = 3;
 
     private static final ConcurrentHashMap<String, PersistentValue<?>> PERSISTENT_VALUES = new ConcurrentHashMap<>();
-    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered mQueue so we can read and write things as quickly as possible.
+    // The SharedPreferences type is not thread safe, so all operations are done from this thread. Note also that we want an uncluttered queue so we can read and write things as quickly as possible.
     private static final IThreadType persistentValueThreadType = new DefaultThreadType("PersistentValueThreadType", Executors.newSingleThreadExecutor(), new LinkedBlockingQueue<>());
     private static final IActionOne<Exception> defaultOnErrorAction = e ->
             RCLog.e(PersistentValue.class.getSimpleName(), "Internal error", e);

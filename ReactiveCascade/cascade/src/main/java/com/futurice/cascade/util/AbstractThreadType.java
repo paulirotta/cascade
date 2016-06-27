@@ -47,7 +47,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     protected final ExecutorService executorService;
 
     @NonNull
-    protected final BlockingQueue<Runnable> mQueue;
+    protected final BlockingQueue<Runnable> queue;
 
     @NonNull
     private final String name;
@@ -66,7 +66,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
                               @NonNull BlockingQueue<Runnable> queue) {
         this.name = name;
         this.executorService = executorService;
-        this.mQueue = queue;
+        this.queue = queue;
     }
 
 //============================= Internal Utility Methods =========================================
@@ -153,18 +153,18 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     public boolean moveToHeadOfQueue(@NonNull Runnable runnable) {
         //TODO Analyze if this non-atomic operation is a risk for closing a ThreadType and moving all pending actions to a new thread type as we would like to do for NET_READ when the available bandwdith changes
 
-        if (mQueue instanceof Deque) {
-            final boolean moved = mQueue.remove(runnable);
+        if (queue instanceof Deque) {
+            final boolean moved = queue.remove(runnable);
 
             if (moved) {
-                ((Deque<Runnable>) mQueue).addFirst(runnable);
+                ((Deque<Runnable>) queue).addFirst(runnable);
             }
             RCLog.v(this, "moveToHeadOfQueue() moved=" + moved);
 
             return moved;
         }
 
-        return false; // The UI thread does not have a visible mQueue, and some queues choose not to support re-ordering
+        return false; // The UI thread does not have a visible queue, and some queues choose not to support re-ordering
     }
 
     @Override // IThreadType
@@ -273,6 +273,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @Override // IThreadType
     public <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
         AssertUtil.assertTrue("Call runnableAltFuture().fork() instead. AbstractThreadType.fork() expected the IRunnableAltFuture should return isForked() and !isDone()", runnableAltFuture.isForked());
+
         if (BuildConfig.DEBUG) {
             if (isMistakenlyCalledDirectlyFromOutsideTheCascadeLibrary()) {
                 throw new UnsupportedOperationException("Method for internal use only. Call " + runnableAltFuture + ".fork() instead. If you are implementing your own IAltFuture, do so in " + Async.class.getPackage());

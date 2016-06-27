@@ -102,7 +102,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
 
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking
-     * mQueue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getUpchain()}
+     * queue of its {@link com.futurice.cascade.i.IThreadType}. If there is a {@link #getUpchain()}
      * subscribe that will be forked instead until finding one where {@link #isDone()} is false.
      *
      * @return <code>this</code>, which is usually the <code>IAltFuture</code> which was actually forked.

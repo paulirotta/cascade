@@ -22,9 +22,11 @@ import java.util.concurrent.ExecutorService;
 @NotCallOrigin
 public class DefaultThreadType extends AbstractThreadType {
     final boolean inOrderExecution;
+
     private volatile boolean wakeUpIsPending = false; // Efficiency filter to wake the ServiceExecutor only once TODO Is there a simpler way with AtomicBoolean?
+
     private final Runnable wakeUpRunnable = () -> {
-        // Do nothing, this is just used for insurance fast flushing the ServiceExecutor mQueue when items are added out-of-order to the associated BlockingQueue
+        // Do nothing, this is just used for insurance fast flushing the ServiceExecutor queue when items are added out-of-order to the associated BlockingQueue
         wakeUpIsPending = false;
     };
 
@@ -38,8 +40,7 @@ public class DefaultThreadType extends AbstractThreadType {
      *                        ; may be {@link java.util.concurrent.BlockingDeque} in which
      *                        case {@link #isInOrderExecutor()} will return <code>false</code>
      */
-    public DefaultThreadType(
-            @NonNull String name,
+    public DefaultThreadType(@NonNull String name,
             @NonNull ExecutorService executorService,
             @NonNull BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
@@ -49,23 +50,16 @@ public class DefaultThreadType extends AbstractThreadType {
 
     @Override // IThreadType
     public void run(@NonNull Runnable runnable) {
-        if (executorService.isShutdown()) {
-            return;
-        }
-
         executorService.submit(runnable);
     }
 
     @Override // IThreadType
     @SuppressWarnings("unchecked")
     @NotCallOrigin
-    public void runNext(@NonNull final Runnable runnable) {
-        if (executorService.isShutdown()) {
-            return;
-        }
-
+    public void runNext(@NonNull Runnable runnable) {
         int n;
-        if (inOrderExecution || (n = mQueue.size()) == 0) {
+
+        if (inOrderExecution || (n = queue.size()) == 0) {
             run(runnable);
             return;
         }
@@ -73,12 +67,12 @@ public class DefaultThreadType extends AbstractThreadType {
         // Out of order execution is permitted and desirable to finish functional chains we have started before clouding memory and execution queues by starting more
         if (isInOrderExecutor()) {
             RCLog.v(this, "WARNING: runNext() on single threaded IThreadType. This will be run FIFO only after previously queued tasks");
-            mQueue.add(runnable);
+            queue.add(runnable);
         } else {
-            ((BlockingDeque) mQueue).addFirst(runnable);
+            ((BlockingDeque) queue).addFirst(runnable);
         }
-        if (!wakeUpIsPending && ++n != mQueue.size()) {
-            // The mQueue changed during submit- just be sure something is submitted to wake the executor right now to pull from the mQueue
+        if (!wakeUpIsPending && ++n != queue.size()) {
+            // The queue changed during submit- just be sure something is submitted to wake the executor right now to pull from the queue
             wakeUpIsPending = true;
             executorService.execute(wakeUpRunnable);
         }

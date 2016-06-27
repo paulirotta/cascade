@@ -90,9 +90,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param action     a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
-    public RunnableAltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IAction<? extends IN> action) {
+    public RunnableAltFuture(@NonNull IThreadType threadType,
+                             @NonNull IAction<? extends IN> action) {
         super(threadType);
 
         this.mAction = () -> {
@@ -117,9 +116,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param action     a function that receives one input and no return from
      */
     @SuppressWarnings("unchecked")
-    public RunnableAltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOne<IN> action) {
+    public RunnableAltFuture(@NonNull IThreadType threadType,
+                             @NonNull IActionOne<IN> action) {
         super(threadType);
 
         this.mAction = () -> {
@@ -141,9 +139,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param threadType the thread pool to run this command on
      * @param mAction    a function that does not vary with the input from
      */
-    public RunnableAltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionR<OUT> mAction) {
+    public RunnableAltFuture(@NonNull IThreadType threadType,
+                             @NonNull IActionR<OUT> mAction) {
         super(threadType);
 
         this.mAction = mAction;
@@ -156,9 +153,8 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * @param threadType the thread pool to run this command on
      * @param mAction    a mapping function
      */
-    public RunnableAltFuture(
-            @NonNull final IThreadType threadType,
-            @NonNull final IActionOneR<IN, OUT> mAction) {
+    public RunnableAltFuture(@NonNull IThreadType threadType,
+                             @NonNull IActionOneR<IN, OUT> mAction) {
         super(threadType);
 
         this.mAction = () -> {

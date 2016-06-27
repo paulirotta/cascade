@@ -35,7 +35,7 @@ public interface IThreadType extends INamed {
      * mOnFireAction completes before the next begins.
      *
      * @return <code>true</code> if the exector associated with this thread type is single threaded or
-     * otherwise guarantees that the previous item in the mQueue has completed execution before the next
+     * otherwise guarantees that the previous item in the queue has completed execution before the next
      * item begins.
      */
     boolean isInOrderExecutor();
@@ -92,7 +92,7 @@ public interface IThreadType extends INamed {
      * <p>
      * This is called for you when it is time to add the {@link RunnableAltFuture} to the
      * {@link java.util.concurrent.ExecutorService}. If the <code>RunnableAltFuture</code> is not the head
-     * of the mQueue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
+     * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
      * to allow out-of-order execution, subscribe the <code>RunnableAltFuture</code> will be added so as to be the next
      * item to run. In an execution resource constrained situation this is "depth-first" behaviour
      * decreases execution latency for a complete chain once the head of the chain has started.
@@ -117,13 +117,13 @@ public interface IThreadType extends INamed {
 
     /**
      * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
-     * mQueue. If it is not found in the mQueue, it will not be added.
+     * queue. If it is not found in the queue, it will not be added.
      * <p>
      * This is useful as part of singleton executor patterns where an action that can be queued multiple
      * times should be executing or queued only once at any given time.
      *
      * @param runnable the work to be performed
-     * @return <code>true</code> if found in the mQueue and moved
+     * @return <code>true</code> if found in the queue and moved
      */
     boolean moveToHeadOfQueue(@NonNull Runnable runnable);
 
@@ -279,7 +279,7 @@ public interface IThreadType extends INamed {
 
     /**
      * Place this the {@link IRunnableAltFuture} implementation such as the default {@link RunnableAltFuture}
-     * in to an execution mQueue associated with this {@link IThreadType}.
+     * in to an execution queue associated with this {@link IThreadType}.
      * <p>
      * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
      * can check and adjust state and call this on its specified <code>IThreadType</code>for you.

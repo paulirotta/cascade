@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * and less and faster context switches (context switches tend to cost marginally more as thread count
  * increases). The downside is delays fom other background tasks unrelated to this may slow the start
  * of execution. A very slow task pulled from the {@link com.futurice.cascade.Async#WORKER}
- * mQueue and perhaps unrelated to the current focus of your attention will, once started, block the
+ * queue and perhaps unrelated to the current focus of your attention will, once started, block the
  * next {@link DoubleQueue} item from
  * starting until it completes.
  * <p>
@@ -41,7 +41,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @NonNull
     final BlockingQueue<E> lowPriorityQueue;
 
-    public DoubleQueue(@NonNull final BlockingQueue<E> lowPriorityQueue) {
+    public DoubleQueue(@NonNull BlockingQueue<E> lowPriorityQueue) {
         super();
 
         this.lowPriorityQueue = lowPriorityQueue;
@@ -97,6 +97,7 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
     @Override // LinkedBlockingQueue
     public void put(@NonNull E e) throws InterruptedException {
         super.put(e);
+
         synchronized (this) { //TODO Refactor to get rid of mutex
             this.notifyAll();
         }
@@ -104,10 +105,10 @@ public class DoubleQueue<E> extends LinkedBlockingQueue<E> {
 
     /**
      * Poll both queues for work to do. This will wake up immediately if new work is added to this
-     * mQueue, and within the next polling time window for the lowPriorityQueue. Since other threads
-     * which may be taking work from the low priority mQueue are probably waking up immediately this
-     * is OK. It keeps any dual-use thread associated with this mQueue relatively free for immediate
-     * response to the single use mQueue until such time as all other threads are busy, subscribe it pitches
+     * queue, and within the next polling time window for the lowPriorityQueue. Since other threads
+     * which may be taking work from the low priority queue are probably waking up immediately this
+     * is OK. It keeps any dual-use thread associated with this queue relatively free for immediate
+     * response to the single use queue until such time as all other threads are busy, subscribe it pitches
      * in on the work any of them can do.
      *
      * @return

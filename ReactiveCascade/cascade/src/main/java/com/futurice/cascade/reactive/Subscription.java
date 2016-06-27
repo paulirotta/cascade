@@ -36,7 +36,7 @@ import static com.futurice.cascade.Async.UI;
  * {@link IReactiveSource}.
  * <p>
  * <p>
- * TODO Add setFireEveryValue(true) option to mQueue up and fire all states one by one. If inOrderExecutor, this fire will be FIFO sequential, otherwise concurrent
+ * TODO Add setFireEveryValue(true) option to queue up and fire all states one by one. If inOrderExecutor, this fire will be FIFO sequential, otherwise concurrent
  *
  * @param <OUT>
  * @param <IN>  the type of the second link in the active chain
@@ -44,7 +44,7 @@ import static com.futurice.cascade.Async.UI;
 @NotCallOrigin
 public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>, IReactiveSource<OUT> {
     //FIXME Replace these values with changing lastFireInIsFireNext to be volatile boolean needToQueue to simplify logic
-    private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to mQueue on next fire
+    private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to queue on next fire
 
     @NonNull
     protected final IThreadType mThreadType;
@@ -59,7 +59,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NonNull
     private final CopyOnWriteArraySet<IReactiveSource<IN>> reactiveSources = new CopyOnWriteArraySet<>();
     @NonNull
-    private final AtomicReference<Object> latestFireInAR = new AtomicReference<>(FIRE_ACTION_NOT_QUEUED); // If is FIRE_ACTION_NOT_QUEUED, re-mQueue fireAction on next fire()
+    private final AtomicReference<Object> latestFireInAR = new AtomicReference<>(FIRE_ACTION_NOT_QUEUED); // If is FIRE_ACTION_NOT_QUEUED, re-queue fireAction on next fire()
     @NonNull
     private final AtomicBoolean mLatestFireInIsFireNext = new AtomicBoolean(false); // Signals high priority re-execution if still processing the previous from
     @NonNull
@@ -104,7 +104,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
          * Fire using the most recently set from. Skip intermediate values when they arrive too
          * fast to process.
           *
-          * Re-mQueue if the input from changes before exiting
+          * Re-queue if the input from changes before exiting
          */
         mFireRunnable = this.mThreadType.wrapActionWithErrorProtection(new IAction<Object>() {
             @Override
@@ -115,9 +115,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                 doReceiveFire((IN) latestValueFired); // This step may take some time
                 if (!latestFireInAR.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
                     if (mLatestFireInIsFireNext.getAndSet(true)) {
-                        mThreadType.runNext(getFireRunnable()); // Input was set again while processing this from- re-mQueue to fire again after other pending work
+                        mThreadType.runNext(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
                     } else {
-                        mThreadType.run(getFireRunnable()); // Input was set again while processing this from- re-mQueue to fire again after other pending work
+                        mThreadType.run(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
                     }
                 }
             }
@@ -215,7 +215,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
          would explicitly atomically couple the signals into a new Pair(in, boolean) structure.
          */
         if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED && in != IAltFuture.VALUE_NOT_AVAILABLE) {
-            // Only mQueue for execution if not already queued
+            // Only queue for execution if not already queued
             mThreadType.run(getFireRunnable());
         }
     }
@@ -226,7 +226,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public void fireNext(@NonNull IN in) {
         RCLog.v(this, "fireNext latestFireInAR=" + in);
         if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
-            // Only mQueue for execution if not already queued
+            // Only queue for execution if not already queued
             mThreadType.runNext(mFireRunnable);
         } else {
             // Already queued for execution, but possibly not soon- push it to the top of the stack

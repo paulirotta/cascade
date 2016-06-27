@@ -555,7 +555,7 @@ public class AsyncBuilder {
     @UiThread
     BlockingQueue<Runnable> getWorkerQueue() {
         if (workerQueue == null) {
-            Log.d(TAG, "Creating default worker mQueue");
+            Log.d(TAG, "Creating default worker queue");
             setWorkerQueue(new LinkedBlockingDeque<>());
         }
 
@@ -585,7 +585,7 @@ public class AsyncBuilder {
     @UiThread
     BlockingQueue<Runnable> getSerialWorkerQueue() {
         if (serialWorkerQueue == null) {
-            Log.d(TAG, "Creating default in-order worker mQueue");
+            Log.d(TAG, "Creating default in-order worker queue");
             setSerialWorkerQueue(new DoubleQueue<>(getWorkerQueue()));
         }
 
@@ -612,7 +612,7 @@ public class AsyncBuilder {
     @UiThread
     BlockingQueue<Runnable> getFileQueue() {
         if (fileQueue == null) {
-            Log.d(TAG, "Creating default file read mQueue");
+            Log.d(TAG, "Creating default file read queue");
             setFileQueue(new LinkedBlockingDeque<>());
         }
 
@@ -639,7 +639,7 @@ public class AsyncBuilder {
     @UiThread
     BlockingQueue<Runnable> getNetReadQueue() {
         if (netReadQueue == null) {
-            Log.d(TAG, "Creating default net read mQueue");
+            Log.d(TAG, "Creating default net read queue");
             setNetReadQueue(new LinkedBlockingDeque<>());
         }
 
@@ -666,7 +666,7 @@ public class AsyncBuilder {
     @UiThread
     BlockingQueue<Runnable> getNetWriteQueue() {
         if (netWriteQueue == null) {
-            Log.d(TAG, "Creating default worker net write mQueue");
+            Log.d(TAG, "Creating default worker net write queue");
             setNetWriteQueue(new LinkedBlockingDeque<>());
         }
 

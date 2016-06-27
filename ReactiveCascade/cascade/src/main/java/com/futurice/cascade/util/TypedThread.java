@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class TypedThread extends Thread {
     public static final ThreadGroup THREAD_GROUP = new ThreadGroup("ThreadTypeThreadGroup") {
         @Override
-        public void uncaughtException(@NonNull final Thread t, @NonNull final Throwable throwable) {
+        public void uncaughtException(@NonNull final Thread t, @NonNull Throwable throwable) {
             RCLog.e(this, "uncaughtException in " + t, throwable);
         }
     };
