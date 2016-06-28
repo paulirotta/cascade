@@ -12,8 +12,8 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-23.0.3
-    - android-23
+    - build-tools-24
+    - android-24
     - add-on
     - extra
 
@@ -36,17 +36,6 @@ before_script:
 script:
   - ./gradlew build connectedCheck --info
 
-
-#env:
-#  global:
-#    - INSTALL_PKGS='build-tools-23.0.3,android-23'
-#    - UPDATE_PKGS='platform-tools,tools,extra-android-m2repository,extra-google-m2repository'
-#    - GRADLE_USER_HOME="${TRAVIS_BUILD_DIR}/gradle"
-#    - ADB_INSTALL_TIMEOUT=8 # minutes (2 minutes by default)
-#    - AVD_DEBUG='init,avd_config,nand_limits,keys,adb,adbserver,adbclient'
-#    - ANDROID_LOG_TAGS='NetworkStats:S dalvikvm:S Zygote:S Resources:S *:D'
-#    - ANDROID_SERIAL='emulator-5554'
-
 #matrix:
 #  include:
 #    - env: AVD_TARGET=android-15
@@ -60,22 +49,3 @@ script:
 #    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
 #           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
 #  fast_finish: true
-
-#before_install:
-#  - cd ./ReactiveCascade
-#  - chmod +x execute
-#  - chmod +x scripts/acib
-#  - ./execute install-and-update-sdk
-#  - ./execute create-and-start-device wait-for-device-online &
-
-#install:
-#  - chmod +x gradlew
-#  - ./gradlew --version # show version and download Gradle Wrapper when is not present in cache
-#  - ./gradlew clean # clean project and download Android dependencies when are not present in cache
-#  - ./gradlew assemble --stacktrace
-
-#before_script:
-#  - ./execute wait-for-device-ready
-
-#script:
-#  - ./gradlew connectedCheck
