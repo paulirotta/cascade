@@ -49,7 +49,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../com/futurice/cascade/rest/FileMirrorService.html" title="class in com.futurice.cascade.rest"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/rest/FileMirrorService.html" title="class in com.reactivecascade.rest"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/rest/AbstractRESTService.html" target="_top">Frames</a></li>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.rest</div>
+<div class="subTitle">com.reactivecascade.rest</div>
 <h2 title="Class AbstractRESTService" class="title">Class AbstractRESTService&lt;KEY,VALUE&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.rest.AbstractRESTService&lt;KEY,VALUE&gt;</li>
+<li>com.reactivecascade.rest.AbstractRESTService&lt;KEY,VALUE&gt;</li>
 </ul>
 </li>
 </ul>
@@ -108,22 +108,22 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></dd>
+<dd><a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>, <a href="../../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.futurice.cascade.rest">NetRESTService</a></dd>
+<dd><a href="../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>, <a href="../../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.reactivecascade.rest">NetRESTService</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public abstract class <span class="typeNameLabel">AbstractRESTService&lt;KEY,VALUE&gt;</span>
 extends java.lang.Object
-implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></pre>
+implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></pre>
 <div class="block">AFile base class for implementations which handle REST activities in an asynchronous manner
  <p>
- The <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementations for read split write operations may be specified
+ The <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementations for read split write operations may be specified
  seperately at construction time. This is typically used to serialize write operations. It may
- leave read operations in a different <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> in which case an external
+ leave read operations in a different <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> in which case an external
  mechanism for reading must be provided. Note that changing these defaults is generally not
  needed split should be done with caution. It may make your application no longer consistent for
  fine-grained asynchronous operation or harm performance.</div>
@@ -150,15 +150,15 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#name">name</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;</code></td>
+<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#origin">origin</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#readIThreadType">readIThreadType</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>protected <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#writeIThreadType">writeIThreadType</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -176,11 +176,11 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#AbstractRESTService-java.lang.String-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.IThreadType-">AbstractRESTService</a></span>(java.lang.String&nbsp;name,
-                   <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;readThreadType,
-                   <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;writeThreadType)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#AbstractRESTService-java.lang.String-com.reactivecascade.i.IThreadType-com.reactivecascade.i.IThreadType-">AbstractRESTService</a></span>(java.lang.String&nbsp;name,
+                   <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;readThreadType,
+                   <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;writeThreadType)</code>
 <div class="block">Create a new REST service using the specified asynchronous implementation with an appropriate
- default <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> for reading split writing.</div>
+ default <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> for reading split writing.</div>
 </td>
 </tr>
 </table>
@@ -203,7 +203,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#delete-KEY-">delete</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#deleteAsync-KEY-">deleteAsync</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</code>
 <div class="block">Delete getValue in the near future</div>
 </td>
@@ -213,13 +213,13 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#get-KEY-">get</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,android.util.Pair&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-com.futurice.cascade.i.IGettable-">getAsync</a></span>(<a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;gettable)</code>
+<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,android.util.Pair&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-com.reactivecascade.i.IGettable-">getAsync</a></span>(<a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;gettable)</code>
 <div class="block">Get getValue in the near future</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-KEY-">getAsync</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</code>
 <div class="block">Get getValue in the near future</div>
 </td>
@@ -239,7 +239,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#postAsync-KEY-VALUE-">postAsync</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
          <a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&nbsp;value)</code>
 <div class="block">Post getValue in the near future</div>
@@ -251,7 +251,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
    <a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&nbsp;value)</code>&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
+<td class="colFirst"><code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html#putAsync-KEY-VALUE-">putAsync</a></span>(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
         <a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&nbsp;value)</code>
 <div class="block">Put getValue in the near future</div>
@@ -285,7 +285,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>readIThreadType</h4>
-<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> readIThreadType</pre>
+<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> readIThreadType</pre>
 </li>
 </ul>
 <a name="writeIThreadType">
@@ -294,7 +294,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>writeIThreadType</h4>
-<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> writeIThreadType</pre>
+<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> writeIThreadType</pre>
 </li>
 </ul>
 <a name="name">
@@ -312,7 +312,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockListLast">
 <li class="blockList">
 <h4>origin</h4>
-<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt; origin</pre>
+<pre>protected final&nbsp;<a href="../../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt; origin</pre>
 </li>
 </ul>
 </li>
@@ -323,17 +323,17 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="AbstractRESTService-java.lang.String-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.IThreadType-">
+<a name="AbstractRESTService-java.lang.String-com.reactivecascade.i.IThreadType-com.reactivecascade.i.IThreadType-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>AbstractRESTService</h4>
 <pre>public&nbsp;AbstractRESTService(java.lang.String&nbsp;name,
-                           <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;readThreadType,
-                           <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;writeThreadType)</pre>
+                           <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;readThreadType,
+                           <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;writeThreadType)</pre>
 <div class="block">Create a new REST service using the specified asynchronous implementation with an appropriate
- default <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> for reading split writing. Typically the</div>
+ default <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> for reading split writing. Typically the</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>readThreadType</code> - may be the same in writeThreadType unless consistency is otherwise assured through
@@ -358,7 +358,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>getAsync</h4>
-<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;getAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</pre>
+<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;getAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</pre>
 <div class="block">Get getValue in the near future</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -366,13 +366,13 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="getAsync-com.futurice.cascade.i.IGettable-">
+<a name="getAsync-com.reactivecascade.i.IGettable-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getAsync</h4>
-<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,android.util.Pair&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&gt;&nbsp;getAsync(<a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;gettable)</pre>
+<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,android.util.Pair&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&gt;&nbsp;getAsync(<a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;gettable)</pre>
 <div class="block">Get getValue in the near future</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -388,7 +388,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>putAsync</h4>
-<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;putAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
+<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;putAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
                                         <a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&nbsp;value)</pre>
 <div class="block">Put getValue in the near future</div>
 <dl>
@@ -406,7 +406,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>postAsync</h4>
-<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;postAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
+<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&gt;&nbsp;postAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key,
                                          <a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">VALUE</a>&nbsp;value)</pre>
 <div class="block">Post getValue in the near future
  <p>
@@ -430,7 +430,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <ul class="blockList">
 <li class="blockList">
 <h4>deleteAsync</h4>
-<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;deleteAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</pre>
+<pre>public&nbsp;<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;?,<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&gt;&nbsp;deleteAsync(<a href="../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="type parameter in AbstractRESTService">KEY</a>&nbsp;key)</pre>
 <div class="block">Delete getValue in the near future</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -503,7 +503,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
  delayed due to more strict sequencing. It is the responsibility of associated caching
  methods to invalidate as appropriate until the post is complete.
  <p>
- <a href="../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest"><code>MirrorService</code></a>s.</div>
+ <a href="../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest"><code>MirrorService</code></a>s.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - </dd>
@@ -525,7 +525,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <div class="block">A descriptive name to assist the developer with debugging</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/INamed.html#getName--">getName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/INamed.html#getName--">getName</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
@@ -558,7 +558,7 @@ implements <a href="../../../../com/futurice/cascade/i/INamed.html" title="inter
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../com/futurice/cascade/rest/FileMirrorService.html" title="class in com.futurice.cascade.rest"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/rest/FileMirrorService.html" title="class in com.reactivecascade.rest"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/rest/AbstractRESTService.html" target="_top">Frames</a></li>

@@ -8,14 +8,14 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <com.futurice.cascade.reactive.ui.ReactiveEditText
+    <com.reactivecascade.reactive.ui.ReactiveEditText
         android:text="@string/hello_editor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:selectAllOnFocus="true"
         android:id="@+id/editText" />
 
-    <com.futurice.cascade.reactive.ui.ReactiveTextView
+    <com.reactivecascade.reactive.ui.ReactiveTextView
         android:text="@string/hello_world"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/textView"
         android:layout_marginTop="10dp" />
 
-    <com.futurice.cascade.reactive.ui.ReactiveTextView
+    <com.reactivecascade.reactive.ui.ReactiveTextView
         android:text="@string/count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -21,13 +21,13 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.action.IActionOne;
+import com.reactivecascade.i.IGettable;
+import com.reactivecascade.i.action.IActionOne;
 
 import java.util.ArrayList;
 import java.util.Comparator;

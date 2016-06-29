@@ -1,23 +1,23 @@
-package com.futurice.cascade.active;
+package com.reactivecascade.active;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.IActionTwo;
-import com.futurice.cascade.i.IBaseAction;
-import com.futurice.cascade.i.IOnErrorAction;
-import com.futurice.cascade.reactive.IReactiveSource;
-import com.futurice.cascade.reactive.ReactiveValue;
-import com.futurice.cascade.i.nonnull;
-import com.futurice.cascade.i.nullable;
+import com.reactivecascade.i.INamed;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.i.IActionTwo;
+import com.reactivecascade.i.IBaseAction;
+import com.reactivecascade.i.IOnErrorAction;
+import com.reactivecascade.reactive.IReactiveSource;
+import com.reactivecascade.reactive.ReactiveValue;
+import com.reactivecascade.i.nonnull;
+import com.reactivecascade.i.nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.futurice.cascade.Async.assertTrue;
-import static com.futurice.cascade.Async.originAsync;
+import static com.reactivecascade.Async.assertTrue;
+import static com.reactivecascade.Async.originAsync;
 
 /**
  * Thread-safe state machine which performs a specified action on each upstream change of the underlying state

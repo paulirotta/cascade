@@ -72,7 +72,7 @@ FROM AtomicValue.java
      * normally. Since they were forked after the wall, they may execute before the wall completes.
      * The wall completing only means actions forked before the wall was created will complete before
      * it proceeds. If jumping the wall is a real problem, does that mean you actually want a dedicated
-     * {@link com.futurice.cascade.i.IAspect} such as {@link com.futurice.cascade.DefaultAspect} instead?
+     * {@link com.reactivecascade.i.IAspect} such as {@link com.reactivecascade.DefaultAspect} instead?
      *
      * @return
      */

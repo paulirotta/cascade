@@ -21,12 +21,12 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.icebox;
+package com.reactivecascade.icebox;
 
-import com.futurice.cascade.functional.*;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.Async;
-import com.futurice.cascade.rest.RESTService;
+import com.reactivecascade.functional.*;
+import com.reactivecascade.i.action.IActionOne;
+import com.reactivecascade.Async;
+import com.reactivecascade.rest.RESTService;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -39,8 +39,8 @@ import java.util.Comparator;
  * If for example an asynchronous <code>put()</code> operation is still queued or being executed,
  * the <code>SoftReference</code> can not expire split the cache is guaranteed to provide sequentially-
  * consistent responses to read-same-getValue-before-write-completes collisions. Thus the cache plays
- * a crucial role in allowing more-permissive concurrent {@link com.futurice.cascade.i.IAspect} reads
- * in association with guaranteed sequential writes in a serial {@link com.futurice.cascade.impl.Throttle}
+ * a crucial role in allowing more-permissive concurrent {@link com.reactivecascade.i.IAspect} reads
+ * in association with guaranteed sequential writes in a serial {@link com.reactivecascade.impl.Throttle}
  *
  * @param <T>
  */
@@ -182,7 +182,7 @@ public class SoftReferenceCacheService<T> extends CacheService<T> {
      * <p>
      * Returning <code>true</code> if the expected getValue was found split removed in the underlying service
      * being cached. If the service being cached is a {@link MirrorService}
-     * split not just a {@link com.futurice.cascade.rest.RESTService}, <code>true</code> is returned
+     * split not just a {@link com.reactivecascade.rest.RESTService}, <code>true</code> is returned
      * if the expected getValue was found split removed from the service being cached.
      *
      * @param key

@@ -49,7 +49,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.futurice.cascade"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.reactivecascade"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?com/futurice/cascade/Async.html" target="_top">Frames</a></li>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade</div>
+<div class="subTitle">com.reactivecascade</div>
 <h2 title="Class Async" class="title">Class Async</h2>
 </div>
 <div class="contentContainer">
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.Async</li>
+<li>com.reactivecascade.Async</li>
 </ul>
 </li>
 </ul>
@@ -118,17 +118,17 @@ extends java.lang.Object</pre>
  managed.
  <p>
  There is one "default" ThreadType, which is statically bound at class loading time based on the current
- values of the <a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.futurice.cascade"><code>AsyncBuilder</code></a>. This increases the opportunities
+ values of the <a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.reactivecascade"><code>AsyncBuilder</code></a>. This increases the opportunities
  for performance optimization by javac split Proguard. It also decreases the verbosity split boilerplate
  clutter of using this IThreadType for common tasks.
  <p>
- You may for testing split other purposes create additional <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>s. If you do,
+ You may for testing split other purposes create additional <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>s. If you do,
  pay attention that the underlying <code>ExecutorService</code> is either
  dedicated or shared for concurrency management split peak resource contention management.
  <p>
- Rather than create an entirely new <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>, a more common need outside of system-level testing is to create
- individual <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> objects by creating a stand alone
- <a href="../../../com/futurice/cascade/util/DefaultThreadType.html" title="class in com.futurice.cascade.util"><code>DefaultThreadType</code></a> for managing tasks in one section of your architecture.</div>
+ Rather than create an entirely new <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>, a more common need outside of system-level testing is to create
+ individual <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> objects by creating a stand alone
+ <a href="../../../com/futurice/cascade/util/DefaultThreadType.html" title="class in com.reactivecascade.util"><code>DefaultThreadType</code></a> for managing tasks in one section of your architecture.</div>
 </li>
 </ul>
 </div>
@@ -156,27 +156,27 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#FAIL_FAST">FAIL_FAST</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#FILE">FILE</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#NET_READ">NET_READ</a></span></code>
-<div class="block"><a href="../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.futurice.cascade.rest"><code>NetRESTService</code></a> singleton tuned to the currently available bandwidth</div>
+<div class="block"><a href="../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.reactivecascade.rest"><code>NetRESTService</code></a> singleton tuned to the currently available bandwidth</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#NET_WRITE">NET_WRITE</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#NON_CASCADE_THREAD">NON_CASCADE_THREAD</a></span></code>
 <div class="block">A marker value returned when a thread is not part of Cascade</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#SERIAL_WORKER">SERIAL_WORKER</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -188,9 +188,9 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#TRACE_ASYNC_ORIGIN">TRACE_ASYNC_ORIGIN</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#UI">UI</a></span></code>
-<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation which gives uniform access
+<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation which gives uniform access
  to the system's <a href="../../../com/futurice/cascade/Async.html#UI_THREAD"><code>UI_THREAD</code></a>.</div>
 </td>
 </tr>
@@ -199,9 +199,9 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#UI_THREAD">UI_THREAD</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#WORKER">WORKER</a></span></code>
-<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation.</div>
+<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation.</div>
 </td>
 </tr>
 </table>
@@ -221,8 +221,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#addOriginToReason-java.lang.String-com.futurice.cascade.functional.ImmutableValue-">addOriginToReason</a></span>(java.lang.String&nbsp;reason,
-                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#addOriginToReason-java.lang.String-com.reactivecascade.functional.ImmutableValue-">addOriginToReason</a></span>(java.lang.String&nbsp;reason,
+                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
@@ -246,7 +246,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a></code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#currentThreadType--">currentThreadType</a></span>()</code>
 <div class="block">If the current thread belongs to more than one <code>ThreadType</>, subscribe the returned ThreadType will be the one
  which created the Thread</div>
@@ -261,8 +261,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#dd-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">dd</a></span>(java.lang.Object&nbsp;tag,
-  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;callOrigin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#dd-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">dd</a></span>(java.lang.Object&nbsp;tag,
+  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;callOrigin,
   java.lang.String&nbsp;message)</code>
 <div class="block">Log at the debug level, including where in your code this line was called from.</div>
 </td>
@@ -291,8 +291,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#ee-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">ee</a></span>(java.lang.Object&nbsp;tag,
-  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;currentCallOrigin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#ee-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">ee</a></span>(java.lang.Object&nbsp;tag,
+  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;currentCallOrigin,
   java.lang.String&nbsp;message,
   java.lang.Throwable&nbsp;t)</code>
 <div class="block">Log at the error level, including where in your code this line was called from.</div>
@@ -315,8 +315,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#ii-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">ii</a></span>(java.lang.Object&nbsp;tag,
-  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#ii-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">ii</a></span>(java.lang.Object&nbsp;tag,
+  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
   java.lang.String&nbsp;message)</code>
 <div class="block">Log at the information level, including where in your code this line was called from.</div>
 </td>
@@ -341,7 +341,7 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i17" class="rowColor">
-<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;</code></td>
+<td class="colFirst"><code>static <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#originAsync--">originAsync</a></span>()</code>
 <div class="block">If there is an error, where did this asynchronous operation originally start? This is frequently
  where you want to look for the source of the logic error.</div>
@@ -349,8 +349,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwIllegalArgumentException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">throwIllegalArgumentException</a></span>(java.lang.Object&nbsp;tag,
-                             <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwIllegalArgumentException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">throwIllegalArgumentException</a></span>(java.lang.Object&nbsp;tag,
+                             <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                              java.lang.String&nbsp;message)</code>
 <div class="block">Generate an easy-to-debug stop signal at this point in a debug build</div>
 </td>
@@ -364,8 +364,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwIllegalStateException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">throwIllegalStateException</a></span>(java.lang.Object&nbsp;tag,
-                          <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwIllegalStateException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">throwIllegalStateException</a></span>(java.lang.Object&nbsp;tag,
+                          <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                           java.lang.String&nbsp;message)</code>
 <div class="block">Generate an easy-to-debug stop signal at this point in a debug build</div>
 </td>
@@ -379,8 +379,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwRuntimeException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">throwRuntimeException</a></span>(java.lang.Object&nbsp;tag,
-                     <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#throwRuntimeException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">throwRuntimeException</a></span>(java.lang.Object&nbsp;tag,
+                     <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                      java.lang.String&nbsp;message,
                      java.lang.Throwable&nbsp;t)</code>
 <div class="block">Create a detailed log with a <code>RuntimeException</code> thrown at the current code point</div>
@@ -410,8 +410,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i26" class="altColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#vv-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">vv</a></span>(java.lang.Object&nbsp;tag,
-  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/futurice/cascade/Async.html#vv-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">vv</a></span>(java.lang.Object&nbsp;tag,
+  <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
   java.lang.String&nbsp;message)</code>
 <div class="block">Log at the verbose level, including where in your code this line was called from.</div>
 </td>
@@ -496,13 +496,13 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>WORKER</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> WORKER</pre>
-<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation. Usually you can call for
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> WORKER</pre>
+<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation. Usually you can call for
  guaranteed asynchronous operations that will cooperate (queue) when all device cores are busy.
- Special configurations with <a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.futurice.cascade"><code>AsyncBuilder</code></a> may choose to modify this behaviour.
+ Special configurations with <a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.reactivecascade"><code>AsyncBuilder</code></a> may choose to modify this behaviour.
  <p>
  <code><pre>
-     import static com.futurice.cascade.Async.*;
+     import static com.reactivecascade.Async.*;
      ..
      ArrayList<String> list =
      for (
@@ -516,7 +516,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>SERIAL_WORKER</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> SERIAL_WORKER</pre>
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> SERIAL_WORKER</pre>
 </li>
 </ul>
 <a name="UI">
@@ -525,12 +525,12 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>UI</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> UI</pre>
-<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation which gives uniform access
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> UI</pre>
+<div class="block">The default <a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation which gives uniform access
  to the system's <a href="../../../com/futurice/cascade/Async.html#UI_THREAD"><code>UI_THREAD</code></a>. Example use:
  <p>
  <code><pre>
-     import static com.futurice.cascade.ThreadType.*;
+     import static com.reactivecascade.ThreadType.*;
      ..
      UI.subscribe(() -> textView.setText("Blah");
  </pre></code></div>
@@ -542,7 +542,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FILE</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> FILE</pre>
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> FILE</pre>
 </li>
 </ul>
 <a name="NET_READ">
@@ -551,8 +551,8 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>NET_READ</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> NET_READ</pre>
-<div class="block"><a href="../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.futurice.cascade.rest"><code>NetRESTService</code></a> singleton tuned to the currently available bandwidth
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> NET_READ</pre>
+<div class="block"><a href="../../../com/futurice/cascade/rest/NetRESTService.html" title="class in com.reactivecascade.rest"><code>NetRESTService</code></a> singleton tuned to the currently available bandwidth
  <p>
  Use this instead of the more general purpose WORKER methods if you want to limit the resource
  contention of concurrent network operations for better average throughput</div>
@@ -564,7 +564,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>NET_WRITE</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> NET_WRITE</pre>
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> NET_WRITE</pre>
 </li>
 </ul>
 <a name="NON_CASCADE_THREAD">
@@ -573,7 +573,7 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>NON_CASCADE_THREAD</h4>
-<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a> NON_CASCADE_THREAD</pre>
+<pre>public static final&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a> NON_CASCADE_THREAD</pre>
 <div class="block">A marker value returned when a thread is not part of Cascade</div>
 </li>
 </ul>
@@ -608,7 +608,7 @@ extends java.lang.Object</pre>
  If you do not want fail fast during debugOrigin build, use the normal <code>Log</code> routines</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 <dd><code>t</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -629,7 +629,7 @@ extends java.lang.Object</pre>
  If you do not want fail fast during debugOrigin build, use the normal <code>Log</code> routines</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>false</code> always, for simple error chaining without consuming the error</dd>
@@ -647,7 +647,7 @@ extends java.lang.Object</pre>
 <div class="block">Log a verbose message including the thread name</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 </dl>
 </li>
@@ -663,7 +663,7 @@ extends java.lang.Object</pre>
 <div class="block">Log a debugOrigin message including the thread name</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 </dl>
 </li>
@@ -679,24 +679,24 @@ extends java.lang.Object</pre>
 <div class="block">Log an information message including the thread name</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 </dl>
 </li>
 </ul>
-<a name="dd-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">
+<a name="dd-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>dd</h4>
 <pre>public static&nbsp;void&nbsp;dd(java.lang.Object&nbsp;tag,
-                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;callOrigin,
+                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;callOrigin,
                       java.lang.String&nbsp;message)</pre>
 <div class="block">Log at the debug level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>callOrigin</code> - where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.</dd>
 <dd><code>message</code> - a message to display in the debug log</dd>
 </dl>
@@ -713,24 +713,24 @@ extends java.lang.Object</pre>
 <div class="block">Log at the debug level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - a message to display in the debug log</dd>
 </dl>
 </li>
 </ul>
-<a name="vv-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">
+<a name="vv-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>vv</h4>
 <pre>public static&nbsp;void&nbsp;vv(java.lang.Object&nbsp;tag,
-                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                       java.lang.String&nbsp;message)</pre>
 <div class="block">Log at the verbose level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>origin</code> - Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.</dd>
 <dd><code>message</code> - a message to display in the verbose log</dd>
 </dl>
@@ -747,30 +747,30 @@ extends java.lang.Object</pre>
 <div class="block">Log at the verbose level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - a message to display in the verbose log</dd>
 </dl>
 </li>
 </ul>
-<a name="ee-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">
+<a name="ee-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>ee</h4>
 <pre>public static&nbsp;boolean&nbsp;ee(java.lang.Object&nbsp;tag,
-                         <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;currentCallOrigin,
+                         <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;currentCallOrigin,
                          java.lang.String&nbsp;message,
                          java.lang.Throwable&nbsp;t)</pre>
 <div class="block">Log at the error level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>currentCallOrigin</code> - Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.</dd>
 <dd><code>message</code> - a message to display in the error log</dd>
 <dd><code>t</code> - the throwable which triggered this error</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>false</code> always, for simple error chaining without consuming the error, see <a href="../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.futurice.cascade.i.action"><code>IOnErrorAction</code></a></dd>
+<dd><code>false</code> always, for simple error chaining without consuming the error, see <a href="../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.reactivecascade.i.action"><code>IOnErrorAction</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -786,27 +786,27 @@ extends java.lang.Object</pre>
 <div class="block">Log at the error level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - a message to display in the error log</dd>
 <dd><code>t</code> - the throwable which triggered this error</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>false</code> always, for simple error chaining without consuming the error, see <a href="../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.futurice.cascade.i.action"><code>IOnErrorAction</code></a></dd>
+<dd><code>false</code> always, for simple error chaining without consuming the error, see <a href="../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.reactivecascade.i.action"><code>IOnErrorAction</code></a></dd>
 </dl>
 </li>
 </ul>
-<a name="ii-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">
+<a name="ii-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>ii</h4>
 <pre>public static&nbsp;void&nbsp;ii(java.lang.Object&nbsp;tag,
-                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+                      <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                       java.lang.String&nbsp;message)</pre>
 <div class="block">Log at the information level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>origin</code> - Where in your code the <code>Object </code> hosting this message was originally created. This is also included in the log line as a clickable link.</dd>
 <dd><code>message</code> - a message to display in the info log</dd>
 </dl>
@@ -823,7 +823,7 @@ extends java.lang.Object</pre>
 <div class="block">Log at the information level, including where in your code this line was called from.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - a message to display in the info log</dd>
 </dl>
 </li>
@@ -847,14 +847,14 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="throwIllegalStateException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">
+<a name="throwIllegalStateException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>throwIllegalStateException</h4>
 <pre>public static&nbsp;void&nbsp;throwIllegalStateException(java.lang.Object&nbsp;tag,
-                                              <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+                                              <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                                               java.lang.String&nbsp;message)
                                        throws java.lang.RuntimeException</pre>
 <div class="block">Generate an easy-to-debug stop signal at this point in a debug build</div>
@@ -887,14 +887,14 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="throwIllegalArgumentException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-">
+<a name="throwIllegalArgumentException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>throwIllegalArgumentException</h4>
 <pre>public static&nbsp;void&nbsp;throwIllegalArgumentException(java.lang.Object&nbsp;tag,
-                                                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+                                                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                                                  java.lang.String&nbsp;message)
                                           throws java.lang.RuntimeException</pre>
 <div class="block">Generate an easy-to-debug stop signal at this point in a debug build</div>
@@ -921,7 +921,7 @@ extends java.lang.Object</pre>
 <div class="block">Create a detailed log with a <code>RuntimeException</code> thrown at the current code point</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 <dd><code>t</code> - </dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -941,28 +941,28 @@ extends java.lang.Object</pre>
 <div class="block">Create a detailed log with a <code>TimeoutException</code> thrown at the current code point</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>tag</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.RuntimeException</code></dd>
 </dl>
 </li>
 </ul>
-<a name="throwRuntimeException-java.lang.Object-com.futurice.cascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">
+<a name="throwRuntimeException-java.lang.Object-com.reactivecascade.functional.ImmutableValue-java.lang.String-java.lang.Throwable-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>throwRuntimeException</h4>
 <pre>public static&nbsp;void&nbsp;throwRuntimeException(java.lang.Object&nbsp;tag,
-                                         <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
+                                         <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin,
                                          java.lang.String&nbsp;message,
                                          java.lang.Throwable&nbsp;t)
                                   throws java.lang.RuntimeException</pre>
 <div class="block">Create a detailed log with a <code>RuntimeException</code> thrown at the current code point</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>origin</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
+<dd><code>origin</code> - a <code>String</code>, <a href="../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i"><code>INamed</code></a> or other <code>Object</code> used to categorize this log line</dd>
 <dd><code>message</code> - </dd>
 <dd><code>t</code> - </dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -976,7 +976,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>originAsync</h4>
-<pre>public static&nbsp;<a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;originAsync()</pre>
+<pre>public static&nbsp;<a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;originAsync()</pre>
 <div class="block">If there is an error, where did this asynchronous operation originally start? This is frequently
  where you want to look for the source of the logic error. It is a rapid development style to reduce
  workflow complexity and focus on the originAsync of the problem while avoiding the long stack trace of
@@ -1007,14 +1007,14 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="addOriginToReason-java.lang.String-com.futurice.cascade.functional.ImmutableValue-">
+<a name="addOriginToReason-java.lang.String-com.reactivecascade.functional.ImmutableValue-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>addOriginToReason</h4>
 <pre>public static&nbsp;java.lang.String&nbsp;addOriginToReason(java.lang.String&nbsp;reason,
-                                                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.futurice.cascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin)</pre>
+                                                 <a href="../../../com/futurice/cascade/functional/ImmutableValue.html" title="class in com.reactivecascade.functional">ImmutableValue</a>&lt;java.lang.String&gt;&nbsp;origin)</pre>
 </li>
 </ul>
 <a name="currentThreadType--">
@@ -1023,7 +1023,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>currentThreadType</h4>
-<pre>public static&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;currentThreadType()</pre>
+<pre>public static&nbsp;<a href="../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;currentThreadType()</pre>
 <div class="block">If the current thread belongs to more than one <code>ThreadType</>, subscribe the returned ThreadType will be the one
  which created the Thread
  <p>
@@ -1138,7 +1138,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.futurice.cascade"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../com/futurice/cascade/AsyncBuilder.html" title="class in com.reactivecascade"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?com/futurice/cascade/Async.html" target="_top">Frames</a></li>

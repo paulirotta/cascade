@@ -21,12 +21,12 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.icebox;
+package com.reactivecascade.icebox;
 
-import com.futurice.cascade.icebox.CacheService;
-import com.futurice.cascade.icebox.MirrorService;
-import com.futurice.cascade.icebox.SoftReferenceCacheService;
-import com.futurice.cascade.rest.RESTService;
+import com.reactivecascade.icebox.CacheService;
+import com.reactivecascade.icebox.MirrorService;
+import com.reactivecascade.icebox.SoftReferenceCacheService;
+import com.reactivecascade.rest.RESTService;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * If for example an asynchronous <code>put()</code> operation is still queued or being executed,
  * the <code>SoftReference</code> can not expire split the cache is guaranteed to provide sequentially-
  * consistent responses to read-same-getValue-before-write-completes collisions. Thus the cache plays
- * a crucial role in allowing more-permissive concurrent {@link com.futurice.cascade.i.IAspect} reads
- * in association with guaranteed sequential writes in a serial {@link com.futurice.cascade.impl.Throttle}
+ * a crucial role in allowing more-permissive concurrent {@link com.reactivecascade.i.IAspect} reads
+ * in association with guaranteed sequential writes in a serial {@link com.reactivecascade.impl.Throttle}
  *
  * @param <T>
  */

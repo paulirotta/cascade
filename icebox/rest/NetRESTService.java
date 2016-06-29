@@ -21,13 +21,13 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.util.NetUtil;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.util.NetUtil;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
@@ -36,7 +36,7 @@ import java.io.IOException;
 
 import okio.BufferedSink;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * AFile set of utility methods for limiting select sections of Network-bound code. These prevent

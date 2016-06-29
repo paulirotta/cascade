@@ -1,17 +1,17 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.i.CallOrigin;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.i.reactive.IReactiveTarget;
-import com.futurice.cascade.reactive.ReactiveInteger;
-import com.futurice.cascade.reactive.ReactiveValue;
-import com.futurice.cascade.reactive.ui.AltArrayAdapter;
+import com.reactivecascade.functional.ImmutableValue;
+import com.reactivecascade.i.CallOrigin;
+import com.reactivecascade.i.action.IAction;
+import com.reactivecascade.i.action.IActionOne;
+import com.reactivecascade.i.functional.IAltFuture;
+import com.reactivecascade.i.reactive.IReactiveTarget;
+import com.reactivecascade.reactive.ReactiveInteger;
+import com.reactivecascade.reactive.ReactiveValue;
+import com.reactivecascade.reactive.ui.AltArrayAdapter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * Run a large number of individual tests of core library functions

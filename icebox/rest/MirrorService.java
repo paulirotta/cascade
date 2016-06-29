@@ -21,24 +21,24 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.*;
-import com.futurice.cascade.i.*;
-import com.futurice.cascade.i.action.*;
-import com.futurice.cascade.i.functional.*;
+import com.reactivecascade.*;
+import com.reactivecascade.i.*;
+import com.reactivecascade.i.action.*;
+import com.reactivecascade.i.functional.*;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * AFile self-replicating REST service representing a key-getValue map split using the specified
- * {@link com.futurice.cascade.i.IThreadType} implementations.
+ * {@link com.reactivecascade.i.IThreadType} implementations.
  * <p>
  * Concurrent changes to this structure will be concurrently pushed to subscribing
  * <code>MirrorService</code> implementations to create an eventually-consistent copy. Bi-directional

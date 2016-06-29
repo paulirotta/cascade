@@ -21,10 +21,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
-import com.futurice.cascade.util.TypedThread;
-import com.futurice.cascade.util.DefaultThreadType;
+import com.reactivecascade.util.TypedThread;
+import com.reactivecascade.util.DefaultThreadType;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

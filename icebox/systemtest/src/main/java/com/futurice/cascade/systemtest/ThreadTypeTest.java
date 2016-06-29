@@ -21,30 +21,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
 import android.util.Log;
 
-import com.futurice.cascade.util.AltFutureFuture;
-import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.functional.SettableAltFuture;
-import com.futurice.cascade.i.CallOrigin;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.action.IAction;
-import com.futurice.cascade.i.action.IActionOne;
-import com.futurice.cascade.i.action.IActionR;
-import com.futurice.cascade.i.functional.IAltFuture;
-import com.futurice.cascade.reactive.ReactiveValue;
+import com.reactivecascade.util.AltFutureFuture;
+import com.reactivecascade.functional.ImmutableValue;
+import com.reactivecascade.functional.SettableAltFuture;
+import com.reactivecascade.i.CallOrigin;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.i.action.IAction;
+import com.reactivecascade.i.action.IActionOne;
+import com.reactivecascade.i.action.IActionR;
+import com.reactivecascade.i.functional.IAltFuture;
+import com.reactivecascade.reactive.ReactiveValue;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.futurice.cascade.Async.SHOW_ERROR_STACK_TRACES;
-import static com.futurice.cascade.Async.UI;
-import static com.futurice.cascade.Async.d;
-import static com.futurice.cascade.Async.v;
-import static com.futurice.cascade.Async.vv;
+import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
+import static com.reactivecascade.Async.UI;
+import static com.reactivecascade.Async.d;
+import static com.reactivecascade.Async.v;
+import static com.reactivecascade.Async.vv;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

@@ -48,8 +48,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.futurice.cascade.reactive.ui"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveEditText.html" title="class in com.futurice.cascade.reactive.ui"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.reactivecascade.reactive.ui"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveEditText.html" title="class in com.reactivecascade.reactive.ui"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/reactive/ui/MirrorArrayAdapter.MirrorDelegate.html" target="_top">Frames</a></li>
@@ -74,7 +74,7 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.rest.AbstractRESTService">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.rest.AbstractRESTService">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.reactive.ui</div>
+<div class="subTitle">com.reactivecascade.reactive.ui</div>
 <h2 title="Class MirrorArrayAdapter.MirrorDelegate" class="title">Class MirrorArrayAdapter.MirrorDelegate</h2>
 </div>
 <div class="contentContainer">
@@ -99,13 +99,13 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.futurice.cascade.rest">com.futurice.cascade.rest.AbstractRESTService</a>&lt;K,V&gt;</li>
+<li><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.reactivecascade.rest">com.reactivecascade.rest.AbstractRESTService</a>&lt;K,V&gt;</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">com.futurice.cascade.rest.MirrorService</a>&lt;java.lang.Integer,V&gt;</li>
+<li><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">com.reactivecascade.rest.MirrorService</a>&lt;java.lang.Integer,V&gt;</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.reactive.ui.MirrorArrayAdapter.MirrorDelegate</li>
+<li>com.reactivecascade.reactive.ui.MirrorArrayAdapter.MirrorDelegate</li>
 </ul>
 </li>
 </ul>
@@ -118,17 +118,17 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></dd>
 </dl>
 <dl>
 <dt>Enclosing class:</dt>
-<dd><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.futurice.cascade.reactive.ui">MirrorArrayAdapter</a>&lt;<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</dd>
+<dd><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.reactivecascade.reactive.ui">MirrorArrayAdapter</a>&lt;<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">MirrorArrayAdapter.MirrorDelegate</span>
-extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>&lt;java.lang.Integer,V&gt;</pre>
-<div class="block">This can be attached to an upstream <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest"><code>MirrorService</code></a> to copy
+extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>&lt;java.lang.Integer,V&gt;</pre>
+<div class="block">This can be attached to an upstream <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest"><code>MirrorService</code></a> to copy
  changes in the data model onto the screen. The idea it to manipulate the model (add remove sort)
  and let the UI copy that. The filter mechanism in <code>ArrayAdapter</code> should
  be sufficient for reactive searching within the displayed items.
@@ -136,12 +136,12 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
  It is recommended to do manipulation indirectly through the up-mirror model and no direct
  changes to this view model. If you do need to change the model directly, subscribe changes to the
  <code>MirrorDelegate</code> would be preferred as they keep open the possibility of
- subscribing other <a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.futurice.cascade.reactive.ui"><code>MirrorArrayAdapter</code></a>s to this one and they
+ subscribing other <a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.reactivecascade.reactive.ui"><code>MirrorArrayAdapter</code></a>s to this one and they
  receive the changes also (such as <code>Filter</code>. Changes made for example
  through <code>ArrayAdapter.add(Object)</code> are not thread safe and
  must be done from the UI thread. Changes made for example
  through <a href="../../../../../com/futurice/cascade/reactive/ui/AltArrayAdapter.html#addAsync-T-"><code>AltArrayAdapter.addAsync(Object)</code></a> are safe from any
- thread, but will not propagate to a downstream <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest"><code>MirrorService</code></a>.
+ thread, but will not propagate to a downstream <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest"><code>MirrorService</code></a>.
 
  It is possible to subscribe for example several different mirrors for several different tabs on screen
  of other UI components. At the moment the use for this is to maintain 4 differently-sorted and
@@ -159,10 +159,10 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 </a>
 <h3>Field Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a name="fields.inherited.from.class.com.futurice.cascade.rest.AbstractRESTService">
+<li class="blockList"><a name="fields.inherited.from.class.com.reactivecascade.rest.AbstractRESTService">
 <!--   -->
 </a>
-<h3>Fields inherited from class&nbsp;com.futurice.cascade.rest.<a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.futurice.cascade.rest">AbstractRESTService</a></h3>
+<h3>Fields inherited from class&nbsp;com.reactivecascade.rest.<a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.reactivecascade.rest">AbstractRESTService</a></h3>
 <code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#name">name</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#origin">origin</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#readIThreadType">readIThreadType</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#writeIThreadType">writeIThreadType</a></code></li>
 </ul>
 </li>
@@ -179,9 +179,9 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.MirrorDelegate.html#MirrorDelegate-java.lang.String-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.IThreadType-">MirrorDelegate</a></span>(java.lang.String&nbsp;name,
-              <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;readIThreadType,
-              <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;writeIThreadType)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.MirrorDelegate.html#MirrorDelegate-java.lang.String-com.reactivecascade.i.IThreadType-com.reactivecascade.i.IThreadType-">MirrorDelegate</a></span>(java.lang.String&nbsp;name,
+              <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;readIThreadType,
+              <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;writeIThreadType)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -236,18 +236,18 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.rest.MirrorService">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.rest.MirrorService">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;com.futurice.cascade.rest.<a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a></h3>
-<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#delete-K-V-">delete</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#indexAsync--">indexAsync</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#post-K-V-">post</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#publish-com.futurice.cascade.i.action.IActionOne-">publish</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#subscribe-com.futurice.cascade.rest.MirrorService-java.util.Comparator-">subscribe</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#unsubscribe-com.futurice.cascade.rest.MirrorService-">unsubscribe</a></code></li>
+<h3>Methods inherited from class&nbsp;com.reactivecascade.rest.<a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a></h3>
+<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#delete-K-V-">delete</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#indexAsync--">indexAsync</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#post-K-V-">post</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#publish-com.reactivecascade.i.action.IActionOne-">publish</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#subscribe-com.reactivecascade.rest.MirrorService-java.util.Comparator-">subscribe</a>, <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#unsubscribe-com.reactivecascade.rest.MirrorService-">unsubscribe</a></code></li>
 </ul>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.rest.AbstractRESTService">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.rest.AbstractRESTService">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;com.futurice.cascade.rest.<a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.futurice.cascade.rest">AbstractRESTService</a></h3>
-<code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#deleteAsync-KEY-">deleteAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-com.futurice.cascade.i.IGettable-">getAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-KEY-">getAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getName--">getName</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#postAsync-KEY-VALUE-">postAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#putAsync-KEY-VALUE-">putAsync</a></code></li>
+<h3>Methods inherited from class&nbsp;com.reactivecascade.rest.<a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.reactivecascade.rest">AbstractRESTService</a></h3>
+<code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#deleteAsync-KEY-">deleteAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-com.reactivecascade.i.IGettable-">getAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getAsync-KEY-">getAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#getName--">getName</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#postAsync-KEY-VALUE-">postAsync</a>, <a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#putAsync-KEY-VALUE-">putAsync</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -270,15 +270,15 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="MirrorDelegate-java.lang.String-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.IThreadType-">
+<a name="MirrorDelegate-java.lang.String-com.reactivecascade.i.IThreadType-com.reactivecascade.i.IThreadType-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>MirrorDelegate</h4>
 <pre>public&nbsp;MirrorDelegate(java.lang.String&nbsp;name,
-                      <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;readIThreadType,
-                      <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;writeIThreadType)</pre>
+                      <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;readIThreadType,
+                      <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;writeIThreadType)</pre>
 </li>
 </ul>
 </li>
@@ -302,12 +302,12 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
  based on the logic of this service. It is not directly mirrored.
  <p>
  It will return different values a different times based on mirroring split other state changes.
- Mirroring will ensure that downstream indexes that <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#subscribe-com.futurice.cascade.rest.MirrorService-java.util.Comparator-"><code>MirrorService.subscribe(MirrorService, java.util.Comparator)</code></a>
+ Mirroring will ensure that downstream indexes that <a href="../../../../../com/futurice/cascade/rest/MirrorService.html#subscribe-com.reactivecascade.rest.MirrorService-java.util.Comparator-"><code>MirrorService.subscribe(MirrorService, java.util.Comparator)</code></a>
  to this service will be eventually-consistent with the index split subsequent upstream
  key split getValue changes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#index--">index</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#index--">index</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd>
@@ -324,7 +324,7 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
       throws java.io.IOException</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#get-KEY-">get</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.futurice.cascade.rest">AbstractRESTService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html#get-KEY-">get</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/AbstractRESTService.html" title="class in com.reactivecascade.rest">AbstractRESTService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code></dd>
 </dl>
@@ -347,7 +347,7 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
  or know that it will be completed without error</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#put-K-V-">put</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#put-K-V-">put</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>
@@ -367,7 +367,7 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
  or know that it will be completed without error</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#delete-K-">delete</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#delete-K-">delete</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code></dd>
 </dl>
@@ -389,7 +389,7 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
  to the UI thread.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#replace-K-V-V-">replace</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.futurice.cascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html#replace-K-V-V-">replace</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../com/futurice/cascade/rest/MirrorService.html" title="class in com.reactivecascade.rest">MirrorService</a>&lt;java.lang.Integer,<a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="type parameter in MirrorArrayAdapter">V</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>key</code> - </dd>
 <dd><code>value</code> - </dd>
@@ -428,8 +428,8 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.futurice.cascade.reactive.ui"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveEditText.html" title="class in com.futurice.cascade.reactive.ui"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/reactive/ui/MirrorArrayAdapter.html" title="class in com.reactivecascade.reactive.ui"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveEditText.html" title="class in com.reactivecascade.reactive.ui"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/reactive/ui/MirrorArrayAdapter.MirrorDelegate.html" target="_top">Frames</a></li>
@@ -454,7 +454,7 @@ extends <a href="../../../../../com/futurice/cascade/rest/MirrorService.html" ti
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.rest.AbstractRESTService">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.rest.AbstractRESTService">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>

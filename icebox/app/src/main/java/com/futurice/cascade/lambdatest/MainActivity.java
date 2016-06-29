@@ -22,20 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package com.futurice.cascade.lambdatest;
+package com.reactivecascade.lambdatest;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.AsyncBuilder;
-import com.futurice.cascade.reactive.ReactiveValue;
-import com.futurice.cascade.reactive.ui.ReactiveEditText;
-import com.futurice.cascade.reactive.ui.ReactiveTextView;
+import com.reactivecascade.Async;
+import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.reactive.ReactiveValue;
+import com.reactivecascade.reactive.ui.ReactiveEditText;
+import com.reactivecascade.reactive.ui.ReactiveTextView;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 public class MainActivity extends Activity {
     private static Async async;

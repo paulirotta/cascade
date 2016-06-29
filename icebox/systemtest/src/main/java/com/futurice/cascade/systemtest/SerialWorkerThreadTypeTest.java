@@ -1,6 +1,6 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
-import com.futurice.cascade.Async;
+import com.reactivecascade.Async;
 
 /**
  * Copyright (c) 2015 Futurice GmbH. All rights reserved.

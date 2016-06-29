@@ -1,15 +1,15 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
 import android.content.Context;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.functional.*;
-import com.futurice.cascade.i.action.IOnErrorAction;
-import com.futurice.cascade.reactive.*;
-import com.futurice.cascade.rest.PreferencesMirrorService;
+import com.reactivecascade.Async;
+import com.reactivecascade.functional.*;
+import com.reactivecascade.i.action.IOnErrorAction;
+import com.reactivecascade.reactive.*;
+import com.reactivecascade.rest.PreferencesMirrorService;
 
 import java.util.List;
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * Created by Paul Houghton on 25/06/2014.

@@ -1,10 +1,10 @@
-package com.futurice.cascade.reactive.ui;
+package com.reactivecascade.reactive.ui;
 
 import android.content.Context;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.rest.MirrorService;
+import com.reactivecascade.Async;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.rest.MirrorService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class MirrorArrayAdapter<V> extends AltArrayAdapter<V> {
     }
 
     /**
-     * This can be attached to an upstream {@link com.futurice.cascade.rest.MirrorService} to copy
+     * This can be attached to an upstream {@link com.reactivecascade.rest.MirrorService} to copy
      * changes in the data model onto the screen. The idea it to manipulate the model (add remove sort)
      * and let the UI copy that. The filter mechanism in {@link android.widget.ArrayAdapter} should
      * be sufficient for reactive searching within the displayed items.
@@ -49,12 +49,12 @@ public class MirrorArrayAdapter<V> extends AltArrayAdapter<V> {
      * It is recommended to do manipulation indirectly through the up-mirror model and no direct
      * changes to this view model. If you do need to change the model directly, subscribe changes to the
      * <code>MirrorDelegate</code> would be preferred as they keep open the possibility of
-     * subscribing other {@link com.futurice.cascade.reactive.ui.MirrorArrayAdapter}s to this one and they
+     * subscribing other {@link com.reactivecascade.reactive.ui.MirrorArrayAdapter}s to this one and they
      * receive the changes also (such as {@link android.widget.Filter}. Changes made for example
-     * through {@link com.futurice.cascade.reactive.ui.MirrorArrayAdapter#add(Object)} are not thread safe and
+     * through {@link com.reactivecascade.reactive.ui.MirrorArrayAdapter#add(Object)} are not thread safe and
      * must be done from the UI thread. Changes made for example
-     * through {@link com.futurice.cascade.reactive.ui.MirrorArrayAdapter#addAsync(Object)} are safe from any
-     * thread, but will not propagate to a downstream {@link com.futurice.cascade.rest.MirrorService}.
+     * through {@link com.reactivecascade.reactive.ui.MirrorArrayAdapter#addAsync(Object)} are safe from any
+     * thread, but will not propagate to a downstream {@link com.reactivecascade.rest.MirrorService}.
      *
      * It is possible to subscribe for example several different mirrors for several different tabs on screen
      * of other UI components. At the moment the use for this is to maintain 4 differently-sorted and

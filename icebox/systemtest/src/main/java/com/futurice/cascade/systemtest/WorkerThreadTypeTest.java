@@ -21,9 +21,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
-import com.futurice.cascade.Async;
+import com.reactivecascade.Async;
 
 public class WorkerThreadTypeTest extends ThreadTypeTest {
     public WorkerThreadTypeTest() {

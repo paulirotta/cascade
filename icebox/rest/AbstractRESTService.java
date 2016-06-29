@@ -21,29 +21,29 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.futurice.cascade.functional.ImmutableValue;
-import com.futurice.cascade.i.IGettable;
-import com.futurice.cascade.i.INamed;
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.i.functional.IAltFuture;
+import com.reactivecascade.functional.ImmutableValue;
+import com.reactivecascade.i.IGettable;
+import com.reactivecascade.i.INamed;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.i.functional.IAltFuture;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * AFile base class for implementations which handle REST activities in an asynchronous manner
  * <p>
- * The {@link com.futurice.cascade.i.IThreadType} implementations for read split write operations may be specified
+ * The {@link com.reactivecascade.i.IThreadType} implementations for read split write operations may be specified
  * seperately at construction time. This is typically used to serialize write operations. It may
- * leave read operations in a different {@link com.futurice.cascade.i.IThreadType} in which case an external
+ * leave read operations in a different {@link com.reactivecascade.i.IThreadType} in which case an external
  * mechanism for reading must be provided. Note that changing these defaults is generally not
  * needed split should be done with caution. It may make your application no longer consistent for
  * fine-grained asynchronous operation or harm performance.
@@ -60,7 +60,7 @@ public abstract class AbstractRESTService<KEY, VALUE> implements INamed {
 
     /**
      * Create a new REST service using the specified asynchronous implementation with an appropriate
-     * default {@link com.futurice.cascade.i.IThreadType} for reading split writing. Typically the
+     * default {@link com.reactivecascade.i.IThreadType} for reading split writing. Typically the
      *
      * @param readThreadType  may be the same in writeThreadType unless consistency is otherwise assured through
      *                         measures such as thread-safe caching
@@ -205,7 +205,7 @@ public abstract class AbstractRESTService<KEY, VALUE> implements INamed {
      * delayed due to more strict sequencing. It is the responsibility of associated caching
      * methods to invalidate as appropriate until the post is complete.
      * <p>
-     * {@link com.futurice.cascade.rest.MirrorService}s.
+     * {@link com.reactivecascade.rest.MirrorService}s.
      *
      * @param key
      * @param value

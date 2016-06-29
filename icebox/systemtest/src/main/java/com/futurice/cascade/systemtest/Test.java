@@ -1,4 +1,4 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

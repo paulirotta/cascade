@@ -1,4 +1,4 @@
-package com.futurice.cascade.lambdatest;
+package com.reactivecascade.lambdatest;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

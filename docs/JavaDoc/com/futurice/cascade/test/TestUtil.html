@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.test</div>
+<div class="subTitle">com.reactivecascade.test</div>
 <h2 title="Class TestUtil" class="title">Class TestUtil</h2>
 </div>
 <div class="contentContainer">
@@ -99,7 +99,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.test.TestUtil</li>
+<li>com.reactivecascade.test.TestUtil</li>
 </ul>
 </li>
 </ul>
@@ -114,7 +114,7 @@ extends java.lang.Object</pre>
  <p>
  Although there is technically nothing preventing these from running during normal program operation
  it is not advised. These methods may suspend one thread while waiting for a result run on another
- thread. This is classic <code>Future</code> behavior, but use of <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional"><code>IAltFuture</code></a>
+ thread. This is classic <code>Future</code> behavior, but use of <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional"><code>IAltFuture</code></a>
  is much safer and more performant in a production environment especially since the number of threads
  is strictly controlled and tuned to the device in which the application is running.
  <p>
@@ -156,14 +156,14 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>&lt;IN,OUT&gt;&nbsp;OUT</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/test/TestUtil.html#awaitDone-com.futurice.cascade.i.functional.IAltFuture-long-">awaitDone</a></span>(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/test/TestUtil.html#awaitDone-com.reactivecascade.i.functional.IAltFuture-long-">awaitDone</a></span>(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
          long&nbsp;timeoutMillis)</code>
 <div class="block">Run a unit of work on the specified thread</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>&lt;IN,OUT&gt;&nbsp;OUT</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/test/TestUtil.html#awaitDoneNoErrorStackTraces-com.futurice.cascade.i.functional.IAltFuture-long-">awaitDoneNoErrorStackTraces</a></span>(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/test/TestUtil.html#awaitDoneNoErrorStackTraces-com.reactivecascade.i.functional.IAltFuture-long-">awaitDoneNoErrorStackTraces</a></span>(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
                            long&nbsp;timeoutMillis)</code>
 <div class="block">Run a unit of work on the specified thread</div>
 </td>
@@ -207,13 +207,13 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="awaitDone-com.futurice.cascade.i.functional.IAltFuture-long-">
+<a name="awaitDone-com.reactivecascade.i.functional.IAltFuture-long-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>awaitDone</h4>
-<pre>public&nbsp;&lt;IN,OUT&gt;&nbsp;OUT&nbsp;awaitDone(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
+<pre>public&nbsp;&lt;IN,OUT&gt;&nbsp;OUT&nbsp;awaitDone(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
                               long&nbsp;timeoutMillis)
                        throws java.lang.Exception</pre>
 <div class="block">Run a unit of work on the specified thread</div>
@@ -229,13 +229,13 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="awaitDoneNoErrorStackTraces-com.futurice.cascade.i.functional.IAltFuture-long-">
+<a name="awaitDoneNoErrorStackTraces-com.reactivecascade.i.functional.IAltFuture-long-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>awaitDoneNoErrorStackTraces</h4>
-<pre>public&nbsp;&lt;IN,OUT&gt;&nbsp;OUT&nbsp;awaitDoneNoErrorStackTraces(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
+<pre>public&nbsp;&lt;IN,OUT&gt;&nbsp;OUT&nbsp;awaitDoneNoErrorStackTraces(<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;&nbsp;altFuture,
                                                 long&nbsp;timeoutMillis)
                                          throws java.lang.Exception</pre>
 <div class="block">Run a unit of work on the specified thread

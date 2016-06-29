@@ -21,22 +21,22 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.IThreadType;
-import com.futurice.cascade.util.FileUtil;
+import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.futurice.cascade.Async.dd;
-import static com.futurice.cascade.Async.throwIllegalArgumentException;
-import static com.futurice.cascade.Async.vv;
+import static com.reactivecascade.Async.dd;
+import static com.reactivecascade.Async.throwIllegalArgumentException;
+import static com.reactivecascade.Async.vv;
 
 /**
  * AFile set of utility methods for limiting select sections of File-system-bound code. These prevent

@@ -21,13 +21,13 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.icebox;
+package com.reactivecascade.icebox;
 
 import android.webkit.WebView;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IAspect;
-import com.futurice.cascade.rest.RESTService;
+import com.reactivecascade.Async;
+import com.reactivecascade.i.IAspect;
+import com.reactivecascade.rest.RESTService;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
-import com.futurice.cascade.util.TypedThread;
-import com.futurice.cascade.util.DefaultThreadType;
+import com.reactivecascade.util.TypedThread;
+import com.reactivecascade.util.DefaultThreadType;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;

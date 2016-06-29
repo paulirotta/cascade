@@ -21,17 +21,17 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.rest;
+package com.reactivecascade.rest;
 
 import android.content.*;
 import android.support.annotation.NonNull;
 
-import com.futurice.cascade.i.*;
+import com.reactivecascade.i.*;
 
 import java.io.*;
 import java.util.*;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 /**
  * AFile set of utility methods for limiting select sections of File-system-bound code. These prevent

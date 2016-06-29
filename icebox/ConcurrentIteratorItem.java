@@ -1,4 +1,4 @@
-package com.futurice.cascade.functional;
+package com.reactivecascade.functional;
 
 import android.util.Pair;
 

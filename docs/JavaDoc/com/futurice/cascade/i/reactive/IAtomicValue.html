@@ -49,7 +49,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/i/reactive/IAtomicValue.html" target="_top">Frames</a></li>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.i.reactive</div>
+<div class="subTitle">com.reactivecascade.i.reactive</div>
 <h2 title="Interface IAtomicValue" class="title">Interface IAtomicValue&lt;T&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -104,19 +104,19 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;T&gt;</dd>
+<dd><a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;T&gt;</dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.futurice.cascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.futurice.cascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive">ReactiveValue</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.reactivecascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.reactivecascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive">ReactiveValue</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">IAtomicValue&lt;T&gt;</span>
-extends <a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;T&gt;</pre>
+extends <a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;T&gt;</pre>
 <div class="block">The contract for a thread safe model object which may also contain additional reactive features.
  <p>
- The default implementation <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a> uses an
+ The default implementation <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a> uses an
  <code>AtomicReference</code> internally.</div>
 </li>
 </ul>
@@ -192,7 +192,7 @@ extends <a href="../../../../../com/futurice/cascade/i/IGettable.html" title="in
  Your function should also re-start either directly or indirectly the next time the value changes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../../com/futurice/cascade/i/IGettable.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="type parameter in IAtomicValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../../com/futurice/cascade/i/IGettable.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="type parameter in IAtomicValue">T</a>&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
@@ -223,9 +223,9 @@ extends <a href="../../../../../com/futurice/cascade/i/IGettable.html" title="in
 <pre>boolean&nbsp;set(<a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="type parameter in IAtomicValue">T</a>&nbsp;value)</pre>
 <div class="block">Set the current value.
  <p>
- In the case of <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a> which also implements
- <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>, which will also trigger all
- down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>s to receive the update.
+ In the case of <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a> which also implements
+ <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>, which will also trigger all
+ down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>s to receive the update.
 
  Any associated chain will only fire if the value set is new, not a repeat of a previous value.</div>
 <dl>
@@ -289,7 +289,7 @@ extends <a href="../../../../../com/futurice/cascade/i/IGettable.html" title="in
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/i/reactive/IAtomicValue.html" target="_top">Frames</a></li>

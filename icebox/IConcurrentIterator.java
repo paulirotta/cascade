@@ -1,7 +1,7 @@
-package com.futurice.cascade.i.functional;
+package com.reactivecascade.i.functional;
 
-import com.futurice.cascade.functional.ConcurrentIteratorItem;
-import com.futurice.cascade.i.ICancellable;
+import com.reactivecascade.functional.ConcurrentIteratorItem;
+import com.reactivecascade.i.ICancellable;
 
 import java.util.NoSuchElementException;
 
@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  */
 public interface IConcurrentIterator<T> extends ICancellable {
     /**
-     * Get the next element after registering a {@link com.futurice.cascade.i.functional.IConcurrentIterator.StateListener}
+     * Get the next element after registering a {@link com.reactivecascade.i.functional.IConcurrentIterator.StateListener}
      * and receiving <code>HAS_NEXT</code>.
      *
      * If the list is of finite length, the listener notification of transition to state <code>FINISHED</code> will occur

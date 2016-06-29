@@ -21,10 +21,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.futurice.cascade.icebox;
+package com.reactivecascade.icebox;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.i.IAspect;
+import com.reactivecascade.Async;
+import com.reactivecascade.i.IAspect;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;

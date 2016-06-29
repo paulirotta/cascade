@@ -48,8 +48,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/i/reactive/IReactiveSource.html" target="_top">Frames</a></li>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.i.reactive</div>
+<div class="subTitle">com.reactivecascade.i.reactive</div>
 <h2 title="Interface IReactiveSource" class="title">Interface IReactiveSource&lt;OUT&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -104,29 +104,29 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.futurice.cascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.futurice.cascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive">ReactiveValue</a>, <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">Subscription</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.reactivecascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.reactivecascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive">ReactiveValue</a>, <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">Subscription</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">IReactiveSource&lt;OUT&gt;</span>
-extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></pre>
+extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></pre>
 <div class="block">An object you can bind _from_ to receive updates each time this object decides to emit them.
  <p>
- A common implementation is <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a> which will concurrently emit
+ A common implementation is <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a> which will concurrently emit
  to all its down-chain bindings each time it changes.
  <p>
- See also <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>
+ See also <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>
  <p>
- Unlike the single-use objects in <code>com.futurice.cascade.i.functional</code>, the chain created is
- suitable for multiple firings. Chains of <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>
+ Unlike the single-use objects in <code>com.reactivecascade.i.functional</code>, the chain created is
+ suitable for multiple firings. Chains of <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>
  functions are usually held with a weak reference at their head. They will automatically collapse
  and clean up the binding at the same time the leaf node is garbage collected. Any firing which started
  before garbage collection may lead to a value which is discarded. The same is true even if you manually
- <a href="../../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>Subscription.unsubscribe(String, IReactiveTarget)</code></a> so the automatic cleanup is equivalent.
+ <a href="../../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>Subscription.unsubscribe(String, IReactiveTarget)</code></a> so the automatic cleanup is equivalent.
  Still, some people are paranoid, and others just like changing diapers and doing dirty plumbing work.
  Feel free to do it manually. If you want to be controversial, do so in the <code>Object.finalize()</code>
  method of the leaf node. It could be argued that if <code>.finalize()</code> was not called for
@@ -147,7 +147,7 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
  A second even more sneaky way to defeat the automatic memory cleanup of unused reactive chains is: include
  a closure reference in your lambda expressions to some object that will not be garbage collected
  when the leaf nod of the reactive function chain is garbage collected. So you can freely
- incorporate closures into your lambda and not manually call <a href="../../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>Subscription.unsubscribe(String, IReactiveTarget)</code></a>
+ incorporate closures into your lambda and not manually call <a href="../../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>Subscription.unsubscribe(String, IReactiveTarget)</code></a>
  <em>only</em> if the closures reference objects that will not hang around past the end of the
  useful life of the reactive chain.</div>
 </li>
@@ -169,75 +169,75 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.futurice.cascade.i.reactive.IReactiveTarget-">split</a></span>(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
-<div class="block">Attach a downstream <code>.subscribe()</code> like <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>split(IReactiveTarget)</code></a>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.reactivecascade.i.reactive.IReactiveTarget-">split</a></span>(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
+<div class="block">Attach a downstream <code>.subscribe()</code> like <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.reactivecascade.i.reactive.IReactiveTarget-"><code>split(IReactiveTarget)</code></a>
  as a <code>WeakReference</code>
- for automatic down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> on garbage collect of reactive chain leaf node.</div>
+ for automatic down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> on garbage collect of reactive chain leaf node.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.action.IAction-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.action.IAction-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.action.IActionOne-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.action.IActionOne-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.action.IActionR-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
+<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.action.IActionR-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.reactive.IReactiveTarget-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.reactive.IReactiveTarget-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
+<td class="colFirst"><code><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
+<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">subscribe</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribeMap-com.futurice.cascade.i.action.IActionOneR-">subscribeMap</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
+<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribeMap-com.reactivecascade.i.action.IActionOneR-">subscribeMap</a></span>(<a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribeMap-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">subscribeMap</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-            <a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
+<td class="colFirst"><code>&lt;DOWNCHAIN_OUT&gt;<br><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribeMap-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">subscribeMap</a></span>(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+            <a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</code>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-">unsubscribe</a></span>(java.lang.String&nbsp;reason,
-           <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-">unsubscribe</a></span>(java.lang.String&nbsp;reason,
+           <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</code>
 <div class="block">Remove a down-chain branch from the reactive function tree at this node</div>
 </td>
 </tr>
@@ -249,10 +249,10 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.i.INamed">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.i.INamed">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;com.futurice.cascade.i.<a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></h3>
+<h3>Methods inherited from interface&nbsp;com.reactivecascade.i.<a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></h3>
 <code><a href="../../../../../com/futurice/cascade/i/INamed.html#getName--">getName</a></code></li>
 </ul>
 </li>
@@ -269,14 +269,14 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-">
+<a name="unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>unsubscribe</h4>
 <pre>boolean&nbsp;unsubscribe(java.lang.String&nbsp;reason,
-                    <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
+                    <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
 <div class="block">Remove a down-chain branch from the reactive function tree at this node</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -297,16 +297,16 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 <div class="block">Remove all down-chain branches from this node of the reactive function tree</div>
 </li>
 </ul>
-<a name="split-com.futurice.cascade.i.reactive.IReactiveTarget-">
+<a name="split-com.reactivecascade.i.reactive.IReactiveTarget-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>split</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;split(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
-<div class="block">Attach a downstream <code>.subscribe()</code> like <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>split(IReactiveTarget)</code></a>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;split(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
+<div class="block">Attach a downstream <code>.subscribe()</code> like <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#split-com.reactivecascade.i.reactive.IReactiveTarget-"><code>split(IReactiveTarget)</code></a>
  as a <code>WeakReference</code>
- for automatic down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> on garbage collect of reactive chain leaf node.</div>
+ for automatic down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> on garbage collect of reactive chain leaf node.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>reactiveTarget</code> - </dd>
@@ -314,20 +314,20 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.action.IAction-">
+<a name="subscribe-com.reactivecascade.i.action.IAction-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.
  <p>
- It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
+ It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
  <p>
  If this <code>onFireAction</code> is a lambda with closure references to a surrounding <code>Object</code>
- context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
- context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>
+ context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
+ context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>
  is garbage collected.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -336,20 +336,20 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.action.IActionOne-">
+<a name="subscribe-com.reactivecascade.i.action.IActionOne-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.
  <p>
- It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
+ It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
  <p>
  If this <code>onFireAction</code> is a lambda with closure references to a surrounding <code>Object</code>
- context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
- context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>
+ context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
+ context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>
  is garbage collected.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -358,20 +358,20 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribeMap-com.futurice.cascade.i.action.IActionOneR-">
+<a name="subscribeMap-com.reactivecascade.i.action.IActionOneR-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribeMap</h4>
-<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribeMap(<a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
+<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribeMap(<a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.
  <p>
- It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
+ It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.
  <p>
  If this <code>onFireAction</code> is a lambda with closure references to a surrounding <code>Object</code>
- context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
- context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>
+ context, subscribe the onFireAction will automatically <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-"><code>unsubscribe(String, IReactiveTarget)</code></a> when the surrounding
+ context is garbage collected <em>and</em> any down-chain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>
  is garbage collected.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -382,47 +382,47 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">
+<a name="subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                               <a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                               <a href="../../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
+<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
 <dd><code>action</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">
+<a name="subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                               <a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                               <a href="../../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
+<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
 <dd><code>action</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.action.IActionR-">
+<a name="subscribe-com.reactivecascade.i.action.IActionR-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
+<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -433,14 +433,14 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">
+<a name="subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                                                         <a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
+<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                                                         <a href="../../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
@@ -452,35 +452,35 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribeMap-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">
+<a name="subscribeMap-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribeMap</h4>
-<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribeMap(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                                                            <a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
+<pre>&lt;DOWNCHAIN_OUT&gt;&nbsp;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;DOWNCHAIN_OUT&gt;&nbsp;subscribeMap(<a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                                                            <a href="../../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>,DOWNCHAIN_OUT&gt;&nbsp;action)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>DOWNCHAIN_OUT</code> - </dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
+<dd><code>threadType</code> - The onFireAction will be called asynchronously unless the this is same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this (upchain) node in the reactive function tree.</dd>
 <dd><code>action</code> - </dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
-<a name="subscribe-com.futurice.cascade.i.reactive.IReactiveTarget-">
+<a name="subscribe-com.reactivecascade.i.reactive.IReactiveTarget-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>subscribe</h4>
-<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
+<pre><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;subscribe(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="type parameter in IReactiveSource">OUT</a>&gt;&nbsp;reactiveTarget)</pre>
 <div class="block">Add an onFireAction as a new branch down-chain from this node.
  <p>
- It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.</div>
+ It will execute on the same <a href="../../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> as this node and may be called synchronously.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>reactiveTarget</code> - </dd>
@@ -515,8 +515,8 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../../index.html?com/futurice/cascade/i/reactive/IReactiveSource.html" target="_top">Frames</a></li>

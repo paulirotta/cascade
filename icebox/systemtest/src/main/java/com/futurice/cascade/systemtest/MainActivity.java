@@ -1,4 +1,4 @@
-package com.futurice.cascade.systemtest;
+package com.reactivecascade.systemtest;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,15 +6,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.futurice.cascade.Async;
-import com.futurice.cascade.AsyncBuilder;
-import com.futurice.cascade.reactive.ReactiveValue;
-import com.futurice.cascade.reactive.ui.AltArrayAdapter;
-import com.futurice.cascade.reactive.ui.ReactiveTextView;
+import com.reactivecascade.Async;
+import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.reactive.ReactiveValue;
+import com.reactivecascade.reactive.ui.AltArrayAdapter;
+import com.reactivecascade.reactive.ui.ReactiveTextView;
 
 import java.util.ArrayList;
 
-import static com.futurice.cascade.Async.*;
+import static com.reactivecascade.Async.*;
 
 
 public class MainActivity extends Activity {

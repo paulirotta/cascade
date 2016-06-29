@@ -48,8 +48,8 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/reactive/ReactiveValue.html" target="_top">Frames</a></li>
@@ -74,7 +74,7 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.reactive.Subscription">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.reactive.Subscription">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.reactive</div>
+<div class="subTitle">com.reactivecascade.reactive</div>
 <h2 title="Class ReactiveValue" class="title">Class ReactiveValue&lt;T&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -99,10 +99,10 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">com.futurice.cascade.reactive.Subscription</a>&lt;T,T&gt;</li>
+<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">com.reactivecascade.reactive.Subscription</a>&lt;T,T&gt;</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.reactive.ReactiveValue&lt;T&gt;</li>
+<li>com.reactivecascade.reactive.ReactiveValue&lt;T&gt;</li>
 </ul>
 </li>
 </ul>
@@ -113,18 +113,18 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a>, <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive">IReactiveTarget</a>&lt;T&gt;</dd>
+<dd><a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a>, <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;T&gt;, <a href="../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive">IReactiveTarget</a>&lt;T&gt;</dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.futurice.cascade.reactive">PersistentValue</a>, <a href="../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.futurice.cascade.reactive">ReactiveInteger</a>, <a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive">ReactiveLong</a></dd>
+<dd><a href="../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.reactivecascade.reactive">PersistentValue</a>, <a href="../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.reactivecascade.reactive">ReactiveInteger</a>, <a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive">ReactiveLong</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">ReactiveValue&lt;T&gt;</span>
-extends <a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">Subscription</a>&lt;T,T&gt;
-implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;T&gt;</pre>
-<div class="block">Thread-safe reactive display of a variable getValue. Add one or more <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action"><code>IActionOne</code></a>
+extends <a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">Subscription</a>&lt;T,T&gt;
+implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;T&gt;</pre>
+<div class="block">Thread-safe reactive display of a variable getValue. Add one or more <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action"><code>IActionOne</code></a>
  actions to update the display when the variable fires. Usually these can be added as Lambda expressions
  referencing the UI element you would like to track the variable's getValue in an eventually-consistent
  manner.
@@ -133,10 +133,10 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
  calls may not result in all values
  </p>
  <p>
- Bindings are thread safe. All reactiveTargets will refire concurrently if the <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>
+ Bindings are thread safe. All reactiveTargets will refire concurrently if the <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>
  allows, but individual reactiveTargets will never be called concurrently or out-of-sequence. Multiple
  changes to the bound getValue within a short time relative to the current speed of the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> may coalesce into a single headFunctionalChainLink refire of only
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> may coalesce into a single headFunctionalChainLink refire of only
  the most recent getValue. Bound functions must be idempotent. Repeat firing of the same getValue
  is filter under most but not all circumstances. This possibility is related to the use of
  <code>WeakReference</code> of the previously fired getValue of each headFunctionalChainLink to minimize
@@ -155,10 +155,10 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 </a>
 <h3>Field Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a name="fields.inherited.from.class.com.futurice.cascade.reactive.Subscription">
+<li class="blockList"><a name="fields.inherited.from.class.com.reactivecascade.reactive.Subscription">
 <!--   -->
 </a>
-<h3>Fields inherited from class&nbsp;com.futurice.cascade.reactive.<a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">Subscription</a></h3>
+<h3>Fields inherited from class&nbsp;com.reactivecascade.reactive.<a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">Subscription</a></h3>
 <code><a href="../../../../com/futurice/cascade/reactive/Subscription.html#onError">onError</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#onFireAction">onFireAction</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#origin">origin</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#reactiveTargets">reactiveTargets</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#threadType">threadType</a></code></li>
 </ul>
 </li>
@@ -181,11 +181,11 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html#ReactiveValue-java.lang.String-T-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-com.futurice.cascade.i.action.IOnErrorAction-">ReactiveValue</a></span>(java.lang.String&nbsp;name,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html#ReactiveValue-java.lang.String-T-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-com.reactivecascade.i.action.IOnErrorAction-">ReactiveValue</a></span>(java.lang.String&nbsp;name,
              <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&nbsp;initialValue,
-             <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-             <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>,<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;&nbsp;inputMapping,
-             <a href="../../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.futurice.cascade.i.action">IOnErrorAction</a>&nbsp;onError)</code>
+             <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+             <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>,<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;&nbsp;inputMapping,
+             <a href="../../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.reactivecascade.i.action">IOnErrorAction</a>&nbsp;onError)</code>
 <div class="block">Create a new AtomicValue</div>
 </td>
 </tr>
@@ -214,7 +214,7 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html#fire--">fire</a></span>()</code>
-<div class="block">Run all reactive functional chains bound to this <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a>.</div>
+<div class="block">Run all reactive functional chains bound to this <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a>.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -238,11 +238,11 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.reactive.Subscription">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.reactive.Subscription">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;com.futurice.cascade.reactive.<a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">Subscription</a></h3>
-<code><a href="../../../../com/futurice/cascade/reactive/Subscription.html#fire-IN-">fire</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#fireNext-IN-">fireNext</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#getName--">getName</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#getOrigin--">getOrigin</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#searchReactiveTargets-com.futurice.cascade.i.reactive.IReactiveTarget-com.futurice.cascade.i.action.IActionOne-">searchReactiveTargets</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#split-com.futurice.cascade.i.reactive.IReactiveTarget-">split</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.action.IAction-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.action.IActionOne-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.action.IActionR-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.reactive.IReactiveTarget-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeMap-com.futurice.cascade.i.action.IActionOneR-">subscribeMap</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeMap-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">subscribeMap</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">subscribeSource</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.futurice.cascade.i.reactive.IReactiveTarget-">unsubscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeAll-java.lang.String-">unsubscribeAll</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeAllSources-java.lang.String-">unsubscribeAllSources</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">unsubscribeSource</a></code></li>
+<h3>Methods inherited from class&nbsp;com.reactivecascade.reactive.<a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">Subscription</a></h3>
+<code><a href="../../../../com/futurice/cascade/reactive/Subscription.html#fire-IN-">fire</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#fireNext-IN-">fireNext</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#getName--">getName</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#getOrigin--">getOrigin</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#searchReactiveTargets-com.reactivecascade.i.reactive.IReactiveTarget-com.reactivecascade.i.action.IActionOne-">searchReactiveTargets</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#split-com.reactivecascade.i.reactive.IReactiveTarget-">split</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.action.IAction-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.action.IActionOne-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.action.IActionR-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.reactive.IReactiveTarget-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribe-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">subscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeMap-com.reactivecascade.i.action.IActionOneR-">subscribeMap</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeMap-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">subscribeMap</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#subscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">subscribeSource</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribe-java.lang.String-com.reactivecascade.i.reactive.IReactiveTarget-">unsubscribe</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeAll-java.lang.String-">unsubscribeAll</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeAllSources-java.lang.String-">unsubscribeAllSources</a>, <a href="../../../../com/futurice/cascade/reactive/Subscription.html#unsubscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">unsubscribeSource</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -283,9 +283,9 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 </dl>
 </li>
 </ul>
-<a name="ReactiveValue-java.lang.String-java.lang.Object-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-com.futurice.cascade.i.action.IOnErrorAction-">
+<a name="ReactiveValue-java.lang.String-java.lang.Object-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-com.reactivecascade.i.action.IOnErrorAction-">
 <!--   -->
-</a><a name="ReactiveValue-java.lang.String-T-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-com.futurice.cascade.i.action.IOnErrorAction-">
+</a><a name="ReactiveValue-java.lang.String-T-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-com.reactivecascade.i.action.IOnErrorAction-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -293,9 +293,9 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 <h4>ReactiveValue</h4>
 <pre>public&nbsp;ReactiveValue(java.lang.String&nbsp;name,
                      <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&nbsp;initialValue,
-                     <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                     <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>,<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;&nbsp;inputMapping,
-                     <a href="../../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.futurice.cascade.i.action">IOnErrorAction</a>&nbsp;onError)</pre>
+                     <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                     <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>,<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;&nbsp;inputMapping,
+                     <a href="../../../../com/futurice/cascade/i/action/IOnErrorAction.html" title="interface in com.reactivecascade.i.action">IOnErrorAction</a>&nbsp;onError)</pre>
 <div class="block">Create a new AtomicValue</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -322,13 +322,13 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 <li class="blockList">
 <h4>fire</h4>
 <pre>public&nbsp;void&nbsp;fire()</pre>
-<div class="block">Run all reactive functional chains bound to this <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a>.
+<div class="block">Run all reactive functional chains bound to this <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a>.
  <p>
  Normally you do not need to call this, it is called for you. Instead, call
  <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html#set-T-"><code>set(Object)</code></a> to assert a new value.
  <p>
  You can also link this to receive multiple reactive updates as a
- down-chain <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.futurice.cascade.i.action.IActionOne-"><code>IReactiveSource.subscribe(com.futurice.cascade.i.action.IActionOne)</code></a>
+ down-chain <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html#subscribe-com.reactivecascade.i.action.IActionOne-"><code>IReactiveSource.subscribe(com.reactivecascade.i.action.IActionOne)</code></a>
  to receive and store reactive values.
  <p>
  You can also link into a functional chain to receive individually constructed and fired updates using
@@ -366,9 +366,9 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
  Your function should also re-start either directly or indirectly the next time the value changes.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/IGettable.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.futurice.cascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/IGettable.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/IGettable.html" title="interface in com.reactivecascade.i">IGettable</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#get--">get</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the current value, next value in the series, or <code>null</code> of the series has ended</dd>
 </dl>
@@ -386,14 +386,14 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#set-T-">IAtomicValue</a></code></span></div>
 <div class="block">Set the current value.
  <p>
- In the case of <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a> which also implements
- <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>, which will also trigger all
- down-chain <a href="../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveTarget</code></a>s to receive the update.
+ In the case of <a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a> which also implements
+ <a href="../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>, which will also trigger all
+ down-chain <a href="../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveTarget</code></a>s to receive the update.
 
  Any associated chain will only fire if the value set is new, not a repeat of a previous value.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#set-T-">set</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#set-T-">set</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - the new value asserted</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -418,7 +418,7 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
  <code>AtomicReference.compareAndSet(Object, Object)</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#compareAndSet-T-T-">compareAndSet</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#compareAndSet-T-T-">compareAndSet</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>expected</code> - - Must be of the same type as <code>update</code> and must be the current value
                  or the state will not change.</dd>
@@ -448,7 +448,7 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
  if you intend implementing your own <code>toString</code> method.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#toString--">toString</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.futurice.cascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html#toString--">toString</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.html" title="interface in com.reactivecascade.i.reactive">IAtomicValue</a>&lt;<a href="../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="type parameter in ReactiveValue">T</a>&gt;</code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code>toString</code>&nbsp;in class&nbsp;<code>java.lang.Object</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -483,8 +483,8 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/reactive/ReactiveValue.html" target="_top">Frames</a></li>
@@ -509,7 +509,7 @@ implements <a href="../../../../com/futurice/cascade/i/reactive/IAtomicValue.htm
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.reactive.Subscription">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.reactive.Subscription">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>

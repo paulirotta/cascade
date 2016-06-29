@@ -49,7 +49,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../com/futurice/cascade/functional/DoubleQueue.html" title="class in com.futurice.cascade.functional"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/functional/DoubleQueue.html" title="class in com.reactivecascade.functional"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/functional/AltFuture.html" target="_top">Frames</a></li>
@@ -73,8 +73,8 @@ var activeTableTab = "activeTableTab";
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.classes.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.functional</div>
+<div class="subTitle">com.reactivecascade.functional</div>
 <h2 title="Class AltFuture" class="title">Class AltFuture&lt;IN,OUT&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -99,10 +99,10 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">com.futurice.cascade.functional.SettableAltFuture</a>&lt;IN,OUT&gt;</li>
+<li><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">com.reactivecascade.functional.SettableAltFuture</a>&lt;IN,OUT&gt;</li>
 <li>
 <ul class="inheritance">
-<li>com.futurice.cascade.functional.AltFuture&lt;IN,OUT&gt;</li>
+<li>com.reactivecascade.functional.AltFuture&lt;IN,OUT&gt;</li>
 </ul>
 </li>
 </ul>
@@ -118,13 +118,13 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;, <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFuture.html" title="interface in com.futurice.cascade.i.functional">IRunnableAltFuture</a>&lt;IN,OUT&gt;, <a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.futurice.cascade.i">ICancellable</a>, java.lang.Runnable</dd>
+<dd><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a>&lt;IN,OUT&gt;, <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFuture.html" title="interface in com.reactivecascade.i.functional">IRunnableAltFuture</a>&lt;IN,OUT&gt;, <a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.reactivecascade.i">ICancellable</a>, java.lang.Runnable</dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">AltFuture&lt;IN,OUT&gt;</span>
-extends <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a>&lt;IN,OUT&gt;
-implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFuture.html" title="interface in com.futurice.cascade.i.functional">IRunnableAltFuture</a>&lt;IN,OUT&gt;</pre>
+extends <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a>&lt;IN,OUT&gt;
+implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFuture.html" title="interface in com.reactivecascade.i.functional">IRunnableAltFuture</a>&lt;IN,OUT&gt;</pre>
 <div class="block">A present-time representation of one of many possible alternate future results
  <p>
  Note the name also denotes the "alternate" nature of deviation fromKey the standard
@@ -142,12 +142,12 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
  task is canceled or has an execution error.
  <p>
  This class is usually created by an underlying library split returned as a cancellation-token-style response
- fromKey, for example, <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> methods which receive <code>onSuccess</code> split
+ fromKey, for example, <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> methods which receive <code>onSuccess</code> split
  <code>onError</code> arguments.
  <p>
  The recommended use is: provide <code>onSuccess</code> split
- <code>onError</code> as a lambda expression toKey <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> or
- <a href="../../../../com/futurice/cascade/Async.html" title="class in com.futurice.cascade"><code>Async</code></a>. Only use this token toKey call <code>cancel(String reason)</code> toKey cancel
+ <code>onError</code> as a lambda expression toKey <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> or
+ <a href="../../../../com/futurice/cascade/Async.html" title="class in com.reactivecascade"><code>Async</code></a>. Only use this token toKey call <code>cancel(String reason)</code> toKey cancel
  on expensive operations such as networking if you are no longer interested in receiving the result.
  <p>
  In most cases it is not recommended toKey block your calling thread with a <code>get()</code>. It is
@@ -157,7 +157,7 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
  <code>FutureTask</code> methods are left exposed.
  <p>
  This is a debugOrigin-build-only fail fast check toKey see if you are re-submitting an
- <code>AltFuture</code> which has already been sent toKey its <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>'s
+ <code>AltFuture</code> which has already been sent toKey its <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>'s
  <code>ExecutorService</code>. Here were are following the following principles:
  <p>
  fail fast - check for problems as they are created split halt debugOrigin build runs immediately
@@ -189,11 +189,11 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 </a>
 <h3>Nested Class Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a name="nested.classes.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">
+<li class="blockList"><a name="nested.classes.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">
 <!--   -->
 </a>
-<h3>Nested classes/interfaces inherited from class&nbsp;com.futurice.cascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a></h3>
-<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.AltFutureStateCancelled.html" title="class in com.futurice.cascade.functional">SettableAltFuture.AltFutureStateCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.AltFutureStateError.html" title="class in com.futurice.cascade.functional">SettableAltFuture.AltFutureStateError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.IAltFutureStateCancelled.html" title="interface in com.futurice.cascade.functional">SettableAltFuture.IAltFutureStateCancelled</a></code></li>
+<h3>Nested classes/interfaces inherited from class&nbsp;com.reactivecascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a></h3>
+<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.AltFutureStateCancelled.html" title="class in com.reactivecascade.functional">SettableAltFuture.AltFutureStateCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.AltFutureStateError.html" title="class in com.reactivecascade.functional">SettableAltFuture.AltFutureStateError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.IAltFutureStateCancelled.html" title="interface in com.reactivecascade.functional">SettableAltFuture.IAltFutureStateCancelled</a></code></li>
 </ul>
 </li>
 </ul>
@@ -204,10 +204,10 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 </a>
 <h3>Field Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a name="fields.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">
+<li class="blockList"><a name="fields.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">
 <!--   -->
 </a>
-<h3>Fields inherited from class&nbsp;com.futurice.cascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a></h3>
+<h3>Fields inherited from class&nbsp;com.reactivecascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a></h3>
 <code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#FORKED">FORKED</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#origin">origin</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#stateAR">stateAR</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#thenAltFutureList">thenAltFutureList</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#threadType">threadType</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#ZEN">ZEN</a></code></li>
 </ul>
 </li>
@@ -224,30 +224,30 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</code>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</code>
 <div class="block">Constructor</div>
 </td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 </td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-         <a href="../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">AltFuture</a></span>(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+         <a href="../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</code>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 </td>
 </tr>
 </table>
@@ -280,17 +280,17 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../com/futurice/cascade/functional/AltFuture.html#run--">run</a></span>()</code>
-<div class="block">The <code>ExecutorService</code> of this <code>AltFuture</code>s <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>
+<div class="block">The <code>ExecutorService</code> of this <code>AltFuture</code>s <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>
  will call this for you.</div>
 </td>
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;com.futurice.cascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a></h3>
-<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#assertNotDone--">assertNotDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#cancel-java.lang.String-java.lang.Exception-">cancel</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#clearPreviousAltFuture--">clearPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#compareAndSet-java.lang.Object-OUT-">compareAndSet</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenActions--">doThenActions</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenOnCancelled-java.util.concurrent.CancellationException-">doThenOnCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenOnError-com.futurice.cascade.i.functional.IAltFutureState-">doThenOnError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#filter-com.futurice.cascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#filter-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#fork--">fork</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#get--">get</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#getPreviousAltFuture--">getPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#getThreadType--">getThreadType</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isCancelled--">isCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isCancelled-java.lang.Object-">isCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isConsumed--">isConsumed</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isConsumed-java.lang.Object-">isConsumed</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isDone--">isDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isDone-java.lang.Object-">isDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isForked--">isForked</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isForked-java.lang.Object-">isForked</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#map-com.futurice.cascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#map-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#onError-com.futurice.cascade.i.action.IOnErrorAction-">onError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#safeGet--">safeGet</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-com.futurice.cascade.functional.ImmutableValue-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-com.futurice.cascade.i.reactive.IReactiveTarget-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-OUT-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#setPreviousAltFuture-com.futurice.cascade.i.functional.IAltFuture-">setPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#split-com.futurice.cascade.i.functional.IAltFuture-">split</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.action.IActionR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.functional.IAltFuture-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">then</a></code></li>
+<h3>Methods inherited from class&nbsp;com.reactivecascade.functional.<a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a></h3>
+<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#assertNotDone--">assertNotDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#cancel-java.lang.String-java.lang.Exception-">cancel</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#clearPreviousAltFuture--">clearPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#compareAndSet-java.lang.Object-OUT-">compareAndSet</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenActions--">doThenActions</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenOnCancelled-java.util.concurrent.CancellationException-">doThenOnCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doThenOnError-com.reactivecascade.i.functional.IAltFutureState-">doThenOnError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#filter-com.reactivecascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#filter-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#fork--">fork</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#get--">get</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#getPreviousAltFuture--">getPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#getThreadType--">getThreadType</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isCancelled--">isCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isCancelled-java.lang.Object-">isCancelled</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isConsumed--">isConsumed</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isConsumed-java.lang.Object-">isConsumed</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isDone--">isDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isDone-java.lang.Object-">isDone</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isForked--">isForked</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isForked-java.lang.Object-">isForked</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#map-com.reactivecascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#map-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#onError-com.reactivecascade.i.action.IOnErrorAction-">onError</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#safeGet--">safeGet</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-com.reactivecascade.functional.ImmutableValue-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-com.reactivecascade.i.reactive.IReactiveTarget-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#set-OUT-">set</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#setPreviousAltFuture-com.reactivecascade.i.functional.IAltFuture-">setPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#split-com.reactivecascade.i.functional.IAltFuture-">split</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.action.IActionR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.functional.IAltFuture-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">then</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -300,17 +300,17 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.i.functional.IAltFuture">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.i.functional.IAltFuture">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;com.futurice.cascade.i.functional.<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.futurice.cascade.i.functional">IAltFuture</a></h3>
-<code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#doThenOnCancelled-java.util.concurrent.CancellationException-">doThenOnCancelled</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#doThenOnError-com.futurice.cascade.i.functional.IAltFutureState-">doThenOnError</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#filter-com.futurice.cascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#filter-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#fork--">fork</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#get--">get</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#getPreviousAltFuture--">getPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#getThreadType--">getThreadType</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isConsumed--">isConsumed</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isDone--">isDone</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isForked--">isForked</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#map-com.futurice.cascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#map-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#onError-com.futurice.cascade.i.action.IOnErrorAction-">onError</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#safeGet--">safeGet</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-com.futurice.cascade.functional.ImmutableValue-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-com.futurice.cascade.i.reactive.IReactiveTarget-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-OUT-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#setPreviousAltFuture-com.futurice.cascade.i.functional.IAltFuture-">setPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#split-com.futurice.cascade.i.functional.IAltFuture-">split</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.action.IActionR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.functional.IAltFuture-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">then</a></code></li>
+<h3>Methods inherited from interface&nbsp;com.reactivecascade.i.functional.<a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html" title="interface in com.reactivecascade.i.functional">IAltFuture</a></h3>
+<code><a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#doThenOnCancelled-java.util.concurrent.CancellationException-">doThenOnCancelled</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#doThenOnError-com.reactivecascade.i.functional.IAltFutureState-">doThenOnError</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#filter-com.reactivecascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#filter-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">filter</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#fork--">fork</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#get--">get</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#getPreviousAltFuture--">getPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#getThreadType--">getThreadType</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isConsumed--">isConsumed</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isDone--">isDone</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#isForked--">isForked</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#map-com.reactivecascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#map-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">map</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#onError-com.reactivecascade.i.action.IOnErrorAction-">onError</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#safeGet--">safeGet</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-com.reactivecascade.functional.ImmutableValue-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-com.reactivecascade.i.reactive.IReactiveTarget-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#set-OUT-">set</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#setPreviousAltFuture-com.reactivecascade.i.functional.IAltFuture-">setPreviousAltFuture</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#split-com.reactivecascade.i.functional.IAltFuture-">split</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.action.IActionR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.functional.IAltFuture-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">then</a>, <a href="../../../../com/futurice/cascade/i/functional/IAltFuture.html#then-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">then</a></code></li>
 </ul>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.i.ICancellable">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.i.ICancellable">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;com.futurice.cascade.i.<a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.futurice.cascade.i">ICancellable</a></h3>
+<h3>Methods inherited from interface&nbsp;com.reactivecascade.i.<a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.reactivecascade.i">ICancellable</a></h3>
 <code><a href="../../../../com/futurice/cascade/i/ICancellable.html#cancel-java.lang.String-java.lang.Exception-">cancel</a>, <a href="../../../../com/futurice/cascade/i/ICancellable.html#isCancelled--">isCancelled</a></code></li>
 </ul>
 </li>
@@ -327,16 +327,16 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IAction-">
+<a name="AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IAction-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>AltFuture</h4>
-<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                 <a href="../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.futurice.cascade.i.action">IAction</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</pre>
+<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                 <a href="../../../../com/futurice/cascade/i/action/IAction.html" title="interface in com.reactivecascade.i.action">IAction</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</pre>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>threadType</code> - the thread pool toKey execute this command on</dd>
@@ -344,14 +344,14 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 </dl>
 </li>
 </ul>
-<a name="AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOne-">
+<a name="AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOne-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>AltFuture</h4>
-<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                 <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.futurice.cascade.i.action">IActionOne</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</pre>
+<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                 <a href="../../../../com/futurice/cascade/i/action/IActionOne.html" title="interface in com.reactivecascade.i.action">IActionOne</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>&gt;&nbsp;action)</pre>
 <div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -360,16 +360,16 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 </dl>
 </li>
 </ul>
-<a name="AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionR-">
+<a name="AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionR-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>AltFuture</h4>
-<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                 <a href="../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.futurice.cascade.i.action">IActionR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</pre>
+<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                 <a href="../../../../com/futurice/cascade/i/action/IActionR.html" title="interface in com.reactivecascade.i.action">IActionR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>threadType</code> - the thread pool toKey execute this command on</dd>
@@ -377,16 +377,16 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 </dl>
 </li>
 </ul>
-<a name="AltFuture-com.futurice.cascade.i.IThreadType-com.futurice.cascade.i.action.IActionOneR-">
+<a name="AltFuture-com.reactivecascade.i.IThreadType-com.reactivecascade.i.action.IActionOneR-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>AltFuture</h4>
-<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i">IThreadType</a>&nbsp;threadType,
-                 <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.futurice.cascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</pre>
+<pre>public&nbsp;AltFuture(<a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i">IThreadType</a>&nbsp;threadType,
+                 <a href="../../../../com/futurice/cascade/i/action/IActionOneR.html" title="interface in com.reactivecascade.i.action">IActionOneR</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;&nbsp;action)</pre>
 <div class="block">Create a <code>Runnable</code> which will be executed one time on the
- <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.futurice.cascade.i.action"><code>IBaseAction</code></a></div>
+ <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a> implementation toKey perform an <a href="../../../../com/futurice/cascade/i/action/IBaseAction.html" title="interface in com.reactivecascade.i.action"><code>IBaseAction</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>threadType</code> - the thread pool toKey execute this command on</dd>
@@ -420,9 +420,9 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
  If needed, it is the responsibility of the onError onFireAction toKey possibly unwind the side effects.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/i/ICancellable.html#cancel-java.lang.String-">cancel</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.futurice.cascade.i">ICancellable</a></code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/i/ICancellable.html#cancel-java.lang.String-">cancel</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../com/futurice/cascade/i/ICancellable.html" title="interface in com.reactivecascade.i">ICancellable</a></code></dd>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#cancel-java.lang.String-">cancel</a></code>&nbsp;in class&nbsp;<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#cancel-java.lang.String-">cancel</a></code>&nbsp;in class&nbsp;<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;</code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>reason</code> - Debug-friendly explanation why this was cancelled</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -437,7 +437,7 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <li class="blockList">
 <h4>run</h4>
 <pre>public&nbsp;void&nbsp;run()</pre>
-<div class="block">The <code>ExecutorService</code> of this <code>AltFuture</code>s <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.futurice.cascade.i"><code>IThreadType</code></a>
+<div class="block">The <code>ExecutorService</code> of this <code>AltFuture</code>s <a href="../../../../com/futurice/cascade/i/IThreadType.html" title="interface in com.reactivecascade.i"><code>IThreadType</code></a>
  will call this for you. You will <a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#fork--"><code>SettableAltFuture.fork()</code></a> when all prerequisite tasks have completed
  toKey <code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#isDone--"><code>SettableAltFuture.isDone()</code></a> == true</code> state. If this <code>AltFuture</code> is part of an asynchronous functional
  chain, subscribe it will be forked for you when the prerequisites have finished.
@@ -461,7 +461,7 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
  Non-atomic check-do race conditions must still guard fromKey this point on against concurrent fork()</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doFork--">doFork</a></code>&nbsp;in class&nbsp;<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.futurice.cascade.functional">SettableAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;</code></dd>
+<dd><code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html#doFork--">doFork</a></code>&nbsp;in class&nbsp;<code><a href="../../../../com/futurice/cascade/functional/SettableAltFuture.html" title="class in com.reactivecascade.functional">SettableAltFuture</a>&lt;<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">IN</a>,<a href="../../../../com/futurice/cascade/functional/AltFuture.html" title="type parameter in AltFuture">OUT</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -493,7 +493,7 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../com/futurice/cascade/functional/DoubleQueue.html" title="class in com.futurice.cascade.functional"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../com/futurice/cascade/functional/DoubleQueue.html" title="class in com.reactivecascade.functional"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?com/futurice/cascade/functional/AltFuture.html" target="_top">Frames</a></li>
@@ -517,8 +517,8 @@ implements <a href="../../../../com/futurice/cascade/i/functional/IRunnableAltFu
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested.classes.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">Nested</a>&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.com.futurice.cascade.functional.SettableAltFuture">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#nested.classes.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.com.reactivecascade.functional.SettableAltFuture">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>

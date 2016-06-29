@@ -13,13 +13,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.futurice.cascade.reactive.ui.ReactiveTextView
+        <com.reactivecascade.reactive.ui.ReactiveTextView
             android:id="@+id/test_progress_textview"
             android:text="@string/test_progress_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.futurice.cascade.reactive.ui.ReactiveTextView
+        <com.reactivecascade.reactive.ui.ReactiveTextView
             android:id="@+id/test_result_textview"
             android:text="@string/test_two_label"
             android:layout_width="wrap_content"

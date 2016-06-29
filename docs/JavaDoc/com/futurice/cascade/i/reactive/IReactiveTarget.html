@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
@@ -91,7 +91,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">com.futurice.cascade.i.reactive</div>
+<div class="subTitle">com.reactivecascade.i.reactive</div>
 <h2 title="Interface IReactiveTarget" class="title">Interface IReactiveTarget&lt;IN&gt;</h2>
 </div>
 <div class="contentContainer">
@@ -105,25 +105,25 @@ var activeTableTab = "activeTableTab";
 </dl>
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.futurice.cascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveImageView.html" title="class in com.futurice.cascade.reactive.ui">ReactiveImageView</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.futurice.cascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.futurice.cascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive">ReactiveValue</a>, <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive">Subscription</a></dd>
+<dd><a href="../../../../../com/futurice/cascade/reactive/PersistentValue.html" title="class in com.reactivecascade.reactive">PersistentValue</a>, <a href="../../../../../com/futurice/cascade/reactive/ui/ReactiveImageView.html" title="class in com.reactivecascade.reactive.ui">ReactiveImageView</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveInteger.html" title="class in com.reactivecascade.reactive">ReactiveInteger</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveLong.html" title="class in com.reactivecascade.reactive">ReactiveLong</a>, <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive">ReactiveValue</a>, <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive">Subscription</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public interface <span class="typeNameLabel">IReactiveTarget&lt;IN&gt;</span>
-extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></pre>
+extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></pre>
 <div class="block">An object which can receive repeated value assertions from a reactive functional chain.
  <p>
- Commonly used default implementations are <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive"><code>Subscription</code></a> and
- <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a>.
+ Commonly used default implementations are <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive"><code>Subscription</code></a> and
+ <a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a>.
  <p>
  Note that classes which are functional but not reactive only receive a value one time before
  becoming immutable value object. These are thus _not_ <code>IReactiveTarget</code>s because the
  2nd etc firing would not be meaningful. You will see example of these in the package
- <code>com.futurice.cascade.i.functional</code></div>
+ <code>com.reactivecascade.i.functional</code></div>
 </li>
 </ul>
 </div>
@@ -145,7 +145,7 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#fire-IN-">fire</a></span>(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&nbsp;in)</code>
-<div class="block">An upchain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a> is notifying us
+<div class="block">An upchain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a> is notifying us
  of a new input value to process.</div>
 </td>
 </tr>
@@ -157,9 +157,9 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#subscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">subscribeSource</a></span>(java.lang.String&nbsp;reason,
-               <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</code>
-<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>  will start sending updates
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#subscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">subscribeSource</a></span>(java.lang.String&nbsp;reason,
+               <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</code>
+<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>  will start sending updates
 
  This allows the target which is responsible for holding a strong reference to the source to
  prevent it from being garbage collected until all targets of a given source go out of scope and
@@ -174,9 +174,9 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#unsubscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">unsubscribeSource</a></span>(java.lang.String&nbsp;reason,
-                 <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</code>
-<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>  will no longer send updates
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#unsubscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">unsubscribeSource</a></span>(java.lang.String&nbsp;reason,
+                 <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</code>
+<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>  will no longer send updates
 
  Since this target is responsible for holding a reference to the source to keep it from
  being garbage collected, this target can not forget the source and, if not used elsewhere, it can be garbage collected.</div>
@@ -184,10 +184,10 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.com.futurice.cascade.i.INamed">
+<li class="blockList"><a name="methods.inherited.from.class.com.reactivecascade.i.INamed">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;com.futurice.cascade.i.<a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.futurice.cascade.i">INamed</a></h3>
+<h3>Methods inherited from interface&nbsp;com.reactivecascade.i.<a href="../../../../../com/futurice/cascade/i/INamed.html" title="interface in com.reactivecascade.i">INamed</a></h3>
 <code><a href="../../../../../com/futurice/cascade/i/INamed.html#getName--">getName</a></code></li>
 </ul>
 </li>
@@ -213,7 +213,7 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 <li class="blockList">
 <h4>fire</h4>
 <pre>void&nbsp;fire(<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&nbsp;in)</pre>
-<div class="block">An upchain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a> is notifying us
+<div class="block">An upchain <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a> is notifying us
  of a new input value to process.
 
  You don't usually call the fire methods directly. They are
@@ -222,10 +222,10 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 
  <p>
  Nodes within a reactive chain may choose to be stateless such as
- <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.futurice.cascade.reactive"><code>Subscription</code></a>.
+ <a href="../../../../../com/futurice/cascade/reactive/Subscription.html" title="class in com.reactivecascade.reactive"><code>Subscription</code></a>.
  <p>
  Nodes at the leaf of a reactive chain will typically retain this value as state, for example
- (<a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.futurice.cascade.reactive"><code>ReactiveValue</code></a>).
+ (<a href="../../../../../com/futurice/cascade/reactive/ReactiveValue.html" title="class in com.reactivecascade.reactive"><code>ReactiveValue</code></a>).
  <p>
  They may also choose to otherwise create a stateful side effect with the value received. The
  recommended practice is to not create such side effects except in the leaf node(s) at the
@@ -263,21 +263,21 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="subscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">
+<a name="subscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>subscribeSource</h4>
 <pre>void&nbsp;subscribeSource(java.lang.String&nbsp;reason,
-                     <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</pre>
-<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>  will start sending updates
+                     <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</pre>
+<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>  will start sending updates
 
  This allows the target which is responsible for holding a strong reference to the source to
  prevent it from being garbage collected until all targets of a given source go out of scope and
  are themselves garbage collected.
 
- You may manually speed this process by calling <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#unsubscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-"><code>unsubscribeSource(String, IReactiveSource)</code></a>,
+ You may manually speed this process by calling <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html#unsubscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-"><code>unsubscribeSource(String, IReactiveSource)</code></a>,
  however if you choose not to or forget to do so, it will be taken care of for you fairly soon.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -285,15 +285,15 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </dl>
 </li>
 </ul>
-<a name="unsubscribeSource-java.lang.String-com.futurice.cascade.i.reactive.IReactiveSource-">
+<a name="unsubscribeSource-java.lang.String-com.reactivecascade.i.reactive.IReactiveSource-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>unsubscribeSource</h4>
 <pre>void&nbsp;unsubscribeSource(java.lang.String&nbsp;reason,
-                       <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</pre>
-<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><code>IReactiveSource</code></a>  will no longer send updates
+                       <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive">IReactiveSource</a>&lt;<a href="../../../../../com/futurice/cascade/i/reactive/IReactiveTarget.html" title="type parameter in IReactiveTarget">IN</a>&gt;&nbsp;reactiveSource)</pre>
+<div class="block">Notification that an <a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><code>IReactiveSource</code></a>  will no longer send updates
 
  Since this target is responsible for holding a reference to the source to keep it from
  being garbage collected, this target can not forget the source and, if not used elsewhere, it can be garbage collected.</div>
@@ -341,7 +341,7 @@ extends <a href="../../../../../com/futurice/cascade/i/INamed.html" title="inter
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.futurice.cascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../../com/futurice/cascade/i/reactive/IReactiveSource.html" title="interface in com.reactivecascade.i.reactive"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
