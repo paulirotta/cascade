@@ -34,3 +34,6 @@ Thumbs.db
 
 # Coverity files
 cov-int/
+
+# Uncategorized
+.DS_Store

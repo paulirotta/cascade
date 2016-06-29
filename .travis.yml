@@ -23,7 +23,6 @@ notifications:
   email: paulirotta@gmail.com
 
 before_install:
-  - cd ./ReactiveCascade
   - chmod +x gradlew
 
 # Emulator Management: Create, Start and Wait
