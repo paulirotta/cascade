@@ -25,7 +25,7 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
     public void testCancel() throws Exception {
         final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertTrue(settableAltFuture.cancel("Just because"));
-        assertEquals((Object) IAltFuture.VALUE_NOT_AVAILABLE, (Object) settableAltFuture.safeGet());
+        assertEquals(IAltFuture.VALUE_NOT_AVAILABLE, settableAltFuture.safeGet());
 
         SHOW_ERROR_STACK_TRACES = false;
         try {
