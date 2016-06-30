@@ -1,3 +1,8 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.md , https://github.com/futurice/cascade and http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paulirotta@gmail.com
+*/
 package com.reactivecascade.functional;
 
 import android.support.annotation.CallSuper;
@@ -12,7 +17,6 @@ import org.junit.Test;
 
 import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
 
-@SmallTest
 public class SettableAltFutureTest extends AsyncAndroidTestCase {
 
     @Before

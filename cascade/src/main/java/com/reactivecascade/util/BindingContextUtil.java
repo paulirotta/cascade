@@ -1,3 +1,8 @@
+/*
+This file is part of Reactive Cascade which is released under The MIT License.
+See license.md , https://github.com/futurice/cascade and http://reactivecascade.com for details.
+This is open source for the common good. Please contribute improvements by pull request or contact paulirotta@gmail.com
+*/
 package com.reactivecascade.util;
 
 import android.support.annotation.CallSuper;
@@ -16,8 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Default binding context implementations
  */
-public class BindingContextUtils {
-    private static final String TAG = BindingContextUtils.class.getSimpleName();
+public class BindingContextUtil {
+    private static final String TAG = BindingContextUtil.class.getSimpleName();
 
     public static final IBindingContext APP_BINDING_CONTEXT = new IBindingContext() {
         @Override
