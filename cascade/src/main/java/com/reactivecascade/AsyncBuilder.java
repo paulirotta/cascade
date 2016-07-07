@@ -286,7 +286,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param workerThreadType
+     * @param workerThreadType thread type for CPU-bound tasks
      * @return the builder, for chaining
      */
     @NonNull
@@ -347,7 +347,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param uiThreadType
+     * @param uiThreadType thread type for UI activities
      * @return the builder, for chaining
      */
     @NonNull
@@ -359,7 +359,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return
+     * @return thread type for UI activities
      */
     @NonNull
     @VisibleForTesting
@@ -379,7 +379,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param netReadThreadType
+     * @param netReadThreadType thread type for reading (non-mutating state) from network servers
      * @return the builder, for chaining
      */
     @NonNull
@@ -391,7 +391,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return
+     * @return thread type for writing (mutating state) to network servers
      */
     @NonNull
     @VisibleForTesting
@@ -518,7 +518,7 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     private Thread getSerialWorkerThread(@NonNull IThreadType threadType,
-                                                      @NonNull Runnable runnable) {
+                                         @NonNull Runnable runnable) {
         if (serialWorkerThread == null) {
             serialWorkerThread = new TypedThread(threadType, runnable, createThreadId("SerialWorkerThread"));
         }
@@ -935,15 +935,19 @@ public class AsyncBuilder {
     @NotCallOrigin
     @UiThread
     public Async build() {
+        AssertUtil.assertNotNull(context);
+
         if (uiThread == null) {
-            Thread thread = Thread.currentThread();
+            Thread thread;
             try {
                 thread = context.getMainLooper().getThread();
             } catch (NullPointerException e) {
-                Log.i(TAG, "Overriding UI thread to instrumentation tests");
+                Log.i(TAG, "UI thread is not the default system UI thread");
+                thread = Thread.currentThread();
             }
             setUiThread(thread);
         }
+
         if (strictModeEnabled) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
@@ -956,11 +960,12 @@ public class AsyncBuilder {
                     .penaltyDeath()
                     .build());
         }
-        Log.v(TAG, "AsyncBuilder complete");
 
         Async async = new Async();
         Async.DEFAULT_BINDING_CONTEXT.openBindingContext(context.getApplicationContext());
         instance = this;
+
+        Log.v(TAG, "AsyncBuilder complete");
 
         return async; //TODO Pass the builder as an argument to the constructor
     }

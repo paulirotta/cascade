@@ -45,6 +45,8 @@ import static junit.framework.TestCase.assertTrue;
 
 @RunWith(JMockit.class)
 public class AsyncBuilderTest {
+    @Mocked Thread thread;
+
     @Mocked
     BlockingQueue<Runnable> queue;
 
@@ -305,51 +307,17 @@ public class AsyncBuilderTest {
 
     @Test
     public void testGetUiExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetUiExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetWorkerExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetSerialWorkerExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSingleThreadedWorkerExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetFileReadExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetFileWriteExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetNetReadExecutorService() throws Exception {
-
-    }
-
-    @Test
-    public void testSetNetWriteExecutorService() throws Exception {
-
+        asyncBuilder
+                .setUiExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getUiExecutorService());
     }
 
     @Test
     public void testSetUI_Thread() throws Exception {
-
+        asyncBuilder
+                .setUiThread(thread)
+                .build();
+        assertEquals(executorService, asyncBuilder.getUiExecutorService());
     }
 }
