@@ -12,7 +12,7 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-24
+#    - build-tools-24
     - android-24
     - add-on
     - extra
@@ -27,6 +27,7 @@ before_install:
 
 # Emulator Management: Create, Start and Wait
 before_script:
+  - android update sdk --no-ui --all --filter build-tools-24.0.0
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
