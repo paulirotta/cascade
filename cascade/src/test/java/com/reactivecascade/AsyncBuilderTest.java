@@ -9,6 +9,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.i.IAction;
 import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
@@ -22,17 +23,100 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import mockit.Mocked;
+import mockit.integration.junit4.JMockit;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
+@RunWith(JMockit.class)
 public class AsyncBuilderTest {
+    final ExecutorService executorService = new ExecutorService() {
+        @Override
+        public void shutdown() {
+
+        }
+
+        @NonNull
+        @Override
+        public List<Runnable> shutdownNow() {
+            return null;
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return false;
+        }
+
+        @Override
+        public boolean isTerminated() {
+            return false;
+        }
+
+        @Override
+        public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+            return false;
+        }
+
+        @NonNull
+        @Override
+        public <T> Future<T> submit(Callable<T> callable) {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public <T> Future<T> submit(Runnable runnable, T t) {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public Future<?> submit(Runnable runnable) {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> collection) throws InterruptedException {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> collection, long l, TimeUnit timeUnit) throws InterruptedException {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> collection) throws InterruptedException, ExecutionException {
+            return null;
+        }
+
+        @Override
+        public <T> T invokeAny(Collection<? extends Callable<T>> collection, long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+            return null;
+        }
+
+        @Override
+        public void execute(Runnable runnable) {
+
+        }
+    };
+
     final IThreadType threadType = new IThreadType() {
         @Override
         public boolean isInOrderExecutor() {
@@ -181,6 +265,7 @@ public class AsyncBuilderTest {
     @After
     public void tearDown() throws Exception {
         AsyncBuilder.resetInstance();
+        asyncBuilder = null;
     }
 
     @Test
@@ -253,11 +338,11 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetWorkerThreadType() throws Exception {
         asyncBuilder
+                .setWorkerThreadType(threadType)
                 .build();
-        assertFalse(asyncBuilder.getWorkerThreadType().isInOrderExecutor());
+        assertEquals(threadType, asyncBuilder.getWorkerThreadType());
     }
 
     @Test
@@ -269,12 +354,11 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetSerialWorkerThreadType() throws Exception {
         asyncBuilder
+                .setSerialWorkerThreadType(threadType)
                 .build();
-        assertTrue(asyncBuilder.getSerialWorkerThreadType().isInOrderExecutor());
-
+        assertEquals(threadType, asyncBuilder.getSerialWorkerThreadType());
     }
 
     @Test
@@ -286,10 +370,11 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetUiThreadType() throws Exception {
-        asyncBuilder.build();
-        assertTrue(asyncBuilder.getUiThreadType().isInOrderExecutor());
+        asyncBuilder
+                .setUIThreadType(threadType)
+                .build();
+        assertEquals(threadType, asyncBuilder.getUiThreadType());
     }
 
     @Test
@@ -301,10 +386,11 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetReadThreadType() throws Exception {
-        asyncBuilder.build();
-        assertFalse(asyncBuilder.getNetReadThreadType().isInOrderExecutor());
+        asyncBuilder
+                .setNetReadThreadType(threadType)
+                .build();
+        assertEquals(threadType, asyncBuilder.getNetReadThreadType());
     }
 
     @Test
@@ -333,7 +419,10 @@ public class AsyncBuilderTest {
 
     @Test
     public void testGetWorkerExecutorService() throws Exception {
-
+        asyncBuilder
+                .setWorkerExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getWorkerExecutorService(new ImmutableValue<>()));
     }
 
     @Test

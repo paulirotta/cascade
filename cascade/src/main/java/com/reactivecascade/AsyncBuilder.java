@@ -121,6 +121,7 @@ public class AsyncBuilder {
      */
     @UiThread
     public AsyncBuilder(@NonNull Context context) {
+        AssertUtil.assertNotNull(context, "Context can not be null");
         Context c = context;
         try {
             c = context.getApplicationContext();
@@ -972,7 +973,7 @@ public class AsyncBuilder {
         Log.v(TAG, "AsyncBuilder complete");
 
         Async async = new Async();
-        Async.DEFAULT_BINDING_CONTEXT.openBindingContext(this.context.getApplicationContext());
+        Async.DEFAULT_BINDING_CONTEXT.openBindingContext(context.getApplicationContext());
         instance = this;
 
         return async; //TODO Pass the builder as an argument to the constructor

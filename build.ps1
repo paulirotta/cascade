@@ -2,7 +2,8 @@ param (
     [switch]$clean = $false,
     [switch]$lint = $false,
     [switch]$test = $false,
-    [switch]$connectedTest = $false
+    [switch]$connectedTest = $false,
+    [switch]$javadoc = $false
 )
 
 if ($clean) {
@@ -33,4 +34,12 @@ if ($test) {
 if ($connectedTest) {
 	./gradlew connectedCheck --info
 	ii ./cascade/build/reports/androidTests/connected/index.html
+}
+
+if ($javadoc) {
+	./gradlew generateReleaseJavadoc
+	ii ./cascade/build/docs/
+	ii ./cascade/build/docs/javadoc/index.html
+	""
+	"Add JavaDoc manually to gh-pages branch"	
 }

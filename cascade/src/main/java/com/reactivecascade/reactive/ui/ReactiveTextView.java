@@ -28,15 +28,6 @@ import static com.reactivecascade.Async.UI;
 /**
  * Change the displayed from from any thread by calling <code>view.bindable.set(String from)</code>
  * <p>
- * Examples:
- * <pre><code>
- *     AtomicTextView view = new AtomicTextView(Activity.this);
- *
- *     // Inject shared concurrent data from your model
- *     AtomicValue<String> statusAtomicValue = new AtomicValue<>();
- *     AtomicTextView liveView = new AtomicTextView(Activity.this, statusAtomicValue);
- *     statusAtomicView.set("Something updated live to the screen");
- * </code></pre>
  */
 @NotCallOrigin
 public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
