@@ -27,7 +27,7 @@ before_install:
 
 # Emulator Management: Create, Start and Wait
 before_script:
-  - android update sdk --no-ui --all --filter build-tools-24.0.0
+  - android update sdk --filter build-tools-24.0.0 --no-ui
   - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
