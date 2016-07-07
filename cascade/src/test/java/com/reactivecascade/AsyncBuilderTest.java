@@ -26,7 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -43,212 +45,14 @@ import static junit.framework.TestCase.assertTrue;
 
 @RunWith(JMockit.class)
 public class AsyncBuilderTest {
-    final ExecutorService executorService = new ExecutorService() {
-        @Override
-        public void shutdown() {
+    @Mocked
+    BlockingQueue<Runnable> queue;
 
-        }
+    @Mocked
+    ExecutorService executorService;
 
-        @NonNull
-        @Override
-        public List<Runnable> shutdownNow() {
-            return null;
-        }
-
-        @Override
-        public boolean isShutdown() {
-            return false;
-        }
-
-        @Override
-        public boolean isTerminated() {
-            return false;
-        }
-
-        @Override
-        public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public <T> Future<T> submit(Callable<T> callable) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <T> Future<T> submit(Runnable runnable, T t) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public Future<?> submit(Runnable runnable) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> collection) throws InterruptedException {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> collection, long l, TimeUnit timeUnit) throws InterruptedException {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> collection) throws InterruptedException, ExecutionException {
-            return null;
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> collection, long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
-            return null;
-        }
-
-        @Override
-        public void execute(Runnable runnable) {
-
-        }
-    };
-
-    final IThreadType threadType = new IThreadType() {
-        @Override
-        public boolean isInOrderExecutor() {
-            return false;
-        }
-
-        @Override
-        public <IN> void execute(@NonNull IAction<IN> action) {
-        }
-
-        @Override
-        public void run(@NonNull Runnable runnable) {
-        }
-
-        @Override
-        public <OUT> void run(@NonNull IAction<OUT> action, @NonNull IActionOne<Exception> onErrorAction) {
-        }
-
-        @Override
-        public <OUT> void runNext(@NonNull IAction<OUT> action) {
-        }
-
-        @Override
-        public void runNext(@NonNull Runnable runnable) {
-        }
-
-        @Override
-        public boolean moveToHeadOfQueue(@NonNull Runnable runnable) {
-            return false;
-        }
-
-        @Override
-        public <OUT> void runNext(@NonNull IAction<OUT> action, @NonNull IActionOne<Exception> onErrorAction) {
-        }
-
-        @NonNull
-        @Override
-        public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <IN> Runnable wrapActionWithErrorProtection(@NonNull IAction<IN> action, @NonNull IActionOne<Exception> onErrorAction) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <IN> IAltFuture<IN, IN> then(@NonNull IAction<IN> action) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        @SuppressWarnings("unchecked")
-        public <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <OUT> ISettableAltFuture<OUT> from(@NonNull OUT value) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <OUT> ISettableAltFuture<OUT> from() {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        @SuppressWarnings("unchecked")
-        public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        @SuppressWarnings("unchecked")
-        public <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
-            return null;
-        }
-
-        @Override
-        public <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
-
-        }
-
-        @NonNull
-        @Override
-        public <IN> Future<Boolean> shutdown(long timeoutMillis, @Nullable IAction<IN> afterShutdownAction) {
-            return null;
-        }
-
-        @Override
-        public boolean isShutdown() {
-            return false;
-        }
-
-        @NonNull
-        @Override
-        public <IN> List<Runnable> shutdownNow(@NonNull String reason, @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete, @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout, long timeoutMillis) {
-            return null;
-        }
-
-        @NonNull
-        @Override
-        public String getName() {
-            return null;
-        }
-    };
+    @Mocked
+    IThreadType threadType;
 
     @Mocked
     Context context;
@@ -427,72 +231,76 @@ public class AsyncBuilderTest {
 
     @Test
     public void testGetSerialWorkerExecutorService() throws Exception {
-
+        asyncBuilder
+                .setSerialWorkerExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getSerialWorkerExecutorService(new ImmutableValue<>()));
     }
 
     @Test
     public void testGetWorkerQueue() throws Exception {
-
-    }
-
-    @Test
-    public void testSetWorkerQueue() throws Exception {
-
+        asyncBuilder
+                .setWorkerQueue(queue)
+                .build();
+        assertEquals(queue, asyncBuilder.getWorkerQueue());
     }
 
     @Test
     public void testGetSerialWorkerQueue() throws Exception {
-
-    }
-
-    @Test
-    public void testSetSerialWorkerQueue() throws Exception {
-
+        asyncBuilder
+                .setSerialWorkerQueue(queue)
+                .build();
+        assertEquals(queue, asyncBuilder.getSerialWorkerQueue());
     }
 
     @Test
     public void testGetFileQueue() throws Exception {
-
-    }
-
-    @Test
-    public void testSetFileQueue() throws Exception {
+        asyncBuilder
+                .setFileQueue(queue)
+                .build();
+        assertEquals(queue, asyncBuilder.getFileQueue());
 
     }
 
     @Test
     public void testGetNetReadQueue() throws Exception {
-
-    }
-
-    @Test
-    public void testSetNetReadQueue() throws Exception {
+        asyncBuilder
+                .setNetReadQueue(queue)
+                .build();
+        assertEquals(queue, asyncBuilder.getNetReadQueue());
 
     }
 
     @Test
     public void testGetNetWriteQueue() throws Exception {
-
-    }
-
-    @Test
-    public void testSetNetWriteQueue() throws Exception {
-
+        asyncBuilder
+                .setNetWriteQueue(queue)
+                .build();
+        assertEquals(queue, asyncBuilder.getNetWriteQueue());
     }
 
     @Test
     public void testGetFileExecutorService() throws Exception {
-
+        asyncBuilder
+                .setFileExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getFileExecutorService(new ImmutableValue<>()));
     }
 
     @Test
     public void testGetNetReadExecutorService() throws Exception {
-
+        asyncBuilder
+                .setNetReadExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getNetReadExecutorService(new ImmutableValue<>()));
     }
 
     @Test
     public void testGetNetWriteExecutorService() throws Exception {
-
+        asyncBuilder
+                .setNetWriteExecutorService(executorService)
+                .build();
+        assertEquals(executorService, asyncBuilder.getNetWriteExecutorService(new ImmutableValue<>()));
     }
 
     @Test
@@ -542,11 +350,6 @@ public class AsyncBuilderTest {
 
     @Test
     public void testSetUI_Thread() throws Exception {
-
-    }
-
-    @Test
-    public void testBuild() throws Exception {
 
     }
 }

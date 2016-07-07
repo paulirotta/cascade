@@ -101,8 +101,7 @@ public class AsyncBuilder {
     private BlockingQueue<Runnable> netWriteQueue;
     private ExecutorService workerExecutorService;
     private ExecutorService serialWorkerExecutorService;
-    private ExecutorService fileReadExecutorService;
-    private ExecutorService fileWriteExecutorService;
+    private ExecutorService fileExecutorService;
     private ExecutorService netReadExecutorService;
     private ExecutorService netWriteExecutorService;
 
@@ -546,7 +545,7 @@ public class AsyncBuilder {
             );
         }
 
-        return workerExecutorService;
+        return serialWorkerExecutorService;
     }
 
     /**
@@ -712,17 +711,16 @@ public class AsyncBuilder {
     ExecutorService getFileExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         Log.v(TAG, "getFileExecutorService()");
 
-        if (fileReadExecutorService == null) {
+        if (fileExecutorService == null) {
             Log.d(TAG, "Creating default file read executor service");
-            setFileReadExecutorService(new ThreadPoolExecutor(1, 1,
+            setFileExecutorService(new ThreadPoolExecutor(1, 1,
                     0L, TimeUnit.MILLISECONDS,
                     getFileQueue(),
                     runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, createThreadId("FileThread")))
             );
         }
-        //TODO else Warn if threadType does match the previously created IThreadType parameter
 
-        return fileReadExecutorService;
+        return fileExecutorService;
     }
 
     /**
@@ -850,26 +848,14 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param fileReadExecutorService
+     * @param fileExecutorService to be used for file reading and writing
      * @return the builder, for chaining
      */
     @NonNull
     @UiThread
-    public AsyncBuilder setFileReadExecutorService(@NonNull ExecutorService fileReadExecutorService) {
-        Log.v(TAG, "setFileReadExecutorService(" + fileReadExecutorService + ")");
-        this.fileReadExecutorService = fileReadExecutorService;
-        return this;
-    }
-
-    /**
-     * @param executorService
-     * @return the builder, for chaining
-     */
-    @NonNull
-    @UiThread
-    public AsyncBuilder setFileWriteExecutorService(@NonNull ExecutorService executorService) {
-        Log.v(TAG, "setFileWriteExecutorService(" + fileWriteExecutorService + ")");
-        fileWriteExecutorService = executorService;
+    public AsyncBuilder setFileExecutorService(@NonNull ExecutorService fileExecutorService) {
+        Log.v(TAG, "setFileExecutorService(" + fileExecutorService + ")");
+        this.fileExecutorService = fileExecutorService;
         return this;
     }
 
