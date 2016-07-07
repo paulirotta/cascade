@@ -19,6 +19,7 @@ import com.reactivecascade.i.CallOrigin;
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
+import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.DefaultThreadType;
 import com.reactivecascade.util.DoubleQueue;
 import com.reactivecascade.util.TypedThread;
@@ -116,7 +117,7 @@ public class AsyncBuilder {
      * by for example setting a static variable the first time the <code>AsyncBuilder</code>
      * is used.
      *
-     * @param context
+     * @param context application context
      */
     @UiThread
     public AsyncBuilder(@NonNull Context context) {
@@ -229,8 +230,8 @@ public class AsyncBuilder {
      * <p>
      * The default from is {@link BuildConfig#DEBUG}
      *
-     * @param failFast
-     * @return
+     * @param failFast <code>true</code> to stop on first error for clear debugging
+     * @return the builder, for chaining
      */
     @NonNull
     @UiThread
@@ -249,8 +250,8 @@ public class AsyncBuilder {
      * By default, error stack traces are shown in the debug output. When running system testing code which
      * intentionally throws errors, this may be better disabled.
      *
-     * @param showErrorStackTraces
-     * @return
+     * @param showErrorStackTraces <code>true</code> to show stack traces
+     * @return the builder, for chaining
      */
     @NonNull
     @UiThread
@@ -262,7 +263,9 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return
+     * Get the group of threads which execute CPU-bound tasks
+     *
+     * @return the threadType
      */
     @NonNull
     @NotCallOrigin
@@ -296,7 +299,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return
+     * @return the single-threaded thread type for CPU-bound tasks
      */
     @NonNull
     @NotCallOrigin
@@ -317,7 +320,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param serialWorkerThreadType
+     * @param serialWorkerThreadType the single-threaded thread type for CPU-bound tasks
      * @return the builder, for chaining
      */
     @NonNull
@@ -330,7 +333,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return
+     * @return a thread type wrapper for the system's UI thread
      */
     @NonNull
     @VisibleForTesting
@@ -473,12 +476,12 @@ public class AsyncBuilder {
 
     @NonNull
     @UiThread
-    private Thread getWorkerThread(
-            @NonNull final IThreadType threadType,
-            @NonNull final Runnable runnable) {
+    private Thread getWorkerThread(@NonNull final IThreadType threadType,
+                                   @NonNull final Runnable runnable) {
         if (NUMBER_OF_CORES == 1 || workerPoolIncludesSerialWorkerThread.getAndSet(true)) {
             return new TypedThread(threadType, runnable, createThreadId("WorkerThread"));
         }
+
         return getSerialWorkerThread(threadType, runnable);
     }
 
@@ -514,7 +517,7 @@ public class AsyncBuilder {
 
     @NonNull
     @UiThread
-    private synchronized Thread getSerialWorkerThread(@NonNull IThreadType threadType,
+    private Thread getSerialWorkerThread(@NonNull IThreadType threadType,
                                                       @NonNull Runnable runnable) {
         if (serialWorkerThread == null) {
             serialWorkerThread = new TypedThread(threadType, runnable, createThreadId("SerialWorkerThread"));
@@ -523,14 +526,12 @@ public class AsyncBuilder {
         return serialWorkerThread;
     }
 
-    /**
-     * @param threadTypeImmutableValue
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
-    ExecutorService getSerialWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    protected ExecutorService getSerialWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
+        Log.v(TAG, "getSerialWorkerExecutorService()");
+
         if (serialWorkerExecutorService == null) {
             Log.v(TAG, "Creating default serial worker executor service");
 
@@ -554,6 +555,8 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     BlockingQueue<Runnable> getWorkerQueue() {
+        Log.v(TAG, "getWorkerQueue()");
+
         if (workerQueue == null) {
             Log.d(TAG, "Creating default worker queue");
             setWorkerQueue(new LinkedBlockingDeque<>());
@@ -569,7 +572,8 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     public AsyncBuilder setWorkerQueue(@NonNull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setWorkerQueue(" + queue + ")");
+        Log.v(TAG, "setWorkerQueue(" + queue + ")");
+
         workerQueue = queue;
         return this;
     }
@@ -584,6 +588,8 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     BlockingQueue<Runnable> getSerialWorkerQueue() {
+        Log.v(TAG, "getSerialWorkerQueue()");
+
         if (serialWorkerQueue == null) {
             Log.d(TAG, "Creating default in-order worker queue");
             setSerialWorkerQueue(new DoubleQueue<>(getWorkerQueue()));
@@ -593,13 +599,14 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param queue
+     * @param queue of CPU-bound tasks for strict in-order execution
      * @return the builder, for chaining
      */
     @NonNull
     @UiThread
     public AsyncBuilder setSerialWorkerQueue(@NonNull final BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setSerialWorkerQueue(" + queue + ")");
+        Log.v(TAG, "setSerialWorkerQueue(" + queue + ")");
+
         serialWorkerQueue = queue;
         return this;
     }
@@ -611,6 +618,8 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     BlockingQueue<Runnable> getFileQueue() {
+        Log.v(TAG, "getFileQueue()");
+
         if (fileQueue == null) {
             Log.d(TAG, "Creating default file read queue");
             setFileQueue(new LinkedBlockingDeque<>());
@@ -626,7 +635,8 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     public AsyncBuilder setFileQueue(@NonNull BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setFileQueue(" + queue + ")");
+        Log.v(TAG, "setFileQueue(" + queue + ")");
+
         this.fileQueue = queue;
         return this;
     }
@@ -638,6 +648,8 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     BlockingQueue<Runnable> getNetReadQueue() {
+        Log.v(TAG, "getNetReadQueue()");
+
         if (netReadQueue == null) {
             Log.d(TAG, "Creating default net read queue");
             setNetReadQueue(new LinkedBlockingDeque<>());
@@ -653,7 +665,8 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     public AsyncBuilder setNetReadQueue(@NonNull BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setNetReadQueue(" + queue + ")");
+        Log.v(TAG, "setNetReadQueue(" + queue + ")");
+
         this.netReadQueue = queue;
         return this;
     }
@@ -665,6 +678,8 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     BlockingQueue<Runnable> getNetWriteQueue() {
+        Log.v(TAG, "getNetWriteQueue()");
+
         if (netWriteQueue == null) {
             Log.d(TAG, "Creating default worker net write queue");
             setNetWriteQueue(new LinkedBlockingDeque<>());
@@ -680,7 +695,8 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     public AsyncBuilder setNetWriteQueue(@NonNull BlockingQueue<Runnable> queue) {
-        Log.d(TAG, "setNetWriteQueue(" + queue + ")");
+        Log.v(TAG, "setNetWriteQueue(" + queue + ")");
+
         this.netWriteQueue = queue;
         return this;
     }
@@ -692,8 +708,9 @@ public class AsyncBuilder {
     @NonNull
     @VisibleForTesting
     @UiThread
-    ExecutorService getFileExecutorService(
-            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    ExecutorService getFileExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+        Log.v(TAG, "getFileExecutorService()");
+
         if (fileReadExecutorService == null) {
             Log.d(TAG, "Creating default file read executor service");
             setFileReadExecutorService(new ThreadPoolExecutor(1, 1,
@@ -714,8 +731,9 @@ public class AsyncBuilder {
     @NonNull
     @VisibleForTesting
     @UiThread
-    ExecutorService getNetReadExecutorService(
-            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    ExecutorService getNetReadExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+        Log.v(TAG, "getNetReadExecutorService()");
+
         if (netReadExecutorService == null) {
             Log.d(TAG, "Creating default net read executor service");
             setNetReadExecutorService(new ThreadPoolExecutor(1, NUMBER_OF_CONCURRENT_NET_READS,
@@ -734,8 +752,9 @@ public class AsyncBuilder {
     @NonNull
     @VisibleForTesting
     @UiThread
-    ExecutorService getNetWriteExecutorService(
-            @NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    ExecutorService getNetWriteExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+        Log.v(TAG, "getNetWriteExecutorService()");
+
         if (netWriteExecutorService == null) {
             Log.d(TAG, "Creating default net write executor service");
             setNetWriteExecutorService(Executors.newSingleThreadExecutor(
@@ -754,11 +773,9 @@ public class AsyncBuilder {
     @VisibleForTesting
     @UiThread
     ExecutorService getUiExecutorService() {
-        if (context == null) {
-            Exception e = new IllegalStateException(NOT_INITIALIZED);
-            Log.e(TAG, NOT_INITIALIZED, e);
-            System.exit(-1);
-        }
+        Log.v(TAG, "getUiExecutorService()");
+        AssertUtil.assertNotNull(context);
+
         if (uiExecutorService == null) {
             setUiExecutorService(new UIExecutorService(new Handler(context.getMainLooper())));
         }
@@ -776,7 +793,7 @@ public class AsyncBuilder {
     @NonNull
     @UiThread
     public AsyncBuilder setUiExecutorService(@NonNull ExecutorService uiExecutorService) {
-        Log.d(TAG, "setUiExecutorService()");
+        Log.v(TAG, "setUiExecutorService()");
         this.uiExecutorService = uiExecutorService;
         return this;
     }
@@ -955,6 +972,7 @@ public class AsyncBuilder {
         Log.v(TAG, "AsyncBuilder complete");
 
         Async async = new Async();
+        Async.DEFAULT_BINDING_CONTEXT.openBindingContext(this.context.getApplicationContext());
         instance = this;
 
         return async; //TODO Pass the builder as an argument to the constructor

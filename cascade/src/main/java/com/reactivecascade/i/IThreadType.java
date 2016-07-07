@@ -119,7 +119,7 @@ public interface IThreadType extends INamed {
      * The same as {@link #runNext(IAction)}, however it is only moved if it is already in the
      * queue. If it is not found in the queue, it will not be added.
      * <p>
-     * This is useful as part of singleton executor patterns where an action that can be queued multiple
+     * This is part of singleton executor pattern where an action that can be queued multiple
      * times should be executing or queued only once at any given time.
      *
      * @param runnable the work to be performed
@@ -142,7 +142,7 @@ public interface IThreadType extends INamed {
      *
      * @param action the work to be performed
      * @param <IN>   the type of input argument expected by the action
-     * @return
+     * @return a Runnable which invokes the action
      */
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)

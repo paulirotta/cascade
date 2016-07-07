@@ -5,6 +5,7 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.reactivecascade;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
@@ -15,9 +16,11 @@ import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
 import com.reactivecascade.i.IActionR;
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.i.IBindingContext;
 import com.reactivecascade.i.IRunnableAltFuture;
 import com.reactivecascade.i.ISettableAltFuture;
 import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.util.BindingContextUtil;
 import com.reactivecascade.util.DefaultThreadType;
 import com.reactivecascade.util.TypedThread;
 
@@ -321,7 +324,7 @@ public final class Async {
     };
 
     @Nullable
-    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.getInstance(); // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features
+    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.getInstance(); // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features. Using multiple Async instances except for system tests is not supported
     public static final boolean USE_FORKED_STATE = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isUseForkedState();
     //    public static final boolean VISUALIZE = false;
     public static final boolean RUNTIME_ASSERTIONS = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isRuntimeAssertionsEnabled();
@@ -376,8 +379,9 @@ public final class Async {
      * coherent.
      */
     public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
-    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
     public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
+    public static final IBindingContext<Context> DEFAULT_BINDING_CONTEXT = new BindingContextUtil.DefaultBindingContext<>();
+    private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
     private static volatile boolean sExitWithErrorCodeStarted = false;
 
     static {

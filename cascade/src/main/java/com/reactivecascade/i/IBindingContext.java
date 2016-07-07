@@ -13,28 +13,37 @@ import android.support.annotation.NonNull;
  * The lifecycle starts as connected and may disconnect atomically after which point more results
  * will not start. Within any single thread, no new results will be returned after unbinding
  */
-public interface IBindingContext {
+public interface IBindingContext<T> {
     /**
      * Check if closed
      *
-     * @return <code>true</code> if {@link #closeBindingContext()} has not been called
+     * @return <code>true</code> if {@link #closeBindingContext(Object)} has not been called
      */
-    boolean isBindingContextOpen();
+    boolean isOpen();
+
+    /**
+     * Trigger start of all binding context actions
+     */
+    void openBindingContext(T t);
 
     /**
      * Trigger end of all binding context actions
-     * <p>
-     * Since a binding context can not be re-opened, you may want to create a new binding context
-     * for cases where opening again is required. Items linked to the previous binding context will
-     * continue to see the closed state.
      */
-    void closeBindingContext();
+    void closeBindingContext(T t);
 
     /**
-     * Add an action to be performed before the binding context close finishes
+     * Add an action to be performed synchronously before the binding context open finishes
      *
      * @param action
      * @return
      */
-    void onClose(@NonNull IAction action);
+    void onOpen(@NonNull IActionOne<T> action);
+
+    /**
+     * Add an action to be performed synchronously before the binding context close finishes
+     *
+     * @param action
+     * @return
+     */
+    void onClose(@NonNull IActionOne<T> action);
 }

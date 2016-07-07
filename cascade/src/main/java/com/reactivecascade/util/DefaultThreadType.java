@@ -6,9 +6,11 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.util;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.reactivecascade.i.NotCallOrigin;
 
+import java.util.Deque;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -41,10 +43,10 @@ public class DefaultThreadType extends AbstractThreadType {
      */
     public DefaultThreadType(@NonNull String name,
                              @NonNull ExecutorService executorService,
-                             @NonNull BlockingQueue<Runnable> queue) {
+                             @Nullable BlockingQueue<Runnable> queue) {
         super(name, executorService, queue);
 
-        this.inOrderExecution = queue instanceof BlockingDeque;
+        this.inOrderExecution = queue == null || !(queue instanceof Deque);
     }
 
     @Override // IThreadType
@@ -56,9 +58,13 @@ public class DefaultThreadType extends AbstractThreadType {
     @SuppressWarnings("unchecked")
     @NotCallOrigin
     public void runNext(@NonNull Runnable runnable) {
-        int n;
+        if (inOrderExecution || queue == null) {
+            run(runnable);
+            return;
+        }
 
-        if (inOrderExecution || (n = queue.size()) == 0) {
+        int n = queue.size();
+        if (n == 0) {
             run(runnable);
             return;
         }

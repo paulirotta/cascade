@@ -46,7 +46,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     @NonNull
     protected final ExecutorService executorService;
 
-    @NonNull
+    @Nullable
     protected final BlockingQueue<Runnable> queue;
 
     @NonNull
@@ -63,7 +63,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
      */
     public AbstractThreadType(@NonNull String name,
                               @NonNull ExecutorService executorService,
-                              @NonNull BlockingQueue<Runnable> queue) {
+                              @Nullable BlockingQueue<Runnable> queue) {
         this.name = name;
         this.executorService = executorService;
         this.queue = queue;
@@ -216,8 +216,6 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     public <OUT> ISettableAltFuture<OUT> from() {
         return new SettableAltFuture<>(this);
     }
-
-    //======================= .subscribe() List Operations =========================================
 
     @Override // IThreadType
     @SafeVarargs
