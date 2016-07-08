@@ -380,9 +380,9 @@ public final class Async {
      */
     public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
     public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
-    public static final IBindingContext<Context> DEFAULT_BINDING_CONTEXT = new BindingContextUtil.DefaultBindingContext<>();
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
     private static volatile boolean sExitWithErrorCodeStarted = false;
+    public static final IBindingContext<Context> DEFAULT_BINDING_CONTEXT = new BindingContextUtil.DefaultBindingContext<>();
 
     static {
         if (!AsyncBuilder.isInitialized()) {
@@ -393,7 +393,8 @@ public final class Async {
     }
 
     @UiThread
-    Async() {
+    Async(@NonNull Context context) {
+        DEFAULT_BINDING_CONTEXT.openBindingContext(context);
     }
 
     /**

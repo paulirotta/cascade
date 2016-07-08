@@ -21,8 +21,9 @@ android {
     }
 
     lintOptions {
-        disable 'InvalidPackage' // For Okio, https://github.com/square/okio/issues/58
-//        abortOnError false   // For RetroLambda, remove when possible
+        // InvalidPackage is for Okio, https://github.com/square/okio/issues/58
+        // OldTargetApi and GradleDependency are for API23 when API24 is available (but not yet supported by CI)
+        disable 'InvalidPackage', 'OldTargetApi', 'GradleDependency'
     }
 
     packagingOptions {

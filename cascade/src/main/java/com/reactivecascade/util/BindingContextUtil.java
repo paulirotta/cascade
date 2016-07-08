@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BindingContextUtil {
     private static final String TAG = BindingContextUtil.class.getSimpleName();
 
-    public static class DefaultBindingContext<T> extends Origin implements IBindingContext<T> {
+    public static class DefaultBindingContext<T> implements IBindingContext<T> {
         private final CopyOnWriteArraySet<IActionOne<T>> onOpenActions = new CopyOnWriteArraySet<>();
         private final CopyOnWriteArraySet<IActionOne<T>> onCloseActions = new CopyOnWriteArraySet<>();
         private final AtomicReference<T> bindingContextAR = new AtomicReference<>(null);

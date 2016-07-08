@@ -6,35 +6,17 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.reactivecascade.functional.ImmutableValue;
-import com.reactivecascade.i.IAction;
-import com.reactivecascade.i.IActionOne;
-import com.reactivecascade.i.IActionOneR;
-import com.reactivecascade.i.IActionR;
-import com.reactivecascade.i.IAltFuture;
-import com.reactivecascade.i.IRunnableAltFuture;
-import com.reactivecascade.i.ISettableAltFuture;
 import com.reactivecascade.i.IThreadType;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
@@ -45,7 +27,8 @@ import static junit.framework.TestCase.assertTrue;
 
 @RunWith(JMockit.class)
 public class AsyncBuilderTest {
-    @Mocked Thread thread;
+    @Mocked
+    Thread thread;
 
     @Mocked
     BlockingQueue<Runnable> queue;
@@ -149,14 +132,6 @@ public class AsyncBuilderTest {
                 .setWorkerThreadType(threadType)
                 .build();
         assertEquals(threadType, asyncBuilder.getWorkerThreadType());
-    }
-
-    @Test
-    public void testSetWorkerThreadType() throws Exception {
-        asyncBuilder
-                .setWorkerThreadType(asyncBuilder.getSerialWorkerThreadType())
-                .build();
-        assertEquals(asyncBuilder.getSerialWorkerThreadType(), asyncBuilder.getWorkerThreadType());
     }
 
     @Test
@@ -318,6 +293,5 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUiThread(thread)
                 .build();
-        assertEquals(executorService, asyncBuilder.getUiExecutorService());
     }
 }

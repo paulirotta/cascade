@@ -471,7 +471,7 @@ public class RCLog {
 
     @NonNull
     private static List<StackTraceLine> origin(@NonNull StackTraceElement[] traceElementsArray) {
-        final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length - 3);
+        final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length);
 
         allStackTraceElements.addAll(Arrays.asList(traceElementsArray).subList(3, traceElementsArray.length));
 

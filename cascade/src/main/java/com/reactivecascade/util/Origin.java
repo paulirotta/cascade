@@ -15,22 +15,22 @@ import com.reactivecascade.i.NotCallOrigin;
  * A convenience class for tracking the point at which asychronous objects are created
  * <p>
  * The actual work of parsing the stack trace is slow due to introspection. This is delayed and will
- * not be performed until <code>{@link #mOrigin}.get()</code> is called.
+ * not be performed until <code>{@link #origin}.get()</code> is called.
  */
 @NotCallOrigin
 public abstract class Origin implements IAsyncOrigin {
-    private final ImmutableValue<String> mOrigin = RCLog.originAsync();
+    private final ImmutableValue<String> origin = RCLog.originAsync();
 
     @NonNull
     @Override // IAsyncOrigin
     @NotCallOrigin
     public ImmutableValue<String> getOrigin() {
-        return mOrigin;
+        return origin;
     }
 
     @NonNull
     @Override // Object
     public String toString() {
-        return mOrigin.get();
+        return origin.get();
     }
 }

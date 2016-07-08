@@ -2,7 +2,7 @@ param (
     [switch]$clean = $false,
     [switch]$lint = $false,
     [switch]$test = $false,
-    [switch]$connectedTest = $false,
+    [switch]$connectedCheck = $false,
     [switch]$javadoc = $false
 )
 
@@ -31,7 +31,7 @@ if ($test) {
 	ii ./cascade/build/reports/tests/debug/index.html
 }
 
-if ($connectedTest) {
+if ($connectedCheck) {
 	./gradlew connectedCheck --info
 	ii ./cascade/build/reports/androidTests/connected/index.html
 }

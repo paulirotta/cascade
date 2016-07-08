@@ -961,8 +961,7 @@ public class AsyncBuilder {
                     .build());
         }
 
-        Async async = new Async();
-        Async.DEFAULT_BINDING_CONTEXT.openBindingContext(context.getApplicationContext());
+        Async async = new Async(context.getApplicationContext());
         instance = this;
 
         Log.v(TAG, "AsyncBuilder complete");
