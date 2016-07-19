@@ -22,8 +22,8 @@ sudo: false
 notifications:
   email: paulirotta@gmail.com
 
-before_install:
-  - chmod +x gradlew
+#before_install:
+#  - chmod +x gradlew
 
 # Emulator Management: Create, Start and Wait
 before_script:
