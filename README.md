@@ -1,5 +1,11 @@
-# cascade
-Reactive Cascade is an Android library for concurrent programming
+# Cascade
+
+Cascade is easily debugged, non-blocking concurrent functonal-reactive programming for Android. The goals are safety, clear async algorithms, easy debugging, and raw speed
+through clean flow between constraint-based thread pools.
+
+NET.then("http://service.com/model")
+   .then(WORKER, s -> parse(s))
+   .then(UI, model -> display(model));
 
 Key advantages:
 
@@ -34,13 +40,11 @@ You can freely use the flow-of-control style which makes the most sense
   * subscribe concurrent actions to atomic variables 
   * objects representing intermediate functions in a chain are re-used during concurrent execution
 
-Website: [reactivecascade.com](http://reactivecascade.com/)
+[Travis CI](https://travis-ci.org/paulirotta/cascade)
 
-CI: [Travis](https://travis-ci.org/futurice/cascade)
+The JavaDoc API is your best guide are relatively extensive. More friendy introductions are planned and needed. There are also some presentations and discussion below, however these tend to be out of date.
 
-API: [JavaDoc](http://reactivecascade.com/docs/JavaDoc/)
-
-Other: [Documentation](/docs)
+[Documentation](/docs)
 
 How to use:
 Clone and play. This is a pre-release work in progress. We refactor when a better way of doing things becomes clear. At the moment it is subject to change.
