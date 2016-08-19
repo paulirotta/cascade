@@ -17,9 +17,9 @@ import com.reactivecascade.util.RCLog;
  * The on-cancelled action in a chain will be launched asynchonosly
  * <p>
  * Cancelled notifications are not consumed. All downchain items will also receive the
- * {@link #doOnCancelled(StateCancelled)} notification call synchronously.
+ * {@link #onCancelled(StateCancelled)} notification call synchronously.
  * <p>
- * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #doOnCancelled(StateCancelled)}
+ * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #onCancelled(StateCancelled)}
  * will be called exactly one time.
  */
 public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
@@ -42,11 +42,11 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        RCLog.d(this, "Handling doOnCancelled(): " + stateCancelled);
+    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
+        RCLog.d(this, "Handling onCancelled(): " + stateCancelled);
 
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
-            RCLog.i(this, "Will not doOnCancelled() because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Will not onCancelled() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
 
@@ -56,7 +56,7 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
                 .fork();
 
         Exception e = forEachThen(af -> {
-            af.doOnCancelled(stateCancelled);
+            af.onCancelled(stateCancelled);
         });
 
         if (e != null) {

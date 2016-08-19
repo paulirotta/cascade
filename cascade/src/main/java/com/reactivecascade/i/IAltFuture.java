@@ -144,12 +144,12 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * If an mOnError or catch method has been defined, it will be
      * notified of the original cause of the failure. If the RunnableAltFuture's mOnError method consumes the error
      * (returns <code>true</code>), subscribe anything else down-chain methods will be notified with
-     * {@link #doOnCancelled(StateCancelled)} instead.
+     * {@link #onCancelled(StateCancelled)} instead.
      *
      * @param stateError the state indicating the reason and origin of the exception
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
-    void doOnError(@NonNull StateError stateError) throws Exception;
+    void onError(@NonNull StateError stateError) throws Exception;
 
     /**
      * Notification indicates an up-chain {@link IAltFuture} has been cancelled.
@@ -159,10 +159,10 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * @param stateCancelled the state indicating the reason and origin of cancellation
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
-    void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
+    void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
 
     /**
-     * Switch actions chained to the value to continue on the specified {@link IThreadType}
+     * Switch following (downchain) actions to run on the specified {@link IThreadType}
      *
      * @param theadType the thread execution group to change to for the next chain operation
      * @return the previous chain link alt future from continuing the chain on the new {@link IThreadType}

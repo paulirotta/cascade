@@ -131,13 +131,13 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     }
 
     @Override // IAltFuture
-    public void doOnError(@NonNull StateError stateError) throws Exception {
-        head.doOnError(stateError);
+    public void onError(@NonNull StateError stateError) throws Exception {
+        head.onError(stateError);
     }
 
     @Override // IAltFuture
-    public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        head.doOnCancelled(stateCancelled);
+    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
+        head.onCancelled(stateCancelled);
     }
 
     @NonNull

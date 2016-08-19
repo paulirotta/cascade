@@ -147,7 +147,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
             RCLog.d(this, "Cancelled from state " + state);
             final Exception e = forEachThen(ignore ->
-                    doOnCancelled(stateCancelled));
+                    onCancelled(stateCancelled));
             if (e != null) {
                 RCLog.throwRuntimeException(this, "Problem executing onCancelled() downchain actions", e);
             }
@@ -322,16 +322,16 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doOnError(@NonNull StateError stateError) throws Exception {
-        RCLog.d(this, "Handling doOnError(): " + stateError);
+    public void onError(@NonNull StateError stateError) throws Exception {
+        RCLog.d(this, "Handling onError(): " + stateError);
 
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
-            RCLog.i(this, "Will not repeat doOnError() because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Will not repeat onError() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
 
         Exception e = forEachThen(af -> {
-            af.doOnError(stateError);
+            af.onError(stateError);
         });
 
         if (e != null) {
@@ -340,15 +340,15 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     @Override // IAltFuture
-    public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        RCLog.v(this, "Handling doOnCancelled for reason=" + stateCancelled);
+    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
+        RCLog.v(this, "Handling onCancelled for reason=" + stateCancelled);
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) && !this.stateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.i(this, "Can not doOnCancelled because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Can not onCancelled because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
 
         Exception e = forEachThen(altFuture -> {
-            altFuture.doOnCancelled(stateCancelled);
+            altFuture.onCancelled(stateCancelled);
         });
 
         if (e != null) {
@@ -670,9 +670,9 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * The on-cancelled action in a chain will be launched asynchonosly
      * <p>
      * Cancelled notifications are not consumed. All downchain items will also receive the
-     * {@link #doOnCancelled(StateCancelled)} notification call synchronously.
+     * {@link #onCancelled(StateCancelled)} notification call synchronously.
      * <p>
-     * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #doOnCancelled(StateCancelled)}
+     * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #onCancelled(StateCancelled)}
      * will be called exactly one time.
      */
     public static class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
@@ -695,11 +695,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
         @NotCallOrigin
         @Override // IAltFuture
-        public void doOnCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-            RCLog.d(this, "Handling doOnCancelled(): " + stateCancelled);
+        public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
+            RCLog.d(this, "Handling onCancelled(): " + stateCancelled);
 
             if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
-                RCLog.i(this, "Will not doOnCancelled() because IAltFuture state is already determined: " + stateAR.get());
+                RCLog.i(this, "Will not onCancelled() because IAltFuture state is already determined: " + stateAR.get());
                 return;
             }
 
@@ -709,7 +709,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
                     .fork();
 
             Exception e = forEachThen(af -> {
-                af.doOnCancelled(stateCancelled);
+                af.onCancelled(stateCancelled);
             });
 
             if (e != null) {

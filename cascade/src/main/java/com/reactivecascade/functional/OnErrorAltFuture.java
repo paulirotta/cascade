@@ -18,7 +18,7 @@ import com.reactivecascade.util.RCLog;
  * The on-error action in a chain will be launched asynchronously
  * <p>
  * The error is consumed by this chain link. All downchain items will be notified synchronously
- * as {@link #doOnCancelled(StateCancelled)}
+ * as {@link #onCancelled(StateCancelled)}
  */
 public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
     @NonNull
@@ -40,11 +40,11 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void doOnError(@NonNull StateError stateError) throws Exception {
-        RCLog.d(this, "Handling doOnError(): " + stateError);
+    public void onError(@NonNull StateError stateError) throws Exception {
+        RCLog.d(this, "Handling onError(): " + stateError);
 
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
-            RCLog.i(this, "Will not doOnError() because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Will not onError() because IAltFuture state is already determined: " + stateAR.get());
             return;
         }
 
@@ -76,7 +76,7 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
         };
 
         Exception e = forEachThen(af -> {
-            af.doOnCancelled(stateCancelled);
+            af.onCancelled(stateCancelled);
         });
 
         if (e != null) {
