@@ -42,9 +42,7 @@ You can freely use the flow-of-control style which makes the most sense
 
 [Travis CI](https://travis-ci.org/paulirotta/cascade)
 
-Develop: ![develop](https://travis-ci.org/paulirotta/cascade.svg?branch=develop)
-
-Master: ![master](https://travis-ci.org/paulirotta/cascade.svg?branch=master)
+Master: ![master](https://travis-ci.org/paulirotta/cascade.svg?branch=master)     Develop: ![develop](https://travis-ci.org/paulirotta/cascade.svg?branch=develop)
 
 
 The JavaDoc API is your best guide are relatively extensive. More friendy introductions are planned and needed. There are also some presentations and discussion below, however these tend to be out of date.
