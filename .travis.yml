@@ -1,50 +1,27 @@
+env:
+  global:
+    secure: jbFyMNp/HJH3qfV9fywc1LaTI51JyvszDAKBwL6mZBMBXtJAy2WCktLVy3Nlqk86F8tF3lTAMHfAGU4lalDykIfZmI8yvnYZHhfRX13Qo2jXSKClfUgtRK2THZyUWdeARwpp94t8IkMlMVy8MqFK85qT1hE2k3IbHxGcIYUWfEkz0qH6hdzHOmaGaqPHzLIC02VVqlNZRQhxjjqoahnAz5ir9StPsfJa6uvDUqb/gFHO1/+ILnEr1amnnr8qVZEsQDoLD8qO0BZb9tkA0/Cvy+3nU2ws1PgrupfHdr1XQZ5efv0G6YCJE5Le3OAqKjkeE6fC/lvKOVt8aDqCGadnufGZ5BezakQLAo4GMi33wlbY+kgqTdQBiOjp4EHN06K4YS4cODbUNZJETLUO8gOEsf16FfSs85dZKP0HJSYuHIq9iJ8PNf8V5BM3WFcgOp3eiKZEQVaq+UMvgDNIlygDPPeIFcjgVSqJMsuLXjDkIwBT1N/fJSNd2ZRbj8gtqB7nDe3d6mj+kUwNjj7Z83rfKyfVko+zsoRlD00AtjJgBnVj1I7O+WyXDW6IO/L1Rxv/mrCLPwvpDBloNuTn3uVuHzDdd5MHJ3foQHQz23lkI8R62fI+qkob2VPxfr6Jv26Gojmyt18unOx1G6TQ5aulgouo2vGdQtm9xJ5jGWZO55M=
 jdk: oraclejdk8
-
-# Update to the lastest JDK8
 addons:
   apt:
     packages:
-      - oracle-java8-installer
-
+    - oracle-java8-installer
 language: android
-
 android:
   components:
-    - tools
-    - platform-tools
-    - build-tools-24.0.2
-    - android-24
-    - add-on
-    - extra
-
+  - tools
+  - platform-tools
+  - build-tools-24.0.2
+  - android-24
+  - add-on
+  - extra
 sudo: false
-
 notifications:
   email: paulirotta@gmail.com
-
-#before_install:
-#  - chmod +x gradlew
-
-# Emulator Management: Create, Start and Wait
 before_script:
-  - echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
-
+- echo no | android create avd --force -n test -t android-15 --abi armeabi-v7a
+- emulator -avd test -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
 script:
-  - ./gradlew lint test connectedCheck --info
-
-#matrix:
-#  include:
-#    - env: AVD_TARGET=android-15
-#    - env: AVD_TARGET=android-17
-#    - env: AVD_TARGET=android-19
-#    - env: AVD_TARGET=android-21
-#    - env: AVD_TARGET=android-23
-#           TARGET_PKGS=sys-img-armeabi-v7a-android-23
-#    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
-#           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
-#    - env: AVD_TARGET='Google Inc.:Google APIs:21' AVD_TAG=google_apis
-#           TARGET_PKGS=addon-google_apis-google-21,sys-img-armeabi-v7a-addon-google_apis-google-21
-#  fast_finish: true
+- "./gradlew lint test connectedCheck --info"
