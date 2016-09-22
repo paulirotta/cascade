@@ -25,3 +25,5 @@ before_script:
 - adb shell input keyevent 82 &
 script:
 - "./gradlew lint test connectedCheck --info"
+after_success:
+- .utility/push-javadoc-to-gh-pages.sh
