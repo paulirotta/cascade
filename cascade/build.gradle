@@ -78,6 +78,6 @@ android.libraryVariants.all { variant ->
         options.links("http://developer.android.com/reference");
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
-        failOnError true
+        failOnError false
     }
 }
