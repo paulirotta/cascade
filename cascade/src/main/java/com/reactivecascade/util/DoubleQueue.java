@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * In practice this performs well for most uses since everything is best effort anyway and the single
  * thread has absolute priority. If starting as soon as possible is absolutely critical, use a dedicated {@link com.reactivecascade.i.IThreadType} instead.
  *
- * @param <T>
+ * @param <T> queue item type
  */
 public class DoubleQueue<T> extends LinkedBlockingQueue<T> {
     private static final long TAKE_POLL_INTERVAL = 50; //ms polling two queues

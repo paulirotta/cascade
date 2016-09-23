@@ -72,7 +72,8 @@ android.libraryVariants.all { variant ->
         description "Generates Javadoc for $variant.name."
         source = variant.javaCompile.source
         ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        //noinspection GroovyAssignabilityCheck
+        classpath = files(variant.javaCompile.classpath.files) + files(android.bootClasspath)
         options.links("http://docs.oracle.com/javase/8/docs/api/");
         options.links("http://developer.android.com/reference");
         exclude '**/BuildConfig.java'
