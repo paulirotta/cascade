@@ -37,3 +37,6 @@ cov-int/
 
 # Uncategorized
 .DS_Store
+
+# JavaDoc
+cascade/javaDoc/
