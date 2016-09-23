@@ -306,11 +306,6 @@ public interface IThreadType extends INamed {
      * <p>
      * Use the returned Future to know when current tasks complete.
      * <p>
-     * <code>
-     * // Do not get from a thread of the {@link java.util.concurrent.ExecutorService} or it will prevent shutdown
-     * shutdown(5000, () -> doSomethingAfterShutdown()).get(); // Block calling thread up to 5 seconds
-     * </code>
-     * <p>
      * After shutdown starts, new WORKER operations (operations queued to a WORKER) will throw a runtime Exception.
      * <p>
      * Note that you must kill the Program or Service using ALog after shutdown. It can not be restarted even if for example

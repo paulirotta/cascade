@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
  * <p>
  * The lifecycle starts as connected and may disconnect atomically after which point more results
  * will not start. Within any single thread, no new results will be returned after unbinding
+ *
+ * @param <T> the type of object which will control the opening and closing of this binding context
  */
 public interface IBindingContext<T> {
     /**
@@ -23,11 +25,14 @@ public interface IBindingContext<T> {
 
     /**
      * Trigger start of all binding context actions
+     *
+     * @param t the type of object controlling this binding's lifecycle
      */
     void openBindingContext(T t);
 
     /**
      * Trigger end of all binding context actions
+     * @param t the type of object controlling this binding's lifecyle
      */
     void closeBindingContext(T t);
 
@@ -42,8 +47,7 @@ public interface IBindingContext<T> {
     /**
      * Add an action to be performed synchronously before the binding context close finishes
      *
-     * @param action
-     * @return
+     * @param action performed when binding ends
      */
     void onClose(@NonNull IActionOne<T> action);
 }

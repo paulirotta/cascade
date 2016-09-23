@@ -15,7 +15,7 @@ import android.support.annotation.NonNull;
  * <p>
  * See also {@link IReactiveTarget}
  * <p>
- * Unlike the single-use objects in {@link com.reactivecascade.i.active}, the chain created is
+ * Unlike the single-use functional (as opposed to "reactive") objects, the chain created is
  * suitable for multiple firings. Chains of {@link IReactiveSource}
  * functions are usually held with a weak reference at their head. They will automatically collapse
  * and clean up the binding at the same time the leaf node is garbage collected. Any firing which started

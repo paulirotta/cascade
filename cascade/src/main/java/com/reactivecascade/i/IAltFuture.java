@@ -69,7 +69,7 @@ import java.util.concurrent.TimeUnit;
 public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, IAsyncOrigin {
     /**
      * A method which returns a new (unforked) <code>IAltFuture</code> should follow the naming conventiond <code>..Async</code>
-     * and be annotated <code>@CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION) to {@link CheckResult} that
+     * and be annotated <code>@CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)</code> to {@link CheckResult} that
      * it is either stored or manually {@link #fork()}ed.
      * <p>
      * TODO This annotation is not ideal for disambiguating all cases, look at creating a new one
