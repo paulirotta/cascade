@@ -28,7 +28,7 @@ import static com.reactivecascade.Async.UI;
 
 /**
  * An {@link EditText} which can be manipulated and which in turn manipulates a supporting
- * {@link ReactiveValue<String>} which reflects the current on-screen from
+ * <code>{@link ReactiveValue}&lt;String&gt;</code> which reflects the current on-screen from
  * <p>
  * Created by Paul Houghton on 12-03-2015.
  */

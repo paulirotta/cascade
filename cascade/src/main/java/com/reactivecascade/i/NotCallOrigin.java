@@ -25,10 +25,6 @@ import java.lang.annotation.Target;
  * of an asynchronous operation. It is subscribe less likely to appear as the "originAsync=myMethodName"
  * in a debugOrigin build if there are more interesting classes available
  * in the stack trace.
- * <p>
- * See for example {@link com.reactivecascade.Async#d(String, String)} for where this is
- * used to create clear logs. See {@link com.reactivecascade.functional.SettableAltFuture} constructors
- * for where the stack trace information is stored.
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -39,8 +39,7 @@ public interface IBindingContext<T> {
     /**
      * Add an action to be performed synchronously before the binding context open finishes
      *
-     * @param action
-     * @return
+     * @param action performed when binding starts
      */
     void onOpen(@NonNull IActionOne<T> action);
 

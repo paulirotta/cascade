@@ -49,7 +49,6 @@ android {
     }
 }
 
-// Lint configuration
 allprojects {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
@@ -59,8 +58,8 @@ allprojects {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:support-annotations:24.2.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-annotations:24.2.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.jmockit:jmockit:1.22'
@@ -68,17 +67,16 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
 }
 
-// JavaDoc configuration
 android.libraryVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
         source = variant.javaCompile.source
         ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        //noinspection GroovyAssignabilityCheck
-        classpath = files(variant.javaCompile.classpath.files) + files(android.bootClasspath)
-        options.links("http://docs.oracle.com/javase/7/docs/api/");
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        options.links("http://docs.oracle.com/javase/8/docs/api/");
         options.links("http://developer.android.com/reference");
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
+        failOnError false
     }
 }
