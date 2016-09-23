@@ -29,7 +29,8 @@ import static com.reactivecascade.Async.currentThreadType;
  * asynchronous process. There is no risk because the situation is tightly controlled and
  * requires performance be secondary to rigid conformance.
  *
- * @param <OUT>
+ * @param <IN>  the upchain type
+ * @param <OUT> the downchain type
  */
 public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
     private static final long DEFAULT_GET_TIMEOUT = 5000;

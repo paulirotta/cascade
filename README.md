@@ -2,6 +2,7 @@
 
 Master:![master](https://travis-ci.org/paulirotta/cascade.svg?branch=master)
 Develop:![develop](https://travis-ci.org/paulirotta/cascade.svg?branch=develop)
+[Travis CI](https://travis-ci.org/paulirotta/cascade)
 
 Cascade is easily debugged, non-blocking concurrent functonal-reactive programming for Android. The goals are safety, clear async algorithms, easy debugging, and raw speed
 through clean flow between constraint-based thread pools.
@@ -42,8 +43,6 @@ You can freely use the flow-of-control style which makes the most sense
   * data driven where this makes more sense
   * subscribe concurrent actions to atomic variables 
   * objects representing intermediate functions in a chain are re-used during concurrent execution
-
-[Travis CI](https://travis-ci.org/paulirotta/cascade)
 
 [Documentation](/docs)
 
