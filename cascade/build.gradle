@@ -22,7 +22,7 @@ android {
 
     lintOptions {
         // InvalidPackage is for Okio, https://github.com/square/okio/issues/58
-        // OldTargetApi and GradleDependency are for API23 when API24 is available (but not yet supported by CI)
+        // OldTargetApi and GradleDependency prevent errors a newer Android API version is available from Google but not yet supported by Travis CI
         disable 'InvalidPackage', 'OldTargetApi', 'GradleDependency'
     }
 
@@ -77,6 +77,6 @@ android.libraryVariants.all { variant ->
         options.links("http://developer.android.com/reference");
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
-        failOnError false
+        failOnError true
     }
 }
