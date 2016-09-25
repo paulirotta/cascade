@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * You may prefer to use {@link ImmutableValue} that a similar need in some cases. That is a
  * slightly faster, simpler implementation than {@link SettableAltFuture}.
  * <p>
- * TODO Would it be helpful for debugging to store and pass forward a reference to the object which originally detected the problem? It might help with filtering what mOnFireAction you want to do mOnError
  */
 @NotCallOrigin
 public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {

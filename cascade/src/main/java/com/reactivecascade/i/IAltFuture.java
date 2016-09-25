@@ -72,7 +72,6 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * and be annotated <code>@CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)</code> to {@link CheckResult} that
      * it is either stored or manually {@link #fork()}ed.
      * <p>
-     * TODO This annotation is not ideal for disambiguating all cases, look at creating a new one
      */
     String CHECK_RESULT_SUGGESTION = "IAltFuture#fork()";
 
