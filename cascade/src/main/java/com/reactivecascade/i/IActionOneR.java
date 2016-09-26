@@ -17,10 +17,9 @@ public interface IActionOneR<IN, OUT> extends IBaseAction<OUT> {
     /**
      * Execute the action
      *
-     * @param in the in argument for the function
-     * @return the result of computation which is often the next in used in a functional chain
-     * @throws Exception                                  that will trigger a transition to {@link com.reactivecascade.i.IAltFuture.StateError}
-     * @throws java.util.concurrent.CancellationException to {@link com.reactivecascade.i.IAltFuture.StateCancelled}
+     * @param in comes from the previous function in the chain
+     * @return is passed to the next
+     * @throws Exception after transitioning to {@link com.reactivecascade.i.IAltFuture.StateError}
      */
     @NonNull
     OUT call(@NonNull IN in) throws Exception;

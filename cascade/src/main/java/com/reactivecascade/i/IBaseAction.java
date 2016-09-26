@@ -11,7 +11,7 @@ package com.reactivecascade.i;
  * Implementing this interface indicates a primary mOnFireAction, usually one executed asynchronously on
  * an {@link com.reactivecascade.i.IThreadType}
  *
- * @param <PHANTOM_OUT> is not strictly needed, but helps the IDE tooling with generics
+ * @param <T> is a parameter that apparently helps generics disambituate at least in some IDEs
  */
-public interface IBaseAction<PHANTOM_OUT> {
+public interface IBaseAction<T> {
 }
