@@ -83,7 +83,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @NonNull
     protected final IThreadType threadType;
 
-    protected final CopyOnWriteArraySet<IAltFuture<OUT, ?>> downchainAltFutures = new CopyOnWriteArraySet<>(); // Callable split IThreadType actions to start after this mOnFireAction completes
+    protected final CopyOnWriteArraySet<IAltFuture<? extends OUT, ?>> downchainAltFutures = new CopyOnWriteArraySet<>();
 
     private final AtomicReference<IAltFuture<?, ? extends IN>> upchainAltFutureAR = new AtomicReference<>();
 
@@ -286,10 +286,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @param action
      * @throws Exception
      */
-    protected Exception forEachThen(@NonNull IActionOne<IAltFuture<OUT, ?>> action) {
+    protected Exception forEachThen(@NonNull IActionOne<IAltFuture<? extends OUT, ?>> action) {
         Exception exception = null;
 
-        for (IAltFuture<OUT, ?> altFuture : downchainAltFutures) {
+        for (IAltFuture<? extends OUT, ?> altFuture : downchainAltFutures) {
             try {
                 action.call(altFuture);
             } catch (Exception e) {
