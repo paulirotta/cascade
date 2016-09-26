@@ -309,7 +309,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
     public ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
-        return (ISettableAltFuture<OUT>) then(new OnErrorAltFuture<OUT>(threadType, onErrorAction));
+        return (ISettableAltFuture<OUT>) then(new OnErrorAltFuture<>(threadType, onErrorAction));
     }
 
     @NotCallOrigin
@@ -317,7 +317,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
     public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
-        return (ISettableAltFuture<OUT>) then(new OnCancelledAltFuture<OUT>(threadType, onCancelledAction));
+        return (ISettableAltFuture<OUT>) then(new OnCancelledAltFuture<>(threadType, onCancelledAction));
     }
 
     @NotCallOrigin
@@ -663,58 +663,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         @NonNull
         public String toString() {
             return "ERROR: reason=" + reason + " error=" + e;
-        }
-    }
-
-    /**
-     * The on-cancelled action in a chain will be launched asynchonosly
-     * <p>
-     * Cancelled notifications are not consumed. All downchain items will also receive the
-     * {@link #onCancelled(StateCancelled)} notification call synchronously.
-     * <p>
-     * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #onCancelled(StateCancelled)}
-     * will be called exactly one time.
-     */
-    public static class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
-        @NonNull
-        private final IActionOne<String> mOnCancelledAction;
-
-        /**
-         * Constructor
-         *
-         * @param threadType the thread pool to run this command on
-         * @param action     a function that receives one input and no return from
-         */
-        @SuppressWarnings("unchecked")
-        public OnCancelledAltFuture(@NonNull IThreadType threadType,
-                                    @NonNull IActionOne<String> action) {
-            super(threadType);
-
-            this.mOnCancelledAction = action;
-        }
-
-        @NotCallOrigin
-        @Override // IAltFuture
-        public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-            RCLog.d(this, "Handling onCancelled(): " + stateCancelled);
-
-            if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
-                RCLog.i(this, "Will not onCancelled() because IAltFuture state is already determined: " + stateAR.get());
-                return;
-            }
-
-            threadType
-                    .from(stateCancelled.getReason())
-                    .then(mOnCancelledAction)
-                    .fork();
-
-            Exception e = forEachThen(af -> {
-                af.onCancelled(stateCancelled);
-            });
-
-            if (e != null) {
-                throw e;
-            }
         }
     }
 }
