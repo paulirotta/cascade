@@ -124,7 +124,11 @@ public class AssertUtil {
     @NonNull
     @NotCallOrigin
     public static <T> T assertNotNull(@Nullable T t) {
-        return assertNotNull(t, "assertNotNull failed");
+        if (Async.RUNTIME_ASSERTIONS) {
+            return assertNotNull(t, "assertNotNull failed");
+        }
+        //noinspection ConstantConditions
+        return t;
     }
 
     /**
@@ -138,10 +142,11 @@ public class AssertUtil {
     @NotCallOrigin
     public static <T> T assertNotNull(@Nullable T t,
                                       @NonNull String message) {
-        if (t == null) {
+        if (Async.RUNTIME_ASSERTIONS && t == null) {
             throw new IllegalStateException(message);
         }
 
+        //noinspection ConstantConditions
         return t;
     }
 }

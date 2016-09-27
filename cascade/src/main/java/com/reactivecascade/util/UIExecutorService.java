@@ -39,10 +39,10 @@ import java.util.concurrent.TimeoutException;
  */
 public final class UIExecutorService extends Origin implements ExecutorService {
     @NonNull
-    private final Handler mHandler;
+    private final Handler handler;
 
     public UIExecutorService(@NonNull Handler handler) {
-        this.mHandler = handler;
+        this.handler = handler;
     }
 
     @Override // ExecutorService
@@ -104,7 +104,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
     @Override // ExecutorService
     public Future submit(@NonNull Runnable runnable) {
         if (runnable instanceof RunnableFuture) {
-            mHandler.post(runnable);
+            handler.post(runnable);
             return (Future) runnable;
         }
 
@@ -118,7 +118,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
             }
         });
 
-        mHandler.post(future);
+        handler.post(future);
 
         return future;
     }
@@ -203,7 +203,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
 
     @Override // ExecutorService
     public void execute(@NonNull Runnable command) {
-        if (!mHandler.post(command)) {
+        if (!handler.post(command)) {
             RCLog.throwIllegalStateException(this, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }
     }

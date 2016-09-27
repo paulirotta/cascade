@@ -39,6 +39,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
     @NonNull
     private final IAltFuture<IN, OUT> altFuture;
 
+    //TODO Replace mutext with a CountDownLatch
     private final Object mutex = new Object();
 
     /**
@@ -113,13 +114,15 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
-            final IAltFuture<OUT, OUT> iaf = altFuture.then(() -> {
-                // Attach this to speed up and notify to continue the Future when the RunnableAltFuture finishes
-                // For speed, we don't normally notify after RunnableAltFuture end
-                synchronized (mutex) {
-                    mutex.notifyAll();
-                }
-            });
+            altFuture
+                    .then(() -> {
+                        // Attach this to speed up and notify to continue the Future when the RunnableAltFuture finishes
+                        // For speed, we don't normally notify after RunnableAltFuture end
+                        synchronized (mutex) {
+                            mutex.notifyAll();
+                        }
+                    })
+                    .fork();
         }
         while (!isDone()) {
             if (System.currentTimeMillis() >= endTime) {

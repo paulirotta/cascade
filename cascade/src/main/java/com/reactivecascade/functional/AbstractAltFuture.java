@@ -93,7 +93,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @param threadType on which this alt future will evaluate and fire downchain events
      */
     public AbstractAltFuture(@NonNull final IThreadType threadType) {
-        this.threadType = threadType;
+        this.threadType = AssertUtil.assertNotNull(threadType);
     }
 
     @Override // IAltFuture
@@ -281,7 +281,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     /**
-     * Perform some action on an instantaneous snapshot of the list of .subscribe() down-chain actions
+     * Perform some action on an instantaneous snapshot of the list of .sub() down-chain actions
      *
      * @param action
      * @throws Exception

@@ -6,6 +6,7 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.reactive.ui;
 
 import android.content.Context;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.CheckResult;
 import android.support.annotation.IdRes;
@@ -58,7 +59,7 @@ import static com.reactivecascade.Async.UI;
  *         myConcurrentListAdapter.addAsync(from)
  *               ; // Return immediately, completed asynchronously on UI thread or synchronously if called from UI thread
  *         myConcurrentListAdapter.getItemAsync(0)
- *               .subscribe( ..dosomething ..)
+ *               .sub( ..dosomething ..)
  *               ; // Returned from completed synchronously, will wait for the UI thread to catch up if not called from the UI thread
  *     </code>
  * </pre>
@@ -107,8 +108,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @NonNull
     public static AltArrayAdapter<CharSequence> createFromResource(
             @NonNull Context context,
-            @LayoutRes int textArrayResId,
-            @IdRes int textViewResId) {
+            @ArrayRes int textArrayResId,
+            @LayoutRes int textViewResId) {
         CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
 
         return new AltArrayAdapter<>(context, textViewResId, strings);
@@ -371,7 +372,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     }
 
     @CallSuper
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @Override
     public void setDropDownViewResource(@LayoutRes int resource) {
         super.setDropDownViewResource(resource);

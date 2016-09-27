@@ -27,7 +27,7 @@ import android.support.annotation.NonNull;
  * a long time, you didn't have a problem or leak in the first place so why worry.
  * <p>
  * If your reactive chain branches, be sure to prune just the branch of interest. A reactive chain is
- * said to "branch" when there are multiple <code>.subscribe()</code> statements
+ * said to "branch" when there are multiple <code>.sub()</code> statements
  * from a single <code>IReactiveSource</code>). The end node of a reactive chain is called the
  * "leaf node". The leaf node is "live" if it is strongly referenced and not free for garbage
  * collection. If the reactive chain branches, only that section
@@ -48,7 +48,7 @@ import android.support.annotation.NonNull;
  * @param <OUT>
  */
 public interface IReactiveSource<OUT> extends INamed {
-    //TODO Add .subscribe(mOnFireAction..) list versions for convenience
+    //TODO Add .sub(mOnFireAction..) list versions for convenience
 
     /**
      * Remove a down-chain branch from the reactive function tree at this node
@@ -65,7 +65,7 @@ public interface IReactiveSource<OUT> extends INamed {
     void unsubscribeAll(@NonNull String reason);
 
     /**
-     * Attach a downstream <code>.subscribe()</code> like {@link #split(IReactiveTarget)}
+     * Attach a downstream <code>.sub()</code> like {@link #split(IReactiveTarget)}
      * as a {@link java.lang.ref.WeakReference}
      * for automatic down-chain {@link #unsubscribe(String, IReactiveTarget)} on garbage collect of reactive chain leaf node.
      *
@@ -91,7 +91,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -99,7 +99,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IAction<OUT> action);
+    IReactiveSource<OUT> sub(@NonNull IAction<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -107,7 +107,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -115,7 +115,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IActionOne<OUT> action);
+    IReactiveSource<OUT> sub(@NonNull IActionOne<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -123,7 +123,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
      * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, subscribe the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -132,7 +132,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -142,8 +142,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType,
-                                   @NonNull IAction<OUT> action);
+    IReactiveSource<OUT> sub(@NonNull IThreadType threadType,
+                             @NonNull IAction<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -153,8 +153,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType,
-                                   @NonNull IActionOne<OUT> action);
+    IReactiveSource<OUT> sub(@NonNull IThreadType threadType,
+                             @NonNull IActionOne<OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -164,7 +164,7 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IActionR<DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -175,8 +175,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IThreadType threadType,
-                                                             @NonNull IActionR<DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IThreadType threadType,
+                                                       @NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -187,8 +187,8 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull IThreadType threadType,
-                                                                @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
+    <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(@NonNull IThreadType threadType,
+                                                          @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
      * Add an mOnFireAction as a new branch down-chain from this node.
@@ -199,5 +199,5 @@ public interface IReactiveSource<OUT> extends INamed {
      * @return
      */
     @NonNull
-    IReactiveSource<OUT> subscribe(@NonNull IReactiveTarget<OUT> reactiveTarget);
+    IReactiveSource<OUT> sub(@NonNull IReactiveTarget<OUT> reactiveTarget);
 }

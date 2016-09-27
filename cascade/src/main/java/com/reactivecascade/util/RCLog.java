@@ -46,7 +46,7 @@ public class RCLog {
     /**
      * A null object indicating the origin is not available
      */
-    public static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No Origin provided in production builds");
+    public static final ImmutableValue<String> DEFAULT_ORIGIN = new ImmutableValue<>("No Origin available. Try AsyncBuilder.setTraceOriginAsync(true)");
     private static final ConcurrentHashMap<String, Class> sClassNameMap = new ConcurrentHashMap<>(); // "classname" -> Class. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
     private static final ConcurrentHashMap<String, Method> sMethodNameMap = new ConcurrentHashMap<>(); // "classname-methodname" -> Method. Used by DEBUG builds to more quickly trace mOrigin of a log message back into your code
 
@@ -58,7 +58,7 @@ public class RCLog {
 
         final IThreadType threadType = Async.currentThreadType();
 
-        if (threadType != Async.NON_CASCADE_THREAD) {
+        if (!threadType.isCascadeThread()) {
             return "<" + threadType.getName() + "," + Thread.currentThread().getName() + "> " + message;
         }
 
@@ -412,19 +412,19 @@ public class RCLog {
      * such string in a line displayed in the Android log, it will be clickable to return to the
      * "most relevant" line.
      * <p>
-     * This is used to make it easy to debugOrigin when cause and effect are likely separated. First we remember the point at which an subscribe operation
+     * This is used to make it easy to debugOrigin when cause and effect are likely separated. First we remember the point at which an sub operation
      * is created and record it. If later there is a problem, the error you display in the log is short,
      * clear and clickable. Most importantly, it shows you not a vomit of call stack but only where the errant active chain
      * started such as in your user or library code.
      * <p>
      * This information is frequently displayed along with the full stack trace at the point the error
-     * manifests itself. First look at what when wrong at that point, subscribe work backwards to how you
+     * manifests itself. First look at what when wrong at that point, sub work backwards to how you
      * created the mess. Yes, it is always your fault. Or my fault. Nah.
      *
      * @return a string holder that will be populated in the background on a WORKER thread (only in <code>{@link BuildConfig#DEBUG}=true</code> builds)
      */
     @NonNull
-    @CheckResult(suggest = "<local variable> mOrigin =")
+    @CheckResult(suggest = "<local variable> origin =")
     public static ImmutableValue<String> originAsync() {
         if (!Async.TRACE_ASYNC_ORIGIN) {
             return DEFAULT_ORIGIN;
@@ -442,9 +442,10 @@ public class RCLog {
                 immutableValue.set(s);
             });
         } else {
+            throw new IllegalStateException("WORKER must be non-null before originAsync() is called");
             // During bootstrapping of the ThreadTypes
-            List<StackTraceLine> list = origin(traceElementsArray);
-            immutableValue.set(prettyFormat(list.get(0).stackTraceElement));
+//            List<StackTraceLine> list = origin(traceElementsArray);
+//            immutableValue.set(prettyFormat(list.get(0).stackTraceElement));
         }
 
         return immutableValue;

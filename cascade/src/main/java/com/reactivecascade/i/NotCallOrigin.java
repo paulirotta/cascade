@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
  * created. Mark your class and/or method with this annotation if that part of the code
  * is for example a utility
  * that is not particularly interesting to the business logic as the runtime "originAsync"
- * of an asynchronous operation. It is subscribe less likely to appear as the "originAsync=myMethodName"
+ * of an asynchronous operation. It is sub less likely to appear as the "originAsync=myMethodName"
  * in a debugOrigin build if there are more interesting classes available
  * in the stack trace.
  */

@@ -8,6 +8,7 @@ package com.reactivecascade.functional;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.reactivecascade.i.IAction;
 import com.reactivecascade.i.IActionOne;
@@ -16,8 +17,6 @@ import com.reactivecascade.i.IActionR;
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.i.IBaseAction;
 import com.reactivecascade.i.ISafeGettable;
-import com.reactivecascade.util.AssertUtil;
-import com.reactivecascade.util.RCLog;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,6 +44,8 @@ import java.util.concurrent.atomic.AtomicReference;
 //TODO Do we also need an AddOnlyList type which is a collection that can only grow from the end?
 //@Deprecated // Delete this and use SettableAltFuture instead for simplicity
 public class ImmutableValue<T> implements ISafeGettable<T> {
+    private static final String TAG = ImmutableValue.class.getSimpleName();
+
     @SuppressWarnings("unchecked")
     private final AtomicReference<T> valueAR = new AtomicReference<>((T) VALUE_NOT_AVAILABLE);
 
@@ -99,7 +100,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         if (success) {
             doThenActions(value);
         } else {
-            RCLog.d(this, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + safeGet());
+            Log.d(TAG, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + safeGet());
         }
 
         return success;
@@ -145,7 +146,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
                 try {
                     call(value, action);
                 } catch (Exception e) {
-                    RCLog.e(this, "Can not do then() actions after ImmutableValue was set to from=" + value, e);
+                    Log.e(TAG, "Can not do then() actions after ImmutableValue was set to from=" + value, e);
                 }
             }
         }
@@ -198,7 +199,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * <p>
      * Generally you want to use this method instead of {@link #safeGet()} when you can use dependency
      * mechanisms properly. If you think have problems, ask if you should be doing some of your logic
-     * in a <code>.subscribe()</code> clause to guarantee the execution order.
+     * in a <code>.sub()</code> clause to guarantee the execution order.
      *
      * @return
      * @throws IllegalStateException if the supplied lazy evaluation IAction throws an error during evaluation
@@ -214,7 +215,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
                 if (action != null) {
                     T t = action.call();
                     if (!compareAndSet((T) VALUE_NOT_AVAILABLE, t)) {
-                        RCLog.d(this, "ImmutableValue was set while calling action during get: ignoring the second value from action \"" + t + "\" in favor of \"" + valueAR.get() + "\"");
+                        Log.d(TAG, "ImmutableValue was set while calling action during get: ignoring the second value from action \"" + t + "\" in favor of \"" + valueAR.get() + "\"");
                     }
                     return t;
                 }
@@ -257,8 +258,6 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @NonNull
     @SuppressWarnings("unchecked")
     public T set(@NonNull T value) {
-        AssertUtil.assertNotNull(value);
-
         if (!compareAndSet((T) VALUE_NOT_AVAILABLE, value)) {
             throw new IllegalStateException("ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new from=" + value);
         }

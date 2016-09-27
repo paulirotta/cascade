@@ -5,30 +5,28 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.reactivecascade.functional;
 
-import android.support.annotation.CallSuper;
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
-import com.reactivecascade.AsyncAndroidTestCase;
+import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.i.IAltFuture;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
-public class SettableAltFutureTest extends AsyncAndroidTestCase {
-
-    @Before
-    @CallSuper
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+@RunWith(AndroidJUnit4.class)
+public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testCancel() throws Exception {
         final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
         assertTrue(settableAltFuture.cancel("Just because"));
+        //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(IAltFuture.VALUE_NOT_AVAILABLE, settableAltFuture.safeGet());
 
         SHOW_ERROR_STACK_TRACES = false;
@@ -68,13 +66,25 @@ public class SettableAltFutureTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testIsForked() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
-        assertFalse(settableAltFuture.isForked());
-        settableAltFuture.fork();
-        assertTrue(settableAltFuture.isForked());
-        settableAltFuture.set(42);
-        assertTrue(settableAltFuture.isForked());
+    public void testForkBeforeSetIsForkedWhenUseForkedState() throws Exception {
+        if (Async.USE_FORKED_STATE) {
+            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+            assertFalse(settableAltFuture.isForked());
+            settableAltFuture.fork();
+            assertTrue(settableAltFuture.isForked());
+            settableAltFuture.set(42);
+            assertTrue(settableAltFuture.isForked());
+        }
+    }
+
+    @Test
+    public void testForkBeforeSetIsForkedWhenDoNotUseForkedState() throws Exception {
+        if (!Async.USE_FORKED_STATE) {
+            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+            settableAltFuture.fork();
+            settableAltFuture.set(1);
+            assertTrue(settableAltFuture.isForked());
+        }
     }
 
     @Test

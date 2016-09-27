@@ -38,13 +38,6 @@ public class TypedThread extends Thread {
     private final CopyOnWriteArrayList<IThreadType> threadTypes = new CopyOnWriteArrayList<>();
 
     public TypedThread(@NonNull IThreadType threadType,
-                       @NonNull Runnable runnable) {
-        super(THREAD_GROUP, runnable);
-
-        this.threadTypes.add(threadType);
-    }
-
-    public TypedThread(@NonNull IThreadType threadType,
                        @NonNull Runnable runnable,
                        @NonNull String threadName) {
         super(THREAD_GROUP, runnable, threadName);

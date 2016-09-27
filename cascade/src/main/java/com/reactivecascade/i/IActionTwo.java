@@ -8,7 +8,7 @@ package com.reactivecascade.i;
 import android.support.annotation.NonNull;
 
 /**
- * A lambda-friendly functional interface for subscribe actions which receive two parameters
+ * A lambda-friendly functional interface for sub actions which receive two parameters
  *
  * @param <IN1>
  * @param <IN2>

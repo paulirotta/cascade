@@ -7,6 +7,7 @@ package com.reactivecascade;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,11 +18,12 @@ import android.util.Log;
 import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.i.CallOrigin;
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
-import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.DefaultThreadType;
 import com.reactivecascade.util.DoubleQueue;
+import com.reactivecascade.util.Origin;
 import com.reactivecascade.util.TypedThread;
 import com.reactivecascade.util.UIExecutorService;
 
@@ -53,57 +55,126 @@ import java.util.concurrent.atomic.AtomicInteger;
 @CallOrigin
 public class AsyncBuilder {
     private static final String TAG = AsyncBuilder.class.getSimpleName();
-    static final String NOT_INITIALIZED = "Please init with new AsyncBuilder(this).build() in for example Activity.onCreate() _before_ the classloader touches Async.class";
-    public static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-    public static final int NUMBER_OF_CONCURRENT_NET_READS = 4; //TODO Dynamic pool size adjustment based on current and changing connection type
 
+    @VisibleForTesting
+    static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
+
+    @VisibleForTesting
+    static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
+
+    @VisibleForTesting
     private static final AtomicInteger threadUid = new AtomicInteger(); // All threads created on all AsyncBuilders are assigned unique, consecutive numbers
 
-    @Nullable
-    private static volatile AsyncBuilder instance = null; // Set only from the UI thread, but may be accessed from other threads
-
-    @Nullable
-    static AsyncBuilder getInstance() {
-        return AsyncBuilder.instance;
-    }
-
-    /**
-     * Used to reset static state for unit testing
-     */
     @VisibleForTesting
-    static void resetInstance() {
-        AsyncBuilder.instance = null;
-    }
+    static boolean initialized = false;
 
+    @VisibleForTesting
     static Thread serialWorkerThread;
 
     @NonNull
-    public final Context context;
+    @VisibleForTesting
+    private final Context context;
 
-    private final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
-    public Thread uiThread;
-    public ExecutorService uiExecutorService;
-    private boolean useForkedState = BuildConfig.DEBUG;
-    private boolean runtimeAssertionsEnabled = BuildConfig.DEBUG;
-    private boolean strictModeEnabled = BuildConfig.DEBUG;
-    private boolean failFast = BuildConfig.DEBUG;
-    private boolean showErrorStackTraces = BuildConfig.DEBUG;
-    private IThreadType workerThreadType;
-    private IThreadType serialWorkerThreadType;
-    private IThreadType uiThreadType;
-    private IThreadType netReadThreadType;
-    private IThreadType netWriteThreadType;
-    private IThreadType fileThreadType;
-    private BlockingQueue<Runnable> workerQueue;
-    private BlockingQueue<Runnable> serialWorkerQueue;
-    private BlockingQueue<Runnable> fileQueue;
-    private BlockingQueue<Runnable> netReadQueue;
-    private BlockingQueue<Runnable> netWriteQueue;
-    private ExecutorService workerExecutorService;
-    private ExecutorService serialWorkerExecutorService;
-    private ExecutorService fileExecutorService;
-    private ExecutorService netReadExecutorService;
-    private ExecutorService netWriteExecutorService;
+    @VisibleForTesting
+    static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
+
+    @VisibleForTesting
+    static Thread uiThread;
+
+    @VisibleForTesting
+    static ExecutorService uiExecutorService = null;
+
+    @VisibleForTesting
+    static boolean useForkedState;
+
+    @VisibleForTesting
+    static boolean runtimeAssertionsEnabled;
+
+    @VisibleForTesting
+    static boolean strictMode;
+
+    @VisibleForTesting
+    static boolean showErrorStackTraces;
+
+    @VisibleForTesting
+    static boolean failFast;
+
+    @VisibleForTesting
+    static boolean traceAsyncOrigin;
+
+    @VisibleForTesting
+    static IThreadType workerThreadType;
+
+    @VisibleForTesting
+    static IThreadType serialWorkerThreadType;
+
+    @VisibleForTesting
+    static IThreadType uiThreadType;
+
+    @VisibleForTesting
+    static IThreadType netReadThreadType;
+
+    @VisibleForTesting
+    static IThreadType netWriteThreadType;
+
+    @VisibleForTesting
+    static IThreadType fileThreadType;
+
+    @VisibleForTesting
+    BlockingQueue<Runnable> workerQueue;
+
+    @VisibleForTesting
+    BlockingQueue<Runnable> serialWorkerQueue;
+
+    @VisibleForTesting
+    BlockingQueue<Runnable> fileQueue;
+
+    @VisibleForTesting
+    BlockingQueue<Runnable> netReadQueue;
+
+    @VisibleForTesting
+    BlockingQueue<Runnable> netWriteQueue;
+
+    @VisibleForTesting
+    ExecutorService workerExecutorService;
+
+    @VisibleForTesting
+    ExecutorService serialWorkerExecutorService;
+
+    @VisibleForTesting
+    ExecutorService fileExecutorService;
+
+    @VisibleForTesting
+    ExecutorService netReadExecutorService;
+
+    @VisibleForTesting
+    ExecutorService netWriteExecutorService;
+
+    static {
+        reset();
+    }
+
+    /**
+     * Reset state to default
+     */
+    @UiThread
+    @VisibleForTesting
+    static void reset() {
+        initialized = false;
+        uiExecutorService = null;
+        useForkedState = BuildConfig.DEBUG;
+        runtimeAssertionsEnabled = BuildConfig.DEBUG;
+        strictMode = BuildConfig.DEBUG;
+        showErrorStackTraces = BuildConfig.DEBUG;
+        failFast = BuildConfig.DEBUG;
+        traceAsyncOrigin = BuildConfig.DEBUG;
+        workerThreadType = null;
+        serialWorkerThreadType = null;
+        uiThreadType = null;
+        netReadThreadType = null;
+        netWriteThreadType = null;
+        fileThreadType = null;
+    }
 
     /**
      * Create a new <code>AsyncBuilder</code> that will run as long as the specified
@@ -120,29 +191,17 @@ public class AsyncBuilder {
      */
     @UiThread
     public AsyncBuilder(@NonNull Context context) {
-        AssertUtil.assertNotNull(context, "Context can not be null");
-        Context c = context;
-        try {
-            c = context.getApplicationContext();
-        } catch (NullPointerException e) {
-            Log.i(TAG, "Instrumentation test run detected: context is null");
+        if (context == null) {
+            throw new IllegalArgumentException("Please pass a non-null Context to the AsyncBuilder constructor");
         }
-        this.context = c;
-    }
+        Context c = context.getApplicationContext();
 
-    @UiThread
-    static boolean isInitialized() {
-        return instance != null;
-    }
-
-    /**
-     * Check if the library should behave as it this is a {@link BuildConfig#DEBUG} build
-     *
-     * @return mode
-     */
-    @UiThread
-    public boolean isRuntimeAssertionsEnabled() {
-        return runtimeAssertionsEnabled;
+        if (c != null) {
+            this.context = c;
+        } else {
+            Log.i(TAG, "Instrumentation test run detected");
+            this.context = context;
+        }
     }
 
     /**
@@ -156,19 +215,9 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setRuntimeAssertionsEnabled(boolean enabled) {
         Log.v(TAG, "setRuntimeAssertionsEnabled(" + enabled + ")");
-        this.runtimeAssertionsEnabled = enabled;
+        AsyncBuilder.runtimeAssertionsEnabled = enabled;
 
         return this;
-    }
-
-    /**
-     * Check if the library should behave as it this is a {@link BuildConfig#DEBUG} build
-     *
-     * @return mode
-     */
-    @UiThread
-    public boolean isUseForkedState() {
-        return useForkedState;
     }
 
     /**
@@ -184,19 +233,9 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setUseForkedState(boolean enabled) {
         Log.v(TAG, "setUseForkedState(" + enabled + ")");
-        this.useForkedState = enabled;
+        AsyncBuilder.useForkedState = enabled;
 
         return this;
-    }
-
-    /**
-     * Check if Android strict mode is enabled
-     *
-     * @return mode
-     */
-    @UiThread
-    public boolean isStrictMode() {
-        return strictModeEnabled;
     }
 
     /**
@@ -209,20 +248,17 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setStrictMode(boolean enabled) {
         Log.v(TAG, "setStrictMode(" + enabled + ")");
-        this.strictModeEnabled = enabled;
+        AsyncBuilder.strictMode = enabled;
 
         return this;
     }
 
-    /**
-     * Check if failFast mode (terminate the application on logic errors to assist in debugging) is
-     * enabled.
-     *
-     * @return mode
-     */
     @UiThread
-    public boolean isFailFast() {
-        return failFast;
+    public AsyncBuilder setShowErrorStackTraces(boolean enabled) {
+        Log.v(TAG, "setShowErrorStackTraces(" + enabled + ")");
+        AsyncBuilder.showErrorStackTraces = enabled;
+
+        return this;
     }
 
     /**
@@ -237,27 +273,22 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setFailFast(boolean failFast) {
         Log.v(TAG, "setFailFast(" + failFast + ")");
-        this.failFast = failFast;
+        AsyncBuilder.failFast = failFast;
         return this;
-    }
-
-    @UiThread
-    public boolean isShowErrorStackTraces() {
-        return showErrorStackTraces;
     }
 
     /**
      * By default, error stack traces are shown in the debug output. When running system testing code which
      * intentionally throws errors, this may be better disabled.
      *
-     * @param showErrorStackTraces <code>true</code> to show stack traces
+     * @param traceAsyncOrigin <code>true</code> to show stack traces
      * @return the builder, for chaining
      */
     @NonNull
     @UiThread
-    public AsyncBuilder setShowErrorStackTraces(boolean showErrorStackTraces) {
-        Log.v(TAG, "setShowErrorStackTraces(" + showErrorStackTraces + ")");
-        this.showErrorStackTraces = showErrorStackTraces;
+    public AsyncBuilder setTraceAsyncOrigin(boolean traceAsyncOrigin) {
+        Log.v(TAG, "setTraceAsyncOrigin(" + traceAsyncOrigin + ")");
+        AsyncBuilder.traceAsyncOrigin = traceAsyncOrigin;
 
         return this;
     }
@@ -293,7 +324,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setWorkerThreadType(@NonNull IThreadType workerThreadType) {
         Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
-        this.workerThreadType = workerThreadType;
+        AsyncBuilder.workerThreadType = workerThreadType;
 
         return this;
     }
@@ -338,12 +369,12 @@ public class AsyncBuilder {
     @NonNull
     @VisibleForTesting
     @UiThread
-    IThreadType getUiThreadType() {
-        if (uiThreadType == null) {
-            setUIThreadType(new DefaultThreadType("UIThreadType", getUiExecutorService(), null));
+    static IThreadType getUiThreadType(@Nullable Context context) {
+        if (AsyncBuilder.uiThreadType == null) {
+            AsyncBuilder.uiThreadType = new DefaultThreadType("UIThreadType", getUiExecutorService(context), null);
         }
 
-        return uiThreadType;
+        return AsyncBuilder.uiThreadType;
     }
 
     /**
@@ -354,7 +385,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setUIThreadType(@NonNull IThreadType uiThreadType) {
         Log.v(TAG, "setUIThreadType(" + uiThreadType + ")");
-        this.uiThreadType = uiThreadType;
+        AsyncBuilder.uiThreadType = uiThreadType;
         return this;
     }
 
@@ -386,7 +417,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setNetReadThreadType(@NonNull IThreadType netReadThreadType) {
         Log.v(TAG, "setNetReadThreadType(" + netReadThreadType + ")");
-        this.netReadThreadType = netReadThreadType;
+        AsyncBuilder.netReadThreadType = netReadThreadType;
         return this;
     }
 
@@ -418,29 +449,9 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setNetWriteThreadType(@NonNull IThreadType netWriteThreadType) {
         Log.v(TAG, "setNetWriteThreadType(" + netWriteThreadType + ")");
-        this.netWriteThreadType = netWriteThreadType;
+        AsyncBuilder.netWriteThreadType = netWriteThreadType;
         return this;
     }
-
-//    @NonNull//    public MirrorService getFileService() {
-//        if (fileService == null) {
-//            Log.v(TAG, "Creating default file service");
-//            setFileService(new FileMirrorService("Default FileMirrorService",
-//                    "FileMirrorService",
-//                    false,
-//                    context,
-//                    Context.MODE_PRIVATE,
-//                    getFileThreadType()));
-//        }
-//
-//        return fileService;
-//    }
-
-//    @NonNull//    public AsyncBuilder setFileService(@NonNull final MirrorService fileService) {
-//        Log.v(TAG, "setFileService(" + fileService + ")");
-//        this.fileService = fileService;
-//        return this;
-//    }
 
     /**
      * @return
@@ -470,7 +481,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setFileThreadType(@NonNull IThreadType fileThreadType) {
         Log.v(TAG, "setFileThreadType(" + fileThreadType + ")");
-        this.fileThreadType = fileThreadType;
+        AsyncBuilder.fileThreadType = fileThreadType;
         return this;
     }
 
@@ -485,10 +496,6 @@ public class AsyncBuilder {
         return getSerialWorkerThread(threadType, runnable);
     }
 
-    /**
-     * @param threadTypeImmutableValue
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -511,6 +518,7 @@ public class AsyncBuilder {
         return workerExecutorService;
     }
 
+    @NonNull
     private static String createThreadId(@NonNull String threadCategory) {
         return threadCategory + threadUid.getAndIncrement();
     }
@@ -764,19 +772,22 @@ public class AsyncBuilder {
         return netWriteExecutorService;
     }
 
-    /**
-     * @return the builder, for chaining
-     */
-    //TODO All ExecutorService-s should be a new DelayedExecutorService which supports executeDelayed(millis) behavior
     @NonNull
     @VisibleForTesting
     @UiThread
-    ExecutorService getUiExecutorService() {
+    static ExecutorService getUiExecutorService(@Nullable Context context) {
         Log.v(TAG, "getUiExecutorService()");
-        AssertUtil.assertNotNull(context);
 
         if (uiExecutorService == null) {
-            setUiExecutorService(new UIExecutorService(new Handler(context.getMainLooper())));
+            try {
+                AsyncBuilder.uiExecutorService = new UIExecutorService(new Handler(context.getMainLooper()));
+            } catch (Exception e) {
+                Log.i(TAG, "WARNING: Test configuration- looper is synthesized");
+                if (Looper.getMainLooper() == null) {
+                    Looper.prepareMainLooper();
+                }
+                AsyncBuilder.uiExecutorService = new UIExecutorService(new Handler(Looper.getMainLooper()));
+            }
         }
 
         return uiExecutorService;
@@ -793,7 +804,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setUiExecutorService(@NonNull ExecutorService uiExecutorService) {
         Log.v(TAG, "setUiExecutorService()");
-        this.uiExecutorService = uiExecutorService;
+        AsyncBuilder.uiExecutorService = uiExecutorService;
         return this;
     }
 
@@ -899,28 +910,25 @@ public class AsyncBuilder {
     public AsyncBuilder setUiThread(@NonNull Thread uiThread) {
         Log.v(TAG, "setUiThread(" + uiThread + ")");
         uiThread.setName("UIThread");
-        this.uiThread = uiThread;
+        AsyncBuilder.uiThread = uiThread;
 
         return this;
     }
 
-//    public AsyncBuilder setSignalVisualizerUri(URI uri, List<BasicNameValuePair> extraHeaders) {
-//        signalVisualizerClient = new SignalVisualizerClient.Builder()
-//                .setUri(uri)
-//                .setExtraHeaders(extraHeaders)
-//                .build();
-//        if (signalVisualizerClient == null) {
-//            Log.v(TAG, "signalVisualizerClient set");
-//        } else {
-//            Log.v(TAG, "No signalVisualizerClient");
-//        }
-//
-//        return this;
-//    }
-//
-//    public SignalVisualizerClient getSignalVisualizerClient() {
-//        return signalVisualizerClient;
-//    }
+    @VisibleForTesting
+    static Thread getUiThread(@Nullable Context context) {
+        Thread thread = uiThread;
+        if (thread == null) {
+            thread = Thread.currentThread();
+            if (context != null) {
+                thread = context.getMainLooper().getThread();
+            } else {
+                Log.i(TAG, "WARNING- Test and tools mode: UI thread may not be the actual system UI thread");
+            }
+        }
+
+        return thread;
+    }
 
     /**
      * Complete construction of the {@link AsyncBuilder}.
@@ -935,20 +943,7 @@ public class AsyncBuilder {
     @NotCallOrigin
     @UiThread
     public Async build() {
-        AssertUtil.assertNotNull(context);
-
-        if (uiThread == null) {
-            Thread thread;
-            try {
-                thread = context.getMainLooper().getThread();
-            } catch (NullPointerException e) {
-                Log.i(TAG, "UI thread is not the default system UI thread");
-                thread = Thread.currentThread();
-            }
-            setUiThread(thread);
-        }
-
-        if (strictModeEnabled) {
+        if (strictMode) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
@@ -960,11 +955,28 @@ public class AsyncBuilder {
                     .penaltyDeath()
                     .build());
         }
+        getWorkerThreadType();
+        getSerialWorkerThreadType();
+        getNetReadThreadType();
+        getNetWriteThreadType();
+        getFileThreadType();
 
-        Async async = new Async(context.getApplicationContext());
-        instance = this;
+        /*
+         * End of low level one time initialization stage
+         * From the following statement onward, static values in
+         * the Async class are fixed until the next program start
+         */
+        getUiExecutorService(context);
+        IAsyncOrigin origin = AsyncBuilder.traceAsyncOrigin ? new Origin() : IAsyncOrigin.ORIGIN_NOT_SET;
+        AsyncBuilder.workerThreadType.setOrigin(origin);
+        AsyncBuilder.serialWorkerThreadType.setOrigin(origin);
+        AsyncBuilder.netReadThreadType.setOrigin(origin);
+        AsyncBuilder.netWriteThreadType.setOrigin(origin);
+        AsyncBuilder.fileThreadType.setOrigin(origin);
 
+        Async async = new Async(context);
         Log.v(TAG, "AsyncBuilder complete");
+        initialized = true;
 
         return async; //TODO Pass the builder as an argument to the constructor
     }

@@ -79,14 +79,14 @@ public final class NetUtil extends Origin {
     @NonNull
     private final IThreadType mNetWriteThreadType;
 
-    @RequiresPermission(allOf = {
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_WIFI_STATE})
     public NetUtil(@NonNull final Context context) {
         this(context, NET_READ, NET_WRITE);
     }
 
+    @RequiresPermission(allOf = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE})
     public NetUtil(@NonNull Context context,
                    @NonNull IThreadType netReadThreadType,
                    @NonNull IThreadType netWriteThreadType) {
@@ -156,8 +156,8 @@ public final class NetUtil extends Origin {
         }
 
         return execute(setupCall(url,
-                builder -> {
-                    addHeaders(builder, headers);
+                builderModifier -> {
+                    addHeaders(builderModifier, headers);
                 }));
     }
 

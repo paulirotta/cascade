@@ -64,7 +64,7 @@ import java.util.concurrent.CancellationException;
  * <p>
  * fail here - directly at the point in the code where the mistake is most likely to be
  * <p>
- * fail why - with full context information such as the subscribe call stack so that you need to resolve track the
+ * fail why - with full context information such as the sub call stack so that you need to resolve track the
  * problem to a remote source quickly
  * <p>
  * fail next - with an instructive message of what is the most likely solution rather than a
@@ -191,7 +191,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
      * The {@link java.util.concurrent.ExecutorService} of this <code>RunnableAltFuture</code>s {@link com.reactivecascade.i.IThreadType}
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
      * to <code>{@link #isDone()} == true</code> state. If this <code>RunnableAltFuture</code> is part of an asynchronous functional
-     * chain, subscribe it will be forked for you when the prerequisites have finished.
+     * chain, sub it will be forked for you when the prerequisites have finished.
      * <p>
      * This is called for you from the {@link IThreadType}'s {@link java.util.concurrent.ExecutorService}
      */

@@ -7,11 +7,10 @@ package com.reactivecascade.util;
 
 import android.support.annotation.NonNull;
 
+import com.reactivecascade.Async;
 import com.reactivecascade.i.IAltFuture;
 
 import java.util.concurrent.TimeUnit;
-
-import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
 
 /**
  * Intergration test utilities.
@@ -25,42 +24,61 @@ import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
  * Created by phou on 6/2/2015.
  */
 public class TestUtil {
-    public TestUtil() {
+    private static final TestUtil testUtil = new TestUtil();
+
+    private TestUtil() {
     }
 
     /**
-     * Run a unit of work on the specified thread
+     * Access the test utilities
      *
-     * @param altFuture
-     * @param <IN>
-     * @param <OUT>
-     * @return
+     * @return singleton
+     */
+    public static TestUtil getTestUtil() {
+        return TestUtil.testUtil;
+    }
+
+    /**
+     * Run a unit of work on the specified thread. Block the current thread until it
+     * completes.
+     * <p>
+     * Use of this type of blocking one thread by another outside of unit testing is strongly
+     * discouraged. All cascade thread pools are strictly size limited so the result
+     * could often be deadlock. Consider using a <code>.then(myFunctionToRunAfter)</code> instead.
+     *
+     * @param altFuture the action to be performed
+     * @param <IN>      the input type passed to the altFuture
+     * @param <OUT>     the output type returned from the altFuture
+     * @return output returned from execution of the altFuture
      * @throws Exception
      */
-    public <IN, OUT> OUT awaitDone(@NonNull IAltFuture<IN, OUT> altFuture,
-                                   long timeoutMillis) throws Exception {
+    public <IN, OUT> OUT await(@NonNull IAltFuture<IN, OUT> altFuture,
+                               long timeoutMillis) throws Exception {
         return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Run a unit of work on the specified thread
      * <p>
-     * Error logging will be termporarily disabled during this test to avoid intentional and potentially
-     * confusing messages appearing. This has termporary, global side effects and is not compatible
+     * Stack traces from unit tests are expected and can be suppressed to keep the log file
+     * clear and simple.
+     * <p>
+     * NOTE: While this is waiting, unrelated stack traces on other threads are also suppressed
      *
-     * @param altFuture
-     * @param <IN>
-     * @param <OUT>
-     * @return
+     * @param altFuture the action to be performed
+     * @param <IN>      the input type passed to the altFuture
+     * @param <OUT>     the output type returned from the altFuture
+     * @return output returned from execution of the altFuture
      * @throws Exception
      */
-    public <IN, OUT> OUT awaitDoneNoErrorStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
-                                                     long timeoutMillis) throws Exception {
-        SHOW_ERROR_STACK_TRACES = false;
+    public <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
+                                              long timeoutMillis) throws Exception {
+        boolean previousState = Async.SHOW_ERROR_STACK_TRACES;
+        Async.SHOW_ERROR_STACK_TRACES = false;
         try {
-            return awaitDone(altFuture, timeoutMillis);
+            return await(altFuture, timeoutMillis);
         } finally {
-            SHOW_ERROR_STACK_TRACES = true;
+            Async.SHOW_ERROR_STACK_TRACES = previousState;
         }
     }
 }

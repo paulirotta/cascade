@@ -91,7 +91,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         this.name = name;
         this.upchainReactiveSource = upchainReactiveSource;
         if (upchainReactiveSource != null) {
-            upchainReactiveSource.subscribe(this);
+            upchainReactiveSource.sub(this);
         }
         this.mThreadType = threadType != null ? threadType : UI;
         this.mOnFireAction = onFireAction;
@@ -137,23 +137,23 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     }
 
     @Override // IReactiveTarget
-    public void subscribeSource(@NonNull String reason,
-                                @NonNull IReactiveSource<IN> reactiveSource) {
+    public void subSource(@NonNull String reason,
+                          @NonNull IReactiveSource<IN> reactiveSource) {
         if (reactiveSources.add(reactiveSource)) {
             RCLog.v(this, reactiveSource.getName() + " subscribesSource, reason=" + reason);
         } else {
-            RCLog.d(this, "Did you subscribeSource several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
+            RCLog.d(this, "Did you subSource several times or create some other mess? Upchain says hello, but we already have a hello from \"" + reactiveSource.getName() + "\" at \"" + getName() + "\"");
         }
     }
 
     @Override
     @NotCallOrigin
-    public void unsubscribeSource(@NonNull String reason,
-                                  @NonNull IReactiveSource<IN> reactiveSource) {
+    public void unsubSource(@NonNull String reason,
+                            @NonNull IReactiveSource<IN> reactiveSource) {
         if (reactiveSources.remove(reactiveSource)) {
-            RCLog.v(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason);
+            RCLog.v(this, "Upchain '" + reactiveSource.getName() + "' unsubSource, reason=" + reason);
         } else {
-            RCLog.i(this, "Upchain '" + reactiveSource.getName() + "' unsubscribeSource, reason=" + reason + "\nWARNING: This source is not current. Probably this is a garbage collection/weak reference side effect");
+            RCLog.i(this, "Upchain '" + reactiveSource.getName() + "' unsubSource, reason=" + reason + "\nWARNING: This source is not current. Probably this is a garbage collection/weak reference side effect");
         }
     }
 
@@ -246,7 +246,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     }
 
     /**
-     * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on ThreadType.WORKER
+     * Always called from the headFunctionalChainLink's refire sub. By default this executes on ThreadType.WORKER
      */
     @NotCallOrigin
     @NonNull
@@ -258,7 +258,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     }
 
     /**
-     * Always called from the headFunctionalChainLink's refire subscribe. By default this executes on Async.WORKER
+     * Always called from the headFunctionalChainLink's refire sub. By default this executes on Async.WORKER
      */
     @NotCallOrigin
     private void doDownchainActions(@NonNull IN in,
@@ -273,14 +273,14 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         }
     }
 
-//=================================.subscribe() Actions ==========================================
+//=================================.sub() Actions ==========================================
 
     @Override // IReactiveSource
     public boolean unsubscribe(@NonNull String reason,
                                @NonNull IReactiveTarget<OUT> reactiveTarget) {
         try {
             return searchReactiveTargets(reactiveTarget, wr -> {
-                        RCLog.v(this, "unsubscribeSource(IReactiveTarget) reason=" + reason + " reactiveTarget=" + reactiveTarget);
+                        RCLog.v(this, "unsubSource(IReactiveTarget) reason=" + reason + " reactiveTarget=" + reactiveTarget);
                         //TODO Annotate to remove the following warning. The action is safe due to AltWeakReference behavior
                         reactiveTargets.remove(reactiveTarget);
                     }
@@ -292,7 +292,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     }
 
     @Override // IReactiveTarget
-    public void unsubscribeAllSources(@NonNull String reason) {
+    public void unsubAllSources(@NonNull String reason) {
         RCLog.v(this, "Unsubscribing all sources, reason=" + reason);
         for (IReactiveSource<IN> source : reactiveSources) {
             source.unsubscribeAll(reason);
@@ -317,7 +317,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     public IReactiveSource<OUT> split(@NonNull IReactiveTarget<OUT> reactiveTarget) {
-        subscribe(reactiveTarget);
+        sub(reactiveTarget);
 
         return this;
     }
@@ -325,22 +325,22 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     //TODO revisit the use cases for a merge function latestFireInAR async (Not the same as RX zip)
 //    @Override // IReactiveSource
 //    public <UPCHAIN_OUT> IReactiveSource<OUT> merge(IReactiveSource<UPCHAIN_OUT> upchainReactiveSource) {
-//        upchainReactiveSource.subscribe(this);
+//        upchainReactiveSource.sub(this);
 //
 //        return this;
 //    }
 
     @Override // IReactiveSource
     @NonNull
-    public IReactiveSource<OUT> subscribe(@NonNull IAction<OUT> action) {
-        return subscribe(mThreadType, action);
+    public IReactiveSource<OUT> sub(@NonNull IAction<OUT> action) {
+        return sub(mThreadType, action);
     }
 
     @Override // IReactiveSource
     @NonNull
-    public IReactiveSource<OUT> subscribe(@NonNull IThreadType threadType,
-                                          @NonNull IAction<OUT> action) {
-        return subscribeMap(threadType, out -> {
+    public IReactiveSource<OUT> sub(@NonNull IThreadType threadType,
+                                    @NonNull IAction<OUT> action) {
+        return subMap(threadType, out -> {
             action.call();
             return out;
         });
@@ -348,16 +348,16 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     @NonNull
-    public IReactiveSource<OUT> subscribe(@NonNull IActionOne<OUT> action) {
-        return subscribe(mThreadType, action);
+    public IReactiveSource<OUT> sub(@NonNull IActionOne<OUT> action) {
+        return sub(mThreadType, action);
     }
 
     @Override // IReactiveSource
     @NonNull
-    public IReactiveSource<OUT> subscribe(
+    public IReactiveSource<OUT> sub(
             @NonNull IThreadType threadType,
             @NonNull IActionOne<OUT> action) {
-        return subscribeMap(threadType, out -> {
+        return subMap(threadType, out -> {
             action.call(out);
             return out;
         });
@@ -365,29 +365,29 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        return subscribeMap(mThreadType, action);
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
+        return subMap(mThreadType, action);
     }
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribeMap(
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(
             @NonNull IThreadType threadType,
             @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), this, threadType, action, mOnError);
-        subscribe((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
+        sub((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
 
         return subscription;
     }
 
     @Override // IReactiveSource
     @NonNull
-    public IReactiveSource<OUT> subscribe(@NonNull IReactiveTarget<OUT> reactiveTarget) {
+    public IReactiveSource<OUT> sub(@NonNull IReactiveTarget<OUT> reactiveTarget) {
         if (reactiveTargets.add(reactiveTarget)) {
-            reactiveTarget.subscribeSource("Reference to keep reactive chain from being garbage collected", this);
+            reactiveTarget.subSource("Reference to keep reactive chain from being garbage collected", this);
             RCLog.v(this, "Added WeakReference to down-chain IReactiveTarget \"" + reactiveTarget.getName());
         } else {
-            RCLog.i(this, "IGNORED duplicate subscribe of down-chain IReactiveTarget \"" + reactiveTarget.getName());
+            RCLog.i(this, "IGNORED duplicate sub of down-chain IReactiveTarget \"" + reactiveTarget.getName());
         }
 
         return this;
@@ -395,21 +395,21 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IActionR<DOWNCHAIN_OUT> action) {
-        return subscribe(mThreadType, action);
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IActionR<DOWNCHAIN_OUT> action) {
+        return sub(mThreadType, action);
     }
 
     @Override // IReactiveSource
     @NonNull
-    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subscribe(@NonNull IThreadType threadType,
-                                                                    @NonNull IActionR<DOWNCHAIN_OUT> action) {
+    public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IThreadType threadType,
+                                                              @NonNull IActionR<DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
                 getName(), this, threadType,
                 t -> {
                     return action.call();
                 },
                 mOnError);
-        subscribe((IReactiveTarget<OUT>) subscription);
+        sub((IReactiveTarget<OUT>) subscription);
 
         return subscription;
     }

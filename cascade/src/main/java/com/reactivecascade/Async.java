@@ -9,6 +9,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.reactivecascade.i.IAction;
@@ -16,6 +17,7 @@ import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
 import com.reactivecascade.i.IActionR;
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.IBindingContext;
 import com.reactivecascade.i.IRunnableAltFuture;
 import com.reactivecascade.i.ISettableAltFuture;
@@ -30,8 +32,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * "Any sufficiently advanced technology is indistinguishable from magic" -Arthur C Clarke
- * <p>
  * An IThreadType containing asynchronous threading relationships, resource concurrency limits for performance,
  * split default values associated with these. Individual calls may choose to override these defaults, but the
  * default separates concerns to make several cross-cutting concerns of architecture explicit split centrally
@@ -70,6 +70,11 @@ public final class Async {
         @Override // IThreadType
         public boolean isInOrderExecutor() {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public boolean isCascadeThread() {
+            return false;
         }
 
         /**
@@ -196,18 +201,6 @@ public final class Async {
          */
         @NonNull
         @Override // IThreadType
-        @SuppressWarnings("unchecked")
-        public <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        /**
-         * This is a marker class only.
-         *
-         * @throws UnsupportedOperationException
-         */
-        @NonNull
-        @Override // IThreadType
         public <OUT> ISettableAltFuture<OUT> from(@NonNull OUT value) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
@@ -241,31 +234,7 @@ public final class Async {
          */
         @NonNull
         @Override // IThreadType
-        @SuppressWarnings("unchecked")
-        public <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        /**
-         * This is a marker class only.
-         *
-         * @throws UnsupportedOperationException
-         */
-        @NonNull
-        @Override // IThreadType
         public <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action) {
-            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
-        }
-
-        /**
-         * This is a marker class only.
-         *
-         * @throws UnsupportedOperationException
-         */
-        @NonNull
-        @Override // IThreadType
-        @SuppressWarnings("unchecked")
-        public <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -276,6 +245,11 @@ public final class Async {
          */
         @Override // IThreadType
         public <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture) {
+            throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
+        }
+
+        @Override
+        public void setOrigin(@NonNull IAsyncOrigin origin) {
             throw new UnsupportedOperationException("NON_CASCADE_THREAD is a marker and does not support execution");
         }
 
@@ -323,36 +297,58 @@ public final class Async {
         }
     };
 
-    @Nullable
-    private static final AsyncBuilder ASYNC_BUILDER = AsyncBuilder.getInstance(); // The builder used to create the _first_ instance of ThreadType, the one which receives convenient static bindings of commonly used features. Using multiple Async instances except for system tests is not supported
-    public static final boolean USE_FORKED_STATE = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isUseForkedState();
-    //    public static final boolean VISUALIZE = false;
-    public static final boolean RUNTIME_ASSERTIONS = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isRuntimeAssertionsEnabled();
     /**
-     * The from of {@link AsyncBuilder#isShowErrorStackTraces()} locked in for performance reasons by the <em>first</em> <code>AsyncBuilder</code>
+     * A setting controlling an additional state change which make debugging applications easier
+     * but at the cost of a slight performance cost.
+     * <p>
+     * The default is <code>true</code> for debug builds, false for production builds. Change with {@link AsyncBuilder#setUseForkedState(boolean)}
      */
-    public static final boolean TRACE_ASYNC_ORIGIN = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // This makes finding where in you code a given log line was directly or indirectly called, but slows running
-    // Some of the following logic lines are funky to support the Android visual editor. If you never initialized Async, you will want to see something in the visual editor. This matters for UI classes which receive services from Async
-    public static final Thread UI_THREAD = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.uiThread; // The main system thread for this Context
+    public static final boolean USE_FORKED_STATE = AsyncBuilder.useForkedState;
+
     /**
-     * The from of {@link AsyncBuilder#isFailFast()} locked in for performance reasons by the <em>first</em> <code>AsyncBuilder</code>
+     * A setting to enable or disable runtime assertion tests. These allow the contract of pre-conditions
+     * for a section of code to be enforced, but can be turned off for additional speed.
+     * <p>
+     * The default is <code>true</code> for debug builds, false for production builds. Change with {@link AsyncBuilder#setRuntimeAssertionsEnabled(boolean)}
      */
-    public static final boolean FAIL_FAST = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isFailFast(); // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
+    public static final boolean RUNTIME_ASSERTIONS = AsyncBuilder.runtimeAssertionsEnabled;
+
     /**
-     * The default {@link com.reactivecascade.i.IThreadType} implementation. Usually you can call for
-     * guaranteed asynchronous operations that will cooperate (queue) when all device cores are busy.
-     * Special configurations with {@link AsyncBuilder} may choose to modify this behaviour.
+     * A setting to enable or disable runtime assertion tests. These allow the contract of pre-conditions
+     * for a section of code to be enforced, but can be turned off for additional speed.
+     * <p>
+     * The default is <code>true</code> for debug builds, false for production builds. Change with {@link AsyncBuilder#setRuntimeAssertionsEnabled(boolean)}
+     */
+    public static final boolean TRACE_ASYNC_ORIGIN = AsyncBuilder.traceAsyncOrigin; // This makes finding where in you code a given log line was directly or indirectly called, but slows running
+
+    @NonNull
+    @VisibleForTesting
+    static final Thread UI_THREAD = AsyncBuilder.getUiThread(null); // The main system thread, or the current thread if test/tooling has not initialized the library
+    /**
+     * Halt exectcution on first error
+     * <p>
+     * Default is <code>true</code>. Change with {@link AsyncBuilder#setFailFast(boolean)}
+     */
+    public static final boolean FAIL_FAST = AsyncBuilder.failFast; // Default true- stop on the first error in debugOrigin builds to make debugging from the first point of failure easier
+
+    /**
+     * The default {@link com.reactivecascade.i.IThreadType} for CPU-bound and background tasks.
+     * <p>
+     * Use this unless serialized {@link #UI} or other resource-related constraints should limit
+     * concurrent execution of a function.
      * <p>
      * <code><pre>
      *     import static com.reactivecascade.Async.*;
      *     ..
-     *     ArrayList<String> list =
-     *     for (
-     *     UI.subscribe(() -> textView.setText("Blah");
+     *     ArrayList&lt;String&gt; list = for (
+     *     UI.sub(() -> textView.setText("Blah");
      * </pre></code>
      */
-    public static final IThreadType WORKER = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getWorkerThreadType();
-    public static final IThreadType SERIAL_WORKER = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getSerialWorkerThreadType();
+    @NonNull
+    public static final IThreadType WORKER = AsyncBuilder.workerThreadType;
+
+    @NonNull
+    public static final IThreadType SERIAL_WORKER = AsyncBuilder.serialWorkerThreadType;
     /**
      * The default {@link com.reactivecascade.i.IThreadType} implementation which gives uniform access
      * to the system's {@link #UI_THREAD}. Example use:
@@ -360,17 +356,21 @@ public final class Async {
      * <code><pre>
      *     import static com.reactivecascade.ThreadType.*;
      *     ..
-     *     UI.subscribe(() -> textView.setText("Blah");
+     *     UI.sub(() -> textView.setText("Blah");
      * </pre></code>
      */
-    public static final IThreadType UI = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getUiThreadType();
-    public static final IThreadType FILE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getFileThreadType();
+    @NonNull
+    public static final IThreadType UI = AsyncBuilder.getUiThreadType(null /* fallback value for UI tools use */);
+
+    @NonNull
+    public static final IThreadType FILE = AsyncBuilder.fileThreadType;
     /**
      * A group of background thread for concurrently reading from the network
      * <p>
      * TODO Automatically adjusted thread pool size based on current connection type
      */
-    public static final IThreadType NET_READ = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetReadThreadType();
+    @NonNull
+    public static final IThreadType NET_READ = AsyncBuilder.netReadThreadType;
     /**
      * A single thread for making writes to the network.
      * <p>
@@ -378,23 +378,34 @@ public final class Async {
      * tasks finish more quickly. This also simplifies cache invalidation on POST and PUT operations more
      * coherent.
      */
-    public static final IThreadType NET_WRITE = (ASYNC_BUILDER == null) ? null : ASYNC_BUILDER.getNetWriteThreadType();
-    public static volatile boolean SHOW_ERROR_STACK_TRACES = (ASYNC_BUILDER == null) || ASYNC_BUILDER.isShowErrorStackTraces(); // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
+    @NonNull
+    public static final IThreadType NET_WRITE = AsyncBuilder.netWriteThreadType;
+    public static volatile boolean SHOW_ERROR_STACK_TRACES = AsyncBuilder.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
-    private static volatile boolean sExitWithErrorCodeStarted = false;
+    private static volatile boolean exitWithErrorCodeStarted = false;
+
+    /**
+     * Opened by the first call to {@link AsyncBuilder#build()}.
+     *
+     * This context is never closed
+     * TODO Close the context for Service use
+     * TODO Close the context during orderly Application closure
+     */
     public static final IBindingContext<Context> DEFAULT_BINDING_CONTEXT = new BindingContextUtil.DefaultBindingContext<>();
 
+    private static final String NOT_INITIALIZED = "Please invoke new AsyncBuilder(Context).build() earlier, for example in Activity.onCreate() or Application.onCreate()";
+
     static {
-        if (!AsyncBuilder.isInitialized()) {
-            Log.e(Async.class.getSimpleName(),
-                    AsyncBuilder.NOT_INITIALIZED,
-                    new IllegalStateException(AsyncBuilder.NOT_INITIALIZED));
+        if (!AsyncBuilder.initialized) {
+            Log.e(Async.class.getSimpleName(), NOT_INITIALIZED, new IllegalStateException(NOT_INITIALIZED));
         }
     }
 
     @UiThread
     Async(@NonNull Context context) {
-        DEFAULT_BINDING_CONTEXT.openBindingContext(context);
+        if (!DEFAULT_BINDING_CONTEXT.isOpen()) {
+            DEFAULT_BINDING_CONTEXT.openBindingContext(context);
+        }
     }
 
     /**
@@ -425,10 +436,10 @@ public final class Async {
 
         // Kill the app hard after some delay. You are not allowed to refire this Intent in some critical phases (Activity startup)
         //TODO let the Activity or Service down slowly and gently with lifecycle callbacks if production build
-        if (sExitWithErrorCodeStarted) {
+        if (exitWithErrorCodeStarted) {
             Log.v(tag, "Already existing, ignoring exit with error code (" + errorCode + "): " + message + "-" + t);
         } else {
-            sExitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
+            exitWithErrorCodeStarted = true; // Not a thread-safe perfect lock, but fast and good enough to generally avoid duplicate shutdown messages during debug
             if (t != null) {
                 Log.e(tag, "Exit with error code (" + errorCode + "): " + message, t);
             } else {
@@ -446,6 +457,7 @@ public final class Async {
                 } catch (Exception e2) {
                     Log.d(tag, "Problem while pausing before failfast system exit due to " + t, e2);
                 }
+                TIMER.shutdownNow();
                 System.exit(errorCode);
             }, "FailFastDelayThread")
                     .start();
@@ -493,7 +505,7 @@ public final class Async {
 //    }
 
     /**
-     * If the current thread belongs to more than one <code>ThreadType</>, subscribe the returned ThreadType will be the one
+     * If the current thread belongs to more than one <code>ThreadType</>, sub the returned ThreadType will be the one
      * which created the Thread
      * <p>
      * This is used for debugging only. For performance reasons it will always return <code>null</code>
@@ -501,7 +513,7 @@ public final class Async {
      * <p>
      * Beware of debugging confusion if you use one Thread as part of the executor in multiple different ThreadTypes
      *
-     * @return the current ThreadType or {@link #NON_CASCADE_THREAD} if the type can be determined
+     * @return the current ThreadType, or the token {@link Async#NON_CASCADE_THREAD} if the thread is not part of the Cascade
      */
     @NonNull
     public static IThreadType currentThreadType() {

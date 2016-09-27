@@ -92,13 +92,13 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * {@link #set(Object)} to assert a new from.
      * <p>
      * You can also link this to receive multiple reactive updates as a
-     * down-chain {@link IReactiveSource#subscribe(IActionOne)}
+     * down-chain {@link IReactiveSource#sub(IActionOne)}
      * to receive and store reactive values.
      * <p>
      * You can also link into a active chain to receive individually constructed and fired updates using
      * <code>
      * <pre>
-     *         myAltFuture.subscribe(from -> myAtomicValue.set(from))
+     *         myAltFuture.sub(from -> myAtomicValue.set(from))
      *     </pre>
      * </code>
      * <p>

@@ -16,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
 /**
- * The default implementation of the subscribe executor
+ * The default implementation of the sub executor
  * <p>
  * Other classes may utilize this with startup parameter, extend it or substitute an own fresh
  * implementation to the {@link com.reactivecascade.i.IThreadType} interface.
@@ -86,5 +86,10 @@ public class DefaultThreadType extends AbstractThreadType {
     @Override // IThreadType
     public boolean isInOrderExecutor() {
         return inOrderExecution;
+    }
+
+    @Override // IThreadType
+    public boolean isCascadeThread() {
+        return true;
     }
 }

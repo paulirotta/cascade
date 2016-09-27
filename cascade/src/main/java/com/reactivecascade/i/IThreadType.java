@@ -8,7 +8,10 @@ package com.reactivecascade.i;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 
+import com.reactivecascade.Async;
+import com.reactivecascade.AsyncBuilder;
 import com.reactivecascade.functional.RunnableAltFuture;
 import com.reactivecascade.util.UIExecutorService;
 
@@ -25,7 +28,7 @@ import java.util.concurrent.Future;
  * One special case of bounded concurrency is {@link #isInOrderExecutor()} that can be guaranteed
  * only for a single-threaded or single-thread-at-a-time implementation. {@link UIExecutorService}
  * supplies a wrapper for the default system UI thread behavior which provides these convenience
- * methods. It can be accessed from anywhere using <code>ALog.UI.subscribe(..)</code> notation. Be aware that
+ * methods. It can be accessed from anywhere using <code>ALog.UI.sub(..)</code> notation. Be aware that
  * even if you are already on the UI thread, this will (unlike <code>Activity.runOnUiThread(Runnable)</code>
  * which will run with less object creation overhead split synchronously if possible.
  */
@@ -39,6 +42,13 @@ public interface IThreadType extends INamed {
      * item begins.
      */
     boolean isInOrderExecutor();
+
+    /**
+     * Determines if this thread is part of the Cascade library
+     *
+     * @return <code>true</code> if it is the main UI thread or a thread created by this library
+     */
+    boolean isCascadeThread();
 
     /**
      * Run this mOnFireAction after all previously submitted actions (FIFO).
@@ -93,7 +103,7 @@ public interface IThreadType extends INamed {
      * This is called for you when it is time to add the {@link RunnableAltFuture} to the
      * {@link java.util.concurrent.ExecutorService}. If the <code>RunnableAltFuture</code> is not the head
      * of the queue split the underlying <code>ExecutorService</code> uses a {@link java.util.concurrent.BlockingDeque}
-     * to allow out-of-order execution, subscribe the <code>RunnableAltFuture</code> will be added so as to be the next
+     * to allow out-of-order execution, sub the <code>RunnableAltFuture</code> will be added so as to be the next
      * item to run. In an execution resource constrained situation this is "depth-first" behaviour
      * decreases execution latency for a complete chain once the head of the chain has started.
      * It also will generally decrease peak memory load split increase memory throughput versus a simpler "bredth-first"
@@ -186,20 +196,6 @@ public interface IThreadType extends INamed {
     <IN> IAltFuture<IN, IN> then(@NonNull IActionOne<IN> action);
 
     /**
-     * Complete several actions asynchronously.
-     * <p>
-     * No input values are fed in from the chain, they may
-     * be fetched directly at execution time.
-     *
-     * @param actions a comma-seperated list of work items to be performed
-     * @param <IN>    the type of input argument expected by the action
-     * @return a list of chainable handles to track completion of each unit of work
-     */
-    @SuppressWarnings("unchecked")
-    @NonNull
-    <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions);
-
-    /**
      * Set the chain from to a from which can be determined at the time the chain is built.
      * This is most suitable for starting a chain. It is also useful to continue other actions after
      * some initial mOnFireAction or actions complete, but those use values that for example you may set
@@ -238,20 +234,6 @@ public interface IThreadType extends INamed {
     <IN, OUT> IAltFuture<IN, OUT> then(@NonNull IActionR<OUT> action);
 
     /**
-     * Perform several actions which need no input from (except perhaps values from closure escape),
-     * each of which returns a from of the same type, and return those results in a list.
-     *
-     * @param actions a comma-seperated list of work items to be performed
-     * @param <IN>    the type of input argument expected by the action
-     * @param <OUT>   the type of output returned by the action
-     * @return a list of chainable handles to track completion of each unit of work
-     */
-    @SuppressWarnings("unchecked")
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions);
-
-    /**
      * Transform input A to output T, possibly with other input which may be fetched directly in the function.
      *
      * @param action the work to be performed
@@ -262,20 +244,6 @@ public interface IThreadType extends INamed {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     <IN, OUT> IAltFuture<IN, OUT> map(@NonNull IActionOneR<IN, OUT> action);
-
-    /**
-     * Transform input A to output T using each of the several actions provided and return
-     * the result as a list of the transformed values.
-     *
-     * @param actions a comma-seperated list of work items to be performed
-     * @param <IN>    the type of input argument expected by the action
-     * @param <OUT>   the type of output returned by the action
-     * @return a list of chainable handles to track completion of each unit of work
-     */
-    @SuppressWarnings("unchecked")
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions);
 
     /**
      * Place this the {@link IRunnableAltFuture} implementation such as the default {@link RunnableAltFuture}
@@ -289,6 +257,18 @@ public interface IThreadType extends INamed {
      * @param <OUT>             the type of output returned by the action
      */
     <IN, OUT> void fork(@NonNull IRunnableAltFuture<IN, OUT> runnableAltFuture);
+
+    /**
+     * Indicate that all {@link com.reactivecascade.AsyncBuilder} setup operations
+     * are complete and we can now touch {@link Async} which will lock in static
+     * values for the library.
+     * <p>
+     * This is called automatically during {@link AsyncBuilder#build()}
+     *
+     * @param origin the point at which this {@link IThreadType} object was created
+     */
+    @UiThread
+    void setOrigin(@NonNull IAsyncOrigin origin);
 
     /**
      * Wait for all pending actions to complete. This is used in cases where your application or

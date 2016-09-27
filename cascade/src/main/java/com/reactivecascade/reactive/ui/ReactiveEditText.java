@@ -150,7 +150,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
 
         RCLog.v(this, "onAttachedToWindow " + getName() + ", from=" + currentText);
 
-        mReactiveValue.subscribe(UI, this::setText);
+        mReactiveValue.sub(UI, this::setText);
 
         if (mTextWatcher == null) {
             mTextWatcher = new TextWatcher() {

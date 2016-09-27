@@ -1,1 +1,1 @@
-include ':cascade'
+include ':cascade', ':test-app'

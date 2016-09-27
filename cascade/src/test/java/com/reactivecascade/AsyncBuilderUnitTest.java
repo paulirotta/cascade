@@ -6,6 +6,8 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade;
 
 import android.content.Context;
+import android.os.Looper;
+import android.util.Log;
 
 import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.i.IThreadType;
@@ -26,9 +28,12 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(JMockit.class)
-public class AsyncBuilderTest {
+public class AsyncBuilderUnitTest {
     @Mocked
     Thread thread;
+
+    @Mocked
+    Log log;
 
     @Mocked
     BlockingQueue<Runnable> queue;
@@ -42,6 +47,9 @@ public class AsyncBuilderTest {
     @Mocked
     Context context;
 
+    @Mocked
+    Looper looper;
+
     private AsyncBuilder asyncBuilder;
 
     @Before
@@ -53,35 +61,42 @@ public class AsyncBuilderTest {
 
     @After
     public void tearDown() throws Exception {
-        AsyncBuilder.resetInstance();
+        AsyncBuilder.reset();
         asyncBuilder = null;
     }
 
     @Test
     public void testIsInitialized() throws Exception {
-        assertFalse(AsyncBuilder.isInitialized());
+        assertFalse(AsyncBuilder.initialized);
         asyncBuilder.build();
-        assertTrue(AsyncBuilder.isInitialized());
+        assertTrue(AsyncBuilder.initialized);
     }
 
     @Test
     public void testIsRuntimeAssertionsEnabled() throws Exception {
         asyncBuilder.build();
-        assertEquals(BuildConfig.DEBUG, asyncBuilder.isRuntimeAssertionsEnabled());
+        assertEquals(BuildConfig.DEBUG, AsyncBuilder.runtimeAssertionsEnabled);
     }
 
     @Test
-    public void testSetRuntimeAssertionsEnabled() throws Exception {
+    public void testSetRuntimeAssertionsEnabledFalse() throws Exception {
         asyncBuilder
                 .setRuntimeAssertionsEnabled(false)
                 .build();
-        assertFalse(asyncBuilder.isRuntimeAssertionsEnabled());
+        assertFalse(AsyncBuilder.runtimeAssertionsEnabled);
+    }
+    @Test
+    public void testSetRuntimeAssertionsEnabledTrue() throws Exception {
+        asyncBuilder
+                .setRuntimeAssertionsEnabled(true)
+                .build();
+        assertTrue(AsyncBuilder.runtimeAssertionsEnabled);
     }
 
     @Test
     public void testIsUseForkedState() throws Exception {
         asyncBuilder.build();
-        assertEquals(BuildConfig.DEBUG, asyncBuilder.isUseForkedState());
+        assertEquals(BuildConfig.DEBUG, AsyncBuilder.useForkedState);
     }
 
     @Test
@@ -89,19 +104,19 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUseForkedState(false)
                 .build();
-        assertFalse(asyncBuilder.isUseForkedState());
+        assertFalse(AsyncBuilder.useForkedState);
     }
 
     @Test
     public void testIsStrictMode() throws Exception {
         asyncBuilder.build();
-        assertFalse(asyncBuilder.isStrictMode());
+        assertFalse(AsyncBuilder.strictMode);
     }
 
     @Test
     public void testIsFailFast() throws Exception {
         asyncBuilder.build();
-        assertEquals(BuildConfig.DEBUG, asyncBuilder.isFailFast());
+        assertEquals(BuildConfig.DEBUG, AsyncBuilder.failFast);
     }
 
     @Test
@@ -109,21 +124,29 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setFailFast(false)
                 .build();
-        assertFalse(asyncBuilder.isFailFast());
+        assertFalse(AsyncBuilder.failFast);
     }
 
     @Test
     public void testIsShowErrorStackTraces() throws Exception {
         asyncBuilder.build();
-        assertEquals(BuildConfig.DEBUG, asyncBuilder.isShowErrorStackTraces());
+        assertEquals(BuildConfig.DEBUG, AsyncBuilder.showErrorStackTraces);
     }
 
     @Test
-    public void testSetShowErrorStackTraces() throws Exception {
+    public void testSetShowErrorStackTracesFalse() throws Exception {
         asyncBuilder
                 .setShowErrorStackTraces(false)
                 .build();
-        assertFalse(asyncBuilder.isShowErrorStackTraces());
+        assertFalse(AsyncBuilder.showErrorStackTraces);
+    }
+
+    @Test
+    public void testSetShowErrorStackTracesTrue() throws Exception {
+        asyncBuilder
+                .setShowErrorStackTraces(true)
+                .build();
+        assertTrue(AsyncBuilder.showErrorStackTraces);
     }
 
     @Test
@@ -155,7 +178,7 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUIThreadType(threadType)
                 .build();
-        assertEquals(threadType, asyncBuilder.getUiThreadType());
+        assertEquals(threadType, AsyncBuilder.uiThreadType);
     }
 
     @Test
@@ -163,7 +186,7 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUIThreadType(threadType)
                 .build();
-        assertEquals(threadType, asyncBuilder.getUiThreadType());
+        assertEquals(threadType, AsyncBuilder.uiThreadType);
     }
 
     @Test
@@ -236,7 +259,6 @@ public class AsyncBuilderTest {
                 .setFileQueue(queue)
                 .build();
         assertEquals(queue, asyncBuilder.getFileQueue());
-
     }
 
     @Test
@@ -285,13 +307,14 @@ public class AsyncBuilderTest {
         asyncBuilder
                 .setUiExecutorService(executorService)
                 .build();
-        assertEquals(executorService, asyncBuilder.getUiExecutorService());
+        assertEquals(executorService, AsyncBuilder.uiExecutorService);
     }
 
     @Test
     public void testSetUI_Thread() throws Exception {
-        asyncBuilder
-                .setUiThread(thread)
-                .build();
+        AsyncBuilder builder = asyncBuilder
+                .setUiThread(thread);
+        builder.build();
+        assertEquals(thread, AsyncBuilder.uiThread);
     }
 }

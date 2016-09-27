@@ -18,7 +18,8 @@ import com.reactivecascade.i.NotCallOrigin;
  * not be performed until <code>{@link #origin}.get()</code> is called.
  */
 @NotCallOrigin
-public abstract class Origin implements IAsyncOrigin {
+public class Origin implements IAsyncOrigin {
+
     private final ImmutableValue<String> origin = RCLog.originAsync();
 
     @NonNull

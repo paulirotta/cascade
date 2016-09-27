@@ -69,13 +69,13 @@ public interface IReactiveTarget<IN> extends INamed {
      * prevent it from being garbage collected until all targets of a given source go out of scope and
      * are themselves garbage collected.
      * <p>
-     * You may manually speed this process by calling {@link #unsubscribeSource(String, IReactiveSource)},
+     * You may manually speed this process by calling {@link #unsubSource(String, IReactiveSource)},
      * however if you choose not to or forget to do so, it will be taken care of for you fairly soon.
      *
      * @param reactiveSource
      */
-    void subscribeSource(@NonNull String reason,
-                         @NonNull IReactiveSource<IN> reactiveSource);
+    void subSource(@NonNull String reason,
+                   @NonNull IReactiveSource<IN> reactiveSource);
 
     /**
      * Notification that an {@link IReactiveSource}  will no longer send updates
@@ -86,11 +86,11 @@ public interface IReactiveTarget<IN> extends INamed {
      * @param reason
      * @param reactiveSource
      */
-    void unsubscribeSource(@NonNull String reason,
-                           @NonNull IReactiveSource<IN> reactiveSource);
+    void unsubSource(@NonNull String reason,
+                     @NonNull IReactiveSource<IN> reactiveSource);
 
     /**
      * Remove all up-chain branches from this node of the reactive function tree
      */
-    void unsubscribeAllSources(@NonNull String reason);
+    void unsubAllSources(@NonNull String reason);
 }

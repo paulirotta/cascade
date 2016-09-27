@@ -108,7 +108,7 @@ public class DoubleQueue<T> extends LinkedBlockingQueue<T> {
      * queue, and within the next polling time window for the lowPriorityQueue. Since other threads
      * which may be taking work from the low priority queue are probably waking up immediately this
      * is OK. It keeps any dual-use thread associated with this queue relatively free for immediate
-     * response to the single use queue until such time as all other threads are busy, subscribe it pitches
+     * response to the single use queue until such time as all other threads are busy, sub it pitches
      * in on the work any of them can do.
      *
      * @return

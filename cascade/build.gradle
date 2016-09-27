@@ -26,24 +26,20 @@ android {
         disable 'InvalidPackage', 'OldTargetApi', 'GradleDependency'
     }
 
-    packagingOptions {
-        exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
-    }
+//    packagingOptions {
+//        exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
+//    }
 
-    dexOptions {
-        incremental false
-    }
-
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
+//    testOptions {
+//        unitTests.returnDefaultValues = true
+//    }
 
     buildTypes {
         debug {
         }
 
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -62,9 +58,13 @@ dependencies {
     compile 'com.android.support:support-annotations:24.2.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     testCompile 'junit:junit:4.12'
-    testCompile 'org.jmockit:jmockit:1.22'
+    androidTestCompile 'junit:junit:4.12'
+    testCompile 'org.jmockit:jmockit:1.28'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 }
 
 android.libraryVariants.all { variant ->

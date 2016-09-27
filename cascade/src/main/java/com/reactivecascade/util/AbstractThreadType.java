@@ -8,6 +8,7 @@ package com.reactivecascade.util;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.reactivecascade.Async;
@@ -20,6 +21,7 @@ import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
 import com.reactivecascade.i.IActionR;
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.IRunnableAltFuture;
 import com.reactivecascade.i.ISettableAltFuture;
 import com.reactivecascade.i.IThreadType;
@@ -42,12 +44,15 @@ import java.util.concurrent.TimeUnit;
  * For more specialized behaviour a class may choose to replace this.
  * <p>
  */
-public abstract class AbstractThreadType extends Origin implements IThreadType {
+public abstract class AbstractThreadType implements IThreadType {
     @NonNull
     protected final ExecutorService executorService;
 
     @Nullable
     protected final BlockingQueue<Runnable> queue;
+
+    @NonNull
+    protected IAsyncOrigin origin = IAsyncOrigin.ORIGIN_NOT_SET;
 
     @NonNull
     private final String name;
@@ -67,6 +72,15 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
         this.name = name;
         this.executorService = executorService;
         this.queue = queue;
+    }
+
+    @UiThread
+    public void setOrigin(@NonNull IAsyncOrigin origin) {
+        if (this.origin != IAsyncOrigin.ORIGIN_NOT_SET) {
+            throw new IllegalStateException("Origin was already set: " + this.origin.getOrigin().get());
+        }
+
+        this.origin = origin;
     }
 
 //============================= Internal Utility Methods =========================================
@@ -127,7 +141,7 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
         };
     }
 
-//========================== .subscribe() and .run() Methods ================================
+//========================== .sub() and .run() Methods ================================
 
     @Override // IThreadType
     @NotCallOrigin
@@ -217,53 +231,6 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
         return new SettableAltFuture<>(this);
     }
 
-    @Override // IThreadType
-    @SafeVarargs
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN> List<IAltFuture<IN, IN>> then(@NonNull IAction<IN>... actions) {
-        List<IAltFuture<IN, IN>> altFutures = new ArrayList<>(actions.length);
-
-        RCLog.v(this, "map(List[" + actions.length + "])");
-        for (final IAction<IN> action : actions) {
-            altFutures.add(then(action));
-        }
-
-        return altFutures;
-    }
-
-    @Override // IThreadType
-    @SafeVarargs
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> then(@NonNull IActionR<OUT>... actions) {
-        List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
-
-        RCLog.v(this, "map(List[" + actions.length + "])");
-        for (final IActionR<OUT> action : actions) {
-            altFutures.add(then(action));
-        }
-
-        return altFutures;
-    }
-
-    @Override // IThreadType
-    @SafeVarargs
-    @NonNull
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-    public final <IN, OUT> List<IAltFuture<IN, OUT>> map(@NonNull IActionOneR<IN, OUT>... actions) {
-        final List<IAltFuture<IN, OUT>> altFutures = new ArrayList<>(actions.length);
-
-        for (final IActionOneR<IN, OUT> action : actions) {
-            altFutures.add(map(action));
-        }
-
-        return altFutures;
-    }
-
-    //TODO add mapEach(IActionOneR) from list to list
-    //TODO add thenEach(IActionOne) from list
-
 //=============================== Public Utility Methods ======================================
 
     //TODO public <A> RunnableAltFuture<A> flush()  - current thread type - wait for everything forked before this point and their side effects queued before other things to complete before next step on the specified threadtype
@@ -294,10 +261,10 @@ public abstract class AbstractThreadType extends Origin implements IThreadType {
     public <IN> Future<Boolean> shutdown(long timeout,
                                          @Nullable IAction<IN> afterShutdownAction) {
         if (timeout < 1) {
-            RCLog.throwIllegalArgumentException(this, "shutdown(" + timeout + ") is illegal, time must be > 0");
+            RCLog.throwIllegalArgumentException(origin, "shutdown(" + timeout + ") is illegal, time must be > 0");
         }
         if (timeout == 0 && afterShutdownAction != null) {
-            RCLog.throwIllegalArgumentException(this, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
+            RCLog.throwIllegalArgumentException(origin, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
         }
         final ImmutableValue<String> origin = RCLog.originAsync()
                 .then(o -> {

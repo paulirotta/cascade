@@ -76,7 +76,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     @UiThread
     public void onDetachedFromWindow() {
         if (mReactiveSource != null) {
-            mReactiveValue.unsubscribeSource("onDetachedFromWindow", mReactiveSource);
+            mReactiveValue.unsubSource("onDetachedFromWindow", mReactiveSource);
             mReactiveSource = null;
         }
         super.onDetachedFromWindow();
@@ -91,7 +91,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     }
 
     private void subscribe() {
-        mReactiveSource = mReactiveValue.subscribe(UI, this::setText);
+        mReactiveSource = mReactiveValue.sub(UI, this::setText);
     }
 
     /**
@@ -107,7 +107,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
 
         UI.execute(() -> {
             if (mReactiveSource != null) {
-                reactiveValue.unsubscribeSource(s, mReactiveSource);
+                reactiveValue.unsubSource(s, mReactiveSource);
             }
             RCLog.v(this, s);
             this.mReactiveValue = reactiveValue;

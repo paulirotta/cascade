@@ -82,7 +82,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void subscribeSource(
+    public void subSource(
             @NonNull String reason,
             @NonNull IReactiveSource<Bitmap> reactiveSource) {
         RCLog.v(this, "Subscribing ReactiveImageView: reason=" + reason + " source=" + reactiveSource.getName());
@@ -96,7 +96,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
 
     @Override // IReactiveTarget
     @NotCallOrigin
-    public void unsubscribeSource(
+    public void unsubSource(
             @NonNull String reason,
             @NonNull IReactiveSource<Bitmap> reactiveSource) {
         AssertUtil.assertNotNull(mOrigin);
@@ -110,7 +110,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     }
 
     @Override // IReactiveTarget
-    public void unsubscribeAllSources(@NonNull String reason) {
+    public void unsubAllSources(@NonNull String reason) {
         for (final IReactiveSource<Bitmap> reactiveSource : reactiveSources) {
             reactiveSource.unsubscribeAll(reason);
         }
@@ -125,7 +125,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        unsubscribeAllSources("onDetachedFromWindow");
+        unsubAllSources("onDetachedFromWindow");
 
         super.onDetachedFromWindow();
     }

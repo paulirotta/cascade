@@ -27,15 +27,15 @@ public final class FileUtil extends Origin {
     private static final int BUFFER_SIZE = 16384;
 
     @NonNull
-    private final Context mContext;
+    private final Context context;
 
     @FileMode
-    private final int mMode;
+    private final int mode;
 
     public FileUtil(@NonNull Context context,
                     @FileMode int mode) {
-        this.mContext = context;
-        this.mMode = mode;
+        this.context = context;
+        this.mode = mode;
     }
 
     @NonNull
@@ -73,7 +73,7 @@ public final class FileUtil extends Origin {
         FileOutputStream fileOutputStream = null;
 
         try {
-            fileOutputStream = mContext.openFileOutput(fileName, mMode);
+            fileOutputStream = context.openFileOutput(fileName, mode);
             fileOutputStream.write(bytes);
         } catch (FileNotFoundException e) {
             final String s = "Can not locate FILE: " + fileName;
@@ -116,7 +116,7 @@ public final class FileUtil extends Origin {
         FileInputStream fileInputStream = null;
 
         try {
-            fileInputStream = mContext.openFileInput(fileName);
+            fileInputStream = context.openFileInput(fileName);
 
             final byte[] buffer = new byte[BUFFER_SIZE];
             int count;
@@ -146,7 +146,7 @@ public final class FileUtil extends Origin {
 
     @WorkerThread
     public boolean delete(@NonNull String fileName) {
-        return mContext.deleteFile(fileName);
+        return context.deleteFile(fileName);
     }
 
     @NonNull

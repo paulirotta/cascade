@@ -102,7 +102,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Place this {@link IAltFuture} in the ready-to-run-without-blocking
      * queue of its {@link com.reactivecascade.i.IThreadType}. If there is a {@link #getUpchain()}
-     * subscribe that will be forked instead until finding one where {@link #isDone()} is false.
+     * sub that will be forked instead until finding one where {@link #isDone()} is false.
      *
      * @return <code>this</code>, which is usually the <code>IAltFuture</code> which was actually forked.
      * The fork may be indirect and only after other items complete because there is a search upchain
@@ -142,7 +142,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * <p>
      * If an mOnError or catch method has been defined, it will be
      * notified of the original cause of the failure. If the RunnableAltFuture's mOnError method consumes the error
-     * (returns <code>true</code>), subscribe anything else down-chain methods will be notified with
+     * (returns <code>true</code>), sub anything else down-chain methods will be notified with
      * {@link #onCancelled(StateCancelled)} instead.
      *
      * @param stateError the state indicating the reason and origin of the exception

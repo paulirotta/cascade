@@ -9,12 +9,15 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.test.suitebuilder.annotation.MediumTest;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.reactivecascade.AsyncAndroidTestCase;
+import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -24,8 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.reactivecascade.Async.UI;
 import static com.reactivecascade.Async.WORKER;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
-public class UIExecutorServiceTest extends AsyncAndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
     final Object looperFlushMutex = new Object();
 
     volatile int handleMessageCount;
@@ -37,6 +44,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
 
     @Before
     @Override
+    @SuppressWarnings("HandlerLeak")
     public void setUp() throws Exception {
         if (fakeUiThread == null) {
             fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
@@ -73,13 +81,16 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         }
 
         super.setUp();
+        new AsyncBuilder(appContext)
+                .setStrictMode(false)
+                .build();
     }
 
-    protected void flushLooper() throws InterruptedException {
+    private void flushLooper() throws InterruptedException {
         synchronized (looperFlushMutex) {
             uiExecutorService.execute(() -> {
                 synchronized (looperFlushMutex) {
-                    RCLog.v(UIExecutorServiceTest.this, "Looper flushed");
+                    RCLog.v(UIExecutorServiceIntegrationTest.this, "Looper flushed");
                     looperFlushMutex.notifyAll();
                 }
             });
@@ -87,17 +98,17 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         }
     }
 
-    @MediumTest
+    @Test
     public void testUIIsShutdown() throws Exception {
         assertFalse(UI.isShutdown());
     }
 
-    @MediumTest
+    @Test
     public void testIsTerminated() throws Exception {
         assertFalse(uiExecutorService.isTerminated());
     }
 
-    @MediumTest
+    @Test
     public void testSubmitCallable() throws Exception {
         uiExecutorService.submit(new Callable<Object>() {
             @Override
@@ -109,7 +120,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertEquals(2, sendCount);
     }
 
-    @MediumTest
+    @Test
     public void testSubmitRunnable() throws Exception {
         uiExecutorService.submit(new Runnable() {
                                      @Override
@@ -122,7 +133,7 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
         assertEquals(2, sendCount);
     }
 
-    @MediumTest
+    @Test
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -141,12 +152,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             return 1;
         });
         uiExecutorService.invokeAll(callableList);
-        awaitDone(saf);
+        await(saf);
         assertTrue(sendCount > 0);
         assertEquals(300, ai.get());
     }
 
-    @MediumTest
+    @Test
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -165,12 +176,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             return 1;
         });
         uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
-        awaitDone(saf);
+        await(saf);
         assertTrue(sendCount > 0);
         assertEquals(300, ai.get());
     }
 
-    @MediumTest
+    @Test
     public void testInvokeAnyCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -189,12 +200,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             return 1;
         });
         uiExecutorService.invokeAny(callableList);
-        awaitDone(saf);
+        await(saf);
         assertTrue(sendCount > 0);
         assertTrue(ai.get() > 0);
     }
 
-    @MediumTest
+    @Test
     public void testInvokeAnyCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
@@ -213,12 +224,12 @@ public class UIExecutorServiceTest extends AsyncAndroidTestCase {
             return 1;
         });
         uiExecutorService.invokeAny(callableList, 1000, TimeUnit.MILLISECONDS);
-        awaitDone(saf);
+        await(saf);
         assertTrue(sendCount > 0);
         assertTrue(ai.get() > 0);
     }
 
-    @MediumTest
+    @Test
     public void testExecute() throws Exception {
         final AtomicInteger ai = new AtomicInteger(0);
         WORKER.execute(() -> {
