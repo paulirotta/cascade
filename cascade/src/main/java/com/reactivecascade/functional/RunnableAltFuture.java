@@ -123,7 +123,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         this.mAction = () -> {
             IAltFuture<?, ? extends IN> paf = getUpchain();
 
-            AssertUtil.assertNotNull(paf);
+            AssertUtil.assertNonNull(paf);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished", paf.isDone());
             final IN in = paf.get();
             action.call(in);
@@ -160,7 +160,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         this.mAction = () -> {
             IAltFuture<?, ? extends IN> previousAltFuture = getUpchain();
 
-            AssertUtil.assertNotNull(previousAltFuture);
+            AssertUtil.assertNonNull(previousAltFuture);
             AssertUtil.assertTrue("The previous RunnableAltFuture in the chain is not finished:" + getOrigin(), previousAltFuture.isDone());
 
             return mAction.call(previousAltFuture.get());

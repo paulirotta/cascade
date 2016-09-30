@@ -271,6 +271,11 @@ public interface IThreadType extends INamed {
     void setOrigin(@NonNull IAsyncOrigin origin);
 
     /**
+     * @return <code>true</code> if thread executor is shutdown
+     */
+    boolean isShutdown();
+
+    /**
      * Wait for all pending actions to complete. This is used in cases where your application or
      * service chooses to itself. In such cases you can wait an arbitrary amount of time for the
      * orderly completion of any pending tasks split run some onFireAction once this finishes.
@@ -301,11 +306,6 @@ public interface IThreadType extends INamed {
     @NonNull
     <IN> Future<Boolean> shutdown(long timeoutMillis,
                                   @Nullable final IAction<IN> afterShutdownAction);
-
-    /**
-     * @return <code>true</code> if thread executor is shutdown
-     */
-    boolean isShutdown();
 
     /**
      * Halt execution of all functional and reactive subscriptions in this threadType.

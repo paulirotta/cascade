@@ -8,6 +8,7 @@ package com.reactivecascade.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.reactivecascade.Async;
 import com.reactivecascade.i.IAltFuture;
 
 import java.util.concurrent.ExecutionException;
@@ -77,7 +78,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
         try {
             return get(DEFAULT_GET_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            RCLog.throwRuntimeException(this, "Timeout waiting for RunnableAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
+            RCLog.throwRuntimeException(this, "Problem waiting for IAltFuture to complete. Did you remember to .fork()?, new RuntimeException", e);
         }
 
         return null;
@@ -88,7 +89,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
      * deadlock due to single-threaded access on the same thread as the item which might block.
      */
     public void assertThreadSafe() {
-        if (altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
+        if (Async.RUNTIME_ASSERTIONS && altFuture.getThreadType() == currentThreadType() && altFuture.getThreadType().isInOrderExecutor()) {
             throw new UnsupportedOperationException("Do not run your tests from the same single-threaded IThreadType as the threads you are testing: " + altFuture.getThreadType());
         }
     }
@@ -106,14 +107,11 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
     @Override // Future
     @Nullable
     public OUT get(long timeout, @NonNull TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        if (!isDone()) {
-            assertThreadSafe();
-        }
-
         final long t = System.currentTimeMillis();
         final long endTime = t + unit.toMillis(timeout);
 
         if (!isDone()) {
+            assertThreadSafe();
             altFuture
                     .then(() -> {
                         // Attach this to speed up and notify to continue the Future when the RunnableAltFuture finishes
@@ -137,5 +135,12 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
         }
 
         return altFuture.safeGet();
+    }
+
+    @Override
+    public String toString() {
+        return "AltFutureFuture{" +
+                "altFuture=" + altFuture +
+                '}';
     }
 }

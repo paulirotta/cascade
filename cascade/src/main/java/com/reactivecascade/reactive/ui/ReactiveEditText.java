@@ -183,7 +183,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        AssertUtil.assertNotNull(mOrigin);
+        AssertUtil.assertNonNull(mOrigin);
         RCLog.v(this, "onDetachedFromWindow " + getName() + ", current from=" + getText());
         mReactiveValue.unsubscribeAll("onDetachedFromWindow");
 

@@ -102,7 +102,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
      */
     public void setReactiveValue(@NonNull ReactiveValue<String> reactiveValue,
                                  boolean fire) {
-        AssertUtil.assertNotNull(mOrigin);
+        AssertUtil.assertNonNull(mOrigin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute(() -> {

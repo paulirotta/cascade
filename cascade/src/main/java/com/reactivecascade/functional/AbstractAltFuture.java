@@ -93,7 +93,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @param threadType on which this alt future will evaluate and fire downchain events
      */
     public AbstractAltFuture(@NonNull final IThreadType threadType) {
-        this.threadType = AssertUtil.assertNotNull(threadType);
+        this.threadType = AssertUtil.assertNonNull(threadType);
     }
 
     @Override // IAltFuture
@@ -358,7 +358,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // Object
     @NonNull
     public String toString() {
-        return this.stateAR.get().toString() + super.toString();
+        return this.stateAR.get().toString();
     }
 
     //----------------------------------- .then() actions ---------------------------------------------
@@ -414,10 +414,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             final IActionOne<OUT> a = actions[i];
 
             altFutures[i] = then(new RunnableAltFuture<>(threadType,
-                    a::call));
+                    a));
         }
 
-        return await(altFutures);
+        return await((IAltFuture<?, ?>[]) altFutures);
     }
 
     @Override // IAltFuture
@@ -492,11 +492,9 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(threadType);
 
         outAltFuture.setUpchain(this);
-        final IAltFuture<?, ?> ignore = this.then(() -> {
-            Async.TIMER.schedule(() -> {
-                outAltFuture.set(get());
-            }, sleepTime, timeUnit);
-        });
+        Async.TIMER.schedule(() -> {
+            outAltFuture.set(get());
+        }, sleepTime, timeUnit);
 
         return outAltFuture;
     }
@@ -534,40 +532,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
         );
     }
-
-//    @Override // IAltFuture
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    public IAltFuture<List<IN>, List<OUT>> map(@NonNull final IActionOneR<IN, OUT> action) {
-//        return new RunnableAltFuture<>(threadType,
-//                (List<IN> listIN) -> {
-//                    //TODO Mapping is single-threaded even for long lists or complex transforms
-//                    //TODO Idea: create the list of things to call(), and offer that to other threads in the ThreadType if they have freetime to help out
-//                    final List<OUT> outputList = new ArrayList<>(listIN.size());
-//                    for (IN IN : listIN) {
-//                        outputList.add(action.call(IN));
-//                    }
-//                    return outputList;
-//                }
-//        );
-//    }
-
-//    @Override // IAltFuture
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    public IAltFuture<List<IN>, List<IN>> filter(@NonNull final IActionOneR<IN, Boolean> action) {
-//        return new RunnableAltFuture<>(threadType,
-//                (List<IN> listIN) -> {
-//                    final List<IN> outputList = new ArrayList<>(listIN.size());
-//                    for (IN IN : listIN) {
-//                        if (action.call(IN)) {
-//                            outputList.add(IN);
-//                        }
-//                    }
-//                    return outputList;
-//                }
-//        );
-//    }
 
     @Override // IAltFuture
     @NonNull

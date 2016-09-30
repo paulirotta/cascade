@@ -86,8 +86,8 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                         @Nullable IReactiveSource<IN> upchainReactiveSource,
                         @NonNull IActionOneR<IN, OUT> onFireAction,
                         @Nullable IActionOne<Exception> onError) {
-        this.name = AssertUtil.assertNotNull("Please provide an object name for debugging purposes", name);
-        this.threadType = AssertUtil.assertNotNull("Please specify the IThreadType on which this Subscription fires by default", threadType);
+        this.name = AssertUtil.assertNonNull("Please provide an object name for debugging purposes", name);
+        this.threadType = AssertUtil.assertNonNull("Please specify the IThreadType on which this Subscription fires by default", threadType);
         this.upchainReactiveSource = upchainReactiveSource;
         if (upchainReactiveSource != null) {
             upchainReactiveSource.sub(this);

@@ -21,6 +21,7 @@ import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
+import com.reactivecascade.util.AsyncThreadTypeExecutor;
 import com.reactivecascade.util.DefaultThreadType;
 import com.reactivecascade.util.DoubleQueue;
 import com.reactivecascade.util.Origin;
@@ -283,7 +284,7 @@ public class AsyncBuilder {
      * The default from is {@link BuildConfig#DEBUG}
      *
      * @param failFast <code>true</code> to stop on first error for clear debugging
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -298,7 +299,7 @@ public class AsyncBuilder {
      * intentionally throws errors, this may be better disabled.
      *
      * @param traceAsyncOrigin <code>true</code> to show stack traces
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -321,7 +322,7 @@ public class AsyncBuilder {
     IThreadType getWorkerThreadType() {
         if (workerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-            setWorkerThreadType(new DefaultThreadType("WorkerThreadType",
+            setWorkerThreadType(new DefaultThreadType("WORKER",
                             getWorkerExecutorService(threadTypeImmutableValue),
                             getWorkerQueue()
                     )
@@ -334,7 +335,7 @@ public class AsyncBuilder {
 
     /**
      * @param workerThreadType thread type for CPU-bound tasks
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -355,7 +356,7 @@ public class AsyncBuilder {
     IThreadType getSerialWorkerThreadType() {
         if (serialWorkerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-            setSerialWorkerThreadType(new DefaultThreadType("SerialWorkerThreadType",
+            setSerialWorkerThreadType(new DefaultThreadType("SERIAL_WORKER",
                             getSerialWorkerExecutorService(threadTypeImmutableValue),
                             getSerialWorkerQueue()
                     )
@@ -368,7 +369,7 @@ public class AsyncBuilder {
 
     /**
      * @param serialWorkerThreadType the single-threaded thread type for CPU-bound tasks
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -387,7 +388,7 @@ public class AsyncBuilder {
     @UiThread
     static IThreadType getUiThreadType(@Nullable Context context) {
         if (AsyncBuilder.uiThreadType == null) {
-            AsyncBuilder.uiThreadType = new DefaultThreadType("UIThreadType", getUiExecutorService(context), null);
+            AsyncBuilder.uiThreadType = new DefaultThreadType("UI", getUiExecutorService(context), null);
         }
 
         return AsyncBuilder.uiThreadType;
@@ -395,7 +396,7 @@ public class AsyncBuilder {
 
     /**
      * @param uiThreadType thread type for UI activities
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -414,7 +415,7 @@ public class AsyncBuilder {
     IThreadType getNetReadThreadType() {
         if (netReadThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-            setNetReadThreadType(new DefaultThreadType("NetReadThreadType",
+            setNetReadThreadType(new DefaultThreadType("NET_READ",
                             getNetReadExecutorService(threadTypeImmutableValue),
                             getNetReadQueue()
                     )
@@ -427,7 +428,7 @@ public class AsyncBuilder {
 
     /**
      * @param netReadThreadType thread type for reading (non-mutating state) from network servers
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -446,7 +447,7 @@ public class AsyncBuilder {
     IThreadType getNetWriteThreadType() {
         if (netWriteThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-            setNetWriteThreadType(new DefaultThreadType("NetWriteThreadType",
+            setNetWriteThreadType(new DefaultThreadType("NET_WRITE",
                             getNetWriteExecutorService(threadTypeImmutableValue),
                             getNetWriteQueue()
                     )
@@ -459,7 +460,7 @@ public class AsyncBuilder {
 
     /**
      * @param netWriteThreadType
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -478,7 +479,7 @@ public class AsyncBuilder {
     IThreadType getFileThreadType() {
         if (fileThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
-            setFileThreadType(new DefaultThreadType("FileReadThreadType",
+            setFileThreadType(new DefaultThreadType("FILE",
                             getFileExecutorService(threadTypeImmutableValue),
                             getFileQueue()
                     )
@@ -491,7 +492,7 @@ public class AsyncBuilder {
 
     /**
      * @param fileThreadType
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -512,6 +513,23 @@ public class AsyncBuilder {
         return getSerialWorkerThread(threadType, runnable);
     }
 
+    private long keepAliveTime = 60000;
+
+    /**
+     * Tailor how long an in inactive {@link Async#WORKER} thread is kept before deallocation.
+     * Dealloacation saves resources, but re-allocation in the future can slow the application.
+     * <p>
+     * The default 1 minute should give acceptable balance for most applications.
+     *
+     * @param time ms
+     * @return this builder
+     */
+    @UiThread
+    public AsyncBuilder setKeepAliveTime(long time) {
+        this.keepAliveTime = time;
+        return this;
+    }
+
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -521,7 +539,8 @@ public class AsyncBuilder {
             final BlockingQueue<Runnable> q = getWorkerQueue();
             final int numberOfThreads = q instanceof BlockingDeque ? NUMBER_OF_CORES : 1;
 
-            setWorkerExecutorService(new ThreadPoolExecutor(
+            setWorkerExecutorService(new AsyncThreadTypeExecutor(
+                    "WORKER",
                     numberOfThreads,
                     numberOfThreads,
                     1000,
@@ -573,7 +592,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @VisibleForTesting
@@ -583,7 +602,7 @@ public class AsyncBuilder {
 
         if (workerQueue == null) {
             Log.d(TAG, "Creating default worker queue");
-            setWorkerQueue(new LinkedBlockingDeque<>());
+            setWorkerQueue(new LinkedBlockingDeque<>(workerQueueCapacity));
         }
 
         return workerQueue;
@@ -591,7 +610,7 @@ public class AsyncBuilder {
 
     /**
      * @param queue
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -606,7 +625,7 @@ public class AsyncBuilder {
      * Call {@link #setWorkerQueue(java.util.concurrent.BlockingQueue)} before calling this method
      * if you wish to use something other than the default.
      *
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @VisibleForTesting
@@ -624,7 +643,7 @@ public class AsyncBuilder {
 
     /**
      * @param queue of CPU-bound tasks for strict in-order execution
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -636,7 +655,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @VisibleForTesting
@@ -654,7 +673,7 @@ public class AsyncBuilder {
 
     /**
      * @param queue
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -666,7 +685,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @VisibleForTesting
@@ -676,15 +695,57 @@ public class AsyncBuilder {
 
         if (netReadQueue == null) {
             Log.d(TAG, "Creating default net read queue");
-            setNetReadQueue(new LinkedBlockingDeque<>());
+            setNetReadQueue(new LinkedBlockingDeque<>(netReadQueueCapacity));
         }
 
         return netReadQueue;
     }
 
+    private int netReadQueueCapacity = 50;
+
     /**
-     * @param queue
-     * @return the builder, for chaining
+     * Determine how many {@link Async#NET_READ} tasks can be queued.
+     * <p>
+     * If this number is exceeded, additional {@link Async#NET_READ} tasks will be performed
+     * synchronously as a form of back pressure.
+     * <p>
+     * The default value of 50 should be sufficient for most applications.
+     *
+     * @param netReadQueueCapacity desired size
+     * @return this builder
+     */
+    @UiThread
+    @NonNull
+    public AsyncBuilder setNetReadQueueCapacity(int netReadQueueCapacity) {
+        this.netReadQueueCapacity = netReadQueueCapacity;
+        return this;
+    }
+
+    private int workerQueueCapacity = 50;
+
+    /**
+     * Determine how many {@link Async#WORKER} tasks can be queued.
+     * <p>
+     * If this number is exceeded, additional {@link Async#WORKER} tasks will be performed
+     * synchronously as a form of back pressure.
+     * <p>
+     * The default value of 50 should be sufficient for most applications.
+     *
+     * @param workerQueueCapacity desired size
+     * @return this builder
+     */
+    @UiThread
+    @NonNull
+    public AsyncBuilder setWorkerQueueCapacity(int workerQueueCapacity) {
+        this.workerQueueCapacity = workerQueueCapacity;
+        return this;
+    }
+
+    /**
+     * Replace the default implementation with a custom {@link java.util.Queue} or {@link BlockingDeque}
+     *
+     * @param queue custom implementation
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -695,9 +756,6 @@ public class AsyncBuilder {
         return this;
     }
 
-    /**
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -713,22 +771,19 @@ public class AsyncBuilder {
     }
 
     /**
+     * Replace the default implementation with a custom {@link java.util.Queue} or {@link BlockingDeque}
+     *
      * @param queue
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
     public AsyncBuilder setNetWriteQueue(@NonNull BlockingQueue<Runnable> queue) {
         Log.v(TAG, "setNetWriteQueue(" + queue + ")");
-
         this.netWriteQueue = queue;
         return this;
     }
 
-    /**
-     * @param threadTypeImmutableValue
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -747,10 +802,6 @@ public class AsyncBuilder {
         return fileExecutorService;
     }
 
-    /**
-     * @param threadTypeImmutableValue
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -759,8 +810,13 @@ public class AsyncBuilder {
 
         if (netReadExecutorService == null) {
             Log.d(TAG, "Creating default net read executor service");
-            setNetReadExecutorService(new ThreadPoolExecutor(1, NUMBER_OF_CONCURRENT_NET_READS,
-                    1000, TimeUnit.MILLISECONDS, getNetReadQueue(),
+            setNetReadExecutorService(new AsyncThreadTypeExecutor(
+                    "NET_READ",
+                    1,
+                    NUMBER_OF_CONCURRENT_NET_READS,
+                    keepAliveTime,
+                    TimeUnit.MILLISECONDS,
+                    getNetReadQueue(),
                     runnable -> new TypedThread(threadTypeImmutableValue.get(), runnable, createThreadId("NetReadThread")))
             );
         }
@@ -768,10 +824,6 @@ public class AsyncBuilder {
         return netReadExecutorService;
     }
 
-    /**
-     * @param threadTypeImmutableValue
-     * @return the builder, for chaining
-     */
     @NonNull
     @VisibleForTesting
     @UiThread
@@ -798,7 +850,7 @@ public class AsyncBuilder {
             try {
                 AsyncBuilder.uiExecutorService = new UIExecutorService(new Handler(context.getMainLooper()));
             } catch (Exception e) {
-                Log.i(TAG, "WARNING: Test configuration- looper is synthesized");
+                Log.i(TAG, "WARNING: Test configuration- looper is synthesized on the current thread");
                 if (Looper.getMainLooper() == null) {
                     Looper.prepareMainLooper();
                 }
@@ -814,7 +866,7 @@ public class AsyncBuilder {
      * {@link #setUiThread(Thread)}
      *
      * @param uiExecutorService
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -831,7 +883,7 @@ public class AsyncBuilder {
      * @param executorService the service to be used for most callbacks split general purpose processing. The default implementation
      *                        is a threadpool sized based to match the number of CPU cores. Most operations on this executor
      *                        do not block for IO, those are relegated to specialized executors
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -843,7 +895,7 @@ public class AsyncBuilder {
 
     /**
      * @param executorService
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -859,7 +911,7 @@ public class AsyncBuilder {
      * This may be useful to temporarily add to your builder for testing if you wish to test if issues
      * are facing are caused or not caused by background task concurrency.
      *
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -876,7 +928,7 @@ public class AsyncBuilder {
 
     /**
      * @param fileExecutorService to be used for file reading and writing
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -888,7 +940,7 @@ public class AsyncBuilder {
 
     /**
      * @param netReadExecutorService
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread
@@ -902,7 +954,7 @@ public class AsyncBuilder {
      * Retrieve or create the thread group that will hand net writes.
      *
      * @param netWriteExecutorService
-     * @return the builder, for chaining
+     * @return this builder
      */
     @NonNull
     @UiThread

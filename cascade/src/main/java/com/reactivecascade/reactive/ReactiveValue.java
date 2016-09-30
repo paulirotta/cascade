@@ -9,7 +9,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.reactivecascade.Async;
 import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
 import com.reactivecascade.i.IAltFuture;
@@ -152,7 +151,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @CallSuper
     @Override // ISettable
     public void set(@NonNull T value) {
-        T previousValue = AssertUtil.assertNotNull(mValueAR.getAndSet(value));
+        T previousValue = AssertUtil.assertNonNull(mValueAR.getAndSet(value));
         boolean valueChanged = !(value == previousValue
                 || (value.equals(previousValue))
                 || previousValue.equals(value));

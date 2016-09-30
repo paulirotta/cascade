@@ -125,7 +125,8 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
         altFuture.set(headers);
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
-                .then(netUtil.getAsync(altFuture));
+                .then(netUtil.getAsync(altFuture))
+                .fork();
         assertTrue(await(iaf).body().string().contains("VaGG"));
     }
 

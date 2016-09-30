@@ -91,7 +91,7 @@ public class AssertUtil {
     public static <T, U extends T> void assertNotEqual(@Nullable final T expected,
                                                        @Nullable final U actual) {
         if (Async.RUNTIME_ASSERTIONS) {
-            assertNotNull("assertNotEqual failed: expected ´'" + expected + "' was equal to '" + actual + "'");
+            assertNonNull("assertNotEqual failed: expected ´'" + expected + "' was equal to '" + actual + "'");
         }
     }
 
@@ -122,9 +122,9 @@ public class AssertUtil {
      */
     @NonNull
     @NotCallOrigin
-    public static <T> T assertNotNull(@Nullable T t) {
+    public static <T> T assertNonNull(@Nullable T t) {
         if (Async.RUNTIME_ASSERTIONS) {
-            return assertNotNull("assertNotNull failed", t);
+            return assertNonNull("assertNonNull failed", t);
         }
         //noinspection ConstantConditions
         return t;
@@ -139,7 +139,7 @@ public class AssertUtil {
      */
     @NonNull
     @NotCallOrigin
-    public static <T> T assertNotNull(@NonNull String message, @Nullable T t) {
+    public static <T> T assertNonNull(@NonNull String message, @Nullable T t) {
         if (Async.RUNTIME_ASSERTIONS && t == null) {
             throw new IllegalStateException(message);
         }

@@ -283,8 +283,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
 
         this.defaultValue = defaultValueIfNoPersistedValue;
         this.classOfPersistentValue = defaultValueIfNoPersistedValue.getClass();
-        this.context = AssertUtil.assertNotNull("Context can not be null", context);
-//        this.sharedPreferences = AssertUtil.assertNotNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
+        this.context = AssertUtil.assertNonNull("Context can not be null", context);
+//        this.sharedPreferences = AssertUtil.assertNonNull(PreferenceManager.getDefaultSharedPreferences(context), "Shared preferences can not be null");
         this.key = getKey(context, name);
 
         try {
@@ -305,7 +305,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
         // Convert async operation into blocking synchronous so that the ReactiveValue will be initialized before the constructor returns
         return new AltFutureFuture<T, T>((IAltFuture<T, T>) persistentValueThreadType.then(() -> {
             PersistentValue<T> previouslyInitializedPersistentValue = (PersistentValue<T>) PERSISTENT_VALUES.putIfAbsent(getKey(context, getName()), this);
-            SharedPreferences sharedPreferences = AssertUtil.assertNotNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
+            SharedPreferences sharedPreferences = AssertUtil.assertNonNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
 
             if (previouslyInitializedPersistentValue != null) {
                 return previouslyInitializedPersistentValue.safeGet();
@@ -326,7 +326,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
     protected void onSharedPreferenceChanged() {
         RCLog.v(this, "PersistentValue is about to change because the underlying SharedPreferences notify that it has changed");
 
-        SharedPreferences sharedPreferences = AssertUtil.assertNotNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
+        SharedPreferences sharedPreferences = AssertUtil.assertNonNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
 
         if (classOfPersistentValue == String.class) {
             super.set((T) sharedPreferences.getString(key, (String) defaultValue));
@@ -361,8 +361,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
 
         RCLog.v(this, "PersistentValue \"" + getName() + "\" persist soon, from=" + value);
         persistentValueThreadType.then(() -> {
-            SharedPreferences sharedPreferences = AssertUtil.assertNotNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
-            SharedPreferences.Editor editor = AssertUtil.assertNotNull("Shared preferences are null", sharedPreferences).edit();
+            SharedPreferences sharedPreferences = AssertUtil.assertNonNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
+            SharedPreferences.Editor editor = AssertUtil.assertNonNull("Shared preferences are null", sharedPreferences).edit();
 
             if (value instanceof String) {
                 editor.putString(key, (String) value);

@@ -64,7 +64,7 @@ public class ReactiveString extends ReactiveValue<String> {
     public String concat(@NonNull final String string) {
         while (true) {
             final String currentValue = get();
-            AssertUtil.assertNotNull(currentValue, "String from not yet asserted");
+            AssertUtil.assertNonNull(currentValue, "String from not yet asserted");
             final String concat = currentValue.concat(string);
 
             if (compareAndSet(currentValue, concat)) {
@@ -86,7 +86,7 @@ public class ReactiveString extends ReactiveValue<String> {
                           final char newChar) {
         while (true) {
             final String currentValue = get();
-            AssertUtil.assertNotNull(currentValue, "String from not yet asserted");
+            AssertUtil.assertNonNull(currentValue, "String from not yet asserted");
             final String replace = currentValue.replace(oldChar, newChar);
 
             if (compareAndSet(currentValue, replace)) {
@@ -108,7 +108,7 @@ public class ReactiveString extends ReactiveValue<String> {
                           final CharSequence newChars) {
         while (true) {
             final String currentValue = get();
-            AssertUtil.assertNotNull(currentValue, "String from not yet asserted");
+            AssertUtil.assertNonNull(currentValue, "String from not yet asserted");
             final String replace = currentValue.replace(oldChars, newChars);
 
             if (compareAndSet(currentValue, replace)) {
@@ -128,7 +128,7 @@ public class ReactiveString extends ReactiveValue<String> {
     public String toLowerCase(@NonNull final Locale locale) {
         while (true) {
             final String currentValue = get();
-            AssertUtil.assertNotNull(currentValue, "String from not yet asserted");
+            AssertUtil.assertNonNull(currentValue, "String from not yet asserted");
             final String lowerCase = currentValue.toLowerCase(locale);
 
             if (compareAndSet(currentValue, lowerCase)) {

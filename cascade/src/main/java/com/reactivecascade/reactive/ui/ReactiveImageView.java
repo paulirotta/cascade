@@ -56,7 +56,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     @Override // IReactiveTarget
     @NotCallOrigin
     public void fire(@NonNull Bitmap bitmap) {
-        AssertUtil.assertNotNull(mOrigin);
+        AssertUtil.assertNonNull(mOrigin);
         RCLog.v(this, "fire bitmap");
 
         if (isUiThread()) {
@@ -99,7 +99,7 @@ public class ReactiveImageView extends ImageView implements IReactiveTarget<Bitm
     public void unsubSource(
             @NonNull String reason,
             @NonNull IReactiveSource<Bitmap> reactiveSource) {
-        AssertUtil.assertNotNull(mOrigin);
+        AssertUtil.assertNonNull(mOrigin);
 
         if (reactiveSources.remove(reactiveSource)) {
             RCLog.v(this, "Upchain says goodbye: reason=" + reason + " reactiveSource=" + reactiveSource.getName());

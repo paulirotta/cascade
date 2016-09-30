@@ -433,19 +433,19 @@ public class RCLog {
         StackTraceElement[] traceElementsArray = Thread.currentThread().getStackTrace();
         ImmutableValue<String> immutableValue = new ImmutableValue<>();
 
+        Runnable runnable = () -> {
+            List<StackTraceLine> o = origin(traceElementsArray);
+            AssertUtil.assertTrue(o.size() > 0);
+            StackTraceLine line = o.get(0);
+            String s = prettyFormat(line.stackTraceElement);
+            immutableValue.set(s);
+        };
+
         if (Async.WORKER != null) {
-            Async.WORKER.run(() -> {
-                List<StackTraceLine> o = origin(traceElementsArray);
-                AssertUtil.assertTrue(o.size() > 0);
-                StackTraceLine line = o.get(0);
-                String s = prettyFormat(line.stackTraceElement);
-                immutableValue.set(s);
-            });
+            Async.WORKER.run(runnable);
         } else {
-            throw new IllegalStateException("WORKER must be non-null before originAsync() is called");
-            // During bootstrapping of the ThreadTypes
-//            List<StackTraceLine> list = origin(traceElementsArray);
-//            immutableValue.set(prettyFormat(list.get(0).stackTraceElement));
+            RCLog.i(DEFAULT_ORIGIN, "WORKER is null- origin is determined synchronously");
+            runnable.run();
         }
 
         return immutableValue;

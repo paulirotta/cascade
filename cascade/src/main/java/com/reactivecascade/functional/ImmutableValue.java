@@ -219,7 +219,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
                     }
                     return t;
                 }
-                throw new IllegalStateException("Null action and from has not been set()");
+                throw new IllegalStateException("VALUE_NOT_AVAILABLE and null action- there is no way to determine this value");
             } catch (Exception e) {
                 throw new IllegalStateException("Can not evaluate the supplied ImmutableValue.IAction", e);
             }
