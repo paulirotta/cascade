@@ -61,7 +61,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     };
 
     /*
-     * TODO It should be possible to refactor and eliminate the FORKED state in production builds for performance, using only ZEN plus a single state change
+     * TODO It is possible to refactor and eliminate the FORKED state in production builds for performance, using only ZEN plus a single state change
      * This would however result in more debugging difficulty and the loss of certain broken logic tests so
      * it should be configurable for production builds. Library users debugging their logic would not know at they time
      * of .fork() if the operation has already been forked due to an error in their code. They
@@ -355,6 +355,12 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
     }
 
+    @Override // Object
+    @NonNull
+    public String toString() {
+        return this.stateAR.get().toString() + super.toString();
+    }
+
     //----------------------------------- .then() actions ---------------------------------------------
     protected void doThen() {
         AssertUtil.assertTrue("doThen(): state=" + stateAR.get(), isDone());
@@ -429,9 +435,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
         this.downchainAltFutures.add(altFuture);
         if (isDone()) {
-//            altFuture.map((IActionOne) v -> {
-//                visualize(mOrigin.getName(), v.toString(), "RunnableAltFuture");
-//            });
             altFuture.fork();
         }
 
@@ -497,20 +500,6 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
         return outAltFuture;
     }
-
-//    @NonNull
-//    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
-//    @Override // IAltFuture
-//    public ISettableAltFuture<OUT> await(@NonNull IAltFuture<?, ?> altFuture) {
-//        ISettableAltFuture<OUT> outAltFuture = new SettableAltFuture<>(threadType);
-//
-//        outAltFuture.setUpchain(this);
-//        final IAltFuture<?, ?> ignore = altFuture.then(() -> {
-//            outAltFuture.set(get());
-//        });
-//
-//        return outAltFuture;
-//    }
 
     @NonNull
     @Override // IAltFuture

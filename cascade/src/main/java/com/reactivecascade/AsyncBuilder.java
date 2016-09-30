@@ -55,6 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @CallOrigin
 public class AsyncBuilder {
     private static final String TAG = AsyncBuilder.class.getSimpleName();
+    private static final long RESET_TIMEOUT = 5000; // For closing thread pools in preperation for the next integration test
 
     @VisibleForTesting
     static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
@@ -161,19 +162,34 @@ public class AsyncBuilder {
     @VisibleForTesting
     static void reset() {
         initialized = false;
-        uiExecutorService = null;
+        if (uiExecutorService != null) {
+            uiExecutorService.shutdownNow();
+            uiExecutorService = null;
+        }
         useForkedState = BuildConfig.DEBUG;
         runtimeAssertionsEnabled = BuildConfig.DEBUG;
         strictMode = BuildConfig.DEBUG;
         showErrorStackTraces = BuildConfig.DEBUG;
         failFast = BuildConfig.DEBUG;
         traceAsyncOrigin = BuildConfig.DEBUG;
-        workerThreadType = null;
-        serialWorkerThreadType = null;
+
         uiThreadType = null;
+        resetThreadType(workerThreadType);
+        workerThreadType = null;
+        resetThreadType(serialWorkerThreadType);
+        serialWorkerThreadType = null;
+        resetThreadType(netReadThreadType);
         netReadThreadType = null;
+        resetThreadType(netWriteThreadType);
         netWriteThreadType = null;
+        resetThreadType(fileThreadType);
         fileThreadType = null;
+    }
+
+    private static void resetThreadType(@Nullable IThreadType threadType) {
+        if (threadType != null) {
+            threadType.shutdownNow("Reset for next integration test", null, () -> Log.i(TAG, "TIMEOUT when shutting " + threadType + " in preperation of next integration test. Please ensure your previous integration test cleans up after itself within " + RESET_TIMEOUT + "ms"), RESET_TIMEOUT);
+        }
     }
 
     /**

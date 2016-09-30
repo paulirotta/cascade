@@ -9,6 +9,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.reactivecascade.Async;
 import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
 import com.reactivecascade.i.IAltFuture;
@@ -20,6 +21,8 @@ import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.RCLog;
 
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.reactivecascade.Async.WORKER;
 
 /**
  * Thread-safe reactive display of a variable getValue. Add one or more {@link IActionOne}
@@ -53,7 +56,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * @param name
      */
     public ReactiveValue(@NonNull String name) {
-        this(name, null, null, null);
+        this(name, WORKER, null, null);
     }
 
     /**
@@ -64,7 +67,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      */
     public ReactiveValue(@NonNull String name,
                          @Nullable final T initialValue) {
-        this(name, null, null, null);
+        this(name, WORKER, null, null);
     }
 
     /**
@@ -77,7 +80,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      */
     @SuppressWarnings("unchecked")
     public ReactiveValue(@NonNull String name,
-                         @Nullable IThreadType threadType,
+                         @NonNull IThreadType threadType,
                          @Nullable IActionOneR<T, T> inputMapping,
                          @Nullable IActionOne<Exception> onError) {
         super(name, threadType, null, inputMapping != null ? inputMapping : out -> out, onError);

@@ -27,7 +27,6 @@ import com.reactivecascade.i.ISettableAltFuture;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -303,10 +302,10 @@ public abstract class AbstractThreadType implements IThreadType {
 
     @Override // IThreadType
     @NonNull
-    public <IN> List<Runnable> shutdownNow(@NonNull String reason,
-                                           @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-                                           @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
-                                           long timeoutMillis) {
+    public List<Runnable> shutdownNow(@NonNull String reason,
+                                      @Nullable IAction<?> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+                                      @Nullable IAction<?> actionOnDedicatedThreadIfTimeout,
+                                      long timeoutMillis) {
         RCLog.i(this, "shutdownNow: reason=" + reason);
         List<Runnable> pendingActions = executorService.shutdownNow();
 

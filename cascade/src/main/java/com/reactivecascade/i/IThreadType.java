@@ -315,12 +315,11 @@ public interface IThreadType extends INamed {
      * @param actionOnDedicatedThreadAfterAlreadyStartedTasksComplete optional callback once current tasks completely finished
      * @param actionOnDedicatedThreadIfTimeout                        optional what to do if an already started task blocks for too long
      * @param timeoutMillis                                           length of time to wait for shutdown to complete normally before forcing completion
-     * @param <IN>                                                    the type of input argument expected by the action
      * @return a list of work which failed to complete before shutdown
      */
     @NonNull
-    <IN> List<Runnable> shutdownNow(@NonNull String reason,
-                                    @Nullable IAction<IN> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
-                                    @Nullable IAction<IN> actionOnDedicatedThreadIfTimeout,
+    List<Runnable> shutdownNow(@NonNull String reason,
+                                    @Nullable IAction<?> actionOnDedicatedThreadAfterAlreadyStartedTasksComplete,
+                                    @Nullable IAction<?> actionOnDedicatedThreadIfTimeout,
                                     long timeoutMillis);
 }

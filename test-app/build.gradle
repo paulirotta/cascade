@@ -42,7 +42,8 @@ allprojects {
 }
 
 dependencies {
-    compile project(':cascade')
+    debugCompile project(path: ':cascade', configuration: 'debug')
+    releaseCompile project(path: ':cascade', configuration: 'release')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

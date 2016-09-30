@@ -47,15 +47,14 @@ public final class UIExecutorService extends Origin implements ExecutorService {
 
     @Override // ExecutorService
     public void shutdown() {
-        RCLog.i(this, "shutdown() called on UiAsync default ExecutorService");
-        throw new UnsupportedOperationException("Shutdown() called on UiAsync default ExecutorService");
+        RCLog.i(this, "Ignoring shutdown() called on UI default ExecutorService. This thread is managed by the system.");
     }
 
     @NonNull
     @Override // ExecutorService
     public List<Runnable> shutdownNow() {
-        RCLog.i(this, "shutdownNow() called on UiAsync default ExecutorService");
-        throw new UnsupportedOperationException("ShutdownNow() called on UiAsync default ExecutorService");
+        RCLog.i(this, "Ignoring shutdown() called on UI default ExecutorService. This thread is managed by the system.");
+        return new ArrayList<>(0);
     }
 
     @Override // ExecutorService
