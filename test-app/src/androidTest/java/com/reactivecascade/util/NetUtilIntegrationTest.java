@@ -62,7 +62,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore //TODO something to do with Async.USE_FORKED_STATE
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         assertTrue(netUtil.get(value).body().bytes().length > 20);

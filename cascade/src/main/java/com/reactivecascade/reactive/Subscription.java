@@ -74,18 +74,16 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
      * <p>
      * If there are multiple down-chain targets attached to this node, it will concurrently fire
      * all down-chain branches.
-     *
-     * @param name                  the descriptive debug name of this subscription
-     * @param upchainReactiveSource
+     *  @param name                  the descriptive debug name of this subscription
      * @param threadType            the default thread group on which this subscription fires
+     * @param upchainReactiveSource
      * @param onFireAction          Because there _may_ exist a possibility of multiple fire events racing each other on different
-     *                              threads, it is important that the mOnFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
+*                              threads, it is important that the mOnFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
      * @param onError
      */
     @SuppressWarnings("unchecked")
     public Subscription(@NonNull String name,
-                        @Nullable IReactiveSource<IN> upchainReactiveSource,
-                        @Nullable IThreadType threadType,
+                        @Nullable IThreadType threadType, @Nullable IReactiveSource<IN> upchainReactiveSource,
                         @NonNull IActionOneR<IN, OUT> onFireAction,
                         @Nullable IActionOne<Exception> onError) {
         this.name = name;
@@ -374,7 +372,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(
             @NonNull IThreadType threadType,
             @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), this, threadType, action, mOnError);
+        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), threadType, this, action, mOnError);
         sub((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
 
         return subscription;
@@ -404,7 +402,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IThreadType threadType,
                                                               @NonNull IActionR<DOWNCHAIN_OUT> action) {
         final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(
-                getName(), this, threadType,
+                getName(), threadType, this,
                 t -> {
                     return action.call();
                 },

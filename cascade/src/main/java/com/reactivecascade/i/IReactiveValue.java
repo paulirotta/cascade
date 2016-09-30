@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.i;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * The contract for a thread safe model object which may also contain additional reactive features.

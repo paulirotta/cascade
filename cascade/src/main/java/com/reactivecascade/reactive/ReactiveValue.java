@@ -80,7 +80,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
                          @Nullable IThreadType threadType,
                          @Nullable IActionOneR<T, T> inputMapping,
                          @Nullable IActionOne<Exception> onError) {
-        super(name, null, threadType, inputMapping != null ? inputMapping : out -> out, onError);
+        super(name, threadType, null, inputMapping != null ? inputMapping : out -> out, onError);
 
         fire((T) IAltFuture.VALUE_NOT_AVAILABLE);
     }
