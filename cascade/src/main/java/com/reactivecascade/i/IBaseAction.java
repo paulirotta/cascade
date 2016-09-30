@@ -8,7 +8,7 @@ package com.reactivecascade.i;
 /**
  * This is a marker interface which other functional interfaces extend
  * <p>
- * Implementing this interface indicates a primary mOnFireAction, usually one executed asynchronously on
+ * Implementing this interface indicates a primary onFireAction, usually one executed asynchronously on
  * an {@link com.reactivecascade.i.IThreadType}
  *
  * @param <T> is a parameter that apparently helps generics disambituate at least in some IDEs

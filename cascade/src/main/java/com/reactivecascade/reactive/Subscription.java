@@ -46,13 +46,13 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to queue on next fire
 
     @NonNull
-    protected final IThreadType mThreadType;
+    protected final IThreadType threadType;
     @NonNull
-    protected final IActionOne<Exception> mOnError;
+    protected final IActionOne<Exception> onError;
     @NonNull
     protected final CopyOnWriteArraySet<IReactiveTarget<OUT>> reactiveTargets = new CopyOnWriteArraySet<>(); // Holding a strong reference is optional, depending on the binding type
     @NonNull
-    protected final IActionOneR<IN, OUT> mOnFireAction;
+    protected final IActionOneR<IN, OUT> onFireAction;
     @NonNull
     private final String name;
     @NonNull
@@ -60,9 +60,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @NonNull
     private final AtomicReference<Object> latestFireInAR = new AtomicReference<>(FIRE_ACTION_NOT_QUEUED); // If is FIRE_ACTION_NOT_QUEUED, re-queue fireAction on next fire()
     @NonNull
-    private final AtomicBoolean mLatestFireInIsFireNext = new AtomicBoolean(false); // Signals high priority re-execution if still processing the previous from
+    private final AtomicBoolean latestFireInIsFireNext = new AtomicBoolean(false); // Signals high priority re-execution if still processing the previous from
     @NonNull
-    private final Runnable mFireRunnable;
+    private final Runnable fireRunnable;
 
     //TODO Use to unsubcribe from tail when IBindingContext is implemented
     @Nullable
@@ -77,7 +77,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
      * @param threadType            the default thread group on which this subscription fires
      * @param upchainReactiveSource
      * @param onFireAction          Because there _may_ exist a possibility of multiple fire events racing each other on different
-*                              threads, it is important that the mOnFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
+*                              threads, it is important that the onFireAction functions in the reactive chain are idempotent and stateless. Further analysis is needed, but be cautious.
      * @param onError
      */
     @SuppressWarnings("unchecked")
@@ -87,13 +87,13 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                         @NonNull IActionOneR<IN, OUT> onFireAction,
                         @Nullable IActionOne<Exception> onError) {
         this.name = AssertUtil.assertNotNull("Please provide an object name for debugging purposes", name);
-        this.mThreadType = AssertUtil.assertNotNull("Please specify the IThreadType on which this Subscription fires by default", threadType);
+        this.threadType = AssertUtil.assertNotNull("Please specify the IThreadType on which this Subscription fires by default", threadType);
         this.upchainReactiveSource = upchainReactiveSource;
         if (upchainReactiveSource != null) {
             upchainReactiveSource.sub(this);
         }
-        this.mOnFireAction = onFireAction;
-        this.mOnError = onError != null ? onError : e ->
+        this.onFireAction = onFireAction;
+        this.onError = onError != null ? onError : e ->
                 RCLog.e(this, "Problem firing subscription, name=" + getName(), e);
 
         /*
@@ -104,7 +104,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
           *
           * Re-queue if the input from changes before exiting
          */
-        mFireRunnable = this.mThreadType.wrapActionWithErrorProtection(new IAction<Object>() {
+        fireRunnable = this.threadType.wrapActionWithErrorProtection(new IAction<Object>() {
             @Override
             @NotCallOrigin
             public void call() throws Exception {
@@ -112,10 +112,10 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 
                 doReceiveFire((IN) latestValueFired); // This step may take some time
                 if (!latestFireInAR.compareAndSet(latestValueFired, FIRE_ACTION_NOT_QUEUED)) {
-                    if (mLatestFireInIsFireNext.getAndSet(true)) {
-                        mThreadType.runNext(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
+                    if (latestFireInIsFireNext.getAndSet(true)) {
+                        Subscription.this.threadType.runNext(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
                     } else {
-                        mThreadType.run(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
+                        Subscription.this.threadType.run(getFireRunnable()); // Input was set again while processing this from- re-queue to fire again after other pending work
                     }
                 }
             }
@@ -123,7 +123,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     }
 
     private Runnable getFireRunnable() {
-        return mFireRunnable;
+        return fireRunnable;
     }
 
 //================================= Public Utility Methods =======================================
@@ -158,7 +158,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
 //================================= Internal Utility Methods =======================================
 
     /**
-     * Do <code>mOnFireAction</code> to every downstream target that does not have an expired
+     * Do <code>onFireAction</code> to every downstream target that does not have an expired
      * {@link java.lang.ref.WeakReference}
      *
      * @param action something to do for each target- return <code>true</code> if this is the last action
@@ -203,9 +203,9 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveTarget
     public void fire(@NonNull IN in) {
         RCLog.v(this, "fire latestFireInAR=" + in);
-        mLatestFireInIsFireNext.set(false);
+        latestFireInIsFireNext.set(false);
         /*
-         There is a race at this point between latestFireInAR and mLatestFireInIsFireNext.
+         There is a race at this point between latestFireInAR and latestFireInIsFireNext.
          By design, if the race is lost, map a normal fire will actually fire next. So we evaluate ahead of
          other pending actions- small loss, and not a problem as there is no dependency upset by this.
 
@@ -214,7 +214,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
          */
         if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED && in != IAltFuture.VALUE_NOT_AVAILABLE) {
             // Only queue for execution if not already queued
-            mThreadType.run(getFireRunnable());
+            threadType.run(getFireRunnable());
         }
     }
 
@@ -225,10 +225,10 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         RCLog.v(this, "fireNext latestFireInAR=" + in);
         if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED) {
             // Only queue for execution if not already queued
-            mThreadType.runNext(mFireRunnable);
+            threadType.runNext(fireRunnable);
         } else {
             // Already queued for execution, but possibly not soon- push it to the top of the stack
-            mThreadType.moveToHeadOfQueue(mFireRunnable);
+            threadType.moveToHeadOfQueue(fireRunnable);
         }
     }
 
@@ -252,7 +252,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
         RCLog.v(this, "doReceiveFire \"" + getName() + " from=" + in);
 //        visualize(getName(), latestFireInAR.toString(), "AbstractBinding");
 
-        return mOnFireAction.call(in);
+        return onFireAction.call(in);
     }
 
     /**
@@ -331,7 +331,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveSource
     @NonNull
     public IReactiveSource<OUT> sub(@NonNull IAction<OUT> action) {
-        return sub(mThreadType, action);
+        return sub(threadType, action);
     }
 
     @Override // IReactiveSource
@@ -347,7 +347,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveSource
     @NonNull
     public IReactiveSource<OUT> sub(@NonNull IActionOne<OUT> action) {
-        return sub(mThreadType, action);
+        return sub(threadType, action);
     }
 
     @Override // IReactiveSource
@@ -364,7 +364,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveSource
     @NonNull
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        return subMap(mThreadType, action);
+        return subMap(threadType, action);
     }
 
     @Override // IReactiveSource
@@ -372,7 +372,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(
             @NonNull IThreadType threadType,
             @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action) {
-        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), threadType, this, action, mOnError);
+        final IReactiveSource<DOWNCHAIN_OUT> subscription = new Subscription<>(getName(), threadType, this, action, onError);
         sub((IReactiveTarget<OUT>) subscription); //TODO Suspicious cast here
 
         return subscription;
@@ -394,7 +394,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
     @Override // IReactiveSource
     @NonNull
     public <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IActionR<DOWNCHAIN_OUT> action) {
-        return sub(mThreadType, action);
+        return sub(threadType, action);
     }
 
     @Override // IReactiveSource
@@ -406,7 +406,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
                 t -> {
                     return action.call();
                 },
-                mOnError);
+                onError);
         sub((IReactiveTarget<OUT>) subscription);
 
         return subscription;

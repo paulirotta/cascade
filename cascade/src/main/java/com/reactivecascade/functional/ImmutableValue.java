@@ -109,7 +109,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     /**
      * Add an action which will be run when {@link #set(Object)} is called.
      * <p>
-     * If the from is already {@link #set(Object)}, the passed mOnFireAction will be run immediately and
+     * If the from is already {@link #set(Object)}, the passed onFireAction will be run immediately and
      * synchronously.
      *
      * @return this
@@ -126,7 +126,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     /**
      * Add an action which will be run when {@link #set(Object)} is called.
      * <p>
-     * If the from is already {@link #set(Object)}, the passed mOnFireAction will be run immediately and
+     * If the from is already {@link #set(Object)}, the passed onFireAction will be run immediately and
      * synchronously.
      *
      * @return this
@@ -247,7 +247,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     /**
      * Set the from.
      * <p>
-     * If this atomic mOnFireAction succeeds, any {@link #then(IActionOne)} actions
+     * If this atomic onFireAction succeeds, any {@link #then(IActionOne)} actions
      * will also be run synchronously. This is a fairly low-level class which is used by other classes
      * and for practical reasons it violates the "always asynchronous" assumption. Traditional. Sorry. :)
      *
@@ -270,7 +270,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * Return the current from of the immutable from if possible
      * <p>
      * In other cases marker text "(ImmutableValue not yet set)" will be returned. If you see
-     * this text, consider using a {@link #then(IActionOne)} mOnFireAction
+     * this text, consider using a {@link #then(IActionOne)} onFireAction
      * to make your logic run when this from is set.
      *
      * @return the string representation, or "Value not available" if not yet determined and can not be determined by an on-get action

@@ -29,7 +29,7 @@ import com.reactivecascade.util.RCLog;
  * You may prefer to use {@link ImmutableValue} that a similar need in some cases. That is a
  * slightly faster, simpler implementation than {@link SettableAltFuture}.
  * <p>
- * TODO Would it be helpful for debugging to store and pass forward a reference to the object which originally detected the problem? It might help with filtering what mOnFireAction you want to do mOnError
+ * TODO Would it be helpful for debugging to store and pass forward a reference to the object which originally detected the problem? It might help with filtering what onFireAction you want to do onError
  */
 @NotCallOrigin
 public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISettableAltFuture<T> {
@@ -57,7 +57,7 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
     @Override // ISettable
     public void set(@NonNull T value) {
         if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, value) || stateAR.compareAndSet(FORKED, value)) {
-            // Previous state was FORKED, so set completes the mOnFireAction and continues the chain
+            // Previous state was FORKED, so set completes the onFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
             doFork();
             clearPreviousAltFuture();

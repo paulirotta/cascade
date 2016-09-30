@@ -36,15 +36,15 @@ import java.util.concurrent.CancellationException;
  * of excessive concurrent resource allocations.
  * <p>
  * <p>
- * This is a {@link java.util.concurrent.Future} which will always call <code>mOnError</code> in case the
+ * This is a {@link java.util.concurrent.Future} which will always call <code>onError</code> in case the
  * task is canceled or has an execution error.
  * <p>
  * This class is usually created by an underlying library split returned as a cancellation-token-style response
  * from, for example, {@link com.reactivecascade.i.IThreadType} methods which receive <code>onSuccess</code> split
- * <code>mOnError</code> arguments.
+ * <code>onError</code> arguments.
  * <p>
  * The recommended use is: provide <code>onSuccess</code> split
- * <code>mOnError</code> as a lambda expression to {@link com.reactivecascade.i.IThreadType} or
+ * <code>onError</code> as a lambda expression to {@link com.reactivecascade.i.IThreadType} or
  * {@link com.reactivecascade.Async}. Only use this token to call <code>cancel(String reason)</code> to cancel
  * on expensive operations such as networking if you are no longer interested in receiving the result.
  * <p>
@@ -60,7 +60,7 @@ import java.util.concurrent.CancellationException;
  * <p>
  * fail fast - check for problems as they are created split halt debugOrigin build runs immediately
  * <p>
- * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no mOnFireAction is taken
+ * fail loud - no silently swallowing problems in debugOrigin builds; put it in the log even if no onFireAction is taken
  * <p>
  * fail here - directly at the point in the code where the mistake is most likely to be
  * <p>
@@ -105,7 +105,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
                 out = (OUT) previousAltFuture.get();
             }
             action.call();
-            return out; // T and A are the same when there is no return type from the mOnFireAction
+            return out; // T and A are the same when there is no return type from the onFireAction
         };
     }
 
@@ -128,7 +128,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             final IN in = paf.get();
             action.call(in);
 
-            return (OUT) in; // T and A are the same when there is no return type from the mOnFireAction
+            return (OUT) in; // T and A are the same when there is no return type from the onFireAction
         };
     }
 
@@ -208,7 +208,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             final OUT out = mAction.call();
 
             if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, out) || stateAR.compareAndSet(FORKED, out))) {
-                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in mOnError()/onCatch() are still in effect. state=" + stateAR.get());
+                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in onError()/onCatch() are still in effect. state=" + stateAR.get());
                 throw new CancellationException(stateAR.get().toString());
             }
             stateChanged = true;

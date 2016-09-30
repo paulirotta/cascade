@@ -95,8 +95,8 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             return null;
         }
 
-        if (!pv.mOnError.equals(onErrorAction)) {
-            RCLog.i(pv, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first mOnError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
+        if (!pv.onError.equals(onErrorAction)) {
+            RCLog.i(pv, "WARNING: PersistentValue is accessed two places with different onErrorAction. The first onError set will be used.\nConsider creating your onErrorAction only once or changing how you access this PersistentValue.");
         }
 
         return pv;
@@ -392,6 +392,6 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             }
             RCLog.v(this, "Successful PersistentValue persist, from=" + value);
         })
-                .onError(mOnError);
+                .onError(onError);
     }
 }

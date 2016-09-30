@@ -58,7 +58,7 @@ public abstract class AbstractThreadType implements IThreadType {
     private final String name;
 
     /**
-     * Create an asynchronous mOnFireAction handler that embodies certain rules for threading split concurrency
+     * Create an asynchronous onFireAction handler that embodies certain rules for threading split concurrency
      * in a set of lambda-friendly methods
      *
      * @param executorService the thread or thread pool for this thread type. Threads and thread pools may be

@@ -48,7 +48,7 @@ import android.support.annotation.NonNull;
  * @param <OUT>
  */
 public interface IReactiveSource<OUT> extends INamed {
-    //TODO Add .sub(mOnFireAction..) list versions for convenience
+    //TODO Add .sub(onFireAction..) list versions for convenience
 
     /**
      * Remove a down-chain branch from the reactive function tree at this node
@@ -86,12 +86,12 @@ public interface IReactiveSource<OUT> extends INamed {
 //    <UPCHAIN_OUT> IReactiveSource<OUT> merge(IReactiveSource<UPCHAIN_OUT> upchainReactiveSource);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      * <p>
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
-     * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
+     * context, sub the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -102,12 +102,12 @@ public interface IReactiveSource<OUT> extends INamed {
     IReactiveSource<OUT> sub(@NonNull IAction<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      * <p>
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
-     * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
+     * context, sub the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -118,12 +118,12 @@ public interface IReactiveSource<OUT> extends INamed {
     IReactiveSource<OUT> sub(@NonNull IActionOne<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      * <p>
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      * <p>
-     * If this <code>mOnFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
-     * context, sub the mOnFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
+     * If this <code>onFireAction</code> is a lambda with closure references to a surrounding {@link java.lang.Object}
+     * context, sub the onFireAction will automatically {@link #unsubscribe(String, IReactiveTarget)} when the surrounding
      * context is garbage collected <em>and</em> any down-chain {@link IReactiveTarget}
      * is garbage collected.
      *
@@ -135,9 +135,9 @@ public interface IReactiveSource<OUT> extends INamed {
     <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> subMap(@NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      *
-     * @param threadType The mOnFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
+     * @param threadType The onFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
      * @return
      */
@@ -146,9 +146,9 @@ public interface IReactiveSource<OUT> extends INamed {
                              @NonNull IAction<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      *
-     * @param threadType The mOnFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
+     * @param threadType The onFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
      * @return
      */
@@ -157,7 +157,7 @@ public interface IReactiveSource<OUT> extends INamed {
                              @NonNull IActionOne<OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      *
      * @param action
      * @param <DOWNCHAIN_OUT>
@@ -167,7 +167,7 @@ public interface IReactiveSource<OUT> extends INamed {
     <DOWNCHAIN_OUT> IReactiveSource<DOWNCHAIN_OUT> sub(@NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      *
      * @param threadType
      * @param action
@@ -179,9 +179,9 @@ public interface IReactiveSource<OUT> extends INamed {
                                                        @NonNull IActionR<DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      *
-     * @param threadType      The mOnFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
+     * @param threadType      The onFireAction will be called asynchronously unless the this is same {@link com.reactivecascade.i.IThreadType} as this (upchain) node in the reactive function tree.
      * @param action
      * @param <DOWNCHAIN_OUT>
      * @return
@@ -191,7 +191,7 @@ public interface IReactiveSource<OUT> extends INamed {
                                                           @NonNull IActionOneR<OUT, DOWNCHAIN_OUT> action);
 
     /**
-     * Add an mOnFireAction as a new branch down-chain from this node.
+     * Add an onFireAction as a new branch down-chain from this node.
      * <p>
      * It will run on the same {@link com.reactivecascade.i.IThreadType} as this node and may be called synchronously.
      *

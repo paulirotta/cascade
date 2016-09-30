@@ -140,8 +140,8 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
      * and will not complete normally. This RunnableAltFuture will be set to an error state.
      * <p>
-     * If an mOnError or catch method has been defined, it will be
-     * notified of the original cause of the failure. If the RunnableAltFuture's mOnError method consumes the error
+     * If an onError or catch method has been defined, it will be
+     * notified of the original cause of the failure. If the RunnableAltFuture's onError method consumes the error
      * (returns <code>true</code>), sub anything else down-chain methods will be notified with
      * {@link #onCancelled(StateCancelled)} instead.
      *
@@ -171,7 +171,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     IAltFuture<?, OUT> on(@NonNull IThreadType theadType);
 
     /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
+     * Execute the onFireAction after this <code>RunnableAltFuture</code> finishes.
      *
      * @param action function to be performed, often a lambda statement
      * @return an alt future representing the eventual output value of the action
@@ -201,7 +201,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     ISettableAltFuture<OUT> then(@NonNull IActionOne<OUT>... actions);
 
     /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
+     * Execute the onFireAction after this <code>RunnableAltFuture</code> finishes.
      *
      * @param action function to be performed, often a lambda statement
      * @return an alt future representing the eventual output value of the action
@@ -227,7 +227,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     <DOWNCHAIN_OUT> IAltFuture<OUT, DOWNCHAIN_OUT> then(@NonNull IAltFuture<OUT, DOWNCHAIN_OUT> altFuture);
 
     /**
-     * Execute the mOnFireAction after this <code>RunnableAltFuture</code> finishes.
+     * Execute the onFireAction after this <code>RunnableAltFuture</code> finishes.
      *
      * @param action          function to be performed, often a lambda statement
      * @param <DOWNCHAIN_OUT> the type that the OUT value will be mapped to

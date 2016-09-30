@@ -78,7 +78,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    public void testForkBeforeSetIsForkedWhenDoNotUseForkedState() throws Exception {
+    public void testForkBeforeSetIsForkedWhenNotUsingForkedState() throws Exception {
         if (!Async.USE_FORKED_STATE) {
             final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
             settableAltFuture.fork();

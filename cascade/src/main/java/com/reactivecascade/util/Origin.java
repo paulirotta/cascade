@@ -19,7 +19,6 @@ import com.reactivecascade.i.NotCallOrigin;
  */
 @NotCallOrigin
 public class Origin implements IAsyncOrigin {
-
     private final ImmutableValue<String> origin = RCLog.originAsync();
 
     @NonNull

@@ -43,7 +43,7 @@ public interface IReactiveTarget<IN> extends INamed {
      * correction mess.
      * <p>
      * If you would like to unlink this object when the fire operation results in an error, you must
-     * do so in an <code>.mOnError()</code> statement lower down in the chain you wish to trigger
+     * do so in an <code>.onError()</code> statement lower down in the chain you wish to trigger
      * such an action.
      *
      * @param in The from from the previous link in the reactive chain.
