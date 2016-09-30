@@ -15,7 +15,6 @@ import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.reactive.ReactiveValue;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +45,7 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
         if (netUtil == null) {
             netUtil = new NetUtil(appContext);
         }
-        defaultTimeoutMillis = 15000; // Give real net traffic enough time to complete
+        defaultTimeoutMillis = 5000; // Give real net traffic enough time to complete
     }
 
     @Test
@@ -62,29 +61,27 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
-        assertTrue(netUtil.get(value).body().bytes().length > 20);
+        int length = netUtil.get(value).body().bytes().length;
+        assertTrue(length > 20);
     }
 
     @Test
-    @Ignore //TODO something to do with Async.USE_FORKED_STATE
     public void testGetFromIGettableWithHeaders() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueG"));
-        assertTrue(netUtil.get(value, headers).body().string().contains("ValueG"));
+        String s = netUtil.get(value, headers).body().string();
+        assertTrue(s.contains("ValueG"));
     }
 
     @Test
-    @Ignore //TODO something to do with Async.USE_FORKED_STATE
     public void testGetAsync() throws Exception {
         IAltFuture<?, Response> iaf = netUtil
                 .getAsync("http://httpbin.org/get")
-                .then(this::signal)
                 .fork();
-        awaitSignal();
+        await(iaf);
         assertEquals(HttpURLConnection.HTTP_OK, iaf.get().code());
     }
 
@@ -92,7 +89,8 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
-                .then(netUtil.getAsync());
+                .then(netUtil.getAsync())
+                .fork();
         assertTrue(await(iaf).isSuccessful());
     }
 
@@ -100,20 +98,20 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
-        assertTrue(await(
-                netUtil
-                        .getAsync("http://httpbin.org/headers", headers)
-                        .fork()
-        ).body().string().contains("ValueZ"));
+        IAltFuture<String, Response> iaf = netUtil
+                .getAsync("http://httpbin.org/headers", headers)
+                .fork();
+        assertTrue(await(iaf).body().string().contains("ValueZ"));
     }
 
     @Test
-    public void testValueGetAsyncWithHeaders() throws Exception {
+    public void testValueGetAsyncWithHeadersOnWorker() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
-        IAltFuture<?, Response> iaf = WORKER
+        IAltFuture<String, Response> iaf = WORKER
                 .from("http://httpbin.org/headers")
-                .then(netUtil.getAsync(headers));
+                .then(netUtil.getAsync(headers))
+                .fork();
         assertTrue(await(iaf).body().string().contains("ValueT"));
     }
 

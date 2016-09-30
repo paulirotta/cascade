@@ -231,18 +231,9 @@ public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testExecute() throws Exception {
-        final AtomicInteger ai = new AtomicInteger(0);
         WORKER.execute(() -> {
-            uiExecutorService.execute(() -> {
-                ai.set(100);
-            });
+            uiExecutorService.execute(this::signal);
         });
-        long endTime = System.currentTimeMillis() + 1000;
-        while (!(ai.get() == 100)) {
-            if (System.currentTimeMillis() > endTime) {
-                throw new TimeoutException();
-            }
-            Thread.yield();
-        }
+        awaitSignal();
     }
 }

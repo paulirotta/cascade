@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.TestUtil;
 
 import org.junit.After;
@@ -98,6 +99,7 @@ public abstract class CascadeIntegrationTest {
     @NonNull
     protected <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
                                                  long timeoutMillis) throws Exception {
+        AssertUtil.assertTrue("Please call altFuture.fork() before await(altFuture)", altFuture.isForked());
         return TestUtil.getTestUtil().awaitHideStackTraces(altFuture, timeoutMillis);
     }
 
@@ -130,6 +132,7 @@ public abstract class CascadeIntegrationTest {
     @NonNull
     protected <IN, OUT> OUT await(@NonNull IAltFuture<IN, OUT> altFuture,
                                   long timeoutMillis) throws Exception {
+        AssertUtil.assertTrue("Please call altFuture.fork() before await(altFuture)", altFuture.isForked());
         return TestUtil.getTestUtil().await(altFuture, timeoutMillis);
     }
 }
