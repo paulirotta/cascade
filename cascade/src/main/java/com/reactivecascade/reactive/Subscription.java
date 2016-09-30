@@ -17,14 +17,13 @@ import com.reactivecascade.i.IReactiveSource;
 import com.reactivecascade.i.IReactiveTarget;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
+import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.Origin;
 import com.reactivecascade.util.RCLog;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static com.reactivecascade.Async.UI;
 
 /**
  * This is the default implementation for a reactive active chain link.
@@ -83,15 +82,16 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
      */
     @SuppressWarnings("unchecked")
     public Subscription(@NonNull String name,
-                        @Nullable IThreadType threadType, @Nullable IReactiveSource<IN> upchainReactiveSource,
+                        @NonNull IThreadType threadType,
+                        @Nullable IReactiveSource<IN> upchainReactiveSource,
                         @NonNull IActionOneR<IN, OUT> onFireAction,
                         @Nullable IActionOne<Exception> onError) {
-        this.name = name;
+        this.name = AssertUtil.assertNotNull("Please provide an object name for debugging purposes", name);
+        this.mThreadType = AssertUtil.assertNotNull("Please specify the IThreadType on which this Subscription fires by default", threadType);
         this.upchainReactiveSource = upchainReactiveSource;
         if (upchainReactiveSource != null) {
             upchainReactiveSource.sub(this);
         }
-        this.mThreadType = threadType != null ? threadType : UI;
         this.mOnFireAction = onFireAction;
         this.mOnError = onError != null ? onError : e ->
                 RCLog.e(this, "Problem firing subscription, name=" + getName(), e);
