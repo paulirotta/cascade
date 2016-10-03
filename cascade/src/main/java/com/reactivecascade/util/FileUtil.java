@@ -5,11 +5,15 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.reactivecascade.util;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.CheckResult;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.WorkerThread;
+import android.support.v4.app.ActivityCompat;
 
 import com.reactivecascade.i.IAltFuture;
 
@@ -26,6 +30,14 @@ import static com.reactivecascade.Async.FILE;
 public final class FileUtil extends Origin {
     private static final int BUFFER_SIZE = 16384;
 
+    private static final String WRITE_PERMISSION_SECURITY_EXCEPTION = "Request permission WRITE_EXTERNAL_STORAGE";
+    private static final String READ_PERMISSION_SECURITY_EXCEPTION = "Request permission READ_EXTERNAL_STORAGE";
+
+    @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FileMode {
+    }
+
     @NonNull
     private final Context context;
 
@@ -38,10 +50,23 @@ public final class FileUtil extends Origin {
         this.mode = mode;
     }
 
+    public boolean checkWritePermission() {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    public boolean checkReadPermission() {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+    }
+
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public <IN> IAltFuture<IN, IN> writeAsync(@NonNull String fileName,
                                               @NonNull byte[] bytes) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.then(
                 () -> {
                     write(fileName, bytes);
@@ -50,7 +75,12 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public IAltFuture<String, byte[]> writeAsync(@NonNull byte[] bytes) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.map(
                 fileName -> {
                     write(fileName, bytes);
@@ -60,7 +90,12 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public IAltFuture<byte[], byte[]> writeAsync(@NonNull String fileName) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.then(
                 bytes -> {
                     write(fileName, bytes);
@@ -68,8 +103,13 @@ public final class FileUtil extends Origin {
     }
 
     @WorkerThread
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void write(@NonNull String fileName,
                       @NonNull byte[] bytes) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         FileOutputStream fileOutputStream = null;
 
         try {
@@ -96,13 +136,23 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public IAltFuture<String, byte[]> readAsync() {
+        if (!checkReadPermission()) {
+            throw new SecurityException(READ_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.map(this::read);
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public IAltFuture<?, byte[]> readAsync(@NonNull String fileName) {
+        if (!checkReadPermission()) {
+            throw new SecurityException(READ_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.then(
                 () -> {
                     return read(fileName);
@@ -111,7 +161,12 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @WorkerThread
+    @RequiresPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public byte[] read(@NonNull String fileName) {
+        if (!checkReadPermission()) {
+            throw new SecurityException(READ_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FileInputStream fileInputStream = null;
 
@@ -145,13 +200,23 @@ public final class FileUtil extends Origin {
     }
 
     @WorkerThread
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public boolean delete(@NonNull String fileName) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return context.deleteFile(fileName);
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public IAltFuture<?, Boolean> deleteAsync(@NonNull final String fileName) {
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
+
         return FILE.then(
                 () -> {
                     return delete(fileName);
@@ -160,12 +225,12 @@ public final class FileUtil extends Origin {
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public IAltFuture<String, Boolean> deleteAsync() {
-        return FILE.map(this::delete);
-    }
+        if (!checkWritePermission()) {
+            throw new SecurityException(WRITE_PERMISSION_SECURITY_EXCEPTION);
+        }
 
-    @IntDef({Context.MODE_PRIVATE, Context.MODE_APPEND})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface FileMode {
+        return FILE.map(this::delete);
     }
 }

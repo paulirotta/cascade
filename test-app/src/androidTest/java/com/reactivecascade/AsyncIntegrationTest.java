@@ -1,7 +1,9 @@
 package com.reactivecascade;
 
+import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,14 @@ public class AsyncIntegrationTest extends CascadeIntegrationTest {
         async = new AsyncBuilder(appContext)
                 .setStrictMode(false)
                 .build();
+    }
+
+    @CallSuper
+    @After
+    public void cleanup() throws Exception {
+        appContext = null;
+        AsyncBuilder.reset();
+        super.cleanup();
     }
 
     @Test

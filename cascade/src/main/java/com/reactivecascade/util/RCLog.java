@@ -43,6 +43,7 @@ import java.util.concurrent.TimeoutException;
  * method were called.
  */
 public class RCLog {
+    private static final String TAG = RCLog.class.getSimpleName();
     /**
      * A null object indicating the origin is not available
      */
@@ -444,7 +445,7 @@ public class RCLog {
         if (Async.WORKER != null) {
             Async.WORKER.run(runnable);
         } else {
-            RCLog.i(DEFAULT_ORIGIN, "WORKER is null- origin is determined synchronously");
+            Log.i(TAG, "WORKER is null- origin is determined synchronously");
             runnable.run();
         }
 
@@ -577,7 +578,7 @@ public class RCLog {
                                                             @NonNull IActionOneR<String, Boolean> packageFilter) throws Exception {
         List<StackTraceLine> filteredList = new ArrayList<>(list.size());
 
-        for (final StackTraceLine line : list) {
+        for (StackTraceLine line : list) {
             if (packageFilter.call(line.claz.getPackage().getName())) {
                 filteredList.add(line);
             }
@@ -613,14 +614,14 @@ public class RCLog {
                 sClassNameMap.putIfAbsent(className, c);
             }
             this.claz = c;
-            final String methodName = stackTraceElement.getMethodName();
-            final String key = className + methodName;
+            String methodName = stackTraceElement.getMethodName();
+            String key = className + methodName;
 
             Method meth = sMethodNameMap.get(key);
             if (meth == null) {
-                final Method[] methods = claz.getMethods();
+                Method[] methods = claz.getMethods();
 
-                for (final Method m : methods) {
+                for (Method m : methods) {
                     if (m.getName().equals(methodName)) {
                         sMethodNameMap.putIfAbsent(key, m);
                         meth = m;

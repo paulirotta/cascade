@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.i.IThreadType;
+import com.reactivecascade.util.DefaultThreadType;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,6 +44,9 @@ public class AsyncBuilderUnitTest {
 
     @Mocked
     IThreadType threadType;
+
+    @Mocked
+    DefaultThreadType defaultThreadType;
 
     @Mocked
     Context context;

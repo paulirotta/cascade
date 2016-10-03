@@ -71,4 +71,10 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
     protected void doFork() {
         // This is not an IRunnableAltFuture, so nothing to fork() or run(). But RunnableAltFuture overrides this and does more
     }
+
+    //FIXME Remove this after testing
+    @Override
+    protected boolean isForked(@NonNull Object state) {
+        return state != VALUE_NOT_AVAILABLE;
+    }
 }

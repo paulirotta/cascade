@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.util;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
@@ -51,8 +50,6 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_IDEN;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_LTE;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_UNKNOWN;
-import static com.reactivecascade.Async.NET_READ;
-import static com.reactivecascade.Async.NET_WRITE;
 
 /**
  * OkHttp convenience wrapper methods
@@ -65,13 +62,13 @@ public final class NetUtil extends Origin {
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
 
     @NonNull
-    private final OkHttpClient mOkHttpClient;
+    private final OkHttpClient okHttpClient;
 
     @NonNull
-    private final TelephonyManager mTelephonyManager;
+    private final TelephonyManager telephonyManager;
 
     @NonNull
-    private final WifiManager mWifiManager;
+    private final WifiManager wifiManager;
 
     @NonNull
     private final IThreadType netReadThreadType;
@@ -79,21 +76,21 @@ public final class NetUtil extends Origin {
     @NonNull
     private final IThreadType netWriteThreadType;
 
-    /**
-     * Create a {@link NetUtil} instance which uses the default {@link com.reactivecascade.Async#NET_READ}
-     * and {@link com.reactivecascade.Async#NET_WRITE} to run asynchonous tasks.
-     *
-     * @param context run time context
-     */
-    public NetUtil(@NonNull final Context context) {
-        this(context, NET_READ, NET_WRITE);
-    }
+//    /**
+//     * Create a {@link NetUtil} instance which uses the default {@link com.reactivecascade.Async#NET_READ}
+//     * and {@link com.reactivecascade.Async#NET_WRITE} to run asynchonous tasks.
+//     *
+//     * @param context run time context
+//     */
+//    public NetUtil(@NonNull final Context context) {
+//        this(context, Async.NET_READ, Async.NET_WRITE);
+//    }
 
     /**
      * Create a {@link NetUtil} instance with custom thread groups for network reads and writes
      *
-     * @param context run time context
-     * @param netReadThreadType executes read tasks
+     * @param context            run time context
+     * @param netReadThreadType  executes read tasks
      * @param netWriteThreadType executes write tasks
      */
     @RequiresPermission(allOf = {
@@ -105,9 +102,9 @@ public final class NetUtil extends Origin {
                    @NonNull IThreadType netWriteThreadType) {
         this.netReadThreadType = netReadThreadType;
         this.netWriteThreadType = netWriteThreadType;
-        mOkHttpClient = new OkHttpClient();
-        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        mWifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
+        okHttpClient = new OkHttpClient();
+        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
     @NonNull
@@ -392,7 +389,8 @@ public final class NetUtil extends Origin {
                              @NonNull RequestBody body) throws IOException {
         RCLog.d(getOrigin(), "post " + url);
 
-        final Call call = setupCall(url,
+        final Call call = setupCall(
+                url,
                 builder -> {
                     addHeaders(builder, headers);
                     builder.post(body);
@@ -470,7 +468,7 @@ public final class NetUtil extends Origin {
             builderModifier.modify(builder);
         }
 
-        return mOkHttpClient.newCall(builder.build());
+        return okHttpClient.newCall(builder.build());
     }
 
     /**
@@ -485,6 +483,7 @@ public final class NetUtil extends Origin {
      */
     @NonNull
     @WorkerThread
+    @RequiresPermission(Manifest.permission.INTERNET)
     private Response execute(@NonNull Call call) throws IOException {
         final Response response = call.execute();
 
@@ -529,20 +528,21 @@ public final class NetUtil extends Origin {
     /**
      * Check if a current network WIFI connection is CONNECTED
      *
-     * @return
+     * @return <code>true</code> if connected or currently connecting to WIFI
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-        SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
+        SupplicantState s = wifiManager.getConnectionInfo().getSupplicantState();
         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
-        return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
+        return state == NetworkInfo.DetailedState.CONNECTED ||
+                state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
     }
 
     @NonNull
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public NetType getNetworkType() {
-        switch (mTelephonyManager.getNetworkType()) {
+        switch (telephonyManager.getNetworkType()) {
             case NETWORK_TYPE_UNKNOWN:
             case NETWORK_TYPE_CDMA:
             case NETWORK_TYPE_GPRS:

@@ -12,6 +12,7 @@ import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.reactivecascade.Async;
+import com.reactivecascade.AsyncBuilder;
 import com.reactivecascade.BuildConfig;
 import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.functional.RunnableAltFuture;
@@ -74,11 +75,8 @@ public abstract class AbstractThreadType implements IThreadType {
     }
 
     @UiThread
+    @Override // IThreadType
     public void setOrigin(@NonNull IAsyncOrigin origin) {
-        if (this.origin != IAsyncOrigin.ORIGIN_NOT_SET) {
-            throw new IllegalStateException("Origin was already set: " + this.origin.getOrigin().get());
-        }
-
         this.origin = origin;
     }
 
@@ -265,7 +263,8 @@ public abstract class AbstractThreadType implements IThreadType {
         if (timeout == 0 && afterShutdownAction != null) {
             RCLog.throwIllegalArgumentException(origin, "shutdown(0) is legal, but do not supply a afterShutdownAction() as it would run immediately which is probably an error");
         }
-        final ImmutableValue<String> origin = RCLog.originAsync()
+        final ImmutableValue<String> origin = RCLog
+                .originAsync()
                 .then(o -> {
                     RCLog.i(this, "shutdown " + timeout + " mOrigin=" + o + " ThreadType");
                     executorService.shutdown();

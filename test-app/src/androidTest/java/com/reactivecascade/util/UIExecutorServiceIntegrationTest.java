@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.reactivecascade.Async.UI;

@@ -14,7 +14,8 @@ android:
   - build-tools-24.0.2
   - android-24
   - add-on
-  - extra
+  - extra-android-support
+  - extra-android-m2repository
 sudo: false
 notifications:
   email: paulirotta@gmail.com

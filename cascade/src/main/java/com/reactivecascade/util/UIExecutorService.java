@@ -11,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.reactivecascade.Async;
+import com.reactivecascade.functional.ImmutableValue;
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.NotCallOrigin;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import java.util.concurrent.TimeoutException;
  * Since the system UI thread runs forever, not all {@link java.util.concurrent.ExecutorService}
  * items, for example related to lifecycle. make sense to implement.
  */
-public final class UIExecutorService extends Origin implements ExecutorService {
+public final class UIExecutorService implements IAsyncOrigin, ExecutorService {
     @NonNull
     private final Handler handler;
 
@@ -175,7 +177,7 @@ public final class UIExecutorService extends Origin implements ExecutorService {
         if (callables.size() == 0) {
             throw new NullPointerException("Empty list can not invokeAny() as there is no from to return");
         }
-        for (final Callable<T> callable : callables) {
+        for (Callable<T> callable : callables) {
             futures.add(submit(callable));
         }
 
@@ -205,5 +207,15 @@ public final class UIExecutorService extends Origin implements ExecutorService {
         if (!handler.post(command)) {
             RCLog.throwIllegalStateException(this, "Can not Handler.post() to UIThread in this Context right now, probably app is shutting down");
         }
+    }
+
+    @NonNull
+    @Override
+    public ImmutableValue<String> getOrigin() {
+        return null;
+    }
+
+    public void setOrigin() {
+
     }
 }
