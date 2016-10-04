@@ -253,6 +253,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      *
      * @param value
      * @return
+     * @throws IllegalStateException if already set
      */
     @CallSuper
     @NonNull
@@ -264,6 +265,27 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         doThenActions(value);
 
         return value;
+    }
+
+    /**
+     * Set the from, ignoring all sets after the first
+     * <p>
+     * If this atomic onFireAction succeeds, any {@link #then(IActionOne)} actions
+     * will also be run synchronously. This is a fairly low-level class which is used by other classes
+     * and for practical reasons it violates the "always asynchronous" assumption. Traditional. Sorry. :)
+     *
+     * @param value
+     * @return the first value set (which may have been before the current attempt)
+     */
+    @CallSuper
+    @NonNull
+    @SuppressWarnings("unchecked")
+    public T safeSet(@NonNull T value) {
+        if (compareAndSet((T) VALUE_NOT_AVAILABLE, value)) {
+            doThenActions(value);
+        }
+
+        return get();
     }
 
     /**

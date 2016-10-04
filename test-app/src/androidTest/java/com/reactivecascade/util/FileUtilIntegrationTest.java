@@ -71,11 +71,8 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testWriteThenRead() throws Exception {
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            throw new IllegalStateException();
-        }
         String s = getUniqueTestData();
-        fileUtil.write(TEST_FILE_NAME, getUniqueTestData().getBytes());
+        fileUtil.write(TEST_FILE_NAME, s.getBytes());
         String s2 = new String(fileUtil.read(TEST_FILE_NAME));
         assertEquals(s, s2);
     }
@@ -83,18 +80,12 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     @Test
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void testDeleteOfNonexistantFile() throws Exception {
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            throw new IllegalStateException();
-        }
         boolean response = fileUtil.delete("nonFile");
         assertFalse(response);
     }
 
     @Test
     public void testDeleteOfFile() throws Exception {
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            throw new IllegalStateException();
-        }
         String s = getUniqueTestData();
         fileUtil.write(TEST_FILE_NAME, getUniqueTestData().getBytes());
         boolean response = fileUtil.delete(TEST_FILE_NAME);

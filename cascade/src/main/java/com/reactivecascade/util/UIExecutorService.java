@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -172,16 +173,11 @@ public final class UIExecutorService implements IAsyncOrigin, ExecutorService {
     @WorkerThread
     @NonNull
     public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> callables) throws InterruptedException, NullPointerException, RejectedExecutionException, ExecutionException {
-        ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
-
-        if (callables.size() == 0) {
-            throw new NullPointerException("Empty list can not invokeAny() as there is no from to return");
+        try {
+            return invokeAny(callables, Long.MAX_VALUE, TimeUnit.HOURS);
+        } catch (TimeoutException e) {
+            throw new IllegalStateException("Improbable timeout");
         }
-        for (Callable<T> callable : callables) {
-            futures.add(submit(callable));
-        }
-
-        return futures.get(0).get();
     }
 
     @NonNull
@@ -190,16 +186,23 @@ public final class UIExecutorService implements IAsyncOrigin, ExecutorService {
     public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> callables,
                            long timeout,
                            @NonNull TimeUnit unit) throws InterruptedException, NullPointerException, RejectedExecutionException, TimeoutException, ExecutionException {
-        ArrayList<Future<T>> futures = new ArrayList<>(callables.size());
+        CountDownLatch latch = new CountDownLatch(1);
+        ImmutableValue<T> raceValue = new ImmutableValue<>();
+
+        raceValue.then(t -> {
+            latch.countDown();
+        });
 
         if (callables.size() == 0) {
             throw new NullPointerException("Empty list can not invokeAny() as there is no from to return");
         }
         for (Callable<T> callable : callables) {
-            futures.add(submit(callable));
+            submit(() -> raceValue.safeSet(callable.call()));
         }
 
-        return futures.get(0).get(timeout, unit);
+        latch.await(timeout, unit);
+
+        return raceValue.get();
     }
 
     @Override // ExecutorService

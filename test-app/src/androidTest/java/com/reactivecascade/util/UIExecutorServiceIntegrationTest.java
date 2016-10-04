@@ -191,16 +191,10 @@ public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
             return 100;
         });
         callableList.add(() -> {
-            ai.set(ai.get() + 200);
+            ai.set(200);
             return 200;
         });
-        callableList.add(() -> {
-            saf.set("done");
-            return 1;
-        });
         uiExecutorService.invokeAny(callableList);
-        await(saf);
-        assertTrue(sendCount > 0);
         assertTrue(ai.get() > 0);
     }
 
@@ -208,23 +202,16 @@ public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
     public void testInvokeAnyCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String> saf = new SettableAltFuture<>(WORKER);
 
         callableList.add(() -> {
             ai.set(100);
             return 100;
         });
         callableList.add(() -> {
-            ai.set(ai.get() + 200);
+            ai.set(200);
             return 200;
         });
-        callableList.add(() -> {
-            saf.set("done");
-            return 1;
-        });
-        uiExecutorService.invokeAny(callableList, 1000, TimeUnit.MILLISECONDS);
-        await(saf);
-        assertTrue(sendCount > 0);
+        uiExecutorService.invokeAny(callableList, 1, TimeUnit.SECONDS);
         assertTrue(ai.get() > 0);
     }
 
