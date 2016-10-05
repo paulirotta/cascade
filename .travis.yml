@@ -9,7 +9,6 @@ android:
   - platform-tools
   - build-tools-24.0.3
   - android-24
-  - add-on
   - extra-android-support
   - extra-android-m2repository
 sudo: false
