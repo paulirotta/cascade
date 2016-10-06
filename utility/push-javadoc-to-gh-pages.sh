@@ -2,6 +2,7 @@
 
 if [ "$TRAVIS_REPO_SLUG" == "paulirotta/cascade" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then
 
+  ./gradlew generateReleaseJavadoc --info
   echo -e "Publishing javadoc...\n"
 
   cp -R cascade/build/docs/javadoc $HOME/javadoc-latest

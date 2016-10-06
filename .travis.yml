@@ -28,4 +28,4 @@ before_script:
 script:
 - "./gradlew lint test connectedCheck generateReleaseJavadoc --info"
 after_success:
-- .utility/push-javadoc-to-gh-pages.sh
+- utility/push-javadoc-to-gh-pages.sh
