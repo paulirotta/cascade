@@ -2,15 +2,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "$BUILD_TOOLS_VERSION"
     publishNonDefault true
+    buildToolsVersion rootProject.buildToolsVersion
+    compileSdkVersion rootProject.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 1
-        versionName "0.3.8"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.compileSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,15 +53,16 @@ allprojects {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$SUPPORT_VERSION"
-    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    testCompile 'junit:junit:4.12'
+    compile "com.android.support:appcompat-v7:" + rootProject.supportVersion;
+    compile "com.android.support:support-annotations:" + rootProject.supportVersion;
+    compile 'com.squareup.okhttp3:okhttp:' + rootProject.okhttpVersion;
+    testCompile 'junit:junit:' + rootProject.junitVersion;
+    testCompile 'org.mockito:mockito-core:' + rootProject.mockitoVersion;
+    testCompile 'org.jmockit:jmockit:' + rootProject.jmockitVersion;
     androidTestCompile 'junit:junit:4.12'
-    testCompile 'org.jmockit:jmockit:1.28'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:' + rootProject.espressoVersion, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }

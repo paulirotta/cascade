@@ -90,7 +90,14 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void testDeleteOfNonexistantFile() throws Exception {
         if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "missing permission");
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
         boolean response = fileUtil.delete("nonFile");
         assertFalse(response);

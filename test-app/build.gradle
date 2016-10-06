@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "$BUILD_TOOLS_VERSION"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "com.reactivecascade.test"
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,14 +45,17 @@ dependencies {
     debugCompile project(path: ':cascade', configuration: 'debug')
     releaseCompile project(path: ':cascade', configuration: 'release')
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:' + rootProject.espressoVersion, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:$SUPPORT_VERSION"
-    compile "com.android.support:design:$SUPPORT_VERSION"
-    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
-    androidTestCompile "com.android.support:support-annotations:$SUPPORT_VERSION"
-    androidTestCompile 'com.squareup.okhttp3:okhttp:3.2.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.jmockit:jmockit:1.28'
+    testCompile 'junit:junit:' + rootProject.junitVersion;
+    testCompile 'org.mockito:mockito-core:' + rootProject.mockitoVersion;
+    testCompile 'org.jmockit:jmockit:' + rootProject.jmockitVersion;
+    compile "com.android.support:appcompat-v7:" + rootProject.supportVersion;
+    compile "com.android.support:design:" + rootProject.supportVersion;
+    compile "com.android.support:support-annotations:" + rootProject.supportVersion;
+    androidTestCompile "com.android.support:support-annotations:" + rootProject.supportVersion;
+    androidTestCompile 'com.squareup.okhttp3:okhttp:' + rootProject.okhttpVersion;
+    testCompile 'junit:junit:' + rootProject.junitVersion;
+    testCompile 'org.jmockit:jmockit:' + rootProject.jmockitVersion;
 }
