@@ -64,13 +64,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.jmockit:jmockit:1.22'
     testCompile 'org.mockito:mockito-core:2.1.0'
-    androidTestCompile('com.google.dexmaker:dexmaker:1.4') {
+    androidTestCompile('com.google.dexmaker:dexmaker:1.2') {
         exclude group: 'org.hamcrest'
     }
-    androidTestCompile('com.google.dexmaker:dexmaker-dx:1.4') {
-        exclude group: 'org.hamcrest'
-    }
-    androidTestCompile('com.google.dexmaker:dexmaker-mockito:1.4') {
+    androidTestCompile('com.google.dexmaker:dexmaker-mockito:1.2') {
         exclude group: 'org.hamcrest'
     }
     androidTestCompile('org.mockito:mockito-core:2.1.0') {
