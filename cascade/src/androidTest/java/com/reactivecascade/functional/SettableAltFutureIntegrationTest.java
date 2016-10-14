@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.functional;
 
 import android.support.annotation.CallSuper;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.reactivecascade.Async;
 import com.reactivecascade.AsyncAndroidTestCase;
@@ -17,7 +16,7 @@ import org.junit.Test;
 
 import static com.reactivecascade.Async.SHOW_ERROR_STACK_TRACES;
 
-public class SettableAltFutureTest extends AsyncAndroidTestCase {
+public class SettableAltFutureIntegrationTest extends AsyncAndroidTestCase {
 
     @Before
     @CallSuper

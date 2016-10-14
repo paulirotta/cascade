@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.util.FileUtil;
@@ -29,7 +28,6 @@ import org.junit.runner.RunWith;
  * Created by phou on 6/1/2015.
  */
 @RunWith(AndroidJUnit4.class)
-@SmallTest
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
     private TestUtil mTestUtil;
     private FileUtil fileUtil;
