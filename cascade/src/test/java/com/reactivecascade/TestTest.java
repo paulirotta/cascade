@@ -4,15 +4,19 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AsyncTest {
+public class TestTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @Mock
     Resources resources;
 
@@ -21,7 +25,7 @@ public class AsyncTest {
 
     @Before
     public void setUp() {
-//        when(context.getResources()).thenReturn(resources);
+        when(context.getResources()).thenReturn(resources);
     }
 
     @Test

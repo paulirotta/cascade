@@ -120,8 +120,7 @@ public class AsyncBuilder {
      */
     @UiThread
     public AsyncBuilder(@NonNull Context context) {
-        AssertUtil.assertNotNull(context, "Context can not be null");
-        Context c = context;
+        Context c = AssertUtil.assertNotNull(context, "Context can not be null");
         try {
             c = context.getApplicationContext();
         } catch (NullPointerException e) {
