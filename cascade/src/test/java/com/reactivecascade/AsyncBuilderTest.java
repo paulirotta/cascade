@@ -24,9 +24,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 public class AsyncBuilderTest {
-//    @Rule
-//    public MockitoRule rule = MockitoJUnit.rule();
-
     @Mocked
     Thread thread;
 
@@ -41,7 +38,6 @@ public class AsyncBuilderTest {
 
     @Mocked
     Context context;
-//    Context context = mock(Context.class);
 
     private AsyncBuilder asyncBuilder;
 
