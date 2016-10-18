@@ -8,11 +8,11 @@ package com.reactivecascade.util;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.test.mock.MockContext;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.reactivecascade.AsyncAndroidTestCase;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -42,14 +42,14 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         mockFileUtil = new FileUtil(mockContext, Context.MODE_PRIVATE);
     }
 
-    @LargeTest
+    @Test
     public void testMockWriteShouldAccessFileSystemOnce() {
         mockFileUtil.write("someFile", "something to write".getBytes());
         assertEquals(1, mockContext.fileOpens);
         assertEquals(1, mockContext.fileWrites);
     }
 
-    @LargeTest
+    @Test
     public void testMockReadFileShouldAccessFileSystemOnce() {
         mockFileUtil.read("someFile");
         assertEquals(1, mockContext.fileOpens);
@@ -57,21 +57,21 @@ public class FileUtilTest extends AsyncAndroidTestCase {
         assertEquals(2, mockContext.fileReads);
     }
 
-    @LargeTest
+    @Test
     public void testMockDeleteOfNonexistantFile() {
         boolean response = mockFileUtil.delete("nonFile");
         assertFalse(response);
         assertEquals(0, mockContext.fileDeletes);
     }
 
-    @LargeTest
+    @Test
     public void testMockDeleteOfFile() {
         boolean response = mockFileUtil.delete("someFile");
         assertTrue(response);
         assertEquals(1, mockContext.fileDeletes);
     }
 
-    @LargeTest
+    @Test
     public void testActualWriteReadDelete() {
         getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
         byte[] bytes = getFileUtil().read(TEST_FILE_NAME);

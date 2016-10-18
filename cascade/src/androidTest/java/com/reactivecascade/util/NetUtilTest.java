@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.util;
 
 import android.support.annotation.RequiresPermission;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.reactivecascade.AsyncAndroidTestCase;
 import com.reactivecascade.functional.SettableAltFuture;
@@ -59,25 +58,25 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         setDefaultTimeoutMillis(15000); // Give real net traffic enough time to complete
     }
 
-    @LargeTest
+    @Test
     public void testGet() throws Exception {
         assertTrue(getNetUtil().get("http://httpbin.org/").body().bytes().length > 100);
     }
 
-    @LargeTest
+    @Test
     public void testGetWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
         assertTrue(getNetUtil().get("http://httpbin.org/headers", headers).body().string().contains("ValueZ"));
     }
 
-    @LargeTest
+    @Test
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         assertTrue(getNetUtil().get(value).body().bytes().length > 20);
     }
 
-    @LargeTest
+    @Test
     public void testGetFromIGettableWithHeaders() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
@@ -85,7 +84,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertTrue(getNetUtil().get(value, headers).body().string().contains("ValueG"));
     }
 
-    @LargeTest
+    @Test
     public void testGetAsync() throws Exception {
         IAltFuture<?, Response> iaf = getNetUtil()
                 .getAsync("http://httpbin.org/get")
@@ -95,7 +94,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertEquals(HttpURLConnection.HTTP_OK, iaf.get().code());
     }
 
-    @LargeTest
+    @Test
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
@@ -103,14 +102,14 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertTrue(awaitDone(iaf).isSuccessful());
     }
 
-    @LargeTest
+    @Test
     public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
         assertTrue(awaitDone(getNetUtil().getAsync("http://httpbin.org/headers", headers).fork()).body().string().contains("ValueZ"));
     }
 
-    @LargeTest
+    @Test
     public void testValueGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
@@ -120,7 +119,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertTrue(awaitDone(iaf).body().string().contains("ValueT"));
     }
 
-    @LargeTest
+    @Test
     public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));
@@ -132,12 +131,12 @@ public class NetUtilTest extends AsyncAndroidTestCase {
         assertTrue(awaitDone(iaf).body().string().contains("VaGG"));
     }
 
-    @LargeTest
+    @Test
     public void testPut() throws Exception {
 
     }
 
-    @LargeTest
+    @Test
     public void testPut1() throws Exception {
 
     }
@@ -247,19 +246,19 @@ public class NetUtilTest extends AsyncAndroidTestCase {
 
     }
 
-    @LargeTest
+    @Test
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testGetMaxNumberOfNetConnections() throws Exception {
         assertTrue(getNetUtil().getMaxNumberOfNetConnections() > 1);
     }
 
-    @LargeTest
+    @Test
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public void testIsWifi() throws Exception {
         assertTrue(getNetUtil().isWifi() || true);
     }
 
-    @LargeTest
+    @Test
     public void testGetNetworkType() throws Exception {
         NetUtil.NetType netType = getNetUtil().getNetworkType();
         assertTrue(netType == NetUtil.NetType.NET_4G || netType == NetUtil.NetType.NET_3G || netType == NetUtil.NetType.NET_2_5G || netType == NetUtil.NetType.NET_2G);
