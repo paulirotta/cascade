@@ -122,7 +122,7 @@ public class AsyncBuilder {
     public AsyncBuilder(@NonNull Context context) {
         Context c = AssertUtil.assertNotNull(context, "Context can not be null");
         try {
-            c = context.getApplicationContext();
+            c = AssertUtil.assertNotNull(context.getApplicationContext(), "Application context can not be null");
         } catch (NullPointerException e) {
             Log.i(TAG, "Instrumentation test run detected: context is null");
         }
