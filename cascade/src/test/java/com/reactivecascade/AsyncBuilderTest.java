@@ -12,40 +12,36 @@ import com.reactivecascade.i.IThreadType;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
+import mockit.Mocked;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class AsyncBuilderTest {
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule();
+//    @Rule
+//    public MockitoRule rule = MockitoJUnit.rule();
 
-    @Mock
+    @Mocked
     Thread thread;
 
-    @Mock
+    @Mocked
     BlockingQueue<Runnable> queue;
 
-    @Mock
+    @Mocked
     ExecutorService executorService;
 
-    @Mock
+    @Mocked
     IThreadType threadType;
 
-    @InjectMocks
-    Context context = mock(Context.class);
+    @Mocked
+    Context context;
+//    Context context = mock(Context.class);
 
     private AsyncBuilder asyncBuilder;
 
@@ -63,7 +59,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testIsInitialized() throws Exception {
         assertFalse(AsyncBuilder.isInitialized());
         asyncBuilder.build();
@@ -71,14 +66,12 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testIsRuntimeAssertionsEnabled() throws Exception {
         asyncBuilder.build();
         assertEquals(BuildConfig.DEBUG, asyncBuilder.isRuntimeAssertionsEnabled());
     }
 
     @Test
-    @Ignore
     public void testSetRuntimeAssertionsEnabled() throws Exception {
         asyncBuilder
                 .setRuntimeAssertionsEnabled(false)
@@ -87,14 +80,12 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testIsUseForkedState() throws Exception {
         asyncBuilder.build();
         assertEquals(BuildConfig.DEBUG, asyncBuilder.isUseForkedState());
     }
 
     @Test
-    @Ignore
     public void testSetUseForkedState() throws Exception {
         asyncBuilder
                 .setUseForkedState(false)
@@ -103,21 +94,18 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testIsStrictMode() throws Exception {
         asyncBuilder.build();
         assertFalse(asyncBuilder.isStrictMode());
     }
 
     @Test
-    @Ignore
     public void testIsFailFast() throws Exception {
         asyncBuilder.build();
         assertEquals(BuildConfig.DEBUG, asyncBuilder.isFailFast());
     }
 
     @Test
-    @Ignore
     public void testSetFailFast() throws Exception {
         asyncBuilder
                 .setFailFast(false)
@@ -126,14 +114,12 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testIsShowErrorStackTraces() throws Exception {
         asyncBuilder.build();
         assertEquals(BuildConfig.DEBUG, asyncBuilder.isShowErrorStackTraces());
     }
 
     @Test
-    @Ignore
     public void testSetShowErrorStackTraces() throws Exception {
         asyncBuilder
                 .setShowErrorStackTraces(false)
@@ -142,7 +128,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetWorkerThreadType() throws Exception {
         asyncBuilder
                 .setWorkerThreadType(threadType)
@@ -151,7 +136,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetSerialWorkerThreadType() throws Exception {
         asyncBuilder
                 .setSerialWorkerThreadType(threadType)
@@ -160,7 +144,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetSerialWorkerThreadType() throws Exception {
         asyncBuilder
                 .setSerialWorkerThreadType(threadType)
@@ -169,7 +152,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetUiThreadType() throws Exception {
         asyncBuilder
                 .setUIThreadType(threadType)
@@ -178,7 +160,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetUIThreadType() throws Exception {
         asyncBuilder
                 .setUIThreadType(threadType)
@@ -187,7 +168,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetReadThreadType() throws Exception {
         asyncBuilder
                 .setNetReadThreadType(threadType)
@@ -196,7 +176,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetNetReadThreadType() throws Exception {
         asyncBuilder
                 .setNetReadThreadType(threadType)
@@ -205,7 +184,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetNetWriteThreadType() throws Exception {
         asyncBuilder
                 .setNetWriteThreadType(threadType)
@@ -214,7 +192,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetFileThreadType() throws Exception {
         asyncBuilder
                 .setFileThreadType(threadType)
@@ -223,7 +200,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetWorkerExecutorService() throws Exception {
         asyncBuilder
                 .setWorkerExecutorService(executorService)
@@ -232,7 +208,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetSerialWorkerExecutorService() throws Exception {
         asyncBuilder
                 .setSerialWorkerExecutorService(executorService)
@@ -241,7 +216,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetWorkerQueue() throws Exception {
         asyncBuilder
                 .setWorkerQueue(queue)
@@ -250,7 +224,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetSerialWorkerQueue() throws Exception {
         asyncBuilder
                 .setSerialWorkerQueue(queue)
@@ -259,7 +232,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetFileQueue() throws Exception {
         asyncBuilder
                 .setFileQueue(queue)
@@ -269,7 +241,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetReadQueue() throws Exception {
         asyncBuilder
                 .setNetReadQueue(queue)
@@ -279,7 +250,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetWriteQueue() throws Exception {
         asyncBuilder
                 .setNetWriteQueue(queue)
@@ -288,7 +258,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetFileExecutorService() throws Exception {
         asyncBuilder
                 .setFileExecutorService(executorService)
@@ -297,7 +266,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetReadExecutorService() throws Exception {
         asyncBuilder
                 .setNetReadExecutorService(executorService)
@@ -306,7 +274,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetNetWriteExecutorService() throws Exception {
         asyncBuilder
                 .setNetWriteExecutorService(executorService)
@@ -315,7 +282,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testGetUiExecutorService() throws Exception {
         asyncBuilder
                 .setUiExecutorService(executorService)
@@ -324,7 +290,6 @@ public class AsyncBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testSetUI_Thread() throws Exception {
         asyncBuilder
                 .setUiThread(thread)
