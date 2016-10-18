@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
+import mockit.Capturing;
 import mockit.Mocked;
 
 import static junit.framework.Assert.assertEquals;
@@ -36,7 +37,7 @@ public class AsyncBuilderTest {
     @Mocked
     IThreadType threadType;
 
-    @Mocked
+    @Capturing
     Context context;
 
     private AsyncBuilder asyncBuilder;
