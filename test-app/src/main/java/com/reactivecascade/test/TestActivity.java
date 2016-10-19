@@ -1,15 +1,18 @@
 package com.reactivecascade.test;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class TestActivity extends AppCompatActivity {
+    public static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 1000;
+    public static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +51,23 @@ public class TestActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case TestActivity.MY_PERMISSIONS_READ_EXTERNAL_STORAGE:
+                break;
+
+            case TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE:
+                break;
+
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 }

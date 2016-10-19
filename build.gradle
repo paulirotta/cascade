@@ -25,14 +25,16 @@ task clean(type: Delete) {
 ext {
     versionCode = 1
     versionName = "0.3.8"
-    minSdkVersion = 16
+
     compileSdkVersion = 24
-    targetSdkVersion = compileSdkVersion
     buildToolsVersion = "24.0.3"
+    supportVersion = "24.2.1"
+    targetSdkVersion = compileSdkVersion
+    minSdkVersion = 16
+
     junitVersion = "4.12"
     mockitoVersion = "2.1.0"
     jmockitVersion = "1.28"
-    supportVersion = "24.2.1"
     okhttpVersion = "3.2.0"
     espressoVersion = "2.2.2"
 }

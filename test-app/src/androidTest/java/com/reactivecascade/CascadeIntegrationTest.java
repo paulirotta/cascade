@@ -81,7 +81,7 @@ public abstract class CascadeIntegrationTest {
      * @throws Exception
      */
     @NonNull
-    protected <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture) throws Exception {
+    protected final <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture) throws Exception {
         return awaitHideStackTraces(altFuture, defaultTimeoutMillis);
     }
 
@@ -97,7 +97,7 @@ public abstract class CascadeIntegrationTest {
      * @throws Exception
      */
     @NonNull
-    protected <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
+    protected final <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
                                                  long timeoutMillis) throws Exception {
         AssertUtil.assertTrue("Please call altFuture.fork() before await(altFuture)", altFuture.isForked());
         return TestUtil.getTestUtil().awaitHideStackTraces(altFuture, timeoutMillis);
