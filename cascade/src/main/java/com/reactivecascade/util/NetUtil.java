@@ -64,20 +64,22 @@ public final class NetUtil extends Origin {
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
 
-    @NonNull
-    private final OkHttpClient mOkHttpClient;
+    @NonNull Context context;
 
     @NonNull
-    private final TelephonyManager mTelephonyManager;
+    private final OkHttpClient okHttpClient;
 
     @NonNull
-    private final WifiManager mWifiManager;
+    private final TelephonyManager telephonyManager;
 
     @NonNull
-    private final IThreadType mNetReadThreadType;
+    private final WifiManager wifiManager;
 
     @NonNull
-    private final IThreadType mNetWriteThreadType;
+    private final IThreadType netReadThreadType;
+
+    @NonNull
+    private final IThreadType netWriteThreadType;
 
     @RequiresPermission(allOf = {
             Manifest.permission.INTERNET,
@@ -90,11 +92,12 @@ public final class NetUtil extends Origin {
     public NetUtil(@NonNull Context context,
                    @NonNull IThreadType netReadThreadType,
                    @NonNull IThreadType netWriteThreadType) {
-        this.mNetReadThreadType = netReadThreadType;
-        this.mNetWriteThreadType = netWriteThreadType;
-        mOkHttpClient = new OkHttpClient();
-        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        mWifiManager = (WifiManager) context.getSystemService(Activity.WIFI_SERVICE);
+        this.context = AssertUtil.assertNotNull(context);
+        this.netReadThreadType = AssertUtil.assertNotNull(netReadThreadType);
+        this.netWriteThreadType = AssertUtil.assertNotNull(netWriteThreadType);
+        okHttpClient = new OkHttpClient();
+        telephonyManager = AssertUtil.assertNotNull((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
+        wifiManager = AssertUtil.assertNotNull((WifiManager) context.getSystemService(Activity.WIFI_SERVICE));
     }
 
     @NonNull
@@ -106,7 +109,7 @@ public final class NetUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> getAsync(@NonNull final T url) {
-        return new RunnableAltFuture<>(mNetReadThreadType,
+        return new RunnableAltFuture<>(netReadThreadType,
                 () -> {
                     return get(url, null);
                 });
@@ -126,7 +129,7 @@ public final class NetUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> getAsync() {
-        return new RunnableAltFuture<>(mNetReadThreadType,
+        return new RunnableAltFuture<>(netReadThreadType,
                 (T url) ->
                         get(url.toString(), null));
     }
@@ -181,7 +184,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> getAsync(
             @Nullable final Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetReadThreadType,
+        return new RunnableAltFuture<>(netReadThreadType,
                 (T url) -> get(url.toString(), headers));
     }
 
@@ -193,11 +196,11 @@ public final class NetUtil extends Origin {
             final IGettable<Collection<Header>> headersGettable) {
         if (headersGettable instanceof IAltFuture) {
             return ((IAltFuture<?, T>) headersGettable)
-                    .on(mNetReadThreadType)
+                    .on(netReadThreadType)
                     .then(() -> get(url, headersGettable.get()));
         }
 
-        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+        return new RunnableAltFuture<>(netReadThreadType, () ->
                 get(url, headersGettable.get()));
     }
 
@@ -206,7 +209,7 @@ public final class NetUtil extends Origin {
     public <T> IAltFuture<T, Response> getAsync(
             @NonNull final T url,
             @Nullable final Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetReadThreadType, () ->
+        return new RunnableAltFuture<>(netReadThreadType, () ->
                 get(url, headers));
     }
 
@@ -215,7 +218,7 @@ public final class NetUtil extends Origin {
     @SuppressWarnings("unchecked")
     public <T> IAltFuture<T, Response> getAsync(@NonNull IGettable<T> urlGettable,
                                                 @NonNull IGettable<Collection<Header>> headersGettable) {
-        IAltFuture<Response, Response> chainedAltFuture = new SettableAltFuture<>(mNetReadThreadType);
+        IAltFuture<Response, Response> chainedAltFuture = new SettableAltFuture<>(netReadThreadType);
         boolean chained = false;
 
         if (urlGettable instanceof IAltFuture) {
@@ -237,7 +240,7 @@ public final class NetUtil extends Origin {
 //            return new CompoundAltFuture<>(headOfChain, tailOfChain);
 //        }
 
-        return new RunnableAltFuture<>(mNetReadThreadType,
+        return new RunnableAltFuture<>(netReadThreadType,
                 () -> get(urlGettable.get(),
                         headersGettable.get()));
     }
@@ -246,7 +249,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> getAsync(
             @NonNull IGettable<Collection<Header>> headersGettable) {
-        return new RunnableAltFuture<>(mNetReadThreadType,
+        return new RunnableAltFuture<>(netReadThreadType,
                 (T url) -> get(url, headersGettable.get()));
     }
 
@@ -275,21 +278,21 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> putAsync(@NonNull T url,
                                                 @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 () -> put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<RequestBody, Response> putAsync(@NonNull T url) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (RequestBody body) -> put(url, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> putAsync(@NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (T url) -> put(url, body));
     }
 
@@ -298,7 +301,7 @@ public final class NetUtil extends Origin {
     public <T> IAltFuture<?, Response> putAsync(@NonNull T url,
                                                 @Nullable Collection<Header> headers,
                                                 @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 () -> put(url, headers, body));
     }
 
@@ -306,7 +309,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> putAsync(@Nullable Collection<Header> headers,
                                                 @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+        return new RunnableAltFuture<>(netWriteThreadType, (T url) ->
                 put(url, headers, body));
     }
 
@@ -314,7 +317,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<RequestBody, Response> putAsync(@NonNull T url,
                                                           @Nullable Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
+        return new RunnableAltFuture<>(netWriteThreadType, (RequestBody body) ->
                 put(url, headers, body));
     }
 
@@ -329,21 +332,21 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> postAsync(@NonNull T url,
                                                  @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 () -> post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> postAsync(@NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (T url) -> post(url, null, body));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<RequestBody, Response> postAsync(@NonNull T url) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (RequestBody body) -> post(url, null, body));
     }
 
@@ -352,7 +355,7 @@ public final class NetUtil extends Origin {
     public <T> IAltFuture<?, Response> postAsync(@NonNull T url,
                                                  @Nullable Collection<Header> headers,
                                                  @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 () -> post(url, headers, body));
     }
 
@@ -360,7 +363,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> postAsync(@Nullable Collection<Header> headers,
                                                  @NonNull RequestBody body) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (T url) -> post(url, headers, body));
     }
 
@@ -368,7 +371,7 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<RequestBody, Response> postAsync(@NonNull T url,
                                                            @Nullable Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetWriteThreadType, (RequestBody body) ->
+        return new RunnableAltFuture<>(netWriteThreadType, (RequestBody body) ->
                 post(url, headers, body));
     }
 
@@ -391,14 +394,14 @@ public final class NetUtil extends Origin {
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> deleteAsync(@NonNull T url) {
-        return new RunnableAltFuture<>(mNetWriteThreadType, () ->
+        return new RunnableAltFuture<>(netWriteThreadType, () ->
                 delete(url, null));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> deleteAsync() {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 (T url) -> delete(url, null));
     }
 
@@ -412,14 +415,14 @@ public final class NetUtil extends Origin {
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<?, Response> deleteAsync(@NonNull final T url,
                                                    @Nullable final Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetWriteThreadType,
+        return new RunnableAltFuture<>(netWriteThreadType,
                 () -> delete(url, headers));
     }
 
     @NonNull
     @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     public <T> IAltFuture<T, Response> deleteAsync(@Nullable Collection<Header> headers) {
-        return new RunnableAltFuture<>(mNetWriteThreadType, (T url) ->
+        return new RunnableAltFuture<>(netWriteThreadType, (T url) ->
                 delete(url, headers));
     }
 
@@ -457,7 +460,7 @@ public final class NetUtil extends Origin {
             builderModifier.modify(builder);
         }
 
-        return mOkHttpClient.newCall(builder.build());
+        return okHttpClient.newCall(builder.build());
     }
 
     /**
@@ -520,7 +523,7 @@ public final class NetUtil extends Origin {
      */
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public boolean isWifi() {
-        SupplicantState s = mWifiManager.getConnectionInfo().getSupplicantState();
+        SupplicantState s = wifiManager.getConnectionInfo().getSupplicantState();
         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(s);
 
         return state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR;
@@ -529,7 +532,7 @@ public final class NetUtil extends Origin {
     @NonNull
     @RequiresPermission(android.Manifest.permission.ACCESS_WIFI_STATE)
     public NetType getNetworkType() {
-        switch (mTelephonyManager.getNetworkType()) {
+        switch (telephonyManager.getNetworkType()) {
             case NETWORK_TYPE_UNKNOWN:
             case NETWORK_TYPE_CDMA:
             case NETWORK_TYPE_GPRS:

@@ -27,7 +27,7 @@ import okhttp3.internal.framed.Header;
 import static com.reactivecascade.Async.WORKER;
 
 public class NetUtilTest extends AsyncAndroidTestCase {
-    protected CountDownLatch signal; // Only use with @LargeTest
+    private CountDownLatch signal; // Only use with @LargeTest
 
     public NetUtilTest() {
         super();
@@ -36,7 +36,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
     /**
      * Indicate that async test can proceed
      */
-    protected void signal() {
+    void signal() {
         signal.countDown();
     }
 
@@ -45,7 +45,7 @@ public class NetUtilTest extends AsyncAndroidTestCase {
      *
      * @throws InterruptedException
      */
-    protected void await() throws InterruptedException {
+    void await() throws InterruptedException {
         signal.await(15000, TimeUnit.MILLISECONDS);
     }
 
