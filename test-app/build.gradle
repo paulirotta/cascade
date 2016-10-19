@@ -49,7 +49,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:' + rootProject.junitVersion;
-    testCompile 'org.mockito:mockito-core:' + rootProject.mockitoVersion;
     testCompile 'org.jmockit:jmockit:' + rootProject.jmockitVersion;
     compile "com.android.support:appcompat-v7:" + rootProject.supportVersion;
     compile "com.android.support:design:" + rootProject.supportVersion;

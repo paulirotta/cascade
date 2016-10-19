@@ -61,6 +61,8 @@ public final class NetUtil extends Origin {
     private static final int MAX_NUMBER_OF_3G_NET_CONNECTIONS = 4;
     private static final int MAX_NUMBER_OF_2G_NET_CONNECTIONS = 2;
 
+    @NonNull Context context;
+
     @NonNull
     private final OkHttpClient okHttpClient;
 
@@ -100,11 +102,11 @@ public final class NetUtil extends Origin {
     public NetUtil(@NonNull Context context,
                    @NonNull IThreadType netReadThreadType,
                    @NonNull IThreadType netWriteThreadType) {
-        this.netReadThreadType = netReadThreadType;
-        this.netWriteThreadType = netWriteThreadType;
+        this.netReadThreadType = AssertUtil.assertNonNull(netReadThreadType);
+        this.netWriteThreadType = AssertUtil.assertNonNull(netWriteThreadType);
         okHttpClient = new OkHttpClient();
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        telephonyManager = AssertUtil.assertNonNull((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE));
+        wifiManager = AssertUtil.assertNonNull((WifiManager) context.getSystemService(Context.WIFI_SERVICE));
     }
 
     @NonNull

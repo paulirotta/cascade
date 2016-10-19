@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
+    compileSdkVersion 24
+    buildToolsVersion '24.0.3'
     publishNonDefault true
     buildToolsVersion rootProject.buildToolsVersion
     compileSdkVersion rootProject.compileSdkVersion
@@ -25,13 +27,16 @@ android {
         disable 'InvalidPackage', 'OldTargetApi', 'GradleDependency'
     }
 
-//    packagingOptions {
-//        exclude "LICENSE.txt" // For com.android.support.test:runner:0.2
-//    }
+    packagingOptions {
+        exclude "LICENSE.txt" // Including these multiple times from different modules can break the build
+        exclude 'META-INF/LICENSE.txt'
+    }
 
-//    testOptions {
-//        unitTests.returnDefaultValues = true
-//    }
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+        }
+    }
 
     buildTypes {
         debug {
@@ -57,14 +62,15 @@ dependencies {
     compile "com.android.support:support-annotations:" + rootProject.supportVersion;
     compile 'com.squareup.okhttp3:okhttp:' + rootProject.okhttpVersion;
     testCompile 'junit:junit:' + rootProject.junitVersion;
-    testCompile 'org.mockito:mockito-core:' + rootProject.mockitoVersion;
     testCompile 'org.jmockit:jmockit:' + rootProject.jmockitVersion;
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:' + rootProject.espressoVersion, {
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    })
+        // Include other used support libraries here
+    }
 }
 
 android.libraryVariants.all { variant ->

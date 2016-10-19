@@ -33,9 +33,28 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-@RunWith(AndroidJUnit4.class)
-public class NetUtilIntegrationTest extends CascadeIntegrationTest {
-    private NetUtil netUtil;
+public class NetUtilTest extends AsyncAndroidTestCase {
+    private CountDownLatch signal; // Only use with @LargeTest
+
+    public NetUtilTest() {
+        super();
+    }
+
+    /**
+     * Indicate that async test can proceed
+     */
+    void signal() {
+        signal.countDown();
+    }
+
+    /**
+     * Wait for {@link #signal()} from another thread before the test can proceed
+     *
+     * @throws InterruptedException
+     */
+    void await() throws InterruptedException {
+        signal.await(15000, TimeUnit.MILLISECONDS);
+    }
 
     @Before
     @Override
@@ -64,7 +83,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetFromIGettable() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         int length = netUtil.get(value).body().bytes().length;
@@ -72,7 +90,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetFromIGettableWithHeaders() throws Exception {
         ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
@@ -82,7 +99,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetAsync() throws Exception {
         IAltFuture<?, Response> iaf = netUtil
                 .getAsync("http://httpbin.org/get")
@@ -92,7 +108,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetAsyncFrom() throws Exception {
         IAltFuture<?, Response> iaf = WORKER
                 .from("http://httpbin.org/get")
@@ -102,7 +117,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
@@ -113,8 +127,7 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
-    public void testValueGetAsyncWithHeadersOnWorker() throws Exception {
+    public void testValueGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
         IAltFuture<String, Response> iaf = WORKER
@@ -125,7 +138,6 @@ public class NetUtilIntegrationTest extends CascadeIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));

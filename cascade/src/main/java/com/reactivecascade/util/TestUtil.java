@@ -24,20 +24,6 @@ import java.util.concurrent.TimeUnit;
  * Created by phou on 6/2/2015.
  */
 public class TestUtil {
-    private static final TestUtil testUtil = new TestUtil();
-
-    private TestUtil() {
-    }
-
-    /**
-     * Access the test utilities
-     *
-     * @return singleton
-     */
-    public static TestUtil getTestUtil() {
-        return TestUtil.testUtil;
-    }
-
     /**
      * Run a unit of work on the specified thread. Block the current thread until it
      * completes.
@@ -52,7 +38,7 @@ public class TestUtil {
      * @return output returned from execution of the altFuture
      * @throws Exception
      */
-    public <IN, OUT> OUT await(@NonNull IAltFuture<IN, OUT> altFuture,
+    public static <IN, OUT> OUT await(@NonNull IAltFuture<IN, OUT> altFuture,
                                long timeoutMillis) throws Exception {
         return new AltFutureFuture<>(altFuture).get(timeoutMillis, TimeUnit.MILLISECONDS);
     }
@@ -71,7 +57,7 @@ public class TestUtil {
      * @return output returned from execution of the altFuture
      * @throws Exception
      */
-    public <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
+    public static <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
                                               long timeoutMillis) throws Exception {
         boolean previousState = Async.SHOW_ERROR_STACK_TRACES;
         Async.SHOW_ERROR_STACK_TRACES = false;

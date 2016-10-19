@@ -33,9 +33,9 @@ public class AssertUtil {
     /**
      * In DEBUG builds only, check the assertion and possibly throw an {@link IllegalStateException}
      *
-     * @param message a message to display when the assertion fails. It should indicate the
-     *                     reason which was not true and, if possible, the likely corrective action
-     * @param testResult   the result of the test, <code>true</code> if the assertion condition is met
+     * @param message    a message to display when the assertion fails. It should indicate the
+     *                   reason which was not true and, if possible, the likely corrective action
+     * @param testResult the result of the test, <code>true</code> if the assertion condition is met
      */
     @NotCallOrigin
     public static void assertTrue(@NonNull String message,
@@ -97,7 +97,8 @@ public class AssertUtil {
 
     /**
      * In DEBUG builds only, test equality and possibly throw an {@link IllegalStateException}
-     *  @param <T>      expected type
+     *
+     * @param <T>      expected type
      * @param <U>      actual type
      * @param message  error message
      * @param expected from

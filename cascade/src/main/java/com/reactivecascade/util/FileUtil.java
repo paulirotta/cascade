@@ -50,11 +50,11 @@ public final class FileUtil extends Origin {
         this.mode = mode;
     }
 
-    public boolean checkWritePermission() {
+    private boolean checkWritePermission() {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
-    public boolean checkReadPermission() {
+    private boolean checkReadPermission() {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 

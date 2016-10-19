@@ -21,6 +21,7 @@ import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.i.IAsyncOrigin;
 import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
+import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.AsyncThreadTypeExecutor;
 import com.reactivecascade.util.DefaultThreadType;
 import com.reactivecascade.util.DoubleQueue;
@@ -208,10 +209,12 @@ public class AsyncBuilder {
      */
     @UiThread
     public AsyncBuilder(@NonNull Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Please pass a non-null Context to the AsyncBuilder constructor");
+        Context c = AssertUtil.assertNonNull("Context can not be null", context);
+        try {
+            c = context.getApplicationContext();
+        } catch (NullPointerException e) {
+            Log.i(TAG, "Instrumentation test run detected: context is null");
         }
-        Context c = context.getApplicationContext();
 
         if (c != null) {
             this.context = c;
