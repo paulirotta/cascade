@@ -29,3 +29,4 @@ script:
 - "./gradlew lint test connectedCheck generateReleaseJavadoc --info"
 after_success:
 - utility/push-javadoc-to-gh-pages.sh
+- bash <(curl -s https://codecov.io/bash)

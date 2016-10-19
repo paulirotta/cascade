@@ -29,10 +29,10 @@ import org.junit.runner.RunWith;
  */
 @RunWith(AndroidJUnit4.class)
 public class AsyncAndroidTestCase extends ActivityInstrumentationTestCase2<Activity> {
-    private FileUtil fileUtil;
-    private NetUtil netUtil;
+    protected FileUtil fileUtil;
+    protected NetUtil netUtil;
 
-    private long defaultTimeoutMillis = 5000;
+    protected long defaultTimeoutMillis = 5000;
 
     public AsyncAndroidTestCase() {
         super(Activity.class);

@@ -50,7 +50,7 @@ public class FileUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testMockReadFileShouldAccessFileSystemOnce() {
+    public void testMockReadFileShouldAccessFileSystemOnce() throws Exception {
         mockFileUtil.read("someFile");
         assertEquals(1, mockContext.fileOpens);
         assertEquals(3, mockContext.fileBufferReads);
@@ -58,21 +58,21 @@ public class FileUtilTest extends AsyncAndroidTestCase {
     }
 
     @Test
-    public void testMockDeleteOfNonexistantFile() {
+    public void testMockDeleteOfNonexistantFile() throws Exception {
         boolean response = mockFileUtil.delete("nonFile");
         assertFalse(response);
         assertEquals(0, mockContext.fileDeletes);
     }
 
     @Test
-    public void testMockDeleteOfFile() {
+    public void testMockDeleteOfFile() throws Exception {
         boolean response = mockFileUtil.delete("someFile");
         assertTrue(response);
         assertEquals(1, mockContext.fileDeletes);
     }
 
     @Test
-    public void testActualWriteReadDelete() {
+    public void testActualWriteReadDelete() throws Exception {
         getFileUtil().write(TEST_FILE_NAME, TEST_CODE.getBytes());
         byte[] bytes = getFileUtil().read(TEST_FILE_NAME);
         assertEquals(TEST_CODE, new String(bytes));
