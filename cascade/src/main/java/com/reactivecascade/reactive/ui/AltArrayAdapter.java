@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import static android.R.attr.value;
 import static com.reactivecascade.Async.UI;
 
 /**
@@ -107,8 +108,8 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     @NonNull
     public static AltArrayAdapter<CharSequence> createFromResource(
             @NonNull Context context,
-            @LayoutRes int textArrayResId,
-            @IdRes int textViewResId) {
+            /*TODO @LayoutRes*/ int textArrayResId,
+            /*TODO @IdRes*/ int textViewResId) {
         CharSequence[] strings = context.getResources().getTextArray(textArrayResId);
 
         return new AltArrayAdapter<>(context, textViewResId, strings);
@@ -371,7 +372,6 @@ public class AltArrayAdapter<T> extends ArrayAdapter<T> implements IAsyncOrigin 
     }
 
     @CallSuper
-    @CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)
     @Override
     public void setDropDownViewResource(@LayoutRes int resource) {
         super.setDropDownViewResource(resource);

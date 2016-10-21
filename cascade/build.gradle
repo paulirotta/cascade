@@ -8,7 +8,7 @@ android {
     // Gradle work-around, comment#35 https://code.google.com/p/android/issues/detail?id=52962
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "0.3.8"
@@ -29,10 +29,6 @@ android {
     packagingOptions {
         exclude "LICENSE.txt" // Including these multiple times from different modules can break the build
         exclude 'META-INF/LICENSE.txt'
-    }
-
-    dexOptions {
-        incremental false
     }
 
     testOptions {
@@ -80,13 +76,18 @@ android.libraryVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
         source = variant.javaCompile.source
-        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        //noinspection GroovyAssignabilityCheck
-        classpath = files(variant.javaCompile.classpath.files) + files(android.bootClasspath)
+
+        title = "Android Cascade - Concurrent Functional-Reactive Library"
+        options.links("http://docs.oracle.com/javase/8/docs/api/");
+        options.linksOffline("http://d.android.com/reference", "${android.sdkDirectory}/docs/reference");
+        options.addStringOption('Xdoclint:none', '-quiet')
         options.links("http://docs.oracle.com/javase/8/docs/api/");
         options.links("http://developer.android.com/reference");
+        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath += files(variant.javaCompile.classpath.files)
+        classpath += files(android.getBootClasspath())
         exclude '**/BuildConfig.java'
         exclude '**/R.java'
-        failOnError false
+        failOnError true
     }
 }
