@@ -11,8 +11,8 @@ android:
   components:
   - tools
   - platform-tools
-  - build-tools-25
-  - android-25
+  - build-tools-24.0.3
+  - android-24
   - add-on
   - extra
 sudo: false
