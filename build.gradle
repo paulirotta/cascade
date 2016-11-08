@@ -26,11 +26,11 @@ ext {
     versionCode = 1
     versionName = "0.3.8"
 
-    compileSdkVersion = 24
-    buildToolsVersion = "24.0.3"
-    supportVersion = "24.2.1"
-    targetSdkVersion = compileSdkVersion
+    compileSdkVersion = 25
     minSdkVersion = 16
+    buildToolsVersion = "25.0.0"
+    supportVersion = "25.0.0"
+    targetSdkVersion = compileSdkVersion
 
     junitVersion = "4.12"
     jmockitVersion = "1.28"

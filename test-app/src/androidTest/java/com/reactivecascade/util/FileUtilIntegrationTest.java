@@ -14,7 +14,6 @@ import android.support.annotation.RequiresPermission;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.reactivecascade.AsyncBuilder;
 import com.reactivecascade.CascadeIntegrationTest;
@@ -35,17 +34,17 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     static final String TAG = FileUtilIntegrationTest.class.getSimpleName();
-    static final String TEST_FILE_NAME = "TESTfileNAME.txt";
-    static final AtomicInteger testCounter = new AtomicInteger();
+    private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
+    private static final AtomicInteger testCounter = new AtomicInteger();
 
     @Rule
     public ActivityTestRule<TestActivity> activityTestRule = new ActivityTestRule<>(TestActivity.class, false);
 
-    static String getUniqueTestData() {
+    private static String getUniqueTestData() {
         return "test data " + testCounter.incrementAndGet();
     }
 
-    FileUtil fileUtil;
+    private FileUtil fileUtil;
 
     public FileUtilIntegrationTest() {
         super();

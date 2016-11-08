@@ -9,8 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.reactivecascade.i.IAltFuture;

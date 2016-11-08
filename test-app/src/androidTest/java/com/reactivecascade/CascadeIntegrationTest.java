@@ -53,14 +53,14 @@ public abstract class CascadeIntegrationTest {
     }
 
     /**
-     * Indicate that async test can proceed
+     * Indicate to main test thread that async test can proceed
      */
     protected final void signal() {
         signal.countDown();
     }
 
     /**
-     * Wait for {@link #signal()} from another thread before the test can proceed
+     * Wait on main test thread for {@link #signal()} from another thread before the test can proceed
      *
      * @throws InterruptedException
      */

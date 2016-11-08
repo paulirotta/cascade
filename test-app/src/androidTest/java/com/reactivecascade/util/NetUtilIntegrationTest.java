@@ -5,56 +5,38 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.reactivecascade.util;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
-import com.reactivecascade.AsyncAndroidTestCase;
 import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.reactive.ReactiveValue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Response;
 import okhttp3.internal.framed.Header;
 
 import static com.reactivecascade.Async.WORKER;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
-public class NetUtilIntegrationTest extends AsyncAndroidTestCase {
-    private CountDownLatch signal; // Only use with @LargeTest
+@RunWith(AndroidJUnit4.class)
+public class NetUtilIntegrationTest extends CascadeIntegrationTest {
+    private NetUtil netUtil; // Only use with @LargeTest
 
     public NetUtilIntegrationTest() {
         super();
-    }
-
-    /**
-     * Indicate that async test can proceed
-     */
-    void signal() {
-        signal.countDown();
-    }
-
-    /**
-     * Wait for {@link #signal()} from another thread before the test can proceed
-     *
-     * @throws InterruptedException
-     */
-    void await() throws InterruptedException {
-        signal.await(15000, TimeUnit.MILLISECONDS);
-    }
-
-    <IN, OUT> OUT await(@NonNull IAltFuture<IN, OUT> altFuture) {
-        AltFutureFuture<IN, OUT> aff = new AltFutureFuture<>(altFuture);
-        return aff.get();
     }
 
     @Before
@@ -62,11 +44,11 @@ public class NetUtilIntegrationTest extends AsyncAndroidTestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        new AsyncBuilder(getContext())
+        new AsyncBuilder(appContext)
                 .setStrictMode(false)
                 .build();
         if (netUtil == null) {
-            netUtil = new NetUtil(getContext(), Async.NET_READ, Async.NET_WRITE);
+            netUtil = new NetUtil(appContext, Async.NET_READ, Async.NET_WRITE);
         }
         defaultTimeoutMillis = 5000; // Give real net traffic enough time to complete
     }
