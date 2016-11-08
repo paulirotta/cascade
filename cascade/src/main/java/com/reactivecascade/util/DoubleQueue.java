@@ -111,8 +111,8 @@ public class DoubleQueue<T> extends LinkedBlockingQueue<T> {
      * response to the single use queue until such time as all other threads are busy, sub it pitches
      * in on the work any of them can do.
      *
-     * @return
-     * @throws InterruptedException
+     * @return the value from the high priority queue, or (if high priority is empty) the low priority queue
+     * @throws InterruptedException interrupt event
      */
     @Override // LinkedBlockingQueue
     @CallSuper
