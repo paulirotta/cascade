@@ -89,6 +89,7 @@ public class AsyncBuilderUnitTest {
                 .build();
         assertFalse(AsyncBuilder.runtimeAssertionsEnabled);
     }
+
     @Test
     public void testSetRuntimeAssertionsEnabledTrue() throws Exception {
         asyncBuilder

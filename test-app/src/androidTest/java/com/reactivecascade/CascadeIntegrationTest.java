@@ -27,7 +27,7 @@ public abstract class CascadeIntegrationTest {
      *    .setStrictMode(false) // Relax threading restrictions for tests
      *    .build();
      * </code></pre>
-     *
+     * <p>
      * Be aware that due to the use of static for performance reasons, some parts of
      * the test library can not be overridden differently in different tests. This can
      * be circumvented by creating multiple test applications for each configuration which
@@ -98,7 +98,7 @@ public abstract class CascadeIntegrationTest {
      */
     @NonNull
     protected final <IN, OUT> OUT awaitHideStackTraces(@NonNull IAltFuture<IN, OUT> altFuture,
-                                                 long timeoutMillis) throws Exception {
+                                                       long timeoutMillis) throws Exception {
         AssertUtil.assertTrue("Please call altFuture.fork() before await(altFuture)", altFuture.isForked());
         return TestUtil.awaitHideStackTraces(altFuture, timeoutMillis);
     }
@@ -109,8 +109,8 @@ public abstract class CascadeIntegrationTest {
      * The timeout period can be adjusted by changing {@link #defaultTimeoutMillis}
      *
      * @param altFuture the action to be performed
-     * @param <IN>          the input type passed to the altFuture
-     * @param <OUT>         the output type returned from the altFuture
+     * @param <IN>      the input type passed to the altFuture
+     * @param <OUT>     the output type returned from the altFuture
      * @return output returned from execution of the altFuture
      * @throws Exception
      */

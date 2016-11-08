@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
@@ -436,9 +437,12 @@ public class RCLog {
 
         Runnable runnable = () -> {
             List<StackTraceLine> o = origin(traceElementsArray);
-            AssertUtil.assertTrue(o.size() > 0);
-            StackTraceLine line = o.get(0);
-            String s = prettyFormat(line.stackTraceElement);
+            String s;
+            if (o.isEmpty()) {
+                s = "Origin not available";
+            } else {
+                s = prettyFormat(o.get(0).stackTraceElement);
+            }
             immutableValue.set(s);
         };
 
@@ -473,9 +477,14 @@ public class RCLog {
 
     @NonNull
     private static List<StackTraceLine> origin(@NonNull StackTraceElement[] traceElementsArray) {
-        final List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length);
+        List<StackTraceElement> rawStrackTraceElements = Arrays.asList(traceElementsArray);
+        List<StackTraceElement> allStackTraceElements = new ArrayList<>(traceElementsArray.length);
 
-        allStackTraceElements.addAll(Arrays.asList(traceElementsArray).subList(3, traceElementsArray.length));
+        if (rawStrackTraceElements.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        allStackTraceElements.addAll(rawStrackTraceElements.subList(3, traceElementsArray.length));
 
         // Remove uninteresting stack trace elements in least-interesting-removed-first order, but step back to the previous state if everything is removed by one of these filters
         List<StackTraceLine> previousList = findClassAndMethod(allStackTraceElements);

@@ -55,6 +55,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
         settableAltFuture.set(42);
         assertTrue(settableAltFuture.isDone());
     }
+
     @Test
     public void testForkIsDone() throws Exception {
         final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
