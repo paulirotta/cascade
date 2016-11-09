@@ -105,22 +105,22 @@ public class AsyncBuilder {
     public static boolean traceAsyncOrigin;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType workerThreadType;
+    public static IThreadType worker;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType serialWorkerThreadType;
+    public static IThreadType serialWorker;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType uiThreadType;
+    public static IThreadType ui;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType netReadThreadType;
+    public static IThreadType netRead;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType netWriteThreadType;
+    public static IThreadType netWrite;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType fileThreadType;
+    public static IThreadType file;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public BlockingQueue<Runnable> workerQueue;
@@ -175,18 +175,17 @@ public class AsyncBuilder {
         AsyncBuilder.showErrorStackTraces = BuildConfig.DEBUG;
         AsyncBuilder.failFast = BuildConfig.DEBUG;
         AsyncBuilder.traceAsyncOrigin = BuildConfig.DEBUG;
-
-        AsyncBuilder.uiThreadType = null;
-        resetThreadType(AsyncBuilder.workerThreadType);
-        AsyncBuilder.workerThreadType = null;
-        resetThreadType(AsyncBuilder.serialWorkerThreadType);
-        AsyncBuilder.serialWorkerThreadType = null;
-        resetThreadType(AsyncBuilder.netReadThreadType);
-        AsyncBuilder.netReadThreadType = null;
-        resetThreadType(AsyncBuilder.netWriteThreadType);
-        AsyncBuilder.netWriteThreadType = null;
-        resetThreadType(AsyncBuilder.fileThreadType);
-        AsyncBuilder.fileThreadType = null;
+        AsyncBuilder.ui = null;
+        resetThreadType(AsyncBuilder.worker);
+        AsyncBuilder.worker = null;
+        resetThreadType(AsyncBuilder.serialWorker);
+        AsyncBuilder.serialWorker = null;
+        resetThreadType(AsyncBuilder.netRead);
+        AsyncBuilder.netRead = null;
+        resetThreadType(AsyncBuilder.netWrite);
+        AsyncBuilder.netWrite = null;
+        resetThreadType(AsyncBuilder.file);
+        AsyncBuilder.file = null;
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -325,17 +324,17 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     public IThreadType getWorkerThreadType() {
-        if (workerThreadType == null) {
+        if (worker == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setWorkerThreadType(new DefaultThreadType("WORKER",
                             getWorkerExecutorService(threadTypeImmutableValue),
                             getWorkerQueue()
                     )
             );
-            threadTypeImmutableValue.set(workerThreadType);
+            threadTypeImmutableValue.set(worker);
         }
 
-        return workerThreadType;
+        return worker;
     }
 
     /**
@@ -346,7 +345,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setWorkerThreadType(@NonNull IThreadType workerThreadType) {
         Log.v(TAG, "setWorkerThreadType(" + workerThreadType + ")");
-        AsyncBuilder.workerThreadType = workerThreadType;
+        AsyncBuilder.worker = workerThreadType;
 
         return this;
     }
@@ -359,17 +358,17 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     IThreadType getSerialWorkerThreadType() {
-        if (serialWorkerThreadType == null) {
+        if (serialWorker == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setSerialWorkerThreadType(new DefaultThreadType("SERIAL_WORKER",
                             getSerialWorkerExecutorService(threadTypeImmutableValue),
                             getSerialWorkerQueue()
                     )
             );
-            threadTypeImmutableValue.set(serialWorkerThreadType);
+            threadTypeImmutableValue.set(serialWorker);
         }
 
-        return serialWorkerThreadType;
+        return serialWorker;
     }
 
     /**
@@ -380,7 +379,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setSerialWorkerThreadType(@NonNull final IThreadType serialWorkerThreadType) {
         Log.v(TAG, "setSerialWorkerThreadType(" + serialWorkerThreadType + ")");
-        this.serialWorkerThreadType = serialWorkerThreadType;
+        this.serialWorker = serialWorkerThreadType;
 
         return this;
     }
@@ -392,11 +391,11 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     public static IThreadType getUiThreadType(@Nullable Context context) {
-        if (AsyncBuilder.uiThreadType == null) {
-            AsyncBuilder.uiThreadType = new DefaultThreadType("UI", getUiExecutorService(context), null);
+        if (AsyncBuilder.ui == null) {
+            AsyncBuilder.ui = new DefaultThreadType("UI", getUiExecutorService(context), null);
         }
 
-        return AsyncBuilder.uiThreadType;
+        return AsyncBuilder.ui;
     }
 
     /**
@@ -407,7 +406,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setUIThreadType(@NonNull IThreadType uiThreadType) {
         Log.v(TAG, "setUIThreadType(" + uiThreadType + ")");
-        AsyncBuilder.uiThreadType = uiThreadType;
+        AsyncBuilder.ui = uiThreadType;
         return this;
     }
 
@@ -418,17 +417,17 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     public IThreadType getNetReadThreadType() {
-        if (netReadThreadType == null) {
+        if (netRead == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetReadThreadType(new DefaultThreadType("NET_READ",
                             getNetReadExecutorService(threadTypeImmutableValue),
                             getNetReadQueue()
                     )
             );
-            threadTypeImmutableValue.set(netReadThreadType);
+            threadTypeImmutableValue.set(netRead);
         }
 
-        return netReadThreadType;
+        return netRead;
     }
 
     /**
@@ -439,7 +438,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setNetReadThreadType(@NonNull IThreadType netReadThreadType) {
         Log.v(TAG, "setNetReadThreadType(" + netReadThreadType + ")");
-        AsyncBuilder.netReadThreadType = netReadThreadType;
+        AsyncBuilder.netRead = netReadThreadType;
         return this;
     }
 
@@ -450,17 +449,17 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     public IThreadType getNetWriteThreadType() {
-        if (netWriteThreadType == null) {
+        if (netWrite == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetWriteThreadType(new DefaultThreadType("NET_WRITE",
                             getNetWriteExecutorService(threadTypeImmutableValue),
                             getNetWriteQueue()
                     )
             );
-            threadTypeImmutableValue.set(netWriteThreadType);
+            threadTypeImmutableValue.set(netWrite);
         }
 
-        return netWriteThreadType;
+        return netWrite;
     }
 
     /**
@@ -471,7 +470,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setNetWriteThreadType(@NonNull IThreadType netWriteThreadType) {
         Log.v(TAG, "setNetWriteThreadType(" + netWriteThreadType + ")");
-        AsyncBuilder.netWriteThreadType = netWriteThreadType;
+        AsyncBuilder.netWrite = netWriteThreadType;
         return this;
     }
 
@@ -482,17 +481,17 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     public IThreadType getFileThreadType() {
-        if (fileThreadType == null) {
+        if (file == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setFileThreadType(new DefaultThreadType("FILE",
                             getFileExecutorService(threadTypeImmutableValue),
                             getFileQueue()
                     )
             );
-            threadTypeImmutableValue.set(fileThreadType);
+            threadTypeImmutableValue.set(file);
         }
 
-        return fileThreadType;
+        return file;
     }
 
     /**
@@ -503,7 +502,7 @@ public class AsyncBuilder {
     @UiThread
     public AsyncBuilder setFileThreadType(@NonNull IThreadType fileThreadType) {
         Log.v(TAG, "setFileThreadType(" + fileThreadType + ")");
-        AsyncBuilder.fileThreadType = fileThreadType;
+        AsyncBuilder.file = fileThreadType;
         return this;
     }
 
@@ -1043,11 +1042,11 @@ public class AsyncBuilder {
          */
         getUiExecutorService(context);
         IAsyncOrigin origin = AsyncBuilder.traceAsyncOrigin ? new Origin() : IAsyncOrigin.ORIGIN_NOT_SET;
-        AsyncBuilder.workerThreadType.setOrigin(origin);
-        AsyncBuilder.serialWorkerThreadType.setOrigin(origin);
-        AsyncBuilder.netReadThreadType.setOrigin(origin);
-        AsyncBuilder.netWriteThreadType.setOrigin(origin);
-        AsyncBuilder.fileThreadType.setOrigin(origin);
+        AsyncBuilder.worker.setOrigin(origin);
+        AsyncBuilder.serialWorker.setOrigin(origin);
+        AsyncBuilder.netRead.setOrigin(origin);
+        AsyncBuilder.netWrite.setOrigin(origin);
+        AsyncBuilder.file.setOrigin(origin);
 
         Async async = new Async(context);
         Log.v(TAG, "AsyncBuilder complete");

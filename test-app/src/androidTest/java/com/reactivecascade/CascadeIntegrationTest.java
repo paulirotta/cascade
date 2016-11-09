@@ -12,7 +12,6 @@ import com.reactivecascade.test.TestActivity;
 import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.TestUtil;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -22,11 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public abstract class CascadeIntegrationTest {
-    protected long defaultTimeoutMillis = 5000;
-    private CountDownLatch signal;
-
     @Rule
     public ActivityTestRule<TestActivity> activityTestRule = new ActivityTestRule<>(TestActivity.class, false);
+    protected long defaultTimeoutMillis = 5000;
+    private CountDownLatch signal;
 
     /**
      * Override this method and initialize the library, for example
@@ -51,12 +49,6 @@ public abstract class CascadeIntegrationTest {
 
     public final Context getContext() {
         return InstrumentationRegistry.getTargetContext();
-    }
-
-    @CallSuper
-    @After
-    public void cleanup() throws Exception {
-        AsyncBuilder.reset();
     }
 
     /**

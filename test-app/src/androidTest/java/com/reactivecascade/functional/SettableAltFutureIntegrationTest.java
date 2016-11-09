@@ -8,6 +8,7 @@ package com.reactivecascade.functional;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
+import com.reactivecascade.AsyncBuilder;
 import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.i.IAltFuture;
 
@@ -24,7 +25,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testCancel() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         assertTrue(settableAltFuture.cancel("Just because"));
         //noinspection AssertEqualsBetweenInconvertibleTypes
         assertEquals(IAltFuture.VALUE_NOT_AVAILABLE, settableAltFuture.safeGet());
@@ -42,7 +43,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testIsCancelled() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         assertFalse(settableAltFuture.isCancelled());
         assertTrue(settableAltFuture.cancel("Just because"));
         assertTrue(settableAltFuture.isCancelled());
@@ -50,7 +51,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testIsDone() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         assertFalse(settableAltFuture.isDone());
         settableAltFuture.set(42);
         assertTrue(settableAltFuture.isDone());
@@ -58,7 +59,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testForkIsDone() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         settableAltFuture.fork();
         assertFalse(settableAltFuture.isDone());
         settableAltFuture.set(42);
@@ -68,7 +69,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
     @Test
     public void testForkBeforeSetIsForkedWhenUseForkedState() throws Exception {
         if (Async.USE_FORKED_STATE) {
-            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
             assertFalse(settableAltFuture.isForked());
             settableAltFuture.fork();
             assertTrue(settableAltFuture.isForked());
@@ -80,7 +81,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
     @Test
     public void testForkBeforeSetIsForkedWhenNotUsingForkedState() throws Exception {
         if (!Async.USE_FORKED_STATE) {
-            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+            final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
             settableAltFuture.fork();
             settableAltFuture.set(1);
             assertTrue(settableAltFuture.isForked());
@@ -89,7 +90,7 @@ public class SettableAltFutureIntegrationTest extends CascadeIntegrationTest {
 
     @Test
     public void testForkAfterSet() throws Exception {
-        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(Async.WORKER);
+        final SettableAltFuture<Integer> settableAltFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         settableAltFuture.set(42);
         assertTrue(settableAltFuture.isForked());
         settableAltFuture.fork();

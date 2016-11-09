@@ -345,14 +345,14 @@ public final class Async {
      * </pre></code>
      */
     @NonNull
-    public static final IThreadType WORKER = AsyncBuilder.workerThreadType;
+    public static final IThreadType WORKER = AsyncBuilder.worker;
 
     @NonNull
-    public static final IThreadType SERIAL_WORKER = AsyncBuilder.serialWorkerThreadType;
+    public static final IThreadType SERIAL_WORKER = AsyncBuilder.serialWorker;
 
     @VisibleForTesting
     @NonNull
-    final IThreadType serialWorker = AsyncBuilder.serialWorkerThreadType;
+    final IThreadType serialWorker = AsyncBuilder.serialWorker;
     /**
      * The default {@link com.reactivecascade.i.IThreadType} implementation which gives uniform access
      * to the system's {@link #UI_THREAD}. Example use:
@@ -367,7 +367,7 @@ public final class Async {
     public static final IThreadType UI = AsyncBuilder.getUiThreadType(null /* fallback value for UI tools use */);
 
     @NonNull
-    public static final IThreadType FILE = AsyncBuilder.fileThreadType;
+    public static final IThreadType FILE = AsyncBuilder.file;
 
     /**
      * A group of background thread for concurrently reading from the network
@@ -375,7 +375,7 @@ public final class Async {
      * TODO Automatically adjusted thread pool size based on current connection type
      */
     @NonNull
-    public static final IThreadType NET_READ = AsyncBuilder.netReadThreadType;
+    public static final IThreadType NET_READ = AsyncBuilder.netRead;
 
     /**
      * A single thread for making writes to the network.
@@ -385,7 +385,7 @@ public final class Async {
      * coherent.
      */
     @NonNull
-    public static final IThreadType NET_WRITE = AsyncBuilder.netWriteThreadType;
+    public static final IThreadType NET_WRITE = AsyncBuilder.netWrite;
 
     public static volatile boolean SHOW_ERROR_STACK_TRACES = AsyncBuilder.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening

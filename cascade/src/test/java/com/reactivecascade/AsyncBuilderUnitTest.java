@@ -183,7 +183,7 @@ public class AsyncBuilderUnitTest {
         asyncBuilder
                 .setUIThreadType(threadType)
                 .build();
-        assertEquals(threadType, AsyncBuilder.uiThreadType);
+        assertEquals(threadType, AsyncBuilder.ui);
     }
 
     @Test
@@ -191,7 +191,7 @@ public class AsyncBuilderUnitTest {
         asyncBuilder
                 .setUIThreadType(threadType)
                 .build();
-        assertEquals(threadType, AsyncBuilder.uiThreadType);
+        assertEquals(threadType, AsyncBuilder.ui);
     }
 
     @Test

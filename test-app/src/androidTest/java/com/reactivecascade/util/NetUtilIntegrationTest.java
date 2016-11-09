@@ -10,11 +10,12 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
 import com.reactivecascade.AsyncBuilder;
-import com.reactivecascade.AsyncIntegrationTest;
+import com.reactivecascade.DefaultCascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.reactive.ReactiveValue;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,8 +32,8 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class NetUtilIntegrationTest extends AsyncIntegrationTest {
-    private NetUtil netUtil;
+public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
+    private static NetUtil netUtil;
 
     @Before
     @Override
@@ -43,6 +44,11 @@ public class NetUtilIntegrationTest extends AsyncIntegrationTest {
             netUtil = new NetUtil(getContext(), Async.NET_READ, Async.NET_WRITE);
         }
         defaultTimeoutMillis = 5000; // Give real net traffic enough time to complete
+    }
+
+    @AfterClass
+    public static void cleanupNetUtil() throws Exception {
+        netUtil = null;
     }
 
     @Test
@@ -84,7 +90,7 @@ public class NetUtilIntegrationTest extends AsyncIntegrationTest {
 
     @Test
     public void testGetAsyncFrom() throws Exception {
-        IAltFuture<?, Response> iaf = AsyncBuilder.workerThreadType
+        IAltFuture<?, Response> iaf = AsyncBuilder.worker
                 .from("http://httpbin.org/get")
                 .then(netUtil.getAsync())
                 .fork();
@@ -105,7 +111,7 @@ public class NetUtilIntegrationTest extends AsyncIntegrationTest {
     public void testValueGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
-        IAltFuture<String, Response> iaf = AsyncBuilder.workerThreadType
+        IAltFuture<String, Response> iaf = AsyncBuilder.worker
                 .from("http://httpbin.org/headers")
                 .then(netUtil.getAsync(headers))
                 .fork();
@@ -116,9 +122,9 @@ public class NetUtilIntegrationTest extends AsyncIntegrationTest {
     public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));
-        SettableAltFuture<Collection<Header>> altFuture = new SettableAltFuture<>(AsyncBuilder.workerThreadType);
+        SettableAltFuture<Collection<Header>> altFuture = new SettableAltFuture<>(AsyncBuilder.worker);
         altFuture.set(headers);
-        IAltFuture<?, Response> iaf = AsyncBuilder.workerThreadType
+        IAltFuture<?, Response> iaf = AsyncBuilder.worker
                 .from("http://httpbin.org/get")
                 .then(netUtil.getAsync(altFuture))
                 .fork();

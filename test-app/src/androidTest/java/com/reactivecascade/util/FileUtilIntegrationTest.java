@@ -14,7 +14,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.app.ActivityCompat;
 
-import com.reactivecascade.AsyncIntegrationTest;
+import com.reactivecascade.DefaultCascadeIntegrationTest;
 import com.reactivecascade.test.TestActivity;
 
 import org.junit.After;
@@ -29,7 +29,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class FileUtilIntegrationTest extends AsyncIntegrationTest {
+public class FileUtilIntegrationTest extends DefaultCascadeIntegrationTest {
     static final String TAG = FileUtilIntegrationTest.class.getSimpleName();
     private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
     private static final AtomicInteger testCounter = new AtomicInteger();
@@ -54,15 +54,13 @@ public class FileUtilIntegrationTest extends AsyncIntegrationTest {
 
     @CallSuper
     @After
-    public void cleanup() throws Exception {
+    public void cleanupTestFile() throws Exception {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activityTestRule.getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
         }
         fileUtil.delete(TEST_FILE_NAME);
-
-        super.cleanup();
     }
 
     @Test

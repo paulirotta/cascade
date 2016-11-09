@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.AsyncBuilder;
-import com.reactivecascade.AsyncIntegrationTest;
+import com.reactivecascade.DefaultCascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 
 import org.junit.Before;
@@ -29,7 +29,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
+public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationTest {
     final Object looperFlushMutex = new Object();
 
     volatile int handleMessageCount;
@@ -94,7 +94,7 @@ public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
 
     @Test
     public void testUIIsShutdown() throws Exception {
-        assertFalse(asyncBuilder.uiThreadType.isShutdown());
+        assertFalse(asyncBuilder.ui.isShutdown());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String> saf = new SettableAltFuture<>(asyncBuilder.workerThreadType);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(asyncBuilder.worker);
 
         callableList.add(() -> {
             ai.set(100);
@@ -154,7 +154,7 @@ public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
     public void testInvokeAllCallableTimeout() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String> saf = new SettableAltFuture<>(AsyncBuilder.workerThreadType);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(AsyncBuilder.worker);
 
         callableList.add(() -> {
             ai.set(100);
@@ -178,7 +178,7 @@ public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
     public void testInvokeAnyCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String> saf = new SettableAltFuture<>(AsyncBuilder.workerThreadType);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(AsyncBuilder.worker);
 
         callableList.add(() -> {
             ai.set(100);
@@ -211,7 +211,7 @@ public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
 
     @Test
     public void testExecute() throws Exception {
-        AsyncBuilder.workerThreadType.execute(() -> {
+        AsyncBuilder.worker.execute(() -> {
             uiExecutorService.execute(this::signal);
         });
         awaitSignal();
