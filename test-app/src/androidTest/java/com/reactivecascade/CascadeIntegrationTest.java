@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 public abstract class CascadeIntegrationTest {
     @Rule
     public ActivityTestRule<TestActivity> activityTestRule = new ActivityTestRule<>(TestActivity.class, false);
+
     protected long defaultTimeoutMillis = 5000;
+
     private CountDownLatch signal;
 
     /**
@@ -54,7 +56,7 @@ public abstract class CascadeIntegrationTest {
     /**
      * Indicate to main test thread that async test can proceed
      */
-    protected final void signal() {
+    public final void signal() {
         signal.countDown();
     }
 
