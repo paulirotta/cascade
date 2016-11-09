@@ -32,21 +32,21 @@ import static com.reactivecascade.Async.UI;
 @NotCallOrigin
 public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     @NonNull
-    private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
-    private IReactiveSource<String> mReactiveSource; // Access only from UI thread
-    private volatile ReactiveValue<String> mReactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName(), ""); // Change only from UI thread
+    private final ImmutableValue<String> origin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
+    private IReactiveSource<String> reactiveSource; // Access only from UI thread
+    private volatile ReactiveValue<String> reactiveValue = isInEditMode() ? null : new ReactiveValue<>(getName()); // Change only from UI thread
 
     public ReactiveTextView(@NonNull Context context) {
         super(context);
 
-        mReactiveValue.set(getText().toString());
+        reactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(@NonNull Context context,
                             @NonNull AttributeSet attrs) {
         super(context, attrs);
 
-        mReactiveValue.set(getText().toString());
+        reactiveValue.set(getText().toString());
     }
 
     public ReactiveTextView(@NonNull Context context,
@@ -54,7 +54,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
                             @StyleRes int defStyle) {
         super(context, attrs, defStyle);
 
-        mReactiveValue.set(getText().toString());
+        reactiveValue.set(getText().toString());
     }
 
     @TargetApi(21)
@@ -64,7 +64,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
                             @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        mReactiveValue.set(getText().toString());
+        reactiveValue.set(getText().toString());
     }
 
     @NonNull
@@ -75,9 +75,9 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     @Override // View
     @UiThread
     public void onDetachedFromWindow() {
-        if (mReactiveSource != null) {
-            mReactiveValue.unsubSource("onDetachedFromWindow", mReactiveSource);
-            mReactiveSource = null;
+        if (reactiveSource != null) {
+            reactiveValue.unsubSource("onDetachedFromWindow", reactiveSource);
+            reactiveSource = null;
         }
         super.onDetachedFromWindow();
     }
@@ -91,7 +91,7 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
     }
 
     private void subscribe() {
-        mReactiveSource = mReactiveValue.sub(UI, this::setText);
+        reactiveSource = reactiveValue.sub(UI, this::setText);
     }
 
     /**
@@ -102,15 +102,15 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
      */
     public void setReactiveValue(@NonNull ReactiveValue<String> reactiveValue,
                                  boolean fire) {
-        AssertUtil.assertNonNull(mOrigin);
+        AssertUtil.assertNonNull(origin);
         final String s = "setReactiveValue(" + reactiveValue.getName() + ")";
 
         UI.execute(() -> {
-            if (mReactiveSource != null) {
-                reactiveValue.unsubSource(s, mReactiveSource);
+            if (reactiveSource != null) {
+                reactiveValue.unsubSource(s, reactiveSource);
             }
             RCLog.v(this, s);
-            this.mReactiveValue = reactiveValue;
+            this.reactiveValue = reactiveValue;
             subscribe();
             if (fire) {
                 reactiveValue.fire();
@@ -120,12 +120,12 @@ public class ReactiveTextView extends TextView implements INamed, IAsyncOrigin {
 
     @NonNull
     public ReactiveValue<String> getReactiveValue() {
-        return this.mReactiveValue;
+        return this.reactiveValue;
     }
 
     @NonNull
     @Override
     public ImmutableValue<String> getOrigin() {
-        return mOrigin;
+        return origin;
     }
 }

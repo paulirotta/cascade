@@ -65,14 +65,16 @@ public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
 
     @Test
     public void testGetFromIGettable() throws Exception {
-        ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
+        ReactiveValue<String> value = new ReactiveValue<>("RV Test", AsyncBuilder.worker, null, null);
+        value.set("http://httpbin.org/headers");
         int length = netUtil.get(value).body().bytes().length;
         assertTrue(length > 20);
     }
 
     @Test
     public void testGetFromIGettableWithHeaders() throws Exception {
-        ReactiveValue<String> value = new ReactiveValue<>("RV Test", "http://httpbin.org/headers");
+        ReactiveValue<String> value = new ReactiveValue<>("RV Test");
+        value.set("http://httpbin.org/headers");
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueG"));
         String s = netUtil.get(value, headers).body().string();

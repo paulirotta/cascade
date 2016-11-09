@@ -62,17 +62,6 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * Create a new AtomicValue
      *
      * @param name
-     * @param initialValue
-     */
-    public ReactiveValue(@NonNull String name,
-                         @Nullable final T initialValue) {
-        this(name, WORKER, null, null);
-    }
-
-    /**
-     * Create a new AtomicValue
-     *
-     * @param name
      * @param threadType
      * @param inputMapping
      * @param onError

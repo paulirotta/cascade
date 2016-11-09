@@ -30,12 +30,9 @@ public class ReactiveString extends ReactiveValue<String> {
      * Create a new atomic integer
      *
      * @param name
-     * @param initialValue
      */
-    public ReactiveString(
-            @NonNull String name,
-            @Nullable String initialValue) {
-        super(name, initialValue);
+    public ReactiveString(@NonNull String name) {
+        super(name);
     }
 
     /**

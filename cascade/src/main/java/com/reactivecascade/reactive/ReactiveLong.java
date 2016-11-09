@@ -27,11 +27,9 @@ public class ReactiveLong extends ReactiveValue<Long> {
      * Create a new atomic long
      *
      * @param name
-     * @param initialValue
      */
-    public ReactiveLong(@NonNull String name,
-                        final long initialValue) {
-        super(name, initialValue);
+    public ReactiveLong(@NonNull String name) {
+        super(name);
     }
 
     /**

@@ -36,7 +36,7 @@ import static com.reactivecascade.Async.UI;
 public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     @NonNull
     private final ImmutableValue<String> mOrigin = isInEditMode() ? RCLog.DEFAULT_ORIGIN : RCLog.originAsync();
-    public volatile ReactiveValue<String> mReactiveValue;
+    public volatile ReactiveValue<String> reactiveValue;
     private TextWatcher mTextWatcher;
 
 //TODO Constructors which support a string validator (example: trim whitespace or fix capitalization as you type)
@@ -44,7 +44,8 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     public ReactiveEditText(@NonNull Context context) {
         super(context);
 
-        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        reactiveValue = new ReactiveValue<>(getName());
+        reactiveValue.set(getText().toString()); //TODO Is this initialization pattern correct or assuming too much?
     }
 
     public ReactiveEditText(
@@ -52,7 +53,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @NonNull ReactiveValue<String> reactiveValue) {
         super(context);
 
-        this.mReactiveValue = reactiveValue;
+        this.reactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
@@ -60,7 +61,8 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @NonNull AttributeSet attrs) {
         super(context, attrs);
 
-        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        this.reactiveValue = new ReactiveValue<>(getName());
+        this.reactiveValue.set(getText().toString());
     }
 
     public ReactiveEditText(
@@ -69,7 +71,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @NonNull ReactiveValue<String> reactiveValue) {
         super(context, attrs);
 
-        this.mReactiveValue = reactiveValue;
+        this.reactiveValue = reactiveValue;
     }
 
     public ReactiveEditText(
@@ -78,7 +80,8 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        this.reactiveValue = new ReactiveValue<>(getName());
+        this.reactiveValue.set(getText().toString());
     }
 
     public ReactiveEditText(
@@ -88,7 +91,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @NonNull ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr);
 
-        this.mReactiveValue = reactiveValue;
+        this.reactiveValue = reactiveValue;
     }
 
     @TargetApi(21)
@@ -100,7 +103,8 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @StyleRes int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        mReactiveValue = new ReactiveValue<>(getName(), getText().toString());
+        this.reactiveValue = new ReactiveValue<>(getName());
+        this.reactiveValue.set(getText().toString());
     }
 
     @TargetApi(21)
@@ -113,7 +117,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
             @NonNull ReactiveValue<String> reactiveValue) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        this.mReactiveValue = reactiveValue;
+        this.reactiveValue = reactiveValue;
     }
 
     /**
@@ -127,7 +131,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     public ReactiveValue<String> setReactiveValue(@NonNull ReactiveValue<String> reactiveValue,
                                                   final boolean fire) {
         UI.run(() -> {
-            this.mReactiveValue = reactiveValue;
+            this.reactiveValue = reactiveValue;
             if (fire) {
                 reactiveValue.fire();
             }
@@ -145,12 +149,12 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     @Override // View
     @UiThread
     public void onAttachedToWindow() {
-        final String currentText = mReactiveValue.get();
+        final String currentText = reactiveValue.get();
         setText(currentText);
 
         RCLog.v(this, "onAttachedToWindow " + getName() + ", from=" + currentText);
 
-        mReactiveValue.sub(UI, this::setText);
+        reactiveValue.sub(UI, this::setText);
 
         if (mTextWatcher == null) {
             mTextWatcher = new TextWatcher() {
@@ -171,7 +175,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
                 @Override
                 public void afterTextChanged(@NonNull final Editable s) {
                     setSelection(s.length());
-                    mReactiveValue.set(s.toString());
+                    reactiveValue.set(s.toString());
                 }
             };
             this.addTextChangedListener(mTextWatcher);
@@ -185,7 +189,7 @@ public class ReactiveEditText extends EditText implements INamed, IAsyncOrigin {
     public void onDetachedFromWindow() {
         AssertUtil.assertNonNull(mOrigin);
         RCLog.v(this, "onDetachedFromWindow " + getName() + ", current from=" + getText());
-        mReactiveValue.unsubscribeAll("onDetachedFromWindow");
+        reactiveValue.unsubscribeAll("onDetachedFromWindow");
 
         super.onDetachedFromWindow();
     }

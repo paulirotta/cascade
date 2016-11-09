@@ -27,11 +27,9 @@ public class ReactiveInteger extends ReactiveValue<Integer> {
      * Create a new atomic integer
      *
      * @param name
-     * @param initialValue
      */
-    public ReactiveInteger(@NonNull String name,
-                           int initialValue) {
-        super(name, initialValue);
+    public ReactiveInteger(@NonNull String name) {
+        super(name);
     }
 
     /**
