@@ -41,7 +41,7 @@ public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
         super.setUp();
 
         if (netUtil == null) {
-            netUtil = new NetUtil(getContext(), Async.NET_READ, Async.NET_WRITE);
+            netUtil = new NetUtil(getContext(), AsyncBuilder.netRead, AsyncBuilder.netWrite);
         }
         defaultTimeoutMillis = 5000; // Give real net traffic enough time to complete
     }
