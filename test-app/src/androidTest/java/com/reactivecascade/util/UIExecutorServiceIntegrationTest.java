@@ -5,22 +5,18 @@ This is open source for the common good. Please contribute improvements by pull 
 */
 package com.reactivecascade.util;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.AsyncBuilder;
 import com.reactivecascade.DefaultCascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,91 +28,37 @@ import static junit.framework.Assert.assertTrue;
 public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationTest {
     final Object looperFlushMutex = new Object();
 
-    volatile int handleMessageCount;
-    volatile int dispatchMessageCount;
-    volatile int sendCount;
-
-    volatile UIExecutorService uiExecutorService;
-    private Thread fakeUiThread;
-
-    @Before
-    @Override
-    @SuppressWarnings("HandlerLeak")
-    public void setUp() throws Exception {
-        if (fakeUiThread == null) {
-            fakeUiThread = new HandlerThread("FakeUiHandler", Thread.NORM_PRIORITY) {
-                protected void onLooperPrepared() {
-                    uiExecutorService = new UIExecutorService(new Handler() {
-                        public void handleMessage(@NonNull Message msg) {
-                            super.handleMessage(msg);
-                            handleMessageCount++;
-                        }
-
-                        /**
-                         * Handle system messages here.
-                         */
-                        public void dispatchMessage(@NonNull Message msg) {
-                            super.dispatchMessage(msg);
-                            dispatchMessageCount++;
-                        }
-
-                        public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
-                            sendCount++;
-                            return super.sendMessageAtTime(msg, uptimeMillis);
-                        }
-                    });
-                }
-            };
-            fakeUiThread.start();
-
-            while (true) {
-                if (uiExecutorService != null) {
-                    break;
-                }
-                Thread.yield();
-            }
-        }
-
-        super.setUp();
-    }
-
-    private void flushLooper() throws InterruptedException {
-        synchronized (looperFlushMutex) {
-            uiExecutorService.execute(() -> {
-                synchronized (looperFlushMutex) {
-                    RCLog.v(UIExecutorServiceIntegrationTest.this, "Looper flushed");
-                    looperFlushMutex.notifyAll();
-                }
-            });
-            looperFlushMutex.wait();
-        }
+    private void barrier() throws Exception {
+        CountDownLatch sig = new CountDownLatch(1);
+        AsyncBuilder.uiExecutorService.execute(sig::countDown);
+        sig.await(defaultTimeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     @Test
     public void testUIIsShutdown() throws Exception {
-        assertFalse(asyncBuilder.ui.isShutdown());
+        assertFalse(AsyncBuilder.ui.isShutdown());
     }
 
     @Test
     public void testIsTerminated() throws Exception {
-        assertFalse(uiExecutorService.isTerminated());
+        assertFalse(AsyncBuilder.uiExecutorService.isTerminated());
     }
 
     @Test
     public void testSubmitCallable() throws Exception {
-        uiExecutorService.submit(new Callable<Object>() {
+        AsyncBuilder.uiExecutorService.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
+                signal();
                 return null;
             }
         });
-        flushLooper();
-        assertEquals(2, sendCount);
+        awaitSignal();
     }
 
     @Test
     public void testSubmitRunnable() throws Exception {
-        uiExecutorService.submit(new Runnable() {
+        AsyncBuilder.uiExecutorService.submit(new Runnable() {
                                      @Override
                                      public void run() {
                                          signal();
@@ -130,7 +72,7 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
     public void testInvokeAllCallable() throws Exception {
         AtomicInteger ai = new AtomicInteger(0);
         ArrayList<Callable<Integer>> callableList = new ArrayList<>();
-        SettableAltFuture<String> saf = new SettableAltFuture<>(asyncBuilder.worker);
+        SettableAltFuture<String> saf = new SettableAltFuture<>(AsyncBuilder.worker);
 
         callableList.add(() -> {
             ai.set(100);
@@ -144,9 +86,8 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
             saf.set("done");
             return 1;
         });
-        uiExecutorService.invokeAll(callableList);
+        AsyncBuilder.uiExecutorService.invokeAll(callableList);
         await(saf);
-        assertTrue(sendCount > 0);
         assertEquals(300, ai.get());
     }
 
@@ -168,9 +109,8 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
             saf.set("done");
             return 1;
         });
-        uiExecutorService.invokeAll(callableList, 1000, TimeUnit.MILLISECONDS);
+        AsyncBuilder.uiExecutorService.invokeAll(callableList, defaultTimeoutMillis, TimeUnit.MILLISECONDS);
         await(saf);
-        assertTrue(sendCount > 0);
         assertEquals(300, ai.get());
     }
 
@@ -188,7 +128,7 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
             ai.set(200);
             return 200;
         });
-        uiExecutorService.invokeAny(callableList);
+        AsyncBuilder.uiExecutorService.invokeAny(callableList);
         assertTrue(ai.get() > 0);
     }
 
@@ -205,14 +145,14 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
             ai.set(200);
             return 200;
         });
-        uiExecutorService.invokeAny(callableList, 1, TimeUnit.SECONDS);
+        AsyncBuilder.uiExecutorService.invokeAny(callableList, 1, TimeUnit.SECONDS);
         assertTrue(ai.get() > 0);
     }
 
     @Test
     public void testExecute() throws Exception {
         AsyncBuilder.worker.execute(() -> {
-            uiExecutorService.execute(this::signal);
+            AsyncBuilder.uiExecutorService.execute(this::signal);
         });
         awaitSignal();
     }
