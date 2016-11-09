@@ -110,8 +110,7 @@ public class AsyncBuilder {
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public static IThreadType serialWorker;
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    public static IThreadType ui;
+    static IThreadType ui;
 
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public static IThreadType netRead;

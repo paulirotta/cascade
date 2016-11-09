@@ -36,7 +36,7 @@ public class UIExecutorServiceIntegrationTest extends DefaultCascadeIntegrationT
 
     @Test
     public void testUIIsShutdown() throws Exception {
-        assertFalse(AsyncBuilder.ui.isShutdown());
+        assertFalse(AsyncBuilder.getUiThreadType(getContext()).isShutdown());
     }
 
     @Test
