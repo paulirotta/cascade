@@ -10,6 +10,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
 import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.AsyncBuilderIntegrationTest;
 import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 import com.reactivecascade.i.IAltFuture;
@@ -32,23 +33,16 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class NetUtilIntegrationTest extends CascadeIntegrationTest {
-    private NetUtil netUtil; // Only use with @LargeTest
-
-    public NetUtilIntegrationTest() {
-        super();
-    }
+public class NetUtilIntegrationTest extends AsyncBuilderIntegrationTest {
+    private NetUtil netUtil;
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        new AsyncBuilder(appContext)
-                .setStrictMode(false)
-                .build();
         if (netUtil == null) {
-            netUtil = new NetUtil(appContext, Async.NET_READ, Async.NET_WRITE);
+            netUtil = new NetUtil(getContext(), Async.NET_READ, Async.NET_WRITE);
         }
         defaultTimeoutMillis = 5000; // Give real net traffic enough time to complete
     }

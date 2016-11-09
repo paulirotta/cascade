@@ -4,21 +4,29 @@ import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.i.IAltFuture;
+import com.reactivecascade.test.TestActivity;
 import com.reactivecascade.util.AssertUtil;
 import com.reactivecascade.util.TestUtil;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+@RunWith(AndroidJUnit4.class)
 public abstract class CascadeIntegrationTest {
-    protected Context appContext;
     protected long defaultTimeoutMillis = 5000;
     private CountDownLatch signal;
+
+    @Rule
+    public ActivityTestRule<TestActivity> activityTestRule = new ActivityTestRule<>(TestActivity.class, false);
 
     /**
      * Override this method and initialize the library, for example
@@ -38,17 +46,16 @@ public abstract class CascadeIntegrationTest {
     @CallSuper
     @Before
     public void setUp() throws Exception {
-        appContext = InstrumentationRegistry.getTargetContext();
-        if (appContext == null) {
-            throw new NullPointerException("Test harness setup failure - App Context can not be null");
-        }
         signal = new CountDownLatch(1);
+    }
+
+    public final Context getContext() {
+        return InstrumentationRegistry.getTargetContext();
     }
 
     @CallSuper
     @After
     public void cleanup() throws Exception {
-        appContext = null;
         AsyncBuilder.reset();
     }
 

@@ -15,8 +15,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.app.ActivityCompat;
 
-import com.reactivecascade.AsyncBuilder;
-import com.reactivecascade.CascadeIntegrationTest;
+import com.reactivecascade.AsyncBuilderIntegrationTest;
 import com.reactivecascade.test.TestActivity;
 
 import org.junit.After;
@@ -32,13 +31,10 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class FileUtilIntegrationTest extends CascadeIntegrationTest {
+public class FileUtilIntegrationTest extends AsyncBuilderIntegrationTest {
     static final String TAG = FileUtilIntegrationTest.class.getSimpleName();
     private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
     private static final AtomicInteger testCounter = new AtomicInteger();
-
-    @Rule
-    public ActivityTestRule<TestActivity> activityTestRule = new ActivityTestRule<>(TestActivity.class, false);
 
     private static String getUniqueTestData() {
         return "test data " + testCounter.incrementAndGet();
@@ -46,27 +42,22 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
 
     private FileUtil fileUtil;
 
-    public FileUtilIntegrationTest() {
-        super();
-    }
-
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        new AsyncBuilder(appContext)
-                .setStrictMode(false)
-                .build();
-        fileUtil = new FileUtil(appContext, Context.MODE_PRIVATE);
-
-        appContext.startActivity(new Intent(appContext, TestActivity.class));
+        if (fileUtil == null) {
+            fileUtil = new FileUtil(getContext(), Context.MODE_PRIVATE);
+        }
+        
+        getContext().startActivity(new Intent(getContext(), TestActivity.class));
     }
 
     @CallSuper
     @After
     public void cleanup() throws Exception {
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activityTestRule.getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
@@ -80,7 +71,7 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     public void testWriteThenRead() throws Exception {
         String s = getUniqueTestData();
 
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activityTestRule.getActivity(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
@@ -93,7 +84,7 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     @Test
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void testDeleteOfNonexistantFile() throws Exception {
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activityTestRule.getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);
@@ -106,7 +97,7 @@ public class FileUtilIntegrationTest extends CascadeIntegrationTest {
     public void testDeleteOfFile() throws Exception {
         String s = getUniqueTestData();
 
-        if (ActivityCompat.checkSelfPermission(appContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activityTestRule.getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     TestActivity.MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE);

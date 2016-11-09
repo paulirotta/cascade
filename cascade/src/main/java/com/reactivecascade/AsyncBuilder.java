@@ -158,34 +158,34 @@ public class AsyncBuilder {
     }
 
     /**
-     * Reset state to default
+     * Reset state to default before the next integration test
      */
     @UiThread
     @VisibleForTesting
     static void reset() {
-        initialized = false;
-        if (uiExecutorService != null) {
-            uiExecutorService.shutdownNow();
-            uiExecutorService = null;
+        AsyncBuilder.initialized = false;
+        if (AsyncBuilder.uiExecutorService != null) {
+            AsyncBuilder.uiExecutorService.shutdownNow();
+            AsyncBuilder.uiExecutorService = null;
         }
-        useForkedState = BuildConfig.DEBUG;
-        runtimeAssertionsEnabled = BuildConfig.DEBUG;
-        strictMode = BuildConfig.DEBUG;
-        showErrorStackTraces = BuildConfig.DEBUG;
-        failFast = BuildConfig.DEBUG;
-        traceAsyncOrigin = BuildConfig.DEBUG;
+        AsyncBuilder.useForkedState = BuildConfig.DEBUG;
+        AsyncBuilder.runtimeAssertionsEnabled = BuildConfig.DEBUG;
+        AsyncBuilder.strictMode = BuildConfig.DEBUG;
+        AsyncBuilder.showErrorStackTraces = BuildConfig.DEBUG;
+        AsyncBuilder.failFast = BuildConfig.DEBUG;
+        AsyncBuilder.traceAsyncOrigin = BuildConfig.DEBUG;
 
-        uiThreadType = null;
-        resetThreadType(workerThreadType);
-        workerThreadType = null;
-        resetThreadType(serialWorkerThreadType);
-        serialWorkerThreadType = null;
-        resetThreadType(netReadThreadType);
-        netReadThreadType = null;
-        resetThreadType(netWriteThreadType);
-        netWriteThreadType = null;
-        resetThreadType(fileThreadType);
-        fileThreadType = null;
+        AsyncBuilder.uiThreadType = null;
+        resetThreadType(AsyncBuilder.workerThreadType);
+        AsyncBuilder.workerThreadType = null;
+        resetThreadType(AsyncBuilder.serialWorkerThreadType);
+        AsyncBuilder.serialWorkerThreadType = null;
+        resetThreadType(AsyncBuilder.netReadThreadType);
+        AsyncBuilder.netReadThreadType = null;
+        resetThreadType(AsyncBuilder.netWriteThreadType);
+        AsyncBuilder.netWriteThreadType = null;
+        resetThreadType(AsyncBuilder.fileThreadType);
+        AsyncBuilder.fileThreadType = null;
     }
 
     private static void resetThreadType(@Nullable IThreadType threadType) {

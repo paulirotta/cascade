@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.AsyncBuilder;
+import com.reactivecascade.AsyncBuilderIntegrationTest;
 import com.reactivecascade.CascadeIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 
@@ -31,7 +32,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
+public class UIExecutorServiceIntegrationTest extends AsyncBuilderIntegrationTest {
     final Object looperFlushMutex = new Object();
 
     volatile int handleMessageCount;
@@ -80,9 +81,6 @@ public class UIExecutorServiceIntegrationTest extends CascadeIntegrationTest {
         }
 
         super.setUp();
-        new AsyncBuilder(appContext)
-                .setStrictMode(false)
-                .build();
     }
 
     private void flushLooper() throws InterruptedException {

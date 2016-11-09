@@ -21,7 +21,7 @@ public class AsyncIntegrationTest extends CascadeIntegrationTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        async = new AsyncBuilder(appContext)
+        async = new AsyncBuilder(getContext())
                 .setStrictMode(false)
                 .build();
     }
@@ -29,7 +29,6 @@ public class AsyncIntegrationTest extends CascadeIntegrationTest {
     @CallSuper
     @After
     public void cleanup() throws Exception {
-        appContext = null;
         AsyncBuilder.reset();
         super.cleanup();
     }
@@ -39,36 +38,6 @@ public class AsyncIntegrationTest extends CascadeIntegrationTest {
         Async.TIMER.schedule(this::signal, 10, TimeUnit.MILLISECONDS);
 
         awaitSignal();
-        assertNotNull(appContext.getAssets().getLocales());
-    }
-
-    @Test
-    public void testUiThreadNotNull() throws Exception {
-        assertNotNull(Async.UI_THREAD);
-    }
-
-    @Test
-    public void testWorkerNotNull() throws Exception {
-        assertNotNull(Async.WORKER);
-    }
-
-    @Test
-    public void testSerialWorkerNotNull() throws Exception {
-        assertNotNull(Async.SERIAL_WORKER);
-    }
-
-    @Test
-    public void testUiNotNull() throws Exception {
-        assertNotNull(Async.UI);
-    }
-
-    @Test
-    public void testNetReadNotNull() throws Exception {
-        assertNotNull(Async.NET_READ);
-    }
-
-    @Test
-    public void testNetWriteNotNull() throws Exception {
-        assertNotNull(Async.NET_WRITE);
+        assertNotNull(getContext().getAssets().getLocales());
     }
 }
