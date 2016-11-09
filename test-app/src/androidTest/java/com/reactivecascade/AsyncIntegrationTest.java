@@ -16,14 +16,14 @@ import static junit.framework.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class AsyncIntegrationTest extends CascadeIntegrationTest {
-    Async async;
+    protected AsyncBuilder asyncBuilder;
+    protected Async async;
 
     @BeforeClass
     @CallSuper
     public void setUpClass() throws Exception {
-        async = new AsyncBuilder(getContext())
-                .setStrictMode(false)
-                .build();
+        asyncBuilder = new AsyncBuilder(getContext()).setStrictMode(false);
+        async = asyncBuilder.build();
     }
 
     @CallSuper

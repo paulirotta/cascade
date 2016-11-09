@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.AsyncBuilder;
-import com.reactivecascade.AsyncBuilderIntegrationTest;
+import com.reactivecascade.AsyncIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 
 import org.junit.Before;
@@ -29,7 +29,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class UIExecutorServiceIntegrationTest extends AsyncBuilderIntegrationTest {
+public class UIExecutorServiceIntegrationTest extends AsyncIntegrationTest {
     final Object looperFlushMutex = new Object();
 
     volatile int handleMessageCount;

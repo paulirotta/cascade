@@ -10,8 +10,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.reactivecascade.Async;
 import com.reactivecascade.AsyncBuilder;
-import com.reactivecascade.AsyncBuilderIntegrationTest;
-import com.reactivecascade.CascadeIntegrationTest;
+import com.reactivecascade.AsyncIntegrationTest;
 import com.reactivecascade.functional.SettableAltFuture;
 import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.reactive.ReactiveValue;
@@ -27,13 +26,12 @@ import java.util.Collection;
 import okhttp3.Response;
 import okhttp3.internal.framed.Header;
 
-import static com.reactivecascade.Async.WORKER;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class NetUtilIntegrationTest extends AsyncBuilderIntegrationTest {
+public class NetUtilIntegrationTest extends AsyncIntegrationTest {
     private NetUtil netUtil;
 
     @Before
@@ -86,7 +84,7 @@ public class NetUtilIntegrationTest extends AsyncBuilderIntegrationTest {
 
     @Test
     public void testGetAsyncFrom() throws Exception {
-        IAltFuture<?, Response> iaf = WORKER
+        IAltFuture<?, Response> iaf = AsyncBuilder.workerThreadType
                 .from("http://httpbin.org/get")
                 .then(netUtil.getAsync())
                 .fork();
@@ -107,7 +105,7 @@ public class NetUtilIntegrationTest extends AsyncBuilderIntegrationTest {
     public void testValueGetAsyncWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueT"));
-        IAltFuture<String, Response> iaf = WORKER
+        IAltFuture<String, Response> iaf = AsyncBuilder.workerThreadType
                 .from("http://httpbin.org/headers")
                 .then(netUtil.getAsync(headers))
                 .fork();
@@ -118,9 +116,9 @@ public class NetUtilIntegrationTest extends AsyncBuilderIntegrationTest {
     public void testGetAsyncFromIGettableWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Blah", "VaGG"));
-        SettableAltFuture<Collection<Header>> altFuture = new SettableAltFuture<>(WORKER);
+        SettableAltFuture<Collection<Header>> altFuture = new SettableAltFuture<>(AsyncBuilder.workerThreadType);
         altFuture.set(headers);
-        IAltFuture<?, Response> iaf = WORKER
+        IAltFuture<?, Response> iaf = AsyncBuilder.workerThreadType
                 .from("http://httpbin.org/get")
                 .then(netUtil.getAsync(altFuture))
                 .fork();

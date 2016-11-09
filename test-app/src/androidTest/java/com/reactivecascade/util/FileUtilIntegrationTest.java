@@ -11,16 +11,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.RequiresPermission;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.app.ActivityCompat;
 
-import com.reactivecascade.AsyncBuilderIntegrationTest;
+import com.reactivecascade.AsyncIntegrationTest;
 import com.reactivecascade.test.TestActivity;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +29,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class FileUtilIntegrationTest extends AsyncBuilderIntegrationTest {
+public class FileUtilIntegrationTest extends AsyncIntegrationTest {
     static final String TAG = FileUtilIntegrationTest.class.getSimpleName();
     private static final String TEST_FILE_NAME = "TESTfileNAME.txt";
     private static final AtomicInteger testCounter = new AtomicInteger();
@@ -50,7 +48,7 @@ public class FileUtilIntegrationTest extends AsyncBuilderIntegrationTest {
         if (fileUtil == null) {
             fileUtil = new FileUtil(getContext(), Context.MODE_PRIVATE);
         }
-        
+
         getContext().startActivity(new Intent(getContext(), TestActivity.class));
     }
 
