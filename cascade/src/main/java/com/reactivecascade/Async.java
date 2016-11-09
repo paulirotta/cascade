@@ -322,8 +322,8 @@ public final class Async {
     public static final boolean TRACE_ASYNC_ORIGIN = AsyncBuilder.traceAsyncOrigin; // This makes finding where in you code a given log line was directly or indirectly called, but slows running
 
     @NonNull
-    @VisibleForTesting
-    static final Thread UI_THREAD = AsyncBuilder.getUiThread(null); // The main system thread, or the current thread if test/tooling has not initialized the library
+    public static final Thread UI_THREAD = AsyncBuilder.getUiThread(null); // The main system thread, or the current thread if test/tooling has not initialized the library
+
     /**
      * Halt exectcution on first error
      * <p>
@@ -349,6 +349,10 @@ public final class Async {
 
     @NonNull
     public static final IThreadType SERIAL_WORKER = AsyncBuilder.serialWorkerThreadType;
+
+    @VisibleForTesting
+    @NonNull
+    final IThreadType serialWorker = AsyncBuilder.serialWorkerThreadType;
     /**
      * The default {@link com.reactivecascade.i.IThreadType} implementation which gives uniform access
      * to the system's {@link #UI_THREAD}. Example use:
@@ -364,6 +368,7 @@ public final class Async {
 
     @NonNull
     public static final IThreadType FILE = AsyncBuilder.fileThreadType;
+
     /**
      * A group of background thread for concurrently reading from the network
      * <p>
@@ -371,6 +376,7 @@ public final class Async {
      */
     @NonNull
     public static final IThreadType NET_READ = AsyncBuilder.netReadThreadType;
+
     /**
      * A single thread for making writes to the network.
      * <p>
@@ -380,6 +386,7 @@ public final class Async {
      */
     @NonNull
     public static final IThreadType NET_WRITE = AsyncBuilder.netWriteThreadType;
+
     public static volatile boolean SHOW_ERROR_STACK_TRACES = AsyncBuilder.showErrorStackTraces; // For clean unit testing. This can be temporarily turned off for a single threaded system or unit test code block to keep _intentional_ unit test errors from cluttering the stack trace.
     private static final int FAIL_FAST_SLEEP_BEFORE_SYSTEM_EXIT = 1000; // The idea is this helps the user and debugger see the issue and logs can catch up before bombing the app too fast to see what was happening
     private static volatile boolean exitWithErrorCodeStarted = false;

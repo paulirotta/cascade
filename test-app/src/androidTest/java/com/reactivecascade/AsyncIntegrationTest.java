@@ -4,7 +4,9 @@ import android.support.annotation.CallSuper;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,21 +18,18 @@ import static junit.framework.Assert.assertNotNull;
 public class AsyncIntegrationTest extends CascadeIntegrationTest {
     Async async;
 
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-
+    @BeforeClass
+    @CallSuper
+    public void setUpClass() throws Exception {
         async = new AsyncBuilder(getContext())
                 .setStrictMode(false)
                 .build();
     }
 
     @CallSuper
-    @After
-    public void cleanup() throws Exception {
+    @AfterClass
+    public void cleanupClass() throws Exception {
         AsyncBuilder.reset();
-        super.cleanup();
     }
 
     @Test

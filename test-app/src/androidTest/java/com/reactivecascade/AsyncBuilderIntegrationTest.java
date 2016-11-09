@@ -2,21 +2,17 @@ package com.reactivecascade;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import static junit.framework.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public abstract class AsyncBuilderIntegrationTest extends CascadeIntegrationTest {
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    protected AsyncBuilder asyncBuilder;
+    protected Async async;
 
-        new AsyncBuilder(getContext())
-                .setStrictMode(false)
-                .build();
+    @BeforeClass
+    public void setUpClass() throws Exception {
+        asyncBuilder = new AsyncBuilder(getContext()).setStrictMode(false);
+        async = asyncBuilder.build();
     }
 }

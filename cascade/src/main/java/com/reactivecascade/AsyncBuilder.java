@@ -59,99 +59,100 @@ public class AsyncBuilder {
     private static final String TAG = AsyncBuilder.class.getSimpleName();
     private static final long RESET_TIMEOUT = 5000; // For closing thread pools in preperation for the next integration test
 
-    @VisibleForTesting
-    static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
 
-    @VisibleForTesting
-    static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static final int NUMBER_OF_CONCURRENT_NET_READS = 4;
 
-    @VisibleForTesting
     private static final AtomicInteger threadUid = new AtomicInteger(); // All threads created on all AsyncBuilders are assigned unique, consecutive numbers
 
-    @VisibleForTesting
-    static boolean initialized = false;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean initialized = false;
 
-    @VisibleForTesting
-    static Thread serialWorkerThread;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static Thread serialWorkerThread;
 
     @NonNull
-    @VisibleForTesting
-    private final Context context;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public final Context context;
 
-    @VisibleForTesting
-    static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static final AtomicBoolean workerPoolIncludesSerialWorkerThread = new AtomicBoolean(false);
 
-    @VisibleForTesting
-    static Thread uiThread;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static Thread uiThread;
 
-    @VisibleForTesting
-    static ExecutorService uiExecutorService = null;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static ExecutorService uiExecutorService = null;
 
-    @VisibleForTesting
-    static boolean useForkedState;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean useForkedState;
 
-    @VisibleForTesting
-    static boolean runtimeAssertionsEnabled;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean runtimeAssertionsEnabled;
 
-    @VisibleForTesting
-    static boolean strictMode;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean strictMode;
 
-    @VisibleForTesting
-    static boolean showErrorStackTraces;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean showErrorStackTraces;
 
-    @VisibleForTesting
-    static boolean failFast;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean failFast;
 
-    @VisibleForTesting
-    static boolean traceAsyncOrigin;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static boolean traceAsyncOrigin;
 
-    @VisibleForTesting
-    static IThreadType workerThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType workerThreadType;
 
-    @VisibleForTesting
-    static IThreadType serialWorkerThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType serialWorkerThreadType;
 
-    @VisibleForTesting
-    static IThreadType uiThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType uiThreadType;
 
-    @VisibleForTesting
-    static IThreadType netReadThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType netReadThreadType;
 
-    @VisibleForTesting
-    static IThreadType netWriteThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType netWriteThreadType;
 
-    @VisibleForTesting
-    static IThreadType fileThreadType;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static IThreadType fileThreadType;
 
-    @VisibleForTesting
-    BlockingQueue<Runnable> workerQueue;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public BlockingQueue<Runnable> workerQueue;
 
-    @VisibleForTesting
-    BlockingQueue<Runnable> serialWorkerQueue;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public BlockingQueue<Runnable> serialWorkerQueue;
 
-    @VisibleForTesting
-    BlockingQueue<Runnable> fileQueue;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public BlockingQueue<Runnable> fileQueue;
 
-    @VisibleForTesting
-    BlockingQueue<Runnable> netReadQueue;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public BlockingQueue<Runnable> netReadQueue;
 
-    @VisibleForTesting
-    BlockingQueue<Runnable> netWriteQueue;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public BlockingQueue<Runnable> netWriteQueue;
 
-    @VisibleForTesting
-    ExecutorService workerExecutorService;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public ExecutorService workerExecutorService;
 
-    @VisibleForTesting
-    ExecutorService serialWorkerExecutorService;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public ExecutorService serialWorkerExecutorService;
 
-    @VisibleForTesting
-    ExecutorService fileExecutorService;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public ExecutorService fileExecutorService;
 
-    @VisibleForTesting
-    ExecutorService netReadExecutorService;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public ExecutorService netReadExecutorService;
 
-    @VisibleForTesting
-    ExecutorService netWriteExecutorService;
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public ExecutorService netWriteExecutorService;
+
+    private int workerQueueCapacity = 50;
 
     static {
         reset();
@@ -161,8 +162,8 @@ public class AsyncBuilder {
      * Reset state to default before the next integration test
      */
     @UiThread
-    @VisibleForTesting
-    static void reset() {
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static void reset() {
         AsyncBuilder.initialized = false;
         if (AsyncBuilder.uiExecutorService != null) {
             AsyncBuilder.uiExecutorService.shutdownNow();
@@ -188,7 +189,8 @@ public class AsyncBuilder {
         AsyncBuilder.fileThreadType = null;
     }
 
-    private static void resetThreadType(@Nullable IThreadType threadType) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public static void resetThreadType(@Nullable IThreadType threadType) {
         if (threadType != null) {
             threadType.shutdownNow("Reset for next integration test", null, () -> Log.i(TAG, "TIMEOUT when shutting " + threadType + " in preperation of next integration test. Please ensure your previous integration test cleans up after itself within " + RESET_TIMEOUT + "ms"), RESET_TIMEOUT);
         }
@@ -320,9 +322,9 @@ public class AsyncBuilder {
      */
     @NonNull
     @NotCallOrigin
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    IThreadType getWorkerThreadType() {
+    public IThreadType getWorkerThreadType() {
         if (workerThreadType == null) {
             ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setWorkerThreadType(new DefaultThreadType("WORKER",
@@ -354,7 +356,7 @@ public class AsyncBuilder {
      */
     @NonNull
     @NotCallOrigin
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
     IThreadType getSerialWorkerThreadType() {
         if (serialWorkerThreadType == null) {
@@ -387,9 +389,9 @@ public class AsyncBuilder {
      * @return a thread type wrapper for the system's UI thread
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    static IThreadType getUiThreadType(@Nullable Context context) {
+    public static IThreadType getUiThreadType(@Nullable Context context) {
         if (AsyncBuilder.uiThreadType == null) {
             AsyncBuilder.uiThreadType = new DefaultThreadType("UI", getUiExecutorService(context), null);
         }
@@ -413,9 +415,9 @@ public class AsyncBuilder {
      * @return thread type for UI activities
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    IThreadType getNetReadThreadType() {
+    public IThreadType getNetReadThreadType() {
         if (netReadThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetReadThreadType(new DefaultThreadType("NET_READ",
@@ -445,9 +447,9 @@ public class AsyncBuilder {
      * @return thread type for writing (mutating state) to network servers
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    IThreadType getNetWriteThreadType() {
+    public IThreadType getNetWriteThreadType() {
         if (netWriteThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setNetWriteThreadType(new DefaultThreadType("NET_WRITE",
@@ -477,9 +479,9 @@ public class AsyncBuilder {
      * @return
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    IThreadType getFileThreadType() {
+    public IThreadType getFileThreadType() {
         if (fileThreadType == null) {
             final ImmutableValue<IThreadType> threadTypeImmutableValue = new ImmutableValue<>();
             setFileThreadType(new DefaultThreadType("FILE",
@@ -505,9 +507,10 @@ public class AsyncBuilder {
         return this;
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @NonNull
     @UiThread
-    private Thread getWorkerThread(@NonNull final IThreadType threadType,
+    public Thread getWorkerThread(@NonNull final IThreadType threadType,
                                    @NonNull final Runnable runnable) {
         if (NUMBER_OF_CORES == 1 || workerPoolIncludesSerialWorkerThread.getAndSet(true)) {
             return new TypedThread(threadType, runnable, createThreadId("WorkerThread"));
@@ -534,9 +537,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    ExecutorService getWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
         if (workerExecutorService == null) {
             Log.v(TAG, "Creating default worker executor service");
             final BlockingQueue<Runnable> q = getWorkerQueue();
@@ -556,14 +559,16 @@ public class AsyncBuilder {
         return workerExecutorService;
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @NonNull
-    private static String createThreadId(@NonNull String threadCategory) {
+    public static String createThreadId(@NonNull String threadCategory) {
         return threadCategory + threadUid.getAndIncrement();
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @NonNull
     @UiThread
-    private Thread getSerialWorkerThread(@NonNull IThreadType threadType,
+    public Thread getSerialWorkerThread(@NonNull IThreadType threadType,
                                          @NonNull Runnable runnable) {
         if (serialWorkerThread == null) {
             serialWorkerThread = new TypedThread(threadType, runnable, createThreadId("SerialWorkerThread"));
@@ -573,9 +578,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    protected ExecutorService getSerialWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getSerialWorkerExecutorService(@NonNull ImmutableValue<IThreadType> threadTypeImmutableValue) {
         Log.v(TAG, "getSerialWorkerExecutorService()");
 
         if (serialWorkerExecutorService == null) {
@@ -598,9 +603,9 @@ public class AsyncBuilder {
      * @return this builder
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    BlockingQueue<Runnable> getWorkerQueue() {
+    public BlockingQueue<Runnable> getWorkerQueue() {
         Log.v(TAG, "getWorkerQueue()");
 
         if (workerQueue == null) {
@@ -631,9 +636,9 @@ public class AsyncBuilder {
      * @return this builder
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    BlockingQueue<Runnable> getSerialWorkerQueue() {
+    public BlockingQueue<Runnable> getSerialWorkerQueue() {
         Log.v(TAG, "getSerialWorkerQueue()");
 
         if (serialWorkerQueue == null) {
@@ -661,9 +666,9 @@ public class AsyncBuilder {
      * @return this builder
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    BlockingQueue<Runnable> getFileQueue() {
+    public BlockingQueue<Runnable> getFileQueue() {
         Log.v(TAG, "getFileQueue()");
 
         if (fileQueue == null) {
@@ -691,9 +696,9 @@ public class AsyncBuilder {
      * @return this builder
      */
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    BlockingQueue<Runnable> getNetReadQueue() {
+    public BlockingQueue<Runnable> getNetReadQueue() {
         Log.v(TAG, "getNetReadQueue()");
 
         if (netReadQueue == null) {
@@ -723,8 +728,6 @@ public class AsyncBuilder {
         this.netReadQueueCapacity = netReadQueueCapacity;
         return this;
     }
-
-    private int workerQueueCapacity = 50;
 
     /**
      * Determine how many {@link Async#WORKER} tasks can be queued.
@@ -760,9 +763,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    BlockingQueue<Runnable> getNetWriteQueue() {
+    public BlockingQueue<Runnable> getNetWriteQueue() {
         Log.v(TAG, "getNetWriteQueue()");
 
         if (netWriteQueue == null) {
@@ -788,9 +791,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    ExecutorService getFileExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getFileExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         Log.v(TAG, "getFileExecutorService()");
 
         if (fileExecutorService == null) {
@@ -806,9 +809,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    ExecutorService getNetReadExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getNetReadExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         Log.v(TAG, "getNetReadExecutorService()");
 
         if (netReadExecutorService == null) {
@@ -828,9 +831,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    ExecutorService getNetWriteExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
+    public ExecutorService getNetWriteExecutorService(@NonNull final ImmutableValue<IThreadType> threadTypeImmutableValue) {
         Log.v(TAG, "getNetWriteExecutorService()");
 
         if (netWriteExecutorService == null) {
@@ -844,9 +847,9 @@ public class AsyncBuilder {
     }
 
     @NonNull
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     @UiThread
-    static ExecutorService getUiExecutorService(@Nullable Context context) {
+    public static ExecutorService getUiExecutorService(@Nullable Context context) {
         Log.v(TAG, "getUiExecutorService()");
 
         if (uiExecutorService == null) {
@@ -986,8 +989,9 @@ public class AsyncBuilder {
         return this;
     }
 
-    @VisibleForTesting
-    static Thread getUiThread(@Nullable Context context) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    @NonNull
+    public static Thread getUiThread(@Nullable Context context) {
         Thread thread = uiThread;
         if (thread == null) {
             thread = Thread.currentThread();
