@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -39,6 +40,12 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
+}
+
+jacocoAndroidUnitTestReport {
+    csv.enabled true
+    html.enabled true
+    xml.enabled true
 }
 
 dependencies {

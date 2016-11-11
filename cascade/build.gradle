@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -26,7 +27,8 @@ android {
     }
 
     packagingOptions {
-        exclude "LICENSE.txt" // Including these multiple times from different modules can break the build
+        exclude "LICENSE.txt"
+        // Including these multiple times from different modules can break the build
         exclude 'META-INF/LICENSE.txt'
     }
 
@@ -38,6 +40,7 @@ android {
 
     buildTypes {
         debug {
+            testCoverageEnabled true
         }
 
         release {
@@ -53,6 +56,13 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
+}
+
+
+jacocoAndroidUnitTestReport {
+    csv.enabled true
+    html.enabled true
+    xml.enabled true
 }
 
 dependencies {
