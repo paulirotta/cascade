@@ -3,16 +3,16 @@ env:
     secure: jbFyMNp/HJH3qfV9fywc1LaTI51JyvszDAKBwL6mZBMBXtJAy2WCktLVy3Nlqk86F8tF3lTAMHfAGU4lalDykIfZmI8yvnYZHhfRX13Qo2jXSKClfUgtRK2THZyUWdeARwpp94t8IkMlMVy8MqFK85qT1hE2k3IbHxGcIYUWfEkz0qH6hdzHOmaGaqPHzLIC02VVqlNZRQhxjjqoahnAz5ir9StPsfJa6uvDUqb/gFHO1/+ILnEr1amnnr8qVZEsQDoLD8qO0BZb9tkA0/Cvy+3nU2ws1PgrupfHdr1XQZ5efv0G6YCJE5Le3OAqKjkeE6fC/lvKOVt8aDqCGadnufGZ5BezakQLAo4GMi33wlbY+kgqTdQBiOjp4EHN06K4YS4cODbUNZJETLUO8gOEsf16FfSs85dZKP0HJSYuHIq9iJ8PNf8V5BM3WFcgOp3eiKZEQVaq+UMvgDNIlygDPPeIFcjgVSqJMsuLXjDkIwBT1N/fJSNd2ZRbj8gtqB7nDe3d6mj+kUwNjj7Z83rfKyfVko+zsoRlD00AtjJgBnVj1I7O+WyXDW6IO/L1Rxv/mrCLPwvpDBloNuTn3uVuHzDdd5MHJ3foQHQz23lkI8R62fI+qkob2VPxfr6Jv26Gojmyt18unOx1G6TQ5aulgouo2vGdQtm9xJ5jGWZO55M=
 jdk: oraclejdk8
 language: android
+notifications:
+  email: paulirotta@gmail.com
 android:
   components:
-  - tools-25
-  - platform-tools-25.0.0
-  - build-tools-25.0.0
+  - tools
+  - platform-tools
+  - build-tools-25
   - android-25
   - extra-android-support
   - extra-android-m2repository
-notifications:
-  email: paulirotta@gmail.com
 before_script:
   - echo no | android create avd --force -n test -t android-16 --abi armeabi-v7a
   - emulator -avd test -no-skin -no-audio -no-window &
