@@ -158,7 +158,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * Reset state to default before the next integration test
+     * Reset State to default before the next integration test
      */
     @UiThread
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -242,7 +242,7 @@ public class AsyncBuilder {
 
     /**
      * Set whether the library should verify at time of {@link IAltFuture#fork()} that it has not
-     * already been forked. This is useful for debugging, but requires in an additional state transition
+     * already been forked. This is useful for debugging, but requires in an additional State transition
      * so may impact performance. Force this to <code>true</code> to make your production builds perform
      * an additional test usually considered relevant only to testing.
      * <p>
@@ -430,7 +430,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @param netReadThreadType thread type for reading (non-mutating state) from network servers
+     * @param netReadThreadType thread type for reading (non-mutating State) from network servers
      * @return this builder
      */
     @NonNull
@@ -442,7 +442,7 @@ public class AsyncBuilder {
     }
 
     /**
-     * @return thread type for writing (mutating state) to network servers
+     * @return thread type for writing (mutating State) to network servers
      */
     @NonNull
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)

@@ -23,9 +23,9 @@ public interface IReactiveValue<T> extends ISafeGettable<T>, ISettable<T> {
      * {@link java.util.concurrent.atomic.AtomicReference#compareAndSet(Object, Object)}
      *
      * @param expected - Must be of the same type as <code>update</code> and must be the current from
-     *                 or the state will not change.
+     *                 or the State will not change.
      * @param update   - The asserted new from.
-     * @return true of the expected from was the current from and the change of state completed
+     * @return true of the expected from was the current from and the change of State completed
      * successfully
      */
     boolean compareAndSet(@NonNull T expected,

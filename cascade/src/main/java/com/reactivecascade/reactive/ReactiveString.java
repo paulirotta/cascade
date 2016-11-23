@@ -119,7 +119,7 @@ public class ReactiveString extends ReactiveValue<String> {
      * Mutates this string to lower case, using the rules of {@code locale}.
      *
      * @param locale for case conversion
-     * @return the lower case mutated state
+     * @return the lower case mutated State
      */
     @CallSuper
     public String toLowerCase(@NonNull final Locale locale) {

@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
  * <p>
  * This may be useful for load balancing between servers or late-prioritizing parameters
  * based on current conditions. For example use this in association with a Collection to
- * prioritize if/which-next at that moment based on current user interface state.
+ * prioritize if/which-next at that moment based on current user interface State.
  * <p>
  * Your implementation must be thread safe since multiple WORKER threads may attempt to start
  * network connections simultaneously. The simplest way to do this is mark the method synchronized
@@ -24,7 +24,7 @@ import android.support.annotation.NonNull;
  */
 public interface IGettable<T> {
     /**
-     * A null object indicating that the <code>IGettable</code> is not able to meaningfully provide its state
+     * A null object indicating that the <code>IGettable</code> is not able to meaningfully provide its State
      * as a string at this time. For example, the from may not yet be determined.
      * <p>
      * This will appear as "VALUE_NOT_AVAILABLE" in debugging outputs
@@ -33,7 +33,7 @@ public interface IGettable<T> {
         @NonNull
         @Override // IGettable
         public Object get() {
-            throw new IllegalStateException("Can not get() from IGettable.VALUE_NOT_AVALIABLE. Perhaps you want ISafaGettable.safeGet() instead? You could also safely check the value before getting since you can not return to this state. Another choice is to examine the logic flow and sequence for initializing this variable.");
+            throw new IllegalStateException("Can not get() from IGettable.VALUE_NOT_AVALIABLE. Perhaps you want ISafaGettable.safeGet() instead? You could also safely check the value before getting since you can not return to this State. Another choice is to examine the logic flow and sequence for initializing this variable.");
         }
 
         @NonNull

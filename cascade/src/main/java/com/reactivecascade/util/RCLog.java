@@ -486,7 +486,7 @@ public class RCLog {
 
         allStackTraceElements.addAll(rawStrackTraceElements.subList(3, traceElementsArray.length));
 
-        // Remove uninteresting stack trace elements in least-interesting-removed-first order, but step back to the previous state if everything is removed by one of these filters
+        // Remove uninteresting stack trace elements in least-interesting-removed-first order, but step back to the previous State if everything is removed by one of these filters
         List<StackTraceLine> previousList = findClassAndMethod(allStackTraceElements);
 
         try {

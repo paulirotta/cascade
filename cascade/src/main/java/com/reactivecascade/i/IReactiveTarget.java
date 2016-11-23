@@ -26,14 +26,14 @@ public interface IReactiveTarget<IN> extends INamed {
      * of a new input from to process.
      * <p>
      * You don't usually call the fire methods directly. They are
-     * called for you when this is an input or state change, for example by
+     * called for you when this is an input or State change, for example by
      * {@link com.reactivecascade.reactive.ReactiveValue#set(Object)}
      * <p>
      * <p>
      * Nodes within a reactive chain may choose to be stateless such as
      * {@link com.reactivecascade.reactive.Subscription}.
      * <p>
-     * Nodes at the leaf of a reactive chain will typically retain this from as state, for example
+     * Nodes at the leaf of a reactive chain will typically retain this from as State, for example
      * ({@link com.reactivecascade.reactive.ReactiveValue}).
      * <p>
      * They may also choose to otherwise create a stateful side effect with the from received. The

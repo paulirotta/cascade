@@ -47,10 +47,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @NotCallOrigin
 public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
     /**
-     * The state returned by a function which has no value, but is finished running.
+     * The State returned by a function which has no value, but is finished running.
      * <p>
      * In some functional styles this is (somewhat confusingly) a "Null" object passed along the chain.
-     * We prefer to name each state explicity for debuggability and disambiguation.
+     * We prefer to name each State explicity for debuggability and disambiguation.
      */
     public static final State COMPLETE = new AbstractState() {
         @NonNull
@@ -61,11 +61,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     };
 
     /*
-     * TODO It is possible to refactor and eliminate the FORKED state in production builds for performance, using only ZEN plus a single state change
+     * TODO It is possible to refactor and eliminate the FORKED State in production builds for performance, using only ZEN plus a single State change
      * This would however result in more debugging difficulty and the loss of certain broken logic tests so
      * it should be configurable for production builds. Library users debugging their logic would not know at they time
      * of .fork() if the operation has already been forked due to an error in their code. They
-     * would only find out much later. Perhaps this is acceptable in production since the final state
+     * would only find out much later. Perhaps this is acceptable in production since the final State
      * change can occur only once, but impure functions would exert their side effect multiple times if
      * forked multiple times. If the debug pattern remains clear and side effects are idempotent this
      * might be worth the performance gained.
@@ -96,6 +96,12 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         this.threadType = AssertUtil.assertNonNull(threadType);
     }
 
+    @NonNull
+    @Override
+    public AFState getState() {
+        return AFState.FAILED; //TODO
+    }
+
     @Override // IAltFuture
     @CallOrigin
     @CallSuper
@@ -110,9 +116,9 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         Object s = stateAR.get();
 
         if (s instanceof StateCancelled) {
-            RCLog.d(this, "Ignoring duplicate cancel(\"" + reason + "\"). state=" + s);
+            RCLog.d(this, "Ignoring duplicate cancel(\"" + reason + "\"). State=" + s);
         } else {
-            RCLog.d(this, "Ignoring cancel(\"" + reason + "\"). state=" + s);
+            RCLog.d(this, "Ignoring cancel(\"" + reason + "\"). State=" + s);
         }
 
         return false;
@@ -144,7 +150,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         };
 
         if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.d(this, "Cancelled from state " + state);
+            RCLog.d(this, "Cancelled from State " + state);
             final Exception e = forEachThen(ignore ->
                     onCancelled(stateCancelled));
             if (e != null) {
@@ -154,7 +160,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
             return true;
         }
 
-        RCLog.d(this, "Ignoring cancel(" + stateError + "). state=" + stateAR.get());
+        RCLog.d(this, "Ignoring cancel(" + stateError + "). State=" + stateAR.get());
 
         return false;
     }
@@ -251,10 +257,10 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         Object state = stateAR.get();
 
         if (!isDone(state)) {
-            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is not yet finished. state=" + state);
+            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is not yet finished. State=" + state);
         }
         if (isCancelled(state)) {
-            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is cancelled: state=" + state);
+            RCLog.throwIllegalStateException(this, getOrigin(), "Attempt to get() RunnableAltFuture that is cancelled: State=" + state);
         }
 
         return (OUT) state;
@@ -325,7 +331,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         RCLog.d(this, "Handling onError(): " + stateError);
 
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
-            RCLog.i(this, "Will not repeat onError() because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Will not repeat onError() because IAltFuture State is already determined: " + stateAR.get());
             return;
         }
 
@@ -342,7 +348,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
         RCLog.v(this, "Handling onCancelled for reason=" + stateCancelled);
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) && !this.stateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.i(this, "Can not onCancelled because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Can not onCancelled because IAltFuture State is already determined: " + stateAR.get());
             return;
         }
 
@@ -363,7 +369,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     //----------------------------------- .then() actions ---------------------------------------------
     protected void doThen() {
-        AssertUtil.assertTrue("doThen(): state=" + stateAR.get(), isDone());
+        AssertUtil.assertTrue("doThen(): State=" + stateAR.get(), isDone());
 
         Exception e = forEachThen(IAltFuture::fork);
         if (e != null) {
@@ -569,7 +575,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
 
         /**
-         * If the cancellation is because of an error state change elsewhere, provide the details
+         * If the cancellation is because of an error State change elsewhere, provide the details
          * of that original cause also.
          *
          * @return
@@ -588,7 +594,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     /**
-     * An atomic state change marking also the reason for entering the exception state
+     * An atomic State change marking also the reason for entering the exception State
      */
     @NotCallOrigin
     protected final class AltFutureStateError extends Origin implements StateError {

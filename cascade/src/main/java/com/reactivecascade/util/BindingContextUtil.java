@@ -29,9 +29,9 @@ public class BindingContextUtil {
     private static final String TAG = BindingContextUtil.class.getSimpleName();
 
     /**
-     * The default implementation of a state-change notification to start and stop data-driven reactive actions
+     * The default implementation of a State-change notification to start and stop data-driven reactive actions
      *
-     * @param <T> the type of object which will control these state changes
+     * @param <T> the type of object which will control these State changes
      */
     public static class DefaultBindingContext<T> implements IBindingContext<T> {
         private final CopyOnWriteArraySet<IActionOne<T>> onOpenActions = new CopyOnWriteArraySet<>();
@@ -108,7 +108,7 @@ public class BindingContextUtil {
                     action.call(t);
                 } catch (Exception e) {
                     caught = e;
-                    RCLog.e(this, "Problem during binding context state change actions- any other actions will still be attempted", e);
+                    RCLog.e(this, "Problem during binding context State change actions- any other actions will still be attempted", e);
                 }
             }
 
@@ -236,7 +236,7 @@ public class BindingContextUtil {
         }
 
         /**
-         * Run when the binding context returns from an inactive/paused state
+         * Run when the binding context returns from an inactive/paused State
          *
          * Bound actions are fired before the activity itself resumes in order to initialize variables
          * for display
@@ -250,7 +250,7 @@ public class BindingContextUtil {
         }
 
         /**
-         * Run when the binding context returns from an inactive/paused state
+         * Run when the binding context returns from an inactive/paused State
          *
          * Bound actions are fired before the activity itself starts in order to initialize variables
          * for display

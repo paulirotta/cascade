@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @NotCallOrigin
 public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>, IReactiveSource<OUT> {
     //FIXME Replace these values with changing lastFireInIsFireNext to be volatile boolean needToQueue to simplify logic
-    private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker state for fireAction to indicate the need to queue on next fire
+    private static final Object FIRE_ACTION_NOT_QUEUED = new Object(); // A marker State for fireAction to indicate the need to queue on next fire
 
     @NonNull
     protected final IThreadType threadType;

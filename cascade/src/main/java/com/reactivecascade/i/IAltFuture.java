@@ -67,6 +67,11 @@ import java.util.concurrent.TimeUnit;
  * {@link RunnableAltFuture} is not a <code>Future</code> to avoid confusion.
  */
 public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, IAsyncOrigin {
+    enum AFState {PENDING, ACTIVE, DONE, CANCELLED, FAILED}
+
+    @NonNull
+    AFState getState();
+
     /**
      * A method which returns a new (unforked) <code>IAltFuture</code> should follow the naming conventiond <code>..Async</code>
      * and be annotated <code>@CheckResult(suggest = IAltFuture.CHECK_RESULT_SUGGESTION)</code> to {@link CheckResult} that
@@ -84,10 +89,10 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     IThreadType getThreadType();
 
     /**
-     * Find if the final, immutable state has been entered either with a successful result or an error
+     * Find if the final, immutable State has been entered either with a successful result or an error
      * code
      *
-     * @return <code>true</code> once final state has been determined
+     * @return <code>true</code> once final State has been determined
      */
     boolean isDone();
 
@@ -138,24 +143,24 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
 
     /**
      * Notification from an up-chain {@link IAltFuture} that the stream is broken
-     * and will not complete normally. This RunnableAltFuture will be set to an error state.
+     * and will not complete normally. This RunnableAltFuture will be set to an error State.
      * <p>
      * If an onError or catch method has been defined, it will be
      * notified of the original cause of the failure. If the RunnableAltFuture's onError method consumes the error
      * (returns <code>true</code>), sub anything else down-chain methods will be notified with
      * {@link #onCancelled(StateCancelled)} instead.
      *
-     * @param stateError the state indicating the reason and origin of the exception
+     * @param stateError the State indicating the reason and origin of the exception
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void onError(@NonNull StateError stateError) throws Exception;
 
     /**
      * Notification indicates an up-chain {@link IAltFuture} has been cancelled.
-     * This RunnableAltFuture will be set to a cancelled state and not be given a chance to complete normally.
+     * This RunnableAltFuture will be set to a cancelled State and not be given a chance to complete normally.
      * All down-chain AltFutures will similarly be notified that they were cancelled.
      *
-     * @param stateCancelled the state indicating the reason and origin of cancellation
+     * @param stateCancelled the State indicating the reason and origin of cancellation
      * @throws Exception if there is a problem performing synchronous downchain notifications
      */
     void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception;
@@ -271,7 +276,7 @@ public interface IAltFuture<IN, OUT> extends ICancellable, ISafeGettable<OUT>, I
     /**
      * Continue chain execution once all upchain futures realize and have completed their side effects.
      * <p>
-     * The await operation will be cancelled or exception state and trigger {@link #onError(IActionOne)}
+     * The await operation will be cancelled or exception State and trigger {@link #onError(IActionOne)}
      * if <em>any</em> of the joined operations have a problem running to completion.
      *
      * @param altFutures to pause this chain until they are done (<code>{@link #isDone()}</code>)

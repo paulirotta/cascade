@@ -250,7 +250,7 @@ public interface IThreadType extends INamed {
      * in to an execution queue associated with this {@link IThreadType}.
      * <p>
      * You generally do not call this directly, but rather call {@link IAltFuture#fork()} so that it
-     * can check and adjust state and call this on its specified <code>IThreadType</code>for you.
+     * can check and adjust State and call this on its specified <code>IThreadType</code>for you.
      *
      * @param runnableAltFuture the holder for an evaluate-once-a-discard function which is ready to be queued because it can now be evaluated in a non-blocking manner
      * @param <IN>              the type of input argument expected by the action

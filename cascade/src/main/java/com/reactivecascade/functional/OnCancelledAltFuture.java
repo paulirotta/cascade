@@ -46,7 +46,7 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
         RCLog.d(this, "Handling onCancelled(): " + stateCancelled);
 
         if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
-            RCLog.i(this, "Will not onCancelled() because IAltFuture state is already determined: " + stateAR.get());
+            RCLog.i(this, "Will not onCancelled() because IAltFuture State is already determined: " + stateAR.get());
             return;
         }
 

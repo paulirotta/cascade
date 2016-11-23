@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * intermediate values when going on to the next function, but only in production builds.
  * <p>
  * Note that there is no mutator method which allows to re-enter the initial {@link com.reactivecascade.i.IGettable#VALUE_NOT_AVAILABLE}
- * state once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
- * through this intermediate state. Once you leave the temple, you can never go back.
+ * State once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
+ * through this intermediate State. Once you leave the temple, you can never go back.
  * <p>
  * Note that <code>null</code> is not a permissible from
  * <p>

@@ -172,16 +172,16 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
 //    @Override // IAltFuture
 //    public boolean cancel(@NonNull  final String reason) {
 //        assertNotDone();
-//        final Object state = stateAR.get();
+//        final Object State = stateAR.get();
 //
-//        if (state instanceof AltFutureStateCancelled) {
-//            RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nstate=" + state);
+//        if (State instanceof AltFutureStateCancelled) {
+//            RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") since already in StateError\nState=" + State);
 //        } else {
-//            if (stateAR.compareAndSet(state, new AltFutureStateCancelled(reason))) {
+//            if (stateAR.compareAndSet(State, new AltFutureStateCancelled(reason))) {
 //                RCLog.d(this, mOrigin, "Cancelled, reason=" + reason);
 //                return true;
 //            } else {
-//                RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent state change during cancellation\nstate=" + state);
+//                RCLog.d(this, mOrigin, "Ignoring cancel (reason=" + reason + ") due to a concurrent State change during cancellation\nState=" + State);
 //            }
 //        }
 //        return false;
@@ -190,7 +190,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
     /**
      * The {@link java.util.concurrent.ExecutorService} of this <code>RunnableAltFuture</code>s {@link com.reactivecascade.i.IThreadType}
      * will call this for you. You will {@link #fork()} when all prerequisite tasks have completed
-     * to <code>{@link #isDone()} == true</code> state. If this <code>RunnableAltFuture</code> is part of an asynchronous functional
+     * to <code>{@link #isDone()} == true</code> State. If this <code>RunnableAltFuture</code> is part of an asynchronous functional
      * chain, sub it will be forked for you when the prerequisites have finished.
      * <p>
      * This is called for you from the {@link IThreadType}'s {@link java.util.concurrent.ExecutorService}
@@ -202,13 +202,13 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
 
         try {
             if (isCancelled()) {
-                RCLog.d(this, "RunnableAltFuture was cancelled before execution. state=" + stateAR.get());
+                RCLog.d(this, "RunnableAltFuture was cancelled before execution. State=" + stateAR.get());
                 throw new CancellationException("Cancelled before execution started: " + stateAR.get().toString());
             }
             final OUT out = mAction.call();
 
             if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, out) || stateAR.compareAndSet(FORKED, out))) {
-                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in onError()/onCatch() are still in effect. state=" + stateAR.get());
+                RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in onError()/onCatch() are still in effect. State=" + stateAR.get());
                 throw new CancellationException(stateAR.get().toString());
             }
             stateChanged = true;
@@ -221,7 +221,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
             if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) && !(stateAR.compareAndSet(FORKED, stateError)))) {
-                RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the state has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
+                RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the State has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
                 stateChanged = true;
             }
         } finally {
@@ -232,13 +232,13 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
                 try {
                     doThen();
                 } catch (Exception e) {
-                    RCLog.e(this, "RunnableAltFuture.run() state=" + stateAR.get() + "\nProblem in resulting .doThen()", e);
+                    RCLog.e(this, "RunnableAltFuture.run() State=" + stateAR.get() + "\nProblem in resulting .doThen()", e);
                 }
 
                 try {
                     clearPreviousAltFuture(); // Allow garbage collect of past values as the chain burns
                 } catch (Exception e) {
-                    RCLog.e(this, "RunnableAltFuture.run() state=\" + stateAR.get() + \"\nCan not clearPreviousAltFuture()", e);
+                    RCLog.e(this, "RunnableAltFuture.run() State=\" + stateAR.get() + \"\nCan not clearPreviousAltFuture()", e);
                 }
             }
         }

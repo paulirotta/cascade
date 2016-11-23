@@ -298,7 +298,7 @@ public final class Async {
     };
 
     /**
-     * A setting controlling an additional state change which make debugging applications easier
+     * A setting controlling an additional State change which make debugging applications easier
      * but at the cost of a slight performance cost.
      * <p>
      * The default is <code>true</code> for debug builds, false for production builds. Change with {@link AsyncBuilder#setUseForkedState(boolean)}

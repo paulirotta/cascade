@@ -245,7 +245,7 @@ public abstract class AbstractThreadType implements IThreadType {
             }
         }
 
-        run(runnableAltFuture); // Atomic state checks must be completed later in the .run() method
+        run(runnableAltFuture); // Atomic State checks must be completed later in the .run() method
     }
 
     @Override // IThreadType

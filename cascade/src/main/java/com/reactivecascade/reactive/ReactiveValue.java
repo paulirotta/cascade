@@ -96,7 +96,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
      * Both of these methods will automatically call <code>fire()</code> for you.
      * <p>
      * You may want to <code>fire()</code> manually on app startup after all your initial reactive chains are constructed.
-     * This will heat up the reactive chain to initial state by flushing current values through the system.
+     * This will heat up the reactive chain to initial State by flushing current values through the system.
      * <p>
      * All methods and receivers within a reactive chain are <em>supposed</em> to be idempotent to
      * multiple firing events. This

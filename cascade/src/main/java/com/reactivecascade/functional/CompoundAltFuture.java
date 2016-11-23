@@ -62,6 +62,12 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     }
 
     @NonNull
+    @Override
+    public AFState getState() {
+        return this.tail.getState();
+    }
+
+    @NonNull
     @Override // IAltFuture
     public IThreadType getThreadType() {
         return head.getThreadType();

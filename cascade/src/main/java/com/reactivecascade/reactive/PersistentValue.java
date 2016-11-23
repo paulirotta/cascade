@@ -28,18 +28,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A {@link com.reactivecascade.reactive.ReactiveValue} which retains state between stops and
+ * A {@link com.reactivecascade.reactive.ReactiveValue} which retains State between stops and
  * starts of the application.
  * <p>
  * You must provide a unique name. PersistentValue enforces a singletone per name. If any other
  * persistent from has the same name, they will share from and be the same object. This is an
- * intentional dependency state injection in a flat name space, so pick a naming convention that will
+ * intentional dependency State injection in a flat name space, so pick a naming convention that will
  * make your app debuggable and maintainable.
  * <p>
  * TODO Support JSON and/or Serializable and Lists of such arbitrary types
  * TODO Support null as a persisted from by storing a special marker to indicate NOT_ASSERTED and using that to trigger accepting the default passed in. Or something simpler
  * <p>
- * TODO Eliminate this class, replace with a new @Persist annotation to any IReactiveSource that would like persistent state
+ * TODO Eliminate this class, replace with a new @Persist annotation to any IReactiveSource that would like persistent State
  * TODO Create IReactiveBindingContext to allow values to start and stop with fragment and activity resume/pause or other custom cases. null context means forever
  * TODO Persist triggered only in onPause() transition of the IReactiveBindingContext
  */

@@ -15,10 +15,10 @@ import com.reactivecascade.util.RCLog;
 
 /**
  * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
- * one time to change state
+ * one time to change State
  * <p>
  * Note that a <code>SettableAltFuture</code> is not itself {@link java.lang.Runnable}. You explicity {@link #set(Object)}
- * when the from is determined, and this changes the state to done. Therefore concepts like {@link IAltFuture#fork()}
+ * when the from is determined, and this changes the State to done. Therefore concepts like {@link IAltFuture#fork()}
  * and {@link IAltFuture#isForked()} do not have their traditional meanings.
  * <p>
  * {@link RunnableAltFuture} overrides this class.
@@ -57,14 +57,14 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
     @Override // ISettable
     public void set(@NonNull T value) {
         if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, value) || stateAR.compareAndSet(FORKED, value)) {
-            // Previous state was FORKED, so set completes the onFireAction and continues the chain
+            // Previous State was FORKED, so set completes the onFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
             doFork();
             clearPreviousAltFuture();
             return;
         }
 
-        // Already set, cancelled or error state
+        // Already set, cancelled or error State
         RCLog.throwIllegalArgumentException(this, "Attempted to set " + this + " to from=" + value + ", but the from can only be set once and was already set to from=" + get());
     }
 

@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
  * <p>
  * This may be useful for load balancing between servers or late-prioritizing parameters
  * based on current conditions. For example use this in association with a Collection to
- * prioritize if/which-next at that moment based on current user interface state.
+ * prioritize if/which-next at that moment based on current user interface State.
  * <p>
  * Your implementation must be thread safe since multiple WORKER threads may attempt to start
  * network connections simultaneously. The simplest way to do this is mark the method synchronized

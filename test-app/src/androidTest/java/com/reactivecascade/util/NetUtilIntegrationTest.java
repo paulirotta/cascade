@@ -60,7 +60,8 @@ public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
     public void testGetWithHeaders() throws Exception {
         Collection<Header> headers = new ArrayList<>();
         headers.add(new Header("Test", "ValueZ"));
-        assertTrue(netUtil.get("http://httpbin.org/headers", headers).body().string().contains("ValueZ"));
+        String s = netUtil.get("http://httpbin.org/headers", headers).body().string();
+        assertTrue(s.contains("ValueZ"));
     }
 
     @Test
@@ -106,7 +107,8 @@ public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
         IAltFuture<String, Response> iaf = netUtil
                 .getAsync("http://httpbin.org/headers", headers)
                 .fork();
-        assertTrue(await(iaf).body().string().contains("ValueZ"));
+        String s = await(iaf).body().string();
+        assertTrue(s.contains("ValueZ"));
     }
 
     @Test
@@ -130,7 +132,8 @@ public class NetUtilIntegrationTest extends DefaultCascadeIntegrationTest {
                 .from("http://httpbin.org/get")
                 .then(netUtil.getAsync(altFuture))
                 .fork();
-        assertTrue(await(iaf).body().string().contains("VaGG"));
+        String s = await(iaf).body().string();
+        assertTrue(s.contains("VaGG"));
     }
 
     @Test

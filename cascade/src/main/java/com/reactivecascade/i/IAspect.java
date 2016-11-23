@@ -8,7 +8,7 @@ package com.reactivecascade.i;
 import android.support.annotation.NonNull;
 
 /**
- * Aspect is combination of thread/typed-group-of-threads AND the program state during which a
+ * Aspect is combination of thread/typed-group-of-threads AND the program State during which a
  * given piece of asychronous function result or side-effect is desired.
  */
 public interface IAspect {
