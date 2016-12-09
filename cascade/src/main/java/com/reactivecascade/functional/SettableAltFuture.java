@@ -13,6 +13,9 @@ import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
 import com.reactivecascade.util.RCLog;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.FORKED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * An {@link IAltFuture} on which you can {@link SettableAltFuture#set(Object)}
  * one time to change State
@@ -56,7 +59,7 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
 
     @Override // ISettable
     public void set(@NonNull T value) {
-        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, value) || stateAR.compareAndSet(FORKED, value)) {
+        if (stateAR.compareAndSet(PENDING, value) || stateAR.compareAndSet(FORKED, value)) {
             // Previous State was FORKED, so set completes the onFireAction and continues the chain
             RCLog.v(this, "SettableAltFuture set, from= " + value);
             doFork();
@@ -75,6 +78,6 @@ public class SettableAltFuture<T> extends AbstractAltFuture<T, T> implements ISe
     //FIXME Remove this after testing
     @Override
     protected boolean isForked(@NonNull Object state) {
-        return state != VALUE_NOT_AVAILABLE;
+        return state != PENDING;
     }
 }

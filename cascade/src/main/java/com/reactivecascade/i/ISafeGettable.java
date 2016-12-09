@@ -27,8 +27,8 @@ public interface ISafeGettable<T> extends IGettable<T> {
      * Get the current value of a variable or the next from in a list. No exception will be thrown if
      * the value is not yet determined.
      *
-     * @return the current value, or {@link #VALUE_NOT_AVAILABLE} if the value is not yet determined
+     * @return the current value, or {@link #PENDING} if the value is not yet determined
      */
     @NonNull
-    T safeGet();
+    T unsafeGet();
 }

@@ -134,7 +134,7 @@ public class AltFutureFuture<IN, OUT> extends Origin implements Future<OUT> {
             }
         }
 
-        return altFuture.safeGet();
+        return altFuture.unsafeGet();
     }
 
     @Override

@@ -24,30 +24,10 @@ import android.support.annotation.NonNull;
  */
 public interface IGettable<T> {
     /**
-     * A null object indicating that the <code>IGettable</code> is not able to meaningfully provide its State
-     * as a string at this time. For example, the from may not yet be determined.
-     * <p>
-     * This will appear as "VALUE_NOT_AVAILABLE" in debugging outputs
-     */
-    IGettable<?> VALUE_NOT_AVAILABLE = (IGettable<?>) new IGettable<Object>() {
-        @NonNull
-        @Override // IGettable
-        public Object get() {
-            throw new IllegalStateException("Can not get() from IGettable.VALUE_NOT_AVALIABLE. Perhaps you want ISafaGettable.safeGet() instead? You could also safely check the value before getting since you can not return to this State. Another choice is to examine the logic flow and sequence for initializing this variable.");
-        }
-
-        @NonNull
-        @Override // IGettable
-        public String toString() {
-            return "VALUE_NOT_AVAILABLE";
-        }
-    };
-
-    /**
      * Get the current from of a variable or the next from in a list.
      *
      * @return the current from, or the next from in the series
-     * @throws IllegalStateException if the current from is not available. See also {@link ISafeGettable#safeGet()}
+     * @throws IllegalStateException if the current from is not available. See also {@link ISafeGettable#unsafeGet()}
      */
     @NonNull
     T get();
@@ -55,7 +35,7 @@ public interface IGettable<T> {
     /**
      * Must be the {@link Object#toString()} of the from returned by {@link #get()}
      *
-     * @return string representation of the current from, or {@link #VALUE_NOT_AVAILABLE}
+     * @return string representation of the current value or {@link IAltFuture.AltFutureState}
      */
     @NonNull
     String toString();

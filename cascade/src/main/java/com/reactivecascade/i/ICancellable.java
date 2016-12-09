@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.i;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * Stop an ongoing activity early if it has not already completed.
@@ -29,79 +28,13 @@ public interface ICancellable {
      * @return <code>true</code> if the action was cancelled, otherwise this call had not effect
      */
     @CallOrigin
-    boolean cancel(@NonNull String reason);
+    boolean cancel(@NonNull CharSequence reason);
 
     /**
-     * A reason, such as an error or manual calling of {@link #cancel(String)}, had trigger the transition
-     * to cancelled State upchain. This token is synchonrously passed downchain to inform all other chain
-     * step so that they clean up (alter external State such as closing resources or changing UI elements).
-     * <p>
-     * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
-     * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
-     */
-    @CallOrigin
-    boolean cancel(@NonNull StateError stateError);
-
-    /**
-     * Check if {@link #cancel(String)} or a similar occurrence such as a {@link java.lang.Exception}
+     * Check if {@link #cancel(CharSequence)} or a similar occurrence such as a {@link java.lang.Exception}
      * have brought the operation to a premature end.
      *
      * @return <code>true</code> if the action has been cancelled to bring it to an alternate termination State
      */
     boolean isCancelled();
-
-    /**
-     * An internal-use interface made public to facilitate mixing in alternate implementations.
-     * <p>
-     * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
-     * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
-     */
-    @NotCallOrigin
-    interface State extends IAsyncOrigin {
-    }
-
-    /**
-     * This is a marker interface. If you return State information, the atomic inner State of your
-     * implementation should implement this interface.
-     * <p>
-     * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
-     * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
-     */
-    @NotCallOrigin
-    interface StateCancelled extends State {
-        /**
-         * The reason this task was cancelled. This is for debug purposes.
-         *
-         * @return
-         */
-        @NonNull
-        String getReason();
-
-        /**
-         * If the cancellation is because of an error State change elsewhere, provide the details
-         * of that original cause also.
-         *
-         * @return
-         */
-        @Nullable
-        StateError getStateError();
-    }
-
-    /**
-     * This is a marker interface. If you return State information, the atomic inner State of your
-     * implementation should implement this interface.
-     * <p>
-     * The Reactive Cascade library exposes thread-safe atomic internal states for extension, default implementation
-     * replacement and transparency during debugging. Most application developers will not need to use this interface directly.
-     */
-    @NotCallOrigin
-    interface StateError extends State {
-        /**
-         * Get the exception, if any, which triggered the transition to this internal State
-         *
-         * @return the exception
-         */
-        @NonNull
-        Exception getException();
-    }
 }

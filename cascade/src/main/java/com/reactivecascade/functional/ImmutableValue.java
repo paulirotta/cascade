@@ -21,6 +21,8 @@ import com.reactivecascade.i.ISafeGettable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * This can be useful for referring in a lambda expression to the the lambda expression.
  * <p>
@@ -29,8 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * a lot of memory. In asynchronous functional chains based on RunnableAltFuture, dereference of
  * intermediate values when going on to the next function, but only in production builds.
  * <p>
- * Note that there is no mutator method which allows to re-enter the initial {@link com.reactivecascade.i.IGettable#VALUE_NOT_AVAILABLE}
- * State once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
+ * Note that there is no mutator method which allows to re-enter the initial PENDING
+ * state once it is lost. Thus one can not abuse the system to make an immutable mutable by moving back
  * through this intermediate State. Once you leave the temple, you can never go back.
  * <p>
  * Note that <code>null</code> is not a permissible from
@@ -47,7 +49,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     private static final String TAG = ImmutableValue.class.getSimpleName();
 
     @SuppressWarnings("unchecked")
-    private final AtomicReference<T> valueAR = new AtomicReference<>((T) VALUE_NOT_AVAILABLE);
+    private final AtomicReference<T> valueAR = new AtomicReference<>((T) PENDING);
 
     private final ConcurrentLinkedQueue<IBaseAction<T>> thenActions = new ConcurrentLinkedQueue<>();
 
@@ -100,7 +102,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
         if (success) {
             doThenActions(value);
         } else {
-            Log.d(TAG, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + safeGet());
+            Log.d(TAG, "compareAndSet(" + expected + ", " + value + ") failed, current from is " + unsafeGet());
         }
 
         return success;
@@ -118,7 +120,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     public ImmutableValue<T> then(@NonNull IActionOne<T> action) {
         thenActions.add(action);
         if (isSet()) {
-            doThenActions(safeGet());
+            doThenActions(unsafeGet());
         }
         return this;
     }
@@ -135,7 +137,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     public ImmutableValue<T> then(@NonNull IAction<T> action) {
         thenActions.add(action);
         if (isSet()) {
-            doThenActions(safeGet());
+            doThenActions(unsafeGet());
         }
         return this;
     }
@@ -190,14 +192,14 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
      * @return <code>true</code> if the value is already asserted
      */
     public final boolean isSet() {
-        return valueAR.get() != VALUE_NOT_AVAILABLE;
+        return valueAR.get() != PENDING;
     }
 
     /**
      * Get the from, or throw {@link java.lang.IllegalStateException} if you are getting the from
      * before it has been set.
      * <p>
-     * Generally you want to use this method instead of {@link #safeGet()} when you can use dependency
+     * Generally you want to use this method instead of {@link #unsafeGet()} when you can use dependency
      * mechanisms properly. If you think have problems, ask if you should be doing some of your logic
      * in a <code>.sub()</code> clause to guarantee the execution order.
      *
@@ -210,16 +212,16 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     public T get() {
         T value = valueAR.get();
 
-        if (value == VALUE_NOT_AVAILABLE) {
+        if (value == PENDING) {
             try {
                 if (action != null) {
                     T t = action.call();
-                    if (!compareAndSet((T) VALUE_NOT_AVAILABLE, t)) {
+                    if (!compareAndSet((T) PENDING, t)) {
                         Log.d(TAG, "ImmutableValue was set while calling action during get: ignoring the second value from action \"" + t + "\" in favor of \"" + valueAR.get() + "\"");
                     }
                     return t;
                 }
-                throw new IllegalStateException("VALUE_NOT_AVAILABLE and null action- there is no way to determine this value");
+                throw new IllegalStateException("PENDING and null action- there is no way to determine this value");
             } catch (Exception e) {
                 throw new IllegalStateException("Can not evaluate the supplied ImmutableValue.IAction", e);
             }
@@ -240,7 +242,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @CallSuper
     @SuppressWarnings("unchecked")
     @NonNull
-    public T safeGet() {
+    public T unsafeGet() {
         return valueAR.get();
     }
 
@@ -259,8 +261,8 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @NonNull
     @SuppressWarnings("unchecked")
     public T set(@NonNull T value) {
-        if (!compareAndSet((T) VALUE_NOT_AVAILABLE, value)) {
-            throw new IllegalStateException("ImmutableReference can not be set multiple times. It is already set to " + safeGet() + " so we can not assert new from=" + value);
+        if (!compareAndSet((T) PENDING, value)) {
+            throw new IllegalStateException("ImmutableReference can not be set multiple times. It is already set to " + unsafeGet() + " so we can not assert new from=" + value);
         }
         doThenActions(value);
 
@@ -281,7 +283,7 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @NonNull
     @SuppressWarnings("unchecked")
     public T safeSet(@NonNull T value) {
-        if (compareAndSet((T) VALUE_NOT_AVAILABLE, value)) {
+        if (compareAndSet((T) PENDING, value)) {
             doThenActions(value);
         }
 
@@ -300,6 +302,6 @@ public class ImmutableValue<T> implements ISafeGettable<T> {
     @CallSuper
     @NonNull
     public String toString() {
-        return safeGet().toString();
+        return unsafeGet().toString();
     }
 }

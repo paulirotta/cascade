@@ -6,7 +6,6 @@ This is open source for the common good. Please contribute improvements by pull 
 package com.reactivecascade.functional;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.reactivecascade.Async;
 import com.reactivecascade.i.IActionOne;
@@ -14,15 +13,19 @@ import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
 import com.reactivecascade.util.RCLog;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.ERROR;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.FORKED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * The on-error action in a chain will be launched asynchronously
  * <p>
  * The error is consumed by this chain link. All downchain items will be notified synchronously
- * as {@link #onCancelled(StateCancelled)}
+ * as {@link #onCancelled(CharSequence)}
  */
 public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
     @NonNull
-    private final IActionOne<Exception> mOnErrorAction;
+    private final IActionOne<Exception> onErrorAction;
 
     /**
      * Constructor
@@ -35,52 +38,53 @@ public class OnErrorAltFuture<T> extends SettableAltFuture<T> {
                             @NonNull IActionOne<Exception> onErrorAction) {
         super(threadType);
 
-        this.mOnErrorAction = onErrorAction;
+        this.onErrorAction = onErrorAction;
     }
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void onError(@NonNull StateError stateError) throws Exception {
-        RCLog.d(this, "Handling onError(): " + stateError);
+    public void onError(@NonNull Exception e) throws Exception {
+        RCLog.d(this, "Handling onError(): " + e);
 
-        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
+        if (!this.stateAR.compareAndSet(PENDING, ERROR) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, ERROR))) {
             RCLog.i(this, "Will not onError() because IAltFuture State is already determined: " + stateAR.get());
             return;
         }
 
         threadType
-                .from(stateError.getException())
-                .then(mOnErrorAction)
+                .from(e)
+                .then(onErrorAction)
                 .fork();
 
-        StateCancelled stateCancelled = new StateCancelled() {
-            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
+//        StateCancelled stateCancelled = new StateCancelled() {
+//            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
+//
+//            @NonNull
+//            @Override
+//            public String getReason() {
+//                return "Cancelled after onError() notified: " + getStateError();
+//            }
+//
+//            @Nullable
+//            @Override
+//            public StateError getStateError() {
+//                return stateError;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public ImmutableValue<String> getOrigin() {
+//                return mOrigin;
+//            }
+//        };
+        String reason = "Upchain error: " + e;
 
-            @NonNull
-            @Override
-            public String getReason() {
-                return "Cancelled after onError() notified: " + getStateError();
-            }
-
-            @Nullable
-            @Override
-            public StateError getStateError() {
-                return stateError;
-            }
-
-            @NonNull
-            @Override
-            public ImmutableValue<String> getOrigin() {
-                return mOrigin;
-            }
-        };
-
-        Exception e = forEachThen(af -> {
-            af.onCancelled(stateCancelled);
+        Exception e2 = forEachThen(af -> {
+            af.onCancelled(reason);
         });
 
-        if (e != null) {
-            throw e;
+        if (e2 != null) {
+            throw e2;
         }
     }
 }

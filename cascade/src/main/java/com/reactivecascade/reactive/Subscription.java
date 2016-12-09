@@ -25,6 +25,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * This is the default implementation for a reactive active chain link.
  * <p>
@@ -212,7 +214,7 @@ public class Subscription<IN, OUT> extends Origin implements IReactiveTarget<IN>
          This design is more efficient than the memory thrash at every reactive evaluation step that
          would explicitly atomically couple the signals into a new Pair(in, boolean) structure.
          */
-        if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED && in != IAltFuture.VALUE_NOT_AVAILABLE) {
+        if (latestFireInAR.getAndSet(in) == FIRE_ACTION_NOT_QUEUED && in != PENDING) {
             // Only queue for execution if not already queued
             threadType.run(getFireRunnable());
         }

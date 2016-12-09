@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 
 import com.reactivecascade.i.IActionOne;
 import com.reactivecascade.i.IActionOneR;
-import com.reactivecascade.i.IAltFuture;
 import com.reactivecascade.i.IReactiveSource;
 import com.reactivecascade.i.IReactiveValue;
 import com.reactivecascade.i.IThreadType;
@@ -22,6 +21,7 @@ import com.reactivecascade.util.RCLog;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.reactivecascade.Async.WORKER;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
 
 /**
  * Thread-safe reactive display of a variable getValue. Add one or more {@link IActionOne}
@@ -47,7 +47,7 @@ import static com.reactivecascade.Async.WORKER;
 public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveValue<T> {
     //TODO Check that reactive chains which are not yet asserted observe "cold" behavior until first assertion. Use ZEN<T> for clarity and null support?
     @SuppressWarnings("unchecked")
-    private final AtomicReference<T> mValueAR = new AtomicReference<>((T) IAltFuture.VALUE_NOT_AVAILABLE);
+    private final AtomicReference<T> mValueAR = new AtomicReference<>((T) PENDING);
 
     /**
      * Create a new AtomicValue
@@ -73,7 +73,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
                          @Nullable IActionOne<Exception> onError) {
         super(name, threadType, null, inputMapping != null ? inputMapping : out -> out, onError);
 
-        fire((T) IAltFuture.VALUE_NOT_AVAILABLE);
+        fire((T) PENDING); //FIXME Does this make any sense? No point firing, is there?
     }
 
     /**
@@ -113,9 +113,9 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @NonNull
     @Override // IAtomicValue, IGettable
     public T get() {
-        T t = safeGet();
+        T t = unsafeGet();
 
-        if (t == IAltFuture.VALUE_NOT_AVAILABLE) {
+        if (t == PENDING) {
             throw new IllegalStateException("Can not get(), ReactiveValue is not yet asserted");
         }
 
@@ -125,7 +125,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @CallSuper
     @NonNull
     @Override // ISafeGettable
-    public T safeGet() {
+    public T unsafeGet() {
         return mValueAR.get();
     }
 
@@ -170,7 +170,7 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
                         + " is now 'cold' and will not fire until set to a non-null from");
             }
         } else {
-            RCLog.d(this, "compareAndSet(" + expected + ", " + update + ") FAILED. The current from is " + get());
+            RCLog.d(this, "compareAndSet(" + expected + ", " + update + ") ERROR. The current from is " + get());
         }
 
         return success;
@@ -191,6 +191,6 @@ public class ReactiveValue<T> extends Subscription<T, T> implements IReactiveVal
     @NonNull
     @Override // ISafeGettable
     public String toString() {
-        return safeGet().toString();
+        return unsafeGet().toString();
     }
 }

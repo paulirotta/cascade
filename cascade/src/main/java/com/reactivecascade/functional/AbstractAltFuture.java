@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.reactivecascade.Async;
-import com.reactivecascade.BuildConfig;
 import com.reactivecascade.i.CallOrigin;
 import com.reactivecascade.i.IAction;
 import com.reactivecascade.i.IActionOne;
@@ -31,6 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.CANCELLED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.ERROR;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.FORKED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * The common base class for default implementations such as {@link SettableAltFuture} and {@link RunnableAltFuture}.
  * Most developers will not need to concern themselves with this abstract class.
@@ -46,39 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @NotCallOrigin
 public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltFuture<IN, OUT> {
-    /**
-     * The State returned by a function which has no value, but is finished running.
-     * <p>
-     * In some functional styles this is (somewhat confusingly) a "Null" object passed along the chain.
-     * We prefer to name each State explicity for debuggability and disambiguation.
-     */
-    public static final State COMPLETE = new AbstractState() {
-        @NonNull
-        @Override
-        public String toString() {
-            return "COMPLETE";
-        }
-    };
-
-    /*
-     * TODO It is possible to refactor and eliminate the FORKED State in production builds for performance, using only ZEN plus a single State change
-     * This would however result in more debugging difficulty and the loss of certain broken logic tests so
-     * it should be configurable for production builds. Library users debugging their logic would not know at they time
-     * of .fork() if the operation has already been forked due to an error in their code. They
-     * would only find out much later. Perhaps this is acceptable in production since the final State
-     * change can occur only once, but impure functions would exert their side effect multiple times if
-     * forked multiple times. If the debug pattern remains clear and side effects are idempotent this
-     * might be worth the performance gained.
-     */
-    protected static final State FORKED = new AbstractState() {
-        @NonNull
-        @Override
-        public String toString() {
-            return "FORKED";
-        }
-    };
-
-    protected final AtomicReference<Object> stateAR = new AtomicReference<>(VALUE_NOT_AVAILABLE);
+    protected final AtomicReference<Object> stateAR = new AtomicReference<>(PENDING);
 
     @NonNull
     protected final IThreadType threadType;
@@ -98,24 +70,34 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
 
     @NonNull
     @Override
-    public AFState getState() {
-        return AFState.FAILED; //TODO
+    public AltFutureState getState() {
+        Object state = stateAR.get();
+
+        if (state == CANCELLED || state == AltFutureState.DONE || state == AltFutureState.ERROR || state == FORKED) {
+            return (AltFutureState) state;
+        }
+        return AltFutureState.DONE; //TODO IS this correct or a
     }
 
     @Override // IAltFuture
     @CallOrigin
     @CallSuper
-    public boolean cancel(@NonNull String reason) {
-        AltFutureStateCancelled state = new AltFutureStateCancelled(reason);
+    public boolean cancel(@NonNull CharSequence reason) {
+//        AltFutureStateCancelled state = new AltFutureStateCancelled(reason);
 
-        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, state) || stateAR.compareAndSet(FORKED, state)) {
+        if (stateAR.compareAndSet(PENDING, CANCELLED) || stateAR.compareAndSet(FORKED, CANCELLED)) {
             RCLog.d(this, "Cancelled: reason=" + reason);
+            String s = "Upchain cancelled: " + reason;
+            Exception e = forEachThen(action -> {
+                action.cancel(s);
+            });
+            AssertUtil.assertEqual("Exception during downchain onCancelled(\"" + reason + "\")", null, e);
             return true;
         }
 
         Object s = stateAR.get();
 
-        if (s instanceof StateCancelled) {
+        if (s == CANCELLED) {
             RCLog.d(this, "Ignoring duplicate cancel(\"" + reason + "\"). State=" + s);
         } else {
             RCLog.d(this, "Ignoring cancel(\"" + reason + "\"). State=" + s);
@@ -124,46 +106,46 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return false;
     }
 
-    @Override // IAltFuture
-    public boolean cancel(@NonNull StateError stateError) {
-        Object state = this.stateAR.get();
-        StateCancelled stateCancelled = new StateCancelled() {
-            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
-
-            @NonNull
-            @Override
-            public ImmutableValue<String> getOrigin() {
-                return mOrigin;
-            }
-
-            @NonNull
-            @Override
-            public String getReason() {
-                return "Cancelled by upchain error=" + getStateError();
-            }
-
-            @Nullable
-            @Override
-            public StateError getStateError() {
-                return stateError;
-            }
-        };
-
-        if (stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.d(this, "Cancelled from State " + state);
-            final Exception e = forEachThen(ignore ->
-                    onCancelled(stateCancelled));
-            if (e != null) {
-                RCLog.throwRuntimeException(this, "Problem executing onCancelled() downchain actions", e);
-            }
-
-            return true;
-        }
-
-        RCLog.d(this, "Ignoring cancel(" + stateError + "). State=" + stateAR.get());
-
-        return false;
-    }
+//    @Override // IAltFuture
+//    public boolean cancel(@NonNull StateError stateError) {
+//        Object state = this.stateAR.get();
+//        StateCancelled stateCancelled = new StateCancelled() {
+//            private final ImmutableValue<String> mOrigin = RCLog.originAsync();
+//
+//            @NonNull
+//            @Override
+//            public ImmutableValue<String> getOrigin() {
+//                return mOrigin;
+//            }
+//
+//            @NonNull
+//            @Override
+//            public String getReason() {
+//                return "Cancelled by upchain error=" + getStateError();
+//            }
+//
+//            @Nullable
+//            @Override
+//            public StateError getStateError() {
+//                return stateError;
+//            }
+//        };
+//
+//        if (stateAR.compareAndSet(PENDING, stateCancelled) || stateAR.compareAndSet(FORKED, stateCancelled)) {
+//            RCLog.d(this, "Cancelled from State " + state);
+//            final Exception e = forEachThen(ignore ->
+//                    onCancelled(stateCancelled));
+//            if (e != null) {
+//                RCLog.throwRuntimeException(this, "Problem executing onCancelled() downchain actions", e);
+//            }
+//
+//            return true;
+//        }
+//
+//        RCLog.d(this, "Ignoring cancel(" + stateError + "). State=" + stateAR.get());
+//
+//        return false;
+//    }
 
     @Override // IAltFuture
     public boolean isCancelled() {
@@ -171,7 +153,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     private boolean isCancelled(@NonNull Object objectThatMayBeAState) {
-        return objectThatMayBeAState instanceof StateCancelled;
+        return objectThatMayBeAState == CANCELLED;
     }
 
     @Override // IAltFuture
@@ -180,7 +162,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     protected boolean isDone(@NonNull Object state) {
-        return state != VALUE_NOT_AVAILABLE && state != FORKED;
+        return state != PENDING && state != FORKED;
     }
 
     @Override // IAltFuture
@@ -189,7 +171,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     }
 
     protected boolean isForked(@NonNull Object state) {
-        return state != VALUE_NOT_AVAILABLE;
+        return state != PENDING;
     }
 
     @Override // IAltFuture
@@ -204,11 +186,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         }
 
         Object s = null;
-        if (Async.USE_FORKED_STATE ? !stateAR.compareAndSet(VALUE_NOT_AVAILABLE, FORKED) : (s = stateAR.get()) != VALUE_NOT_AVAILABLE) {
+        if (Async.USE_FORKED_STATE ? !stateAR.compareAndSet(PENDING, FORKED) : (s = stateAR.get()) != PENDING) {
             if (s == null) {
                 s = stateAR.get();
             }
-            if (s instanceof StateCancelled || s instanceof StateError) {
+            if (s == CANCELLED || s == ERROR) {
                 RCLog.v(getOrigin(), "Can not fork(), RunnableAltFuture was cancelled: " + s);
                 return this;
             }
@@ -269,11 +251,11 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
     @Override // IAltFuture
     @NonNull
     @SuppressWarnings("unchecked")
-    public OUT safeGet() {
+    public OUT unsafeGet() {
         Object state = stateAR.get();
 
         if (!isDone(state) || isCancelled(state)) {
-            return (OUT) VALUE_NOT_AVAILABLE;
+            return (OUT) PENDING;
         }
 
         return (OUT) state;
@@ -292,7 +274,7 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
      * @param action
      * @throws Exception
      */
-    protected Exception forEachThen(@NonNull IActionOne<IAltFuture<? extends OUT, ?>> action) {
+    Exception forEachThen(@NonNull IActionOne<IAltFuture<? extends OUT, ?>> action) {
         Exception exception = null;
 
         for (IAltFuture<? extends OUT, ?> altFuture : downchainAltFutures) {
@@ -309,56 +291,56 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return exception;
     }
 
+    @Override // IAltFuture
+    public void onCancelled(@NonNull CharSequence reason) throws Exception {
+        RCLog.v(this, "Handling onCancelled for reason=" + reason);
+        if (!this.stateAR.compareAndSet(PENDING, CANCELLED) && !this.stateAR.compareAndSet(FORKED, CANCELLED)) {
+            RCLog.i(this, "Can not onCancelled because IAltFuture State is already determined: " + stateAR.get());
+            return;
+        }
+
+        Exception e = forEachThen(altFuture -> {
+            altFuture.onCancelled(reason);
+        });
+
+        if (e != null) {
+            throw e;
+        }
+    }
+
+    @NotCallOrigin
+    @NonNull
+    @SuppressWarnings("unchecked")
+    @Override // IAltFuture
+    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<CharSequence> onCancelledAction) {
+        return (ISettableAltFuture<OUT>) then(new OnCancelledAltFuture<>(threadType, onCancelledAction));
+    }
+
+    @NotCallOrigin
+    @Override // IAltFuture
+    public void onError(@NonNull Exception e) throws Exception {
+        RCLog.d(this, "Handling onError(): " + e);
+
+        if (!this.stateAR.compareAndSet(PENDING, ERROR) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, ERROR))) {
+            RCLog.i(this, "Will not repeat onError() because IAltFuture State is already determined: " + stateAR.get());
+            return;
+        }
+
+        Exception e2 = forEachThen(af -> {
+            af.onError(e);
+        });
+
+        if (e2 != null) {
+            throw e2;
+        }
+    }
+
     @NotCallOrigin
     @NonNull
     @SuppressWarnings("unchecked")
     @Override // IAltFuture
     public ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
         return (ISettableAltFuture<OUT>) then(new OnErrorAltFuture<>(threadType, onErrorAction));
-    }
-
-    @NotCallOrigin
-    @NonNull
-    @SuppressWarnings("unchecked")
-    @Override // IAltFuture
-    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
-        return (ISettableAltFuture<OUT>) then(new OnCancelledAltFuture<>(threadType, onCancelledAction));
-    }
-
-    @NotCallOrigin
-    @Override // IAltFuture
-    public void onError(@NonNull StateError stateError) throws Exception {
-        RCLog.d(this, "Handling onError(): " + stateError);
-
-        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateError))) {
-            RCLog.i(this, "Will not repeat onError() because IAltFuture State is already determined: " + stateAR.get());
-            return;
-        }
-
-        Exception e = forEachThen(af -> {
-            af.onError(stateError);
-        });
-
-        if (e != null) {
-            throw e;
-        }
-    }
-
-    @Override // IAltFuture
-    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        RCLog.v(this, "Handling onCancelled for reason=" + stateCancelled);
-        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) && !this.stateAR.compareAndSet(FORKED, stateCancelled)) {
-            RCLog.i(this, "Can not onCancelled because IAltFuture State is already determined: " + stateAR.get());
-            return;
-        }
-
-        Exception e = forEachThen(altFuture -> {
-            altFuture.onCancelled(stateCancelled);
-        });
-
-        if (e != null) {
-            throw e;
-        }
     }
 
     @Override // Object
@@ -546,81 +528,81 @@ public abstract class AbstractAltFuture<IN, OUT> extends Origin implements IAltF
         return then(reactiveTarget::fire);
     }
 
-    protected static abstract class AbstractState extends Origin implements IAltFuture.State {
-    }
+//    protected static abstract class AbstractState extends Origin implements IAltFuture.State {
+//    }
 
 //=============================== End .then() actions ========================================
 
-    @NotCallOrigin
-    protected final class AltFutureStateCancelled extends Origin implements StateCancelled {
-        final String reason;
-
-        AltFutureStateCancelled(@NonNull String reason) {
-            if (BuildConfig.DEBUG && reason.length() == 0) {
-                throw new IllegalArgumentException("You must specify the cancellation reason to keep debugging sane");
-            }
-            this.reason = reason;
-            com.reactivecascade.util.RCLog.d(this, "Moving to StateCancelled:\n" + this.reason);
-        }
-
-        /**
-         * The reason this task was cancelled. This is for debug purposes.
-         *
-         * @return
-         */
-        @NonNull
-        @Override // StateCancelled
-        public String getReason() {
-            return reason;
-        }
-
-        /**
-         * If the cancellation is because of an error State change elsewhere, provide the details
-         * of that original cause also.
-         *
-         * @return
-         */
-        @Nullable
-        @Override
-        public StateError getStateError() {
-            return null;
-        }
-
-        @Override // Object
-        @NonNull
-        public String toString() {
-            return "CANCELLED: reason=" + reason;
-        }
-    }
-
-    /**
-     * An atomic State change marking also the reason for entering the exception State
-     */
-    @NotCallOrigin
-    protected final class AltFutureStateError extends Origin implements StateError {
-        @NonNull
-        final String reason;
-
-        @NonNull
-        final Exception e;
-
-        public AltFutureStateError(@NonNull String reason,
-                                   @NonNull Exception e) {
-            this.reason = reason;
-            this.e = e;
-            RCLog.e(this, "Moving to StateError:\n" + this.reason, e);
-        }
-
-        @Override // State
-        @NonNull
-        public Exception getException() {
-            return e;
-        }
-
-        @Override // Object
-        @NonNull
-        public String toString() {
-            return "ERROR: reason=" + reason + " error=" + e;
-        }
-    }
+//    @NotCallOrigin
+//    protected final class AltFutureStateCancelled extends Origin implements StateCancelled {
+//        final String reason;
+//
+//        AltFutureStateCancelled(@NonNull String reason) {
+//            if (BuildConfig.DEBUG && reason.length() == 0) {
+//                throw new IllegalArgumentException("You must specify the cancellation reason to keep debugging sane");
+//            }
+//            this.reason = reason;
+//            com.reactivecascade.util.RCLog.d(this, "Moving to StateCancelled:\n" + this.reason);
+//        }
+//
+//        /**
+//         * The reason this task was cancelled. This is for debug purposes.
+//         *
+//         * @return
+//         */
+//        @NonNull
+//        @Override // StateCancelled
+//        public String getReason() {
+//            return reason;
+//        }
+//
+//        /**
+//         * If the cancellation is because of an error State change elsewhere, provide the details
+//         * of that original cause also.
+//         *
+//         * @return
+//         */
+//        @Nullable
+//        @Override
+//        public StateError getStateError() {
+//            return null;
+//        }
+//
+//        @Override // Object
+//        @NonNull
+//        public String toString() {
+//            return "CANCELLED: reason=" + reason;
+//        }
+//    }
+//
+//    /**
+//     * An atomic State change marking also the reason for entering the exception State
+//     */
+//    @NotCallOrigin
+//    protected final class AltFutureStateError extends Origin implements StateError {
+//        @NonNull
+//        final String reason;
+//
+//        @NonNull
+//        final Exception e;
+//
+//        public AltFutureStateError(@NonNull String reason,
+//                                   @NonNull Exception e) {
+//            this.reason = reason;
+//            this.e = e;
+//            RCLog.e(this, "Moving to StateError:\n" + this.reason, e);
+//        }
+//
+//        @Override // State
+//        @NonNull
+//        public Exception getException() {
+//            return e;
+//        }
+//
+//        @Override // Object
+//        @NonNull
+//        public String toString() {
+//            return "ERROR: reason=" + reason + " error=" + e;
+//        }
+//    }
 }

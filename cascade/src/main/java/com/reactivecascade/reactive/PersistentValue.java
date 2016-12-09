@@ -27,6 +27,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * A {@link com.reactivecascade.reactive.ReactiveValue} which retains State between stops and
  * starts of the application.
@@ -291,7 +293,7 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             final T initialValue = init(context)
                     .get(INIT_READ_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
-            if (initialValue == IAltFuture.VALUE_NOT_AVAILABLE) {
+            if (initialValue == PENDING) {
                 fire(defaultValueIfNoPersistedValue);
             }
         } catch (Exception e) {
@@ -308,11 +310,11 @@ public class PersistentValue<T> extends ReactiveValue<T> {
             SharedPreferences sharedPreferences = AssertUtil.assertNonNull("Shared preferences can not be null", PreferenceManager.getDefaultSharedPreferences(context));
 
             if (previouslyInitializedPersistentValue != null) {
-                return previouslyInitializedPersistentValue.safeGet();
+                return previouslyInitializedPersistentValue.unsafeGet();
             }
             sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
-            return (T) IAltFuture.VALUE_NOT_AVAILABLE;
+            return (T) PENDING;
 //            if (sharedPreferences.contains(key)) {
 //                RCLog.v(this, "PersistentValue from loadeded from flash memory");
 //                onSharedPreferenceChanged();

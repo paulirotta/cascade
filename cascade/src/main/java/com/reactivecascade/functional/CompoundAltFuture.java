@@ -63,7 +63,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
 
     @NonNull
     @Override
-    public AFState getState() {
+    public AltFutureState getState() {
         return this.tail.getState();
     }
 
@@ -84,7 +84,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     }
 
     @Override // IAltFuture
-    public boolean cancel(@NonNull String reason) {
+    public boolean cancel(@NonNull CharSequence reason) {
         for (IAltFuture<?, ?> altFuture : mSubchain) {
             if (altFuture.cancel(reason)) {
                 return true;
@@ -94,17 +94,17 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
         return false;
     }
 
-    @Override // IAltFuture
-    public boolean cancel(@NonNull StateError stateError) {
-        for (IAltFuture<?, ?> altFuture : mSubchain) {
-            if (altFuture.cancel(stateError)) {
-                RCLog.d(this, "Cancelled task within CompountAltFuture");
-                return true;
-            }
-        }
-
-        return false;
-    }
+//    @Override // IAltFuture
+//    public boolean cancel(@NonNull StateError stateError) {
+//        for (IAltFuture<?, ?> altFuture : mSubchain) {
+//            if (altFuture.cancel(stateError)) {
+//                RCLog.d(this, "Cancelled task within CompountAltFuture");
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
     @Override // IAltFuture
     public boolean isCancelled() {
@@ -134,16 +134,6 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     @Override // IAltFuture
     public void setUpchain(@NonNull IAltFuture<?, ? extends IN> altFuture) {
         head.setUpchain(altFuture);
-    }
-
-    @Override // IAltFuture
-    public void onError(@NonNull StateError stateError) throws Exception {
-        head.onError(stateError);
-    }
-
-    @Override // IAltFuture
-    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        head.onCancelled(stateCancelled);
     }
 
     @NonNull
@@ -208,7 +198,7 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
     /**
      * Pause execution of this chain for a fixed time interval
      * <p>
-     * Note that the chain realizes immediately in the event of {@link #cancel(String)} or a runtime error
+     * Note that the chain realizes immediately in the event of {@link #cancel(CharSequence)} or a runtime error
      *
      * @param sleepTime
      * @param timeUnit
@@ -261,6 +251,22 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
         return tail.set(reactiveTarget);
     }
 
+    @Override // IAltFuture
+    public void onCancelled(@NonNull CharSequence reason) throws Exception {
+        head.onCancelled(reason);
+    }
+
+    @NonNull
+    @Override // IAltFuture
+    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<CharSequence> onCancelledAction) {
+        return tail.onCancelled(onCancelledAction);
+    }
+
+    @Override // IAltFuture
+    public void onError(@NonNull Exception e) throws Exception {
+        head.onError(e);
+    }
+
     @NonNull
     @Override // IAltFuture
     public ISettableAltFuture<OUT> onError(@NonNull IActionOne<Exception> onErrorAction) {
@@ -269,14 +275,8 @@ public class CompoundAltFuture<IN, OUT> extends Origin implements IAltFuture<IN,
 
     @NonNull
     @Override // IAltFuture
-    public ISettableAltFuture<OUT> onCancelled(@NonNull IActionOne<String> onCancelledAction) {
-        return tail.onCancelled(onCancelledAction);
-    }
-
-    @NonNull
-    @Override // IAltFuture
-    public OUT safeGet() {
-        return tail.safeGet();
+    public OUT unsafeGet() {
+        return tail.unsafeGet();
     }
 
     @NonNull

@@ -13,18 +13,21 @@ import com.reactivecascade.i.IThreadType;
 import com.reactivecascade.i.NotCallOrigin;
 import com.reactivecascade.util.RCLog;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.CANCELLED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.FORKED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * The on-cancelled action in a chain will be launched asynchonosly
  * <p>
  * Cancelled notifications are not consumed. All downchain items will also receive the
- * {@link #onCancelled(StateCancelled)} notification call synchronously.
+ * {@link #onCancelled(CharSequence)} notification call synchronously.
  * <p>
- * Cancellation may occur from any thread. In the event of concurrent cancellation, {@link #onCancelled(StateCancelled)}
- * will be called exactly one time.
+ * Cancellation may occur from any thread.
  */
 public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
     @NonNull
-    private final IActionOne<String> mOnCancelledAction;
+    private final IActionOne<CharSequence> onCancelledAction;
 
     /**
      * Constructor
@@ -34,29 +37,29 @@ public class OnCancelledAltFuture<T> extends SettableAltFuture<T> {
      */
     @SuppressWarnings("unchecked")
     public OnCancelledAltFuture(@NonNull IThreadType threadType,
-                                @NonNull IActionOne<String> action) {
+                                @NonNull IActionOne<CharSequence> action) {
         super(threadType);
 
-        this.mOnCancelledAction = action;
+        this.onCancelledAction = action;
     }
 
     @NotCallOrigin
     @Override // IAltFuture
-    public void onCancelled(@NonNull StateCancelled stateCancelled) throws Exception {
-        RCLog.d(this, "Handling onCancelled(): " + stateCancelled);
+    public void onCancelled(@NonNull CharSequence reason) throws Exception {
+        RCLog.d(this, "Handling onCancelled(): " + reason);
 
-        if (!this.stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateCancelled) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, stateCancelled))) {
+        if (!this.stateAR.compareAndSet(PENDING, CANCELLED) || (Async.USE_FORKED_STATE && !this.stateAR.compareAndSet(FORKED, CANCELLED))) {
             RCLog.i(this, "Will not onCancelled() because IAltFuture State is already determined: " + stateAR.get());
             return;
         }
 
         threadType
-                .from(stateCancelled.getReason())
-                .then(mOnCancelledAction)
+                .from(reason)
+                .then(onCancelledAction)
                 .fork();
 
         Exception e = forEachThen(af -> {
-            af.onCancelled(stateCancelled);
+            af.onCancelled(reason);
         });
 
         if (e != null) {

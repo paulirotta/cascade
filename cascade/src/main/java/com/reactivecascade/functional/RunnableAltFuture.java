@@ -22,6 +22,11 @@ import com.reactivecascade.util.RCLog;
 
 import java.util.concurrent.CancellationException;
 
+import static com.reactivecascade.i.IAltFuture.AltFutureState.DONE;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.ERROR;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.FORKED;
+import static com.reactivecascade.i.IAltFuture.AltFutureState.PENDING;
+
 /**
  * A present-time representation of one of many possible alternate future results
  * <p>
@@ -99,7 +104,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             OUT out;
 
             if (previousAltFuture == null) {
-                out = (OUT) COMPLETE;
+                out = (OUT) DONE;
             } else {
                 AssertUtil.assertTrue("The previous RunnableAltFuture to Iaction is not finished", previousAltFuture.isDone());
                 out = (OUT) previousAltFuture.get();
@@ -207,7 +212,7 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
             }
             final OUT out = mAction.call();
 
-            if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, out) || stateAR.compareAndSet(FORKED, out))) {
+            if (!(stateAR.compareAndSet(PENDING, out) || stateAR.compareAndSet(FORKED, out))) {
                 RCLog.d(this, "RunnableAltFuture was cancelled() or otherwise changed during execution. Returned from of function is ignored, but any direct side-effects not cooperatively stopped or rolled back in onError()/onCatch() are still in effect. State=" + stateAR.get());
                 throw new CancellationException(stateAR.get().toString());
             }
@@ -218,9 +223,10 @@ public class RunnableAltFuture<IN, OUT> extends AbstractAltFuture<IN, OUT> imple
         } catch (InterruptedException e) {
             stateChanged = cancel("RunnableAltFuture was interrupted (may be normal but NOT RECOMMENDED as behaviour is non-deterministic, but app will not fail fast): " + e);
         } catch (Exception e) {
-            AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
+            //TODO Add some debug helper back here after refactor to simply away stateError
+//            AltFutureStateError stateError = new AltFutureStateError("RunnableAltFuture run problem", e);
 
-            if (!(stateAR.compareAndSet(VALUE_NOT_AVAILABLE, stateError) && !(stateAR.compareAndSet(FORKED, stateError)))) {
+            if (!(stateAR.compareAndSet(PENDING, ERROR) && !(stateAR.compareAndSet(FORKED, ERROR)))) {
                 RCLog.i(this, "RunnableAltFuture had a problem, but can not transition to stateError as the State has already changed. This is either a logic error or a possible but rare legitimate cancel() race condition: " + e);
                 stateChanged = true;
             }
